@@ -1,0 +1,10 @@
+[project]
+name = "finance"
+version = "0.1.0"
+description = "Finance API"
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi>=0.123.5",
+    "uvicorn[standard]==0.32.0",
+]
+
