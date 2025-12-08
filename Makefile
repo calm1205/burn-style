@@ -1,4 +1,4 @@
-.PHONY: help lint format check fix migrate upgrade downgrade revision seed
+.PHONY: help lint format check fix migrate upgrade downgrade revision seed db-clear
 
 help: ## このヘルプメッセージを表示
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
@@ -26,3 +26,7 @@ revision: ## 新しいマイグレーションファイルを作成（使用例:
 
 seed: ## User テーブルに seed データを投入
 	docker compose exec api uv run python scripts/seed_users.py
+
+db-clear: ## データベースをクリア（すべてのマイグレーションを元に戻して再適用）
+	docker compose exec api uv run alembic downgrade base
+	docker compose exec api uv run alembic upgrade head
