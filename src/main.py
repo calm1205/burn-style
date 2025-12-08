@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.repository.database import engine, Base
-from src.model import User
 from src.api import router
 
 # テーブルを作成
@@ -20,4 +19,3 @@ app.add_middleware(
 
 # ルーターを登録
 app.include_router(router)
-
