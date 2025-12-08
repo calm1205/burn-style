@@ -1,5 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from src.repository.database import engine, Base
+from src.model import User
+from src.api import router
+
+# テーブルを作成
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Finance API", version="1.0.0")
 
@@ -12,13 +18,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-@app.get("/")
-async def root():
-    return {"message": "Finance API is running"}
-
-
-@app.get("/health")
-async def health_check():
-    return {"status": "healthy"}
+# ルーターを登録
+app.include_router(router)
 

@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: finance_api
-    command: uv run uvicorn app.main:app --host 0.0.0.0 --port ${API_PORT} --reload
+    command: uv run uvicorn src.main:app --host 0.0.0.0 --port ${API_PORT} --reload
     env_file:
       - .env
     ports:
@@ -15,8 +15,8 @@ services:
     develop:
       watch:
         - action: sync
-          path: ./app
-          target: /app
+          path: ./src
+          target: /app/src
         - action: sync
           path: ./pyproject.toml
           target: /app/pyproject.toml
