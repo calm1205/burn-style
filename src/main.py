@@ -1,10 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from src.repository.database import engine, Base
 from src.api import router
-
-# テーブルを作成
-Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Finance API", version="1.0.0")
 

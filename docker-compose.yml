@@ -5,6 +5,8 @@ services:
       dockerfile: Dockerfile
     container_name: finance_api
     command: uv run uvicorn src.main:app --host 0.0.0.0 --port ${API_PORT} --reload
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
     env_file:
       - .env
     ports:
