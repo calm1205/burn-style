@@ -1,4 +1,4 @@
-.PHONY: help ruff migrate upgrade downgrade revision seed db-clear db-connect upgrade-local downgrade-local revision-local
+.PHONY: help ruff migrate upgrade downgrade revision seed db-clear db-reset db-connect upgrade-local downgrade-local revision-local
 
 help: ## このヘルプメッセージを表示
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
@@ -19,9 +19,12 @@ revision: ## 新しいマイグレーションファイルを作成（使用例:
 seed: ## User テーブルに seed データを投入
 	uv run python scripts/seed_users.py
 
-db-clear: ## データベースをクリア（すべてのマイグレーションを元に戻して再適用）
-	uv run alembic downgrade base
-	uv run alembic upgrade head
+db-reset: ## データベースを完全にリセット（マイグレーションファイル不要、Dockerボリュームを削除）
+	rm alembic/versions/*
+	docker compose down -v
+	docker compose up -d db
+	make revision MESSAGE="initial"
+	make upgrade
 
 db-connect: ## PostgreSQL CLIに接続
 	docker compose exec db sh -c 'psql -U $$POSTGRES_USER $$POSTGRES_DB'
