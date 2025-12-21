@@ -1,7 +1,7 @@
 from sqlalchemy import Column, String, DateTime
 from datetime import datetime, timezone
 from src.repository.database import Base
-from src.model import generate_uuid_string
+from src.model.utils import generate_uuid_string
 
 
 class User(Base):

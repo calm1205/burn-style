@@ -2,7 +2,7 @@ from sqlalchemy import Column, String, DateTime, Float, Table, ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 from src.repository.database import Base
-from src.model import generate_uuid_string
+from src.model.utils import generate_uuid_string
 
 # 多対多の関係を表す中間テーブル
 transaction_category_association = Table(
