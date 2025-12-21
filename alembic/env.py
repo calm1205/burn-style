@@ -15,20 +15,16 @@ load_dotenv()
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 # Baseとモデルをインポート
-from src.repository.database import Base  # noqa: E402
-from src.model import User  # noqa: F401, E402
+from src.repository.database import Base, get_database_url  # noqa: E402
+import src.model  # noqa: F401, E402 - 全てのモデルを自動的にロード
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
-# 環境変数からデータベースURLを取得
-database_url = os.getenv("DATABASE_URL")
-if database_url is None:
-    raise ValueError(
-        "DATABASE_URL environment variable is not set. "
-        "Please set it in your .env file or environment."
-    )
+# 環境変数からデータベースURLを取得（共通関数を使用）
+database_url = get_database_url()
+
 config.set_main_option("sqlalchemy.url", database_url)
 
 # Interpret the config file for Python logging.

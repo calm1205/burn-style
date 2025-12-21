@@ -8,11 +8,11 @@ from sqlalchemy.orm import Session
 # プロジェクトのルートをパスに追加
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-from src.repository.database import SessionLocal
-from src.model import User
-
-# .envファイルから環境変数を読み込む
+# .envファイルから環境変数を読み込む（インポートの前に実行）
 load_dotenv()
+
+from src.repository.database import SessionLocal  # noqa: E402
+from src.model import User  # noqa: E402
 
 
 def seed_users() -> None:
