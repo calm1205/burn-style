@@ -1,12 +1,7 @@
 from sqlalchemy import Column, String, DateTime
 from datetime import datetime, timezone
-import uuid6
 from src.repository.database import Base
-
-
-def generate_uuid_string() -> str:
-    """UUID v7をハイフンなしの32文字の文字列として生成"""
-    return uuid6.uuid7().hex
+from src.model import generate_uuid_string
 
 
 class User(Base):

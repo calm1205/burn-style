@@ -1,10 +1,10 @@
-.PHONY: help lint format check fix migrate upgrade downgrade revision seed db-clear db-connect
+.PHONY: help ruff migrate upgrade downgrade revision seed db-clear db-connect
 
 help: ## このヘルプメッセージを表示
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 
-fix: ## ruffで自動修正可能な問題を修正
+ruff: ## ruffで自動修正可能な問題を修正
 	uv run ruff check --fix .
 
 upgrade: ## データベースを最新バージョンにアップグレード
