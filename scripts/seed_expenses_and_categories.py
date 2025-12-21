@@ -1,4 +1,4 @@
-"""Category と Transaction テーブルに seed データを投入するスクリプト"""
+"""Category と Expense テーブルに seed データを投入するスクリプト"""
 import os
 import sys
 
@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 load_dotenv()
 
 from src.repository.database import SessionLocal  # noqa: E402
-from src.model import Category, Transaction  # noqa: E402
+from src.model import Category, Expense  # noqa: E402
 
 
 def seed_categories(db: Session) -> dict[str, Category]:
@@ -57,19 +57,19 @@ def seed_categories(db: Session) -> dict[str, Category]:
     return {category.name: category for category in categories}
 
 
-def seed_transactions(db: Session, categories: dict[str, Category]) -> None:
-    """Transaction テーブルに seed データを投入"""
-    # 既存のトランザクションを確認
-    existing_transactions = db.query(Transaction).count()
-    if existing_transactions > 0:
-        print(f"既に {existing_transactions} 件のトランザクションが存在します。")
+def seed_expenses(db: Session, categories: dict[str, Category]) -> None:
+    """Expense テーブルに seed データを投入"""
+    # 既存の支出を確認
+    existing_expenses = db.query(Expense).count()
+    if existing_expenses > 0:
+        print(f"既に {existing_expenses} 件の支出が存在します。")
         response = input("続行しますか？ (y/n): ")
         if response.lower() != "y":
             print("処理をキャンセルしました。")
             return
 
     # seed データの定義
-    transaction_data = [
+    expense_data = [
         {"name": "スーパーマーケットでの買い物", "amount": -3500.0, "category_names": ["食費"]},
         {"name": "電車代", "amount": -280.0, "category_names": ["交通費"]},
         {"name": "映画鑑賞", "amount": -1800.0, "category_names": ["娯楽"]},
@@ -93,34 +93,34 @@ def seed_transactions(db: Session, categories: dict[str, Category]) -> None:
     ]
 
     # データを投入
-    transactions = []
-    for data in transaction_data:
-        transaction = Transaction(
+    expenses = []
+    for data in expense_data:
+        expense = Expense(
             name=data["name"],
             amount=data["amount"]
         )
         # カテゴリを関連付け
         category_names = data.get("category_names", [])
-        transaction.categories = [
+        expense.categories = [
             categories[name] for name in category_names if name in categories
         ]
-        transactions.append(transaction)
+        expenses.append(expense)
 
-    db.add_all(transactions)
+    db.add_all(expenses)
     db.commit()
 
     # リフレッシュしてUUIDを取得
-    for transaction in transactions:
-        db.refresh(transaction)
+    for expense in expenses:
+        db.refresh(expense)
 
-    print(f"{len(transactions)} 件のトランザクションを追加しました。")
-    for transaction in transactions:
-        category_names = ", ".join([cat.name for cat in transaction.categories])
-        print(f"  - {transaction.name}: {transaction.amount:,.0f}円 (カテゴリ: {category_names})")
+    print(f"{len(expenses)} 件の支出を追加しました。")
+    for expense in expenses:
+        category_names = ", ".join([cat.name for cat in expense.categories])
+        print(f"  - {expense.name}: {expense.amount:,.0f}円 (カテゴリ: {category_names})")
 
 
-def seed_transactions_and_categories() -> None:
-    """Category と Transaction テーブルに seed データを投入"""
+def seed_expenses_and_categories() -> None:
+    """Category と Expense テーブルに seed データを投入"""
     db: Session = SessionLocal()
     try:
         # まずカテゴリを投入
@@ -128,11 +128,11 @@ def seed_transactions_and_categories() -> None:
         
         # カテゴリが空の場合は処理を終了
         if not categories:
-            print("カテゴリの投入がキャンセルされたため、トランザクションの投入をスキップします。")
+            print("カテゴリの投入がキャンセルされたため、支出の投入をスキップします。")
             return
 
-        # トランザクションを投入
-        seed_transactions(db, categories)
+        # 支出を投入
+        seed_expenses(db, categories)
 
     except Exception as e:
         db.rollback()
@@ -143,5 +143,5 @@ def seed_transactions_and_categories() -> None:
 
 
 if __name__ == "__main__":
-    seed_transactions_and_categories()
+    seed_expenses_and_categories()
 

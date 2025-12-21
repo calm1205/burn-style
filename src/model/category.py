@@ -11,9 +11,9 @@ class Category(Base):
     name = Column(String, nullable=False)
 
     # 多対多の関係
-    transactions = relationship(
-        "Transaction",
-        secondary="transaction_category_association",
+    expenses = relationship(
+        "Expense",
+        secondary="expense_category_association",
         back_populates="categories"
     )
 

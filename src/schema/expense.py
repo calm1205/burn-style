@@ -4,7 +4,7 @@ from typing import List, Optional
 from src.schema.category import CategoryResponse
 
 
-class TransactionResponse(BaseModel):
+class ExpenseResponse(BaseModel):
     uuid: str
     name: str
     amount: int
@@ -17,7 +17,7 @@ class TransactionResponse(BaseModel):
         from_attributes = True
 
 
-class TransactionCreate(BaseModel):
+class ExpenseCreate(BaseModel):
     name: str
     amount: int = Field(gt=0, description="正の整数のみ許可されます")
     category_uuids: List[str] = []

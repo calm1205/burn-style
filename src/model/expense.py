@@ -5,16 +5,16 @@ from src.repository.database import Base
 from src.model.utils import generate_uuid_string
 
 # 多対多の関係を表す中間テーブル
-transaction_category_association = Table(
-    "transaction_category_association",
+expense_category_association = Table(
+    "expense_category_association",
     Base.metadata,
-    Column("transaction_uuid", String(32), ForeignKey("transactions.uuid"), primary_key=True),
+    Column("expense_uuid", String(32), ForeignKey("expenses.uuid"), primary_key=True),
     Column("category_uuid", String(32), ForeignKey("categories.uuid"), primary_key=True),
 )
 
 
-class Transaction(Base):
-    __tablename__ = "transactions"
+class Expense(Base):
+    __tablename__ = "expenses"
     __table_args__ = (
         CheckConstraint('amount > 0', name='check_amount_positive'),
     )
@@ -31,7 +31,7 @@ class Transaction(Base):
     # 多対多の関係
     categories = relationship(
         "Category",
-        secondary=transaction_category_association,
-        back_populates="transactions"
+        secondary=expense_category_association,
+        back_populates="expenses"
     )
 
