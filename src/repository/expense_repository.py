@@ -13,6 +13,14 @@ def get_all_expenses(db: Session, include_deleted: bool = False) -> List[Expense
     return query.all()
 
 
+def get_expenses_by_user_uuid(db: Session, user_uuid: str, include_deleted: bool = False) -> List[Expense]:
+    """ユーザーUUIDで支出を取得する（削除されていないもののみ）"""
+    query = db.query(Expense).filter(Expense.user_uuid == user_uuid)
+    if not include_deleted:
+        query = query.filter(Expense.deleted_at.is_(None))
+    return query.all()
+
+
 def get_expense_by_uuid(db: Session, uuid: str) -> Optional[Expense]:
     """UUIDで支出を取得する"""
     return db.query(Expense).filter(

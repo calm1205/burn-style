@@ -17,9 +17,13 @@ def get_database_url() -> str:
             "Please set it in your .env file or environment."
         )
 
-    # ホストマシンから実行する場合、ホスト名をlocalhostに変更
+    # Dockerコンテナ内で実行されているかどうかを判断
+    # /appディレクトリが存在し、かつ/.dockerenvファイルが存在する場合はDockerコンテナ内
+    is_docker = os.path.exists("/.dockerenv") or os.path.exists("/app")
+    
+    # ホストマシンから実行する場合のみ、ホスト名をlocalhostに変更
     # Dockerコンテナ内では"db"、ホストマシンからは"localhost"を使用
-    if "://" in database_url:
+    if not is_docker and "://" in database_url:
         # DATABASE_URLがpostgresql://user:pass@db/dbnameの形式の場合
         if "@db/" in database_url or "@db:" in database_url:
             # ホストマシンから実行する場合、dbをlocalhostに置き換え
