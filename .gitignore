@@ -1,21 +1,6 @@
 .env
 .venv
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
 .Python
-
-# Ruff
 .ruff_cache/
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS
 .DS_Store
-Thumbs.db

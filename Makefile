@@ -1,19 +1,11 @@
-.PHONY: help lint format check fix migrate upgrade downgrade revision seed db-clear
+.PHONY: help lint format check fix migrate upgrade downgrade revision seed db-clear db-connect
 
 help: ## このヘルプメッセージを表示
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
-lint: ## ruffでコードをチェック
-	uv run ruff check .
-
-format: ## ruffでコードをフォーマット
-	uv run ruff format .
 
 fix: ## ruffで自動修正可能な問題を修正
 	uv run ruff check --fix .
-
-migrate: ## マイグレーションを実行（upgradeのエイリアス）
-	docker compose exec api uv run alembic upgrade head
 
 upgrade: ## データベースを最新バージョンにアップグレード
 	docker compose exec api uv run alembic upgrade head
@@ -30,3 +22,6 @@ seed: ## User テーブルに seed データを投入
 db-clear: ## データベースをクリア（すべてのマイグレーションを元に戻して再適用）
 	docker compose exec api uv run alembic downgrade base
 	docker compose exec api uv run alembic upgrade head
+
+db-connect: ## PostgreSQL CLIに接続
+	docker compose exec db sh -c 'psql -U $$POSTGRES_USER $$POSTGRES_DB'

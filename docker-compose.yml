@@ -5,15 +5,12 @@ services:
       dockerfile: Dockerfile
     container_name: finance_api
     command: uv run uvicorn src.main:app --host 0.0.0.0 --port ${API_PORT} --reload
-    environment:
-      - PYTHONDONTWRITEBYTECODE=1
     env_file:
       - .env
     ports:
       - "${API_PORT}:${API_PORT}"
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     develop:
       watch:
         - action: sync
@@ -29,7 +26,9 @@ services:
           path: Dockerfile
 
   db:
-    image: postgres:18-bookworm
+    build:
+      context: .
+      dockerfile: Dockerfile.db
     container_name: finance_db
     env_file:
       - .env
@@ -37,11 +36,6 @@ services:
       - "${POSTGRES_PORT}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
 volumes:
   postgres_data:
