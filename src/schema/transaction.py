@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import List, Optional
 from src.schema.category import CategoryResponse
@@ -7,7 +7,7 @@ from src.schema.category import CategoryResponse
 class TransactionResponse(BaseModel):
     uuid: str
     name: str
-    amount: float
+    amount: int
     created_at: datetime
     updated_at: datetime
     deleted_at: Optional[datetime]
@@ -19,6 +19,6 @@ class TransactionResponse(BaseModel):
 
 class TransactionCreate(BaseModel):
     name: str
-    amount: float
+    amount: int = Field(gt=0, description="正の整数のみ許可されます")
     category_uuids: List[str] = []
 

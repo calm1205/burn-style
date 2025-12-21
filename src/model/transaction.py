@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, DateTime, Float, Table, ForeignKey
+from sqlalchemy import Column, String, DateTime, Integer, Table, ForeignKey, CheckConstraint
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 from src.repository.database import Base
@@ -15,10 +15,13 @@ transaction_category_association = Table(
 
 class Transaction(Base):
     __tablename__ = "transactions"
+    __table_args__ = (
+        CheckConstraint('amount > 0', name='check_amount_positive'),
+    )
 
     uuid = Column(String(32), primary_key=True, default=generate_uuid_string)
     name = Column(String, nullable=False)
-    amount = Column(Float, nullable=False)
+    amount = Column(Integer, nullable=False)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
     updated_at = Column(
         DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc), nullable=False
