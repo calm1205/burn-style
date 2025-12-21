@@ -1,4 +1,5 @@
 from sqlalchemy import Column, String, DateTime
+from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 from src.repository.database import Base
 from src.model.utils import generate_uuid_string
@@ -13,3 +14,7 @@ class User(Base):
     updated_at = Column(
         DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc), nullable=False
     )
+
+    # 一対多の関係
+    expenses = relationship("Expense", back_populates="user")
+    categories = relationship("Category", back_populates="user")

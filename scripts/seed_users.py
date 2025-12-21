@@ -19,15 +19,6 @@ def seed_users() -> None:
     """User テーブルに seed データを投入"""
     db: Session = SessionLocal()
     try:
-        # 既存のユーザーを確認
-        existing_users = db.query(User).count()
-        if existing_users > 0:
-            print(f"既に {existing_users} 人のユーザーが存在します。")
-            response = input("続行しますか？ (y/n): ")
-            if response.lower() != "y":
-                print("処理をキャンセルしました。")
-                return
-
         # seed データの定義
         seed_data = [
             {"name": "山田太郎"},

@@ -13,18 +13,24 @@ upgrade: ## データベースを最新バージョンにアップグレード
 downgrade: ## データベースを1つ前のバージョンにダウングレード
 	uv run alembic downgrade -1
 
+MESSAGE ?= "auto migration"
 revision: ## 新しいマイグレーションファイルを作成（使用例: make revision MESSAGE="create table"）
 	uv run alembic revision --autogenerate -m "$(MESSAGE)"
 
 seed: ## User テーブルに seed データを投入
-	uv run python scripts/seed_users.py
+	uv run python scripts/seed_all.py
 
-db-reset: ## データベースを完全にリセット（マイグレーションファイル不要、Dockerボリュームを削除）
-	rm alembic/versions/*
+db-clear: ## データベースを完全にリセット
+	rm -f alembic/versions/*
 	docker compose down -v
+
+db-reset: ## データベースを完全にリセット
+	make db-clear
 	docker compose up -d db
+	sleep 1
 	make revision MESSAGE="initial"
 	make upgrade
+	make seed
 
 db-connect: ## PostgreSQL CLIに接続
 	docker compose exec db sh -c 'psql -U $$POSTGRES_USER $$POSTGRES_DB'
