@@ -12,21 +12,13 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 load_dotenv()
 
 from src.repository.database import SessionLocal  # noqa: E402
-from src.model import Category, Expense, User  # noqa: E402
+from src.model import Category, Expense  # noqa: E402
 
 
 def seed_expenses() -> None:
     """Expense テーブルに seed データを投入"""
     db: Session = SessionLocal()
     try:
-        # ユーザーを名前で取得（名前をキーとした辞書を作成）
-        users = db.query(User).all()
-        users_dict = {user.name: user for user in users}
-
-        if not users_dict:
-            print("エラー: ユーザーが存在しません。先に seed_users.py を実行してください。")
-            return
-
         # カテゴリを名前で取得（名前をキーとした辞書を作成）
         categories = db.query(Category).all()
         categories_dict = {category.name: category for category in categories}
@@ -37,40 +29,34 @@ def seed_expenses() -> None:
 
         # seed データの定義
         expense_data = [
-            {"name": "スーパーマーケットでの買い物", "amount": 3500, "category_names": ["食費"], "user_name": "山田太郎"},
-            {"name": "電車代", "amount": 280, "category_names": ["交通費"], "user_name": "山田太郎"},
-            {"name": "映画鑑賞", "amount": 1800, "category_names": ["娯楽"], "user_name": "山田太郎"},
-            {"name": "電気代", "amount": 4500, "category_names": ["光熱費"], "user_name": "山田太郎"},
-            {"name": "スマートフォン料金", "amount": 3500, "category_names": ["通信費"], "user_name": "山田太郎"},
-            {"name": "病院の診察料", "amount": 5000, "category_names": ["医療費"], "user_name": "佐藤花子"},
-            {"name": "書籍代", "amount": 1200, "category_names": ["教育費"], "user_name": "佐藤花子"},
-            {"name": "給与", "amount": 300000, "category_names": ["給与"], "user_name": "佐藤花子"},
-            {"name": "ボーナス", "amount": 500000, "category_names": ["賞与"], "user_name": "佐藤花子"},
-            {"name": "副業収入", "amount": 50000, "category_names": ["その他収入"], "user_name": "佐藤花子"},
-            {"name": "コンビニでの買い物", "amount": 500, "category_names": ["食費"], "user_name": "鈴木一郎"},
-            {"name": "バス代", "amount": 210, "category_names": ["交通費"], "user_name": "鈴木一郎"},
-            {"name": "ゲームソフト購入", "amount": 6000, "category_names": ["娯楽"], "user_name": "鈴木一郎"},
-            {"name": "ガス代", "amount": 3200, "category_names": ["光熱費"], "user_name": "鈴木一郎"},
-            {"name": "インターネット料金", "amount": 4000, "category_names": ["通信費"], "user_name": "鈴木一郎"},
-            {"name": "薬代", "amount": 2000, "category_names": ["医療費"], "user_name": "田中次郎"},
-            {"name": "オンライン講座", "amount": 15000, "category_names": ["教育費"], "user_name": "田中次郎"},
-            {"name": "外食", "amount": 2500, "category_names": ["食費", "娯楽"], "user_name": "田中次郎"},
-            {"name": "タクシー代", "amount": 1200, "category_names": ["交通費"], "user_name": "伊藤三郎"},
-            {"name": "コンサートチケット", "amount": 8000, "category_names": ["娯楽"], "user_name": "伊藤三郎"},
+            {"name": "スーパーマーケットでの買い物", "amount": 3500, "category_names": ["食費"]},
+            {"name": "電車代", "amount": 280, "category_names": ["交通費"]},
+            {"name": "映画鑑賞", "amount": 1800, "category_names": ["娯楽"]},
+            {"name": "電気代", "amount": 4500, "category_names": ["光熱費"]},
+            {"name": "スマートフォン料金", "amount": 3500, "category_names": ["通信費"]},
+            {"name": "病院の診察料", "amount": 5000, "category_names": ["医療費"]},
+            {"name": "書籍代", "amount": 1200, "category_names": ["教育費"]},
+            {"name": "給与", "amount": 300000, "category_names": ["給与"]},
+            {"name": "ボーナス", "amount": 500000, "category_names": ["賞与"]},
+            {"name": "副業収入", "amount": 50000, "category_names": ["その他収入"]},
+            {"name": "コンビニでの買い物", "amount": 500, "category_names": ["食費"]},
+            {"name": "バス代", "amount": 210, "category_names": ["交通費"]},
+            {"name": "ゲームソフト購入", "amount": 6000, "category_names": ["娯楽"]},
+            {"name": "ガス代", "amount": 3200, "category_names": ["光熱費"]},
+            {"name": "インターネット料金", "amount": 4000, "category_names": ["通信費"]},
+            {"name": "薬代", "amount": 2000, "category_names": ["医療費"]},
+            {"name": "オンライン講座", "amount": 15000, "category_names": ["教育費"]},
+            {"name": "外食", "amount": 2500, "category_names": ["食費", "娯楽"]},
+            {"name": "タクシー代", "amount": 1200, "category_names": ["交通費"]},
+            {"name": "コンサートチケット", "amount": 8000, "category_names": ["娯楽"]},
         ]
 
         # データを投入
         expenses = []
         for data in expense_data:
-            user_name = data.get("user_name")
-            if user_name not in users_dict:
-                print(f"警告: ユーザー '{user_name}' が見つかりません。スキップします。")
-                continue
-
             expense = Expense(
                 name=data["name"],
                 amount=data["amount"],
-                user_uuid=users_dict[user_name].uuid
             )
             # カテゴリを関連付け
             category_names = data.get("category_names", [])
@@ -89,8 +75,7 @@ def seed_expenses() -> None:
         print(f"{len(expenses)} 件の支出を追加しました。")
         for expense in expenses:
             category_names = ", ".join([cat.name for cat in expense.categories])
-            user_name = expense.user.name if expense.user else "不明"
-            print(f"  - {expense.name}: {expense.amount:,.0f}円 (ユーザー: {user_name}, カテゴリ: {category_names})")
+            print(f"  - {expense.name}: {expense.amount:,.0f}円 (カテゴリ: {category_names})")
 
     except Exception as e:
         db.rollback()
@@ -102,4 +87,3 @@ def seed_expenses() -> None:
 
 if __name__ == "__main__":
     seed_expenses()
-

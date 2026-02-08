@@ -12,19 +12,13 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 load_dotenv()
 
 from src.repository.database import SessionLocal  # noqa: E402
-from src.model import Category, User  # noqa: E402
+from src.model import Category  # noqa: E402
 
 
 def seed_categories() -> None:
     """Category テーブルに seed データを投入"""
     db: Session = SessionLocal()
     try:
-        # 既存のユーザーを取得
-        users = db.query(User).all()
-        if not users:
-            print("警告: ユーザーが存在しません。先にユーザーを投入してください。")
-            return
-
         # seed データの定義
         category_names = [
             "食費",
@@ -39,28 +33,20 @@ def seed_categories() -> None:
             "その他収入",
         ]
 
-        # 各ユーザーに対してカテゴリを作成
-        all_categories = []
-        for user in users:
-            categories = [
-                Category(name=name, user_uuid=user.uuid) for name in category_names
-            ]
-            all_categories.extend(categories)
+        # カテゴリを作成
+        categories = [Category(name=name) for name in category_names]
 
         # データを投入
-        db.add_all(all_categories)
+        db.add_all(categories)
         db.commit()
 
         # リフレッシュしてUUIDを取得
-        for category in all_categories:
+        for category in categories:
             db.refresh(category)
 
-        print(f"{len(all_categories)} 個のカテゴリを追加しました。")
-        for user in users:
-            user_categories = [c for c in all_categories if c.user_uuid == user.uuid]
-            print(f"  {user.name} のカテゴリ ({len(user_categories)} 個):")
-            for category in user_categories:
-                print(f"    - {category.name} (UUID: {category.uuid})")
+        print(f"{len(categories)} 個のカテゴリを追加しました。")
+        for category in categories:
+            print(f"  - {category.name} (UUID: {category.uuid})")
 
     except Exception as e:
         db.rollback()
@@ -72,4 +58,3 @@ def seed_categories() -> None:
 
 if __name__ == "__main__":
     seed_categories()
-
