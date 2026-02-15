@@ -1,4 +1,4 @@
-.PHONY: help ruff mypy migrate upgrade downgrade revision seed db-clear db-reset db-connect upgrade-local downgrade-local revision-local
+.PHONY: help ruff mypy migrate upgrade downgrade revision seed db-clear db-reset db-connect upgrade-local downgrade-local revision-local upgrade-prod
 
 help: ## このヘルプメッセージを表示
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
@@ -41,3 +41,6 @@ db-reset: ## データベースを完全にリセット
 
 db-connect: ## PostgreSQL CLIに接続
 	docker compose exec db sh -c 'psql -U $$POSTGRES_USER $$POSTGRES_DB'
+
+upgrade-prod: ## Neon本番DBにマイグレーション実行
+	VERCEL_ENV=production uv run alembic upgrade head
