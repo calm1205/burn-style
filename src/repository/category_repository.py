@@ -22,3 +22,18 @@ def create_category(db: Session, name: str) -> Category:
     db.refresh(category)
     return category
 
+
+def delete_all_categories(db: Session) -> None:
+    """すべてのカテゴリを削除する"""
+    db.query(Category).delete()
+
+
+def bulk_create_categories(db: Session, names: list[str]) -> list[Category]:
+    """カテゴリを一括作成する"""
+    categories = [Category(name=name) for name in names]
+    db.add_all(categories)
+    db.commit()
+    for category in categories:
+        db.refresh(category)
+    return categories
+
