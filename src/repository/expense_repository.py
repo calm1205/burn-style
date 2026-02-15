@@ -49,7 +49,7 @@ def soft_delete_expense(db: Session, uuid: str) -> Expense | None:
     ).first()
 
     if expense:
-        expense.deleted_at = datetime.now(UTC)
+        expense.deleted_at = datetime.now(UTC)  # type: ignore[assignment]
         db.commit()
         db.refresh(expense)
 

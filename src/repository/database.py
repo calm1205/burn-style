@@ -1,10 +1,10 @@
 import os
+from collections.abc import Generator
 from pathlib import Path
 
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 # .envファイルから環境変数を読み込む
 load_dotenv()
@@ -37,10 +37,11 @@ DATABASE_URL = get_database_url()
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base()
+class Base(DeclarativeBase):
+    pass
 
 
-def get_db():
+def get_db() -> Generator[Session]:
     """データベースセッションを取得する依存性注入用の関数"""
     db = SessionLocal()
     try:
