@@ -1,6 +1,7 @@
 """Expense テーブルに seed データを投入するスクリプト"""
 import sys
 from pathlib import Path
+from typing import TypedDict
 
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
@@ -15,20 +16,26 @@ from src.model import Category, Expense  # noqa: E402
 from src.repository.database import SessionLocal  # noqa: E402
 
 
+class ExpenseData(TypedDict):
+    name: str
+    amount: int
+    category_names: list[str]
+
+
 def seed_expenses() -> None:
     """Expense テーブルに seed データを投入"""
     db: Session = SessionLocal()
     try:
         # カテゴリを名前で取得(名前をキーとした辞書を作成)
         categories = db.query(Category).all()
-        categories_dict = {category.name: category for category in categories}
+        categories_dict: dict[str, Category] = {str(category.name): category for category in categories}
 
         if not categories_dict:
             print("エラー: カテゴリが存在しません。先に seed_categories.py を実行してください。")
             return
 
         # seed データの定義
-        expense_data = [
+        expense_data: list[ExpenseData] = [
             {"name": "スーパーマーケットでの買い物", "amount": 3500, "category_names": ["食費"]},
             {"name": "電車代", "amount": 280, "category_names": ["交通費"]},
             {"name": "映画鑑賞", "amount": 1800, "category_names": ["娯楽"]},
@@ -59,7 +66,7 @@ def seed_expenses() -> None:
                 amount=data["amount"],
             )
             # カテゴリを関連付け
-            category_names = data.get("category_names", [])
+            category_names = data["category_names"]
             expense.categories = [
                 categories_dict[name] for name in category_names if name in categories_dict
             ]
@@ -74,8 +81,8 @@ def seed_expenses() -> None:
 
         print(f"{len(expenses)} 件の支出を追加しました。")
         for expense in expenses:
-            category_names = ", ".join([cat.name for cat in expense.categories])
-            print(f"  - {expense.name}: {expense.amount:,.0f}円 (カテゴリ: {category_names})")
+            cat_names = ", ".join([str(cat.name) for cat in expense.categories])
+            print(f"  - {expense.name}: {expense.amount:,.0f}円 (カテゴリ: {cat_names})")
 
     except Exception as e:
         db.rollback()
