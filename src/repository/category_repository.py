@@ -2,6 +2,7 @@
 from sqlalchemy.orm import Session
 
 from src.model.category import Category
+from src.model.expense_category_association import ExpenseCategoryAssociation
 
 
 def get_all_categories(db: Session) -> list[Category]:
@@ -24,7 +25,8 @@ def create_category(db: Session, name: str) -> Category:
 
 
 def delete_all_categories(db: Session) -> None:
-    """すべてのカテゴリを削除する"""
+    """すべてのカテゴリを削除する（関連する中間テーブルも削除）"""
+    db.query(ExpenseCategoryAssociation).delete()
     db.query(Category).delete()
 
 
