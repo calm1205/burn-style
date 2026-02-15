@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
 from src.api import router
 
 app = FastAPI(title="Finance API", version="1.0.0")

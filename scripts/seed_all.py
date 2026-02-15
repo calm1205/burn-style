@@ -1,13 +1,13 @@
 """Category、Expense テーブルに順番に seed データを投入するスクリプト"""
-import os
 import sys
+from pathlib import Path
 
 from dotenv import load_dotenv
 
 # プロジェクトのルートをパスに追加
-sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# .envファイルから環境変数を読み込む（インポートの前に実行）
+# .envファイルから環境変数を読み込む(インポートの前に実行)
 load_dotenv()
 
 from scripts.seed_categories import seed_categories  # noqa: E402

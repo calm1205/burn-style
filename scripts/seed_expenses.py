@@ -1,25 +1,25 @@
 """Expense テーブルに seed データを投入するスクリプト"""
-import os
 import sys
+from pathlib import Path
 
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
 
 # プロジェクトのルートをパスに追加
-sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# .envファイルから環境変数を読み込む（インポートの前に実行）
+# .envファイルから環境変数を読み込む(インポートの前に実行)
 load_dotenv()
 
-from src.repository.database import SessionLocal  # noqa: E402
 from src.model import Category, Expense  # noqa: E402
+from src.repository.database import SessionLocal  # noqa: E402
 
 
 def seed_expenses() -> None:
     """Expense テーブルに seed データを投入"""
     db: Session = SessionLocal()
     try:
-        # カテゴリを名前で取得（名前をキーとした辞書を作成）
+        # カテゴリを名前で取得(名前をキーとした辞書を作成)
         categories = db.query(Category).all()
         categories_dict = {category.name: category for category in categories}
 

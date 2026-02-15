@@ -1,10 +1,9 @@
-from logging.config import fileConfig
-import os
 import sys
+from logging.config import fileConfig
+from pathlib import Path
 
 from dotenv import load_dotenv
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+from sqlalchemy import engine_from_config, pool
 
 from alembic import context
 
@@ -12,17 +11,17 @@ from alembic import context
 load_dotenv()
 
 # プロジェクトのルートをパスに追加
-sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # Baseとモデルをインポート
-from src.repository.database import Base, get_database_url  # noqa: E402
 import src.model  # noqa: F401, E402 - 全てのモデルを自動的にロード
+from src.repository.database import Base, get_database_url  # noqa: E402
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
-# 環境変数からデータベースURLを取得（共通関数を使用）
+# 環境変数からデータベースURLを取得(共通関数を使用)
 database_url = get_database_url()
 
 config.set_main_option("sqlalchemy.url", database_url)

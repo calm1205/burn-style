@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field
 from datetime import datetime
-from typing import List, Optional
+
+from pydantic import BaseModel, Field
+
 from src.schema.category import CategoryResponse
 
 
@@ -10,8 +11,8 @@ class ExpenseResponse(BaseModel):
     amount: int
     created_at: datetime
     updated_at: datetime
-    deleted_at: Optional[datetime]
-    categories: List[CategoryResponse]
+    deleted_at: datetime | None
+    categories: list[CategoryResponse]
 
     class Config:
         from_attributes = True
@@ -20,5 +21,5 @@ class ExpenseResponse(BaseModel):
 class ExpenseCreate(BaseModel):
     name: str
     amount: int = Field(gt=0, description="正の整数のみ許可されます")
-    category_uuids: List[str] = []
+    category_uuids: list[str] = []
 

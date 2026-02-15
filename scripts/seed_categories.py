@@ -1,18 +1,18 @@
 """Category テーブルに seed データを投入するスクリプト"""
-import os
 import sys
+from pathlib import Path
 
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
 
 # プロジェクトのルートをパスに追加
-sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# .envファイルから環境変数を読み込む（インポートの前に実行）
+# .envファイルから環境変数を読み込む(インポートの前に実行)
 load_dotenv()
 
-from src.repository.database import SessionLocal  # noqa: E402
 from src.model import Category  # noqa: E402
+from src.repository.database import SessionLocal  # noqa: E402
 
 
 def seed_categories() -> None:
