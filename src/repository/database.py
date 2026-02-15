@@ -12,6 +12,18 @@ load_dotenv()
 
 def get_database_url() -> str:
     """環境変数からDATABASE_URLを取得し、ホスト名を適切に変換する"""
+    # Vercel production環境ではPOSTGRES_URLを使用
+    vercel_env = os.getenv("VERCEL_ENV")
+    if vercel_env == "production":
+        postgres_url = os.getenv("POSTGRES_URL")
+        if postgres_url is None:
+            raise ValueError(
+                "POSTGRES_URL environment variable is not set. "
+                "Please set it in Vercel environment variables.",
+            )
+        return postgres_url
+
+    # ローカル環境ではDATABASE_URLを使用
     database_url = os.getenv("DATABASE_URL")
     if database_url is None:
         raise ValueError(
