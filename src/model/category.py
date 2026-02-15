@@ -1,7 +1,8 @@
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
-from src.repository.database import Base
+
 from src.model.utils import generate_uuid_string
+from src.repository.database import Base
 
 
 class Category(Base):
@@ -14,6 +15,6 @@ class Category(Base):
     expenses = relationship(
         "Expense",
         secondary="expense_category_association",
-        back_populates="categories"
+        back_populates="categories",
     )
 

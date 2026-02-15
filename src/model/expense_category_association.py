@@ -1,5 +1,7 @@
-from sqlalchemy import Column, String, DateTime, ForeignKey
-from datetime import datetime, timezone
+from datetime import UTC, datetime
+
+from sqlalchemy import Column, DateTime, ForeignKey, String
+
 from src.repository.database import Base
 
 
@@ -9,5 +11,5 @@ class ExpenseCategoryAssociation(Base):
 
     expense_uuid = Column(String(32), ForeignKey("expenses.uuid"), primary_key=True)
     category_uuid = Column(String(32), ForeignKey("categories.uuid"), primary_key=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
+    created_at = Column(DateTime, default=lambda: datetime.now(UTC), nullable=False)
 

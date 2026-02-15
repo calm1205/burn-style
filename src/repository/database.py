@@ -1,8 +1,10 @@
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
 import os
+from collections.abc import Generator
+from pathlib import Path
+
 from dotenv import load_dotenv
+from sqlalchemy import create_engine
+from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 # .envファイルから環境変数を読み込む
 load_dotenv()
@@ -14,20 +16,18 @@ def get_database_url() -> str:
     if database_url is None:
         raise ValueError(
             "DATABASE_URL environment variable is not set. "
-            "Please set it in your .env file or environment."
+            "Please set it in your .env file or environment.",
         )
 
     # Dockerコンテナ内で実行されているかどうかを判断
     # /appディレクトリが存在し、かつ/.dockerenvファイルが存在する場合はDockerコンテナ内
-    is_docker = os.path.exists("/.dockerenv") or os.path.exists("/app")
-    
+    is_docker = Path("/.dockerenv").exists() or Path("/app").exists()
+
     # ホストマシンから実行する場合のみ、ホスト名をlocalhostに変更
     # Dockerコンテナ内では"db"、ホストマシンからは"localhost"を使用
-    if not is_docker and "://" in database_url:
-        # DATABASE_URLがpostgresql://user:pass@db/dbnameの形式の場合
-        if "@db/" in database_url or "@db:" in database_url:
-            # ホストマシンから実行する場合、dbをlocalhostに置き換え
-            database_url = database_url.replace("@db/", "@localhost/").replace("@db:", "@localhost:")
+    if not is_docker and "://" in database_url and ("@db/" in database_url or "@db:" in database_url):
+        # ホストマシンから実行する場合、dbをlocalhostに置き換え
+        database_url = database_url.replace("@db/", "@localhost/").replace("@db:", "@localhost:")
 
     return database_url
 
@@ -37,10 +37,11 @@ DATABASE_URL = get_database_url()
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base()
+class Base(DeclarativeBase):
+    pass
 
 
-def get_db():
+def get_db() -> Generator[Session]:
     """データベースセッションを取得する依存性注入用の関数"""
     db = SessionLocal()
     try:

@@ -1,11 +1,18 @@
-.PHONY: help ruff migrate upgrade downgrade revision seed db-clear db-reset db-connect upgrade-local downgrade-local revision-local
+.PHONY: help ruff mypy migrate upgrade downgrade revision seed db-clear db-reset db-connect upgrade-local downgrade-local revision-local
 
 help: ## このヘルプメッセージを表示
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 
+mypy: ## mypyで型チェックを実行
+	uv run mypy .
+
 ruff: ## ruffで自動修正可能な問題を修正
 	uv run ruff check --fix .
+
+lint: ## mypy & ruff
+	make mypy
+	make ruff
 
 upgrade: ## データベースを最新バージョンにアップグレード
 	uv run alembic upgrade head
