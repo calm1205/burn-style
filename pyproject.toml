@@ -75,7 +75,8 @@ select = [
 
 [tool.mypy]
 strict = true
-exclude = ["scripts/"]
+explicit_package_bases = true
+warn_unreachable = true
 
 [tool.pyright]
 venvPath = "."
