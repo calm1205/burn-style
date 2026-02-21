@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.api import auth_router, private_router, router
+from src.api import auth_router, router
 
 app = FastAPI(title="Finance API", version="1.0.0")
 
@@ -17,4 +17,3 @@ app.add_middleware(
 # ルーターを登録
 app.include_router(router)
 app.include_router(auth_router)
-app.include_router(private_router)
