@@ -22,6 +22,9 @@ dev = [
     "ruff>=0.14.8",
 ]
 
+[tool.uv]
+package = true
+
 [tool.ruff]
 line-length = 120
 
