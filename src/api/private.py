@@ -3,7 +3,9 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
+from src.api.deps import get_current_user
 from src.model.category import Category
+from src.model.user import User
 from src.repository.category_repository import (
     bulk_create_categories,
     delete_all_categories,
@@ -28,6 +30,9 @@ SEED_CATEGORY_NAMES = [
 
 
 @private_router.post("/categories/seed", response_model=list[CategoryResponse])
-def seed_categories(db: Annotated[Session, Depends(get_db)]) -> list[Category]:
+def seed_categories(
+    _user: Annotated[User, Depends(get_current_user)],
+    db: Annotated[Session, Depends(get_db)],
+) -> list[Category]:
     delete_all_categories(db)
     return bulk_create_categories(db, SEED_CATEGORY_NAMES)

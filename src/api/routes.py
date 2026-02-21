@@ -3,7 +3,9 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
+from src.api.deps import get_current_user
 from src.model.category import Category
+from src.model.user import User
 from src.repository.category_repository import get_all_categories
 from src.repository.database import get_db
 from src.schema.category import CategoryResponse
@@ -22,5 +24,8 @@ async def health_check() -> dict[str, str]:
 
 
 @router.get("/categories", response_model=list[CategoryResponse])
-def get_categories(db: Annotated[Session, Depends(get_db)]) -> list[Category]:
+def get_categories(
+    _user: Annotated[User, Depends(get_current_user)],
+    db: Annotated[Session, Depends(get_db)],
+) -> list[Category]:
     return get_all_categories(db)
