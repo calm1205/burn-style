@@ -1,7 +1,7 @@
 services:
   api:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
     container_name: finance_api
     command: uv run uvicorn src.main:app --host 0.0.0.0 --port ${API_PORT} --reload
@@ -12,24 +12,24 @@ services:
     depends_on:
       - db
     volumes:
-      - ./alembic:/app/alembic
+      - ./backend/alembic:/app/alembic
     develop:
       watch:
         - action: sync
-          path: ./src
+          path: ./backend/src
           target: /app/src
         - action: sync
-          path: ./pyproject.toml
+          path: ./backend/pyproject.toml
           target: /app/pyproject.toml
         - action: sync
-          path: ./uv.lock
+          path: ./backend/uv.lock
           target: /app/uv.lock
         - action: rebuild
-          path: Dockerfile
+          path: ./backend/Dockerfile
 
   db:
     build:
-      context: .
+      context: ./db
       dockerfile: Dockerfile.db
     container_name: finance_db
     env_file:
