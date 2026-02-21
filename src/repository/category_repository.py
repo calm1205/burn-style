@@ -25,7 +25,7 @@ def create_category(db: Session, name: str) -> Category:
 
 
 def delete_all_categories(db: Session) -> None:
-    """すべてのカテゴリを削除する（関連する中間テーブルも削除）"""
+    """すべてのカテゴリを削除する(関連する中間テーブルも削除)"""
     db.query(ExpenseCategoryAssociation).delete()
     db.query(Category).delete()
 
