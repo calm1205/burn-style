@@ -1,6 +1,7 @@
-.PHONY: help ruff mypy migrate upgrade downgrade revision seed db-clear db-reset db-connect upgrade-local downgrade-local revision-local upgrade-prod seed-prod db-clear-prod db-reset-prod
+.PHONY: help ruff mypy biome lint migrate upgrade downgrade revision seed db-clear db-reset db-connect upgrade-local downgrade-local revision-local upgrade-prod seed-prod db-clear-prod db-reset-prod
 
 BACKEND_DIR = backend
+FRONTEND_DIR = frontend
 
 help: ## このヘルプメッセージを表示
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
@@ -12,9 +13,13 @@ mypy: ## mypyで型チェックを実行
 ruff: ## ruffで自動修正可能な問題を修正
 	cd $(BACKEND_DIR) && uv run ruff check --fix .
 
-lint: ## mypy & ruff
+biome: ## biomeでフロントエンドのlint・formatチェックを実行
+	cd $(FRONTEND_DIR) && npx biome check .
+
+lint: ## backend(mypy & ruff) + frontend(biome)
 	make mypy
 	make ruff
+	make biome
 
 upgrade: ## データベースを最新バージョンにアップグレード
 	cd $(BACKEND_DIR) && uv run alembic upgrade head
