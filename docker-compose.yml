@@ -27,6 +27,24 @@ services:
         - action: rebuild
           path: ./backend/Dockerfile
 
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: finance_web
+    ports:
+      - "5173:5173"
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend/src
+          target: /app/src
+        - action: sync
+          path: ./frontend/index.html
+          target: /app/index.html
+        - action: rebuild
+          path: ./frontend/package.json
+
   db:
     build:
       context: ./db
