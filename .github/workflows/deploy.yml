@@ -25,7 +25,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
-          python-version-file: ".python-version"
+          python-version-file: "backend/.python-version"
 
       - name: Install Vercel CLI
         run: npm install -g vercel
