@@ -11,20 +11,10 @@ from src.repository.category_repository import get_all_categories
 from src.repository.database import get_db
 from src.schema.category import CategoryResponse
 
-router = APIRouter()
+category_router = APIRouter()
 
 
-@router.get("/")
-async def root() -> dict[str, str]:
-    return {"message": "Finance API is running"}
-
-
-@router.get("/health")
-async def health_check() -> dict[str, str]:
-    return {"status": "healthy"}
-
-
-@router.get("/categories")
+@category_router.get("/categories")
 def get_categories(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
