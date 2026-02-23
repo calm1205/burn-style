@@ -22,7 +22,7 @@ def get_current_user(
     try:
         payload = decode_access_token(credentials.credentials)
     except Exception:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")  # noqa: B904
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token") from None
 
     user_uuid = payload.get("sub")
     if not isinstance(user_uuid, str):
