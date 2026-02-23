@@ -22,6 +22,6 @@ def get_webauthn_rp_name() -> str:
     return os.getenv("WEBAUTHN_RP_NAME", "Finance API")
 
 
-def get_webauthn_origin() -> str:
-    """WebAuthnのオリジンを取得"""
-    return os.getenv("WEBAUTHN_ORIGIN", "http://localhost:9999")
+def get_frontend_origin() -> str:
+    """フロントエンドのオリジンを取得"""
+    return os.getenv("FRONTEND_ORIGIN", "http://localhost:5173")

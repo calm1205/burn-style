@@ -14,7 +14,7 @@ from webauthn import (
 )
 from webauthn.helpers.structs import PublicKeyCredentialDescriptor
 
-from src.config import get_webauthn_origin, get_webauthn_rp_id, get_webauthn_rp_name
+from src.config import get_frontend_origin, get_webauthn_rp_id, get_webauthn_rp_name
 from src.repository.database import get_db
 from src.repository.user_repository import create_user, get_user_by_username
 from src.repository.webauthn_repository import (
@@ -76,7 +76,7 @@ def register_verify(
             credential=body.credential,
             expected_challenge=challenge,
             expected_rp_id=get_webauthn_rp_id(),
-            expected_origin=get_webauthn_origin(),
+            expected_origin=get_frontend_origin(),
         )
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
@@ -158,7 +158,7 @@ def login_verify(
             credential=body.credential,
             expected_challenge=challenge,
             expected_rp_id=get_webauthn_rp_id(),
-            expected_origin=get_webauthn_origin(),
+            expected_origin=get_frontend_origin(),
             credential_public_key=stored_credential.credential_public_key,  # type: ignore[arg-type]
             credential_current_sign_count=stored_credential.sign_count,  # type: ignore[arg-type]
         )

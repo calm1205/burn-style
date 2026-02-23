@@ -1,17 +1,15 @@
-import os
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.api import auth_router, router
+from src.config import get_frontend_origin
 
 app = FastAPI(title="Finance API", version="1.0.0")
 
 # CORS設定
-_cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:5173").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=_cors_origins,
+    allow_origins=[get_frontend_origin()],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
