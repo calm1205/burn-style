@@ -1,23 +1,23 @@
-import { type SubmitEvent, useState } from "react";
-import { login } from "../lib/webauthn";
+import { type SubmitEvent, useState } from "react"
+import { login } from "../lib/webauthn"
 
 const LoginPage = () => {
-  const [username, setUsername] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [username, setUsername] = useState("")
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+    e.preventDefault()
+    setError("")
+    setLoading(true)
 
     try {
-      const result = await login(username);
-      localStorage.setItem("access_token", result.access_token);
+      const result = await login(username)
+      localStorage.setItem("access_token", result.access_token)
     } catch (err) {
-      setError(err instanceof Error ? err.message : "ログインに失敗しました");
+      setError(err instanceof Error ? err.message : "ログインに失敗しました")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
@@ -47,7 +47,7 @@ const LoginPage = () => {
         {error && <p className="text-center text-sm text-red-600">{error}</p>}
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default LoginPage;
+export default LoginPage
