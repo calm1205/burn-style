@@ -4,8 +4,8 @@ import { defineConfig } from "vite";
 
 // https://vite.dev/config/
 export default defineConfig({
-	plugins: [tailwindcss(), react()],
-	server: {
-		host: true,
-	},
+  plugins: [tailwindcss(), react()],
+  server: {
+    host: true,
+  },
 });

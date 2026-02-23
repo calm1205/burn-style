@@ -6,9 +6,9 @@ import App from "./App.tsx";
 
 const root = document.getElementById("root") as HTMLElement;
 createRoot(root).render(
-	<StrictMode>
-		<Theme>
-			<App />
-		</Theme>
-	</StrictMode>,
+  <StrictMode>
+    <Theme>
+      <App />
+    </Theme>
+  </StrictMode>,
 );
