@@ -18,7 +18,9 @@ dependencies = [
 [dependency-groups]
 dev = [
     "alembic>=1.17.2",
+    "httpx>=0.28.1",
     "mypy>=1.19.1",
+    "pytest>=9.0.2",
     "ruff>=0.14.8",
 ]
 
@@ -78,6 +80,7 @@ select = [
 
 [tool.ruff.lint.per-file-ignores]
 "scripts/**" = ["T201"]
+"tests/**" = ["S101", "PLR2004"]
 
 [tool.mypy]
 strict = true
