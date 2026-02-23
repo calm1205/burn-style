@@ -1,4 +1,4 @@
-.PHONY: help ruff mypy biome lint migrate upgrade downgrade revision seed db-clear db-reset db-connect upgrade-local downgrade-local revision-local upgrade-prod seed-prod db-clear-prod db-reset-prod
+.PHONY: help ruff mypy biome lint test-backend migrate upgrade downgrade revision seed db-clear db-reset db-connect upgrade-local downgrade-local revision-local upgrade-prod seed-prod db-clear-prod db-reset-prod
 
 BACKEND_DIR = backend
 FRONTEND_DIR = frontend
@@ -20,6 +20,9 @@ lint: ## backend(mypy & ruff) + frontend(biome)
 	make mypy
 	make ruff
 	make biome
+
+test-backend: ## backendのテストを実行
+	cd $(BACKEND_DIR) && uv run pytest -v
 
 upgrade: ## データベースを最新バージョンにアップグレード
 	cd $(BACKEND_DIR) && uv run alembic upgrade head

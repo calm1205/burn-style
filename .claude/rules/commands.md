@@ -13,6 +13,11 @@
 | `make ruff` | ruff自動修正 |
 | `make biome` | Biomeチェック（frontend） |
 
+## テスト
+| コマンド | 説明 |
+|---------|------|
+| `make test-backend` | backendのテスト実行 |
+
 ## データベース（ローカル）
 | コマンド | 説明 |
 |---------|------|
