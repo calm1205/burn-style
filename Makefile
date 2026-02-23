@@ -1,4 +1,4 @@
-.PHONY: help ruff mypy biome lint test-backend migrate upgrade downgrade revision seed db-clear db-reset db-connect upgrade-local downgrade-local revision-local upgrade-prod seed-prod db-clear-prod db-reset-prod
+.PHONY: help ruff mypy biome lint test-backend migrate upgrade revision seed db-clear db-reset db-connect upgrade-local downgrade-local revision-local upgrade-prod seed-prod db-clear-prod db-reset-prod
 
 BACKEND_DIR = backend
 FRONTEND_DIR = frontend
@@ -27,9 +27,6 @@ test-backend: ## backendのテストを実行
 upgrade: ## データベースを最新バージョンにアップグレード
 	cd $(BACKEND_DIR) && uv run alembic upgrade head
 
-downgrade: ## データベースを1つ前のバージョンにダウングレード
-	cd $(BACKEND_DIR) && uv run alembic downgrade -1
-
 MESSAGE ?= "auto migration"
 revision: ## 新しいマイグレーションファイルを作成（使用例: make revision MESSAGE="create table"）
 	cd $(BACKEND_DIR) && uv run alembic revision --autogenerate -m "$(MESSAGE)"
@@ -37,15 +34,11 @@ revision: ## 新しいマイグレーションファイルを作成（使用例:
 seed: ## User テーブルに seed データを投入
 	cd $(BACKEND_DIR) && uv run python scripts/seed_all.py
 
-db-clear: ## データベースを完全にリセット
-	rm -f $(BACKEND_DIR)/alembic/versions/*
-	docker compose down -v
+db-clear: ## データベースの全テーブルを削除
+	cd $(BACKEND_DIR) && uv run alembic downgrade base
 
-db-reset: ## データベースを完全にリセット
+db-reset: ## データベースをリセットしてseedデータを投入
 	make db-clear
-	docker compose up -d db
-	sleep 1
-	make revision MESSAGE="initial"
 	make upgrade
 	make seed
 
