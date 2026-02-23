@@ -1,7 +1,7 @@
 import { post } from "./api"
 
 interface RegisterOptionsResponse {
-  options: PublicKeyCredentialCreationOptions
+  options: PublicKeyCredentialCreationOptionsJSON
 }
 
 interface RegisterVerifyResponse {
@@ -9,7 +9,7 @@ interface RegisterVerifyResponse {
 }
 
 interface LoginOptionsResponse {
-  options: PublicKeyCredentialRequestOptions
+  options: PublicKeyCredentialRequestOptionsJSON
 }
 
 interface LoginVerifyResponse {
@@ -27,7 +27,9 @@ export const register = async (
     },
   )
 
-  const credential = await navigator.credentials.create({ publicKey: options })
+  const credential = await navigator.credentials.create({
+    publicKey: PublicKeyCredential.parseCreationOptionsFromJSON(options),
+  })
   if (!credential) {
     throw new Error("パスキーの登録がキャンセルされました")
   }
@@ -45,7 +47,9 @@ export const login = async (username: string): Promise<LoginVerifyResponse> => {
     username,
   })
 
-  const credential = await navigator.credentials.get({ publicKey: options })
+  const credential = await navigator.credentials.get({
+    publicKey: PublicKeyCredential.parseRequestOptionsFromJSON(options),
+  })
   if (!credential) {
     throw new Error("認証がキャンセルされました")
   }
