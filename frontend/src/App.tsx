@@ -1,8 +1,8 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router"
-import LoginPage from "./pages/LoginPage"
-import SignupPage from "./pages/SignupPage"
+import { LoginPage } from "./pages/LoginPage"
+import { SignupPage } from "./pages/SignupPage"
 
-const App = () => {
+export const App = () => {
   return (
     <BrowserRouter>
       <Routes>
@@ -13,5 +13,3 @@ const App = () => {
     </BrowserRouter>
   )
 }
-
-export default App

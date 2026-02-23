@@ -2,7 +2,7 @@ import { type SubmitEvent, useState } from "react"
 import { Link, useNavigate } from "react-router"
 import { register } from "../lib/webauthn"
 
-const SignupPage = () => {
+export const SignupPage = () => {
   const [username, setUsername] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
@@ -58,5 +58,3 @@ const SignupPage = () => {
     </div>
   )
 }
-
-export default SignupPage

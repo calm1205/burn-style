@@ -2,7 +2,7 @@ import { type SubmitEvent, useState } from "react"
 import { Link } from "react-router"
 import { login } from "../lib/webauthn"
 
-const LoginPage = () => {
+export const LoginPage = () => {
   const [username, setUsername] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
@@ -57,5 +57,3 @@ const LoginPage = () => {
     </div>
   )
 }
-
-export default LoginPage
