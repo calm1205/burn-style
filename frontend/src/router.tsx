@@ -3,9 +3,9 @@ import { AppLayout } from "./components/AppLayout"
 import { ProtectedRoute } from "./components/ProtectedRoute"
 import { CategoriesPage } from "./pages/CategoriesPage"
 import { DashboardPage } from "./pages/DashboardPage"
+import { ExpensesPage } from "./pages/ExpensesPage"
 import { LoginPage } from "./pages/LoginPage"
 import { SignupPage } from "./pages/SignupPage"
-import { SubscriptionTemplatesPage } from "./pages/SubscriptionTemplatesPage"
 
 export const router = createBrowserRouter([
   { path: "/signup", element: <SignupPage /> },
@@ -18,7 +18,7 @@ export const router = createBrowserRouter([
     ),
     children: [
       { path: "/dashboard", element: <DashboardPage /> },
-      { path: "/subscriptions", element: <SubscriptionTemplatesPage /> },
+      { path: "/expenses", element: <ExpensesPage /> },
       { path: "/categories", element: <CategoriesPage /> },
     ],
   },

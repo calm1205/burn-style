@@ -28,28 +28,24 @@ interface CategoryUpdate {
   name?: string
 }
 
-interface SubscriptionTemplate {
+interface ExpenseResponse {
   uuid: string
   name: string
   amount: number
-  category: CategoryResponse
   created_at: string
   updated_at: string
+  deleted_at: string | null
+  categories: CategoryResponse[]
 }
 
-interface SubscriptionTemplateCreate {
+interface ExpenseCreate {
   name: string
   amount: number
-  category_uuid: string
+  category_uuids: string[]
 }
 
-interface SubscriptionTemplateUpdate {
+interface ExpenseUpdate {
   name?: string
   amount?: number
-  category_uuid?: string
-}
-
-interface BulkRecordResponse {
-  created_count: number
-  message: string
+  category_uuids?: string[]
 }

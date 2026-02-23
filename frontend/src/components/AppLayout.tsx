@@ -5,7 +5,7 @@ import { LayoutPhone } from "./LayoutPhone"
 
 const navItems = [
   { label: "ダッシュボード", to: "/dashboard" },
-  { label: "記帳", to: "/subscriptions" },
+  { label: "記帳", to: "/expenses" },
   { label: "カテゴリ", to: "/categories" },
 ]
 

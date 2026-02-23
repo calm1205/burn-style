@@ -121,48 +121,25 @@ class API {
     return this.request<void>("DELETE", `/categories/${uuid}`)
   }
 
-  // --- サブスクリプションテンプレート ---
+  // --- 支出 ---
 
-  async getSubscriptionTemplates(): Promise<SubscriptionTemplate[]> {
-    return this.request<SubscriptionTemplate[]>(
-      "GET",
-      "/subscription-templates",
-    )
+  async getExpenses(): Promise<ExpenseResponse[]> {
+    return this.request<ExpenseResponse[]>("GET", "/expenses")
   }
 
-  async createSubscriptionTemplate(
-    data: SubscriptionTemplateCreate,
-  ): Promise<SubscriptionTemplate> {
-    return this.request<SubscriptionTemplate>(
-      "POST",
-      "/subscription-templates",
-      data,
-    )
+  async createExpense(data: ExpenseCreate): Promise<ExpenseResponse> {
+    return this.request<ExpenseResponse>("POST", "/expenses", data)
   }
 
-  async updateSubscriptionTemplate(
+  async updateExpense(
     uuid: string,
-    data: SubscriptionTemplateUpdate,
-  ): Promise<SubscriptionTemplate> {
-    return this.request<SubscriptionTemplate>(
-      "PATCH",
-      `/subscription-templates/${uuid}`,
-      data,
-    )
+    data: ExpenseUpdate,
+  ): Promise<ExpenseResponse> {
+    return this.request<ExpenseResponse>("PATCH", `/expenses/${uuid}`, data)
   }
 
-  async deleteSubscriptionTemplate(uuid: string): Promise<void> {
-    return this.request<void>("DELETE", `/subscription-templates/${uuid}`)
-  }
-
-  async bulkRecord(templateUuids: string[]): Promise<BulkRecordResponse> {
-    return this.request<BulkRecordResponse>(
-      "POST",
-      "/subscription-templates/bulk-record",
-      {
-        template_uuids: templateUuids,
-      },
-    )
+  async deleteExpense(uuid: string): Promise<void> {
+    return this.request<void>("DELETE", `/expenses/${uuid}`)
   }
 }
 
