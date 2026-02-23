@@ -39,11 +39,11 @@ from src.service.jwt_service import create_access_token
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-@auth_router.post("/register/options", response_model=RegisterOptionsResponse)
+@auth_router.post("/register/options")
 def register_options(
     body: RegisterOptionsRequest,
     db: Annotated[Session, Depends(get_db)],
-) -> dict[str, Any]:
+) -> RegisterOptionsResponse:
     """登録オプション生成"""
     existing = get_user_by_username(db, body.username)
     if existing is not None:
@@ -58,14 +58,14 @@ def register_options(
     challenge_store.save(body.username, options.challenge)
 
     options_json: dict[str, Any] = json.loads(options_to_json(options))
-    return {"options": options_json}
+    return RegisterOptionsResponse(options=options_json)
 
 
-@auth_router.post("/register/verify", response_model=RegisterVerifyResponse)
+@auth_router.post("/register/verify")
 def register_verify(
     body: RegisterVerifyRequest,
     db: Annotated[Session, Depends(get_db)],
-) -> dict[str, str]:
+) -> RegisterVerifyResponse:
     """登録検証 → ユーザー+クレデンシャル作成"""
     challenge = challenge_store.get(body.username)
     if challenge is None:
@@ -96,14 +96,14 @@ def register_verify(
         transports=transports_json,
     )
 
-    return {"message": "Registration successful"}
+    return RegisterVerifyResponse(message="Registration successful")
 
 
-@auth_router.post("/login/options", response_model=LoginOptionsResponse)
+@auth_router.post("/login/options")
 def login_options(
     body: LoginOptionsRequest,
     db: Annotated[Session, Depends(get_db)],
-) -> dict[str, Any]:
+) -> LoginOptionsResponse:
     """認証オプション生成"""
     user = get_user_by_username(db, body.username)
     if user is None:
@@ -127,14 +127,14 @@ def login_options(
     challenge_store.save(body.username, options.challenge)
 
     options_json: dict[str, Any] = json.loads(options_to_json(options))
-    return {"options": options_json}
+    return LoginOptionsResponse(options=options_json)
 
 
-@auth_router.post("/login/verify", response_model=LoginVerifyResponse)
+@auth_router.post("/login/verify")
 def login_verify(
     body: LoginVerifyRequest,
     db: Annotated[Session, Depends(get_db)],
-) -> dict[str, str]:
+) -> LoginVerifyResponse:
     """認証検証 → JWTトークン返却"""
     challenge = challenge_store.get(body.username)
     if challenge is None:
@@ -169,4 +169,4 @@ def login_verify(
 
     access_token = create_access_token(user.uuid)  # type: ignore[arg-type]
 
-    return {"access_token": access_token, "token_type": "bearer"}
+    return LoginVerifyResponse(access_token=access_token, token_type="bearer")

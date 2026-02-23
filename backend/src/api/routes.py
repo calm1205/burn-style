@@ -4,7 +4,6 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from src.api.deps import get_current_user
-from src.model.category import Category
 from src.model.user import User
 from src.repository.category_repository import get_all_categories
 from src.repository.database import get_db
@@ -23,9 +22,10 @@ async def health_check() -> dict[str, str]:
     return {"status": "healthy"}
 
 
-@router.get("/categories", response_model=list[CategoryResponse])
+@router.get("/categories")
 def get_categories(
     _user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
-) -> list[Category]:
-    return get_all_categories(db)
+) -> list[CategoryResponse]:
+    categories = get_all_categories(db)
+    return [CategoryResponse.model_validate(c) for c in categories]
