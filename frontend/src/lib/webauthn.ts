@@ -9,7 +9,7 @@ interface LoginVerifyResponse {
   token_type: string
 }
 
-export async function login(username: string): Promise<LoginVerifyResponse> {
+export const login = async (username: string): Promise<LoginVerifyResponse> => {
   const { options } = await post<LoginOptionsResponse>("/auth/login/options", {
     username,
   })

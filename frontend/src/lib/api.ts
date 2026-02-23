@@ -1,6 +1,6 @@
 const BASE_URL = `http://localhost:${import.meta.env.VITE_API_PORT ?? "9999"}`
 
-export async function post<T>(path: string, body: unknown): Promise<T> {
+export const post = async <T>(path: string, body: unknown): Promise<T> => {
   const response = await fetch(`${BASE_URL}${path}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

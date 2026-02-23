@@ -1,6 +1,6 @@
 import LoginPage from "./pages/LoginPage"
 
-function App() {
+const App = () => {
   return <LoginPage />
 }
 
