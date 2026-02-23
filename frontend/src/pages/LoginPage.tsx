@@ -1,8 +1,10 @@
 import { type SubmitEvent, useState } from "react"
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"
 import { api } from "../lib/api"
+import { STORAGE_KEYS } from "../lib/constants"
 
 export const LoginPage = () => {
+  const navigate = useNavigate()
   const [username, setUsername] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
@@ -14,7 +16,8 @@ export const LoginPage = () => {
 
     try {
       const result = await api.login(username)
-      localStorage.setItem("access_token", result.access_token)
+      localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, result.access_token)
+      navigate("/dashboard")
     } catch (err) {
       setError(err instanceof Error ? err.message : "ログインに失敗しました")
     } finally {
