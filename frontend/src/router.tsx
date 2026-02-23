@@ -1,5 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router"
+import { AppLayout } from "./components/AppLayout"
 import { ProtectedRoute } from "./components/ProtectedRoute"
+import { CategoriesPage } from "./pages/CategoriesPage"
 import { DashboardPage } from "./pages/DashboardPage"
 import { LoginPage } from "./pages/LoginPage"
 import { SignupPage } from "./pages/SignupPage"
@@ -9,20 +11,16 @@ export const router = createBrowserRouter([
   { path: "/signup", element: <SignupPage /> },
   { path: "/login", element: <LoginPage /> },
   {
-    path: "/dashboard",
     element: (
       <ProtectedRoute>
-        <DashboardPage />
+        <AppLayout />
       </ProtectedRoute>
     ),
-  },
-  {
-    path: "/subscriptions",
-    element: (
-      <ProtectedRoute>
-        <SubscriptionTemplatesPage />
-      </ProtectedRoute>
-    ),
+    children: [
+      { path: "/dashboard", element: <DashboardPage /> },
+      { path: "/subscriptions", element: <SubscriptionTemplatesPage /> },
+      { path: "/categories", element: <CategoriesPage /> },
+    ],
   },
   { path: "*", element: <Navigate to="/dashboard" replace /> },
 ])
