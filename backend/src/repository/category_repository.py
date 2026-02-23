@@ -1,3 +1,4 @@
+from __future__ import annotations
 
 from sqlalchemy.orm import Session
 
@@ -38,3 +39,17 @@ def bulk_create_categories(db: Session, user_uuid: str, names: list[str]) -> lis
     for category in categories:
         db.refresh(category)
     return categories
+
+
+def update_category(db: Session, category: Category, name: str) -> Category:
+    """カテゴリ名を更新する"""
+    category.name = name  # type: ignore[assignment]
+    db.commit()
+    db.refresh(category)
+    return category
+
+
+def delete_category(db: Session, category: Category) -> None:
+    """カテゴリを物理削除する"""
+    db.delete(category)
+    db.commit()
