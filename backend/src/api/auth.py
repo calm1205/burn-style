@@ -169,4 +169,4 @@ def login_verify(
 
     access_token = create_access_token(user.uuid)  # type: ignore[arg-type]
 
-    return LoginVerifyResponse(access_token=access_token, token_type="bearer")
+    return LoginVerifyResponse(access_token=access_token, token_type="bearer")  # noqa: S106
