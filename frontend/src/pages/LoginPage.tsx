@@ -1,6 +1,6 @@
 import { type SubmitEvent, useState } from "react"
 import { Link } from "react-router"
-import { login } from "../lib/webauthn"
+import { api } from "../lib/api"
 
 export const LoginPage = () => {
   const [username, setUsername] = useState("")
@@ -13,7 +13,7 @@ export const LoginPage = () => {
     setLoading(true)
 
     try {
-      const result = await login(username)
+      const result = await api.login(username)
       localStorage.setItem("access_token", result.access_token)
     } catch (err) {
       setError(err instanceof Error ? err.message : "ログインに失敗しました")

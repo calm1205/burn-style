@@ -1,6 +1,6 @@
 import { type SubmitEvent, useState } from "react"
 import { Link, useNavigate } from "react-router"
-import { register } from "../lib/webauthn"
+import { api } from "../lib/api"
 
 export const SignupPage = () => {
   const [username, setUsername] = useState("")
@@ -14,7 +14,7 @@ export const SignupPage = () => {
     setLoading(true)
 
     try {
-      await register(username)
+      await api.register(username)
       navigate("/login")
     } catch (err) {
       setError(err instanceof Error ? err.message : "登録に失敗しました")
