@@ -12,7 +12,7 @@ from webauthn import (
     verify_authentication_response,
     verify_registration_response,
 )
-from webauthn.helpers.structs import PublicKeyCredentialDescriptor
+from webauthn.helpers.structs import AuthenticatorTransport, PublicKeyCredentialDescriptor
 
 from src.config import get_frontend_origin, get_webauthn_rp_id, get_webauthn_rp_name
 from src.repository.database import get_db
@@ -114,7 +114,9 @@ def login_options(
     allow_credentials = [
         PublicKeyCredentialDescriptor(
             id=cred.credential_id,  # type: ignore[arg-type]
-            transports=json.loads(cred.transports) if cred.transports else None,  # type: ignore[arg-type]
+            transports=[AuthenticatorTransport(t) for t in json.loads(cred.transports)]  # type: ignore[arg-type]
+            if cred.transports
+            else None,
         )
         for cred in credentials
     ]
