@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import UTC, datetime
 
 from sqlalchemy.orm import Session
@@ -46,17 +48,16 @@ def create_expense(
     return expense
 
 
-def soft_delete_expense(db: Session, uuid: str, user_uuid: str) -> Expense | None:
+def update_expense_categories(db: Session, expense: Expense, user_uuid: str, category_uuids: list[str]) -> None:
+    """支出のカテゴリを更新する"""
+    categories = db.query(Category).filter(
+        Category.uuid.in_(category_uuids),
+        Category.user_uuid == user_uuid,
+    ).all()
+    expense.categories = categories
+
+
+def soft_delete_expense(db: Session, expense: Expense) -> None:
     """支出を論理削除する"""
-    expense = db.query(Expense).filter(
-        Expense.uuid == uuid,
-        Expense.user_uuid == user_uuid,
-        Expense.deleted_at.is_(None),
-    ).first()
-
-    if expense:
-        expense.deleted_at = datetime.now(UTC)  # type: ignore[assignment]
-        db.commit()
-        db.refresh(expense)
-
-    return expense
+    expense.deleted_at = datetime.now(UTC)  # type: ignore[assignment]
+    db.commit()

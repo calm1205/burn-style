@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -19,6 +21,12 @@ class ExpenseResponse(BaseModel):
 
 class ExpenseCreate(BaseModel):
     name: str
-    amount: int = Field(gt=0, description="正の整数のみ許可されます")
+    amount: int = Field(gt=0, description="正の整数のみ許可")
     category_uuids: list[str] = []
+
+
+class ExpenseUpdate(BaseModel):
+    name: str | None = None
+    amount: int | None = Field(default=None, gt=0, description="正の整数のみ許可")
+    category_uuids: list[str] | None = None
 
