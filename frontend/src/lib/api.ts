@@ -44,6 +44,10 @@ class API {
       throw new Error(error.detail ?? response.statusText)
     }
 
+    if (response.status === 204) {
+      return undefined as T
+    }
+
     return response.json() as Promise<T>
   }
 
@@ -95,6 +99,55 @@ class API {
       username,
       credential: credentialJson,
     })
+  }
+  // --- カテゴリ ---
+
+  async getCategories(): Promise<CategoryResponse[]> {
+    return this.request<CategoryResponse[]>("GET", "/categories")
+  }
+
+  // --- サブスクリプションテンプレート ---
+
+  async getSubscriptionTemplates(): Promise<SubscriptionTemplate[]> {
+    return this.request<SubscriptionTemplate[]>(
+      "GET",
+      "/subscription-templates",
+    )
+  }
+
+  async createSubscriptionTemplate(
+    data: SubscriptionTemplateCreate,
+  ): Promise<SubscriptionTemplate> {
+    return this.request<SubscriptionTemplate>(
+      "POST",
+      "/subscription-templates",
+      data,
+    )
+  }
+
+  async updateSubscriptionTemplate(
+    uuid: string,
+    data: SubscriptionTemplateUpdate,
+  ): Promise<SubscriptionTemplate> {
+    return this.request<SubscriptionTemplate>(
+      "PATCH",
+      `/subscription-templates/${uuid}`,
+      data,
+    )
+  }
+
+  async deleteSubscriptionTemplate(uuid: string): Promise<void> {
+    return this.request<void>("DELETE", `/subscription-templates/${uuid}`)
+  }
+
+  async bulkRecord(templateUuids: string[]): Promise<BulkRecordResponse> {
+    return this.request<BulkRecordResponse>(
+      "POST",
+      "/subscription-templates/bulk-record",
+      {
+        template_uuids: templateUuids,
+      },
+    )
   }
 }
 
