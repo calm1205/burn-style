@@ -20,6 +20,14 @@ interface CategoryResponse {
   name: string
 }
 
+interface CategoryCreate {
+  name: string
+}
+
+interface CategoryUpdate {
+  name?: string
+}
+
 interface SubscriptionTemplate {
   uuid: string
   name: string

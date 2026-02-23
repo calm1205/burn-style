@@ -106,6 +106,21 @@ class API {
     return this.request<CategoryResponse[]>("GET", "/categories")
   }
 
+  async createCategory(data: CategoryCreate): Promise<CategoryResponse> {
+    return this.request<CategoryResponse>("POST", "/categories", data)
+  }
+
+  async updateCategory(
+    uuid: string,
+    data: CategoryUpdate,
+  ): Promise<CategoryResponse> {
+    return this.request<CategoryResponse>("PATCH", `/categories/${uuid}`, data)
+  }
+
+  async deleteCategory(uuid: string): Promise<void> {
+    return this.request<void>("DELETE", `/categories/${uuid}`)
+  }
+
   // --- サブスクリプションテンプレート ---
 
   async getSubscriptionTemplates(): Promise<SubscriptionTemplate[]> {
