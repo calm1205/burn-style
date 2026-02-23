@@ -12,24 +12,31 @@ load_dotenv()
 
 from scripts.seed_categories import seed_categories  # noqa: E402
 from scripts.seed_expenses import seed_expenses  # noqa: E402
+from scripts.seed_user import seed_user  # noqa: E402
 
 
 def seed_all() -> None:
-    """Category、Expense テーブルに順番に seed データを投入"""
+    """User、Category、Expense テーブルに順番に seed データを投入"""
     print("=" * 60)
     print("シードデータの投入を開始します")
     print("=" * 60)
     print()
 
     try:
-        # 1. カテゴリを投入
-        print("[1/2] カテゴリの投入を開始します...")
+        # 1. ユーザーを投入
+        print("[1/3] ユーザーの投入を開始します...")
+        print("-" * 60)
+        seed_user()
+        print()
+
+        # 2. カテゴリを投入
+        print("[2/3] カテゴリの投入を開始します...")
         print("-" * 60)
         seed_categories()
         print()
 
-        # 2. エクスペンスを投入
-        print("[2/2] エクスペンスの投入を開始します...")
+        # 3. エクスペンスを投入
+        print("[3/3] エクスペンスの投入を開始します...")
         print("-" * 60)
         seed_expenses()
         print()
