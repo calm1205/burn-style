@@ -1,9 +1,9 @@
 services:
-  api:
+  backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: finance_api
+    container_name: finance_backend
     command: uv run uvicorn src.main:app --host 0.0.0.0 --port ${API_PORT} --reload
     env_file:
       - .env
@@ -27,11 +27,12 @@ services:
         - action: rebuild
           path: ./backend/Dockerfile
 
-  web:
+  frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: finance_web
+    container_name: finance_frontend
+    command: npx vite --host 0.0.0.0 --port 5173
     ports:
       - "5173:5173"
     develop:
