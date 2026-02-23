@@ -18,6 +18,9 @@
 - Viteプラグイン (`@tailwindcss/vite`) で統合
 - CSS-firstの設定（`tailwind.config.js` 不要）
 
+## コーディング規約
+- 関数定義はアロー関数 (`const fn = () => {}`) を使用（`function` 宣言は不可）
+
 ## ビルド
 - `tsc -b && vite build` でビルド
 - `vite` で開発サーバー起動
