@@ -1,3 +1,5 @@
+import { STORAGE_KEYS } from "./constants"
+
 class API {
   private static instance: API
   private baseUrl: string
@@ -17,7 +19,7 @@ class API {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     }
-    const token = localStorage.getItem("access_token")
+    const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN)
     if (token) {
       headers.Authorization = `Bearer ${token}`
     }
