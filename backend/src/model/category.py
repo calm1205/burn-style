@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String
+from sqlalchemy import Column, ForeignKey, String
 from sqlalchemy.orm import relationship
 
 from src.model.utils import generate_uuid_string
@@ -9,7 +9,10 @@ class Category(Base):
     __tablename__ = "categories"
 
     uuid = Column(String(32), primary_key=True, default=generate_uuid_string)
+    user_uuid = Column(String(32), ForeignKey("users.uuid"), nullable=False)
     name = Column(String, nullable=False)
+
+    user = relationship("User")
 
     # 多対多の関係
     expenses = relationship(

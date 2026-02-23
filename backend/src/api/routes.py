@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
@@ -24,8 +26,8 @@ async def health_check() -> dict[str, str]:
 
 @router.get("/categories")
 def get_categories(
-    _user: Annotated[User, Depends(get_current_user)],
+    user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> list[CategoryResponse]:
-    categories = get_all_categories(db)
+    categories = get_all_categories(db, str(user.uuid))
     return [CategoryResponse.model_validate(c) for c in categories]

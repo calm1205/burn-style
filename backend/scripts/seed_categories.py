@@ -12,6 +12,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 load_dotenv()
 
 from src.model import Category  # noqa: E402
+from src.model.user import User  # noqa: E402
 from src.repository.database import SessionLocal  # noqa: E402
 
 
@@ -19,6 +20,12 @@ def seed_categories() -> None:
     """Category テーブルに seed データを投入"""
     db: Session = SessionLocal()
     try:
+        # 最初のユーザーを取得
+        user = db.query(User).first()
+        if not user:
+            print("エラー: ユーザーが存在しません。先にユーザーを作成してください。")
+            return
+
         # seed データの定義
         category_names = [
             "食費",
@@ -34,7 +41,7 @@ def seed_categories() -> None:
         ]
 
         # カテゴリを作成
-        categories = [Category(name=name) for name in category_names]
+        categories = [Category(user_uuid=user.uuid, name=name) for name in category_names]
 
         # データを投入
         db.add_all(categories)

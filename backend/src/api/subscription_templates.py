@@ -47,7 +47,10 @@ def create_template(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> SubscriptionTemplateResponse:
-    category = db.query(Category).filter(Category.uuid == body.category_uuid).first()
+    category = db.query(Category).filter(
+        Category.uuid == body.category_uuid,
+        Category.user_uuid == user.uuid,
+    ).first()
     if not category:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Category not found")
 
@@ -80,7 +83,10 @@ def update_template(
 
     update_data = body.model_dump(exclude_unset=True)
     if "category_uuid" in update_data:
-        category = db.query(Category).filter(Category.uuid == update_data["category_uuid"]).first()
+        category = db.query(Category).filter(
+            Category.uuid == update_data["category_uuid"],
+            Category.user_uuid == user.uuid,
+        ).first()
         if not category:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Category not found")
 
@@ -131,7 +137,7 @@ def bulk_record(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No valid templates found")
 
     for t in templates:
-        expense = Expense(name=t.name, amount=t.amount)
+        expense = Expense(user_uuid=user.uuid, name=t.name, amount=t.amount)
         db.add(expense)
         db.flush()
         association = ExpenseCategoryAssociation(expense_uuid=expense.uuid, category_uuid=t.category_uuid)

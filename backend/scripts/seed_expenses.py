@@ -13,6 +13,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 load_dotenv()
 
 from src.model import Category, Expense  # noqa: E402
+from src.model.user import User  # noqa: E402
 from src.repository.database import SessionLocal  # noqa: E402
 
 
@@ -26,8 +27,14 @@ def seed_expenses() -> None:
     """Expense テーブルに seed データを投入"""
     db: Session = SessionLocal()
     try:
+        # 最初のユーザーを取得
+        user = db.query(User).first()
+        if not user:
+            print("エラー: ユーザーが存在しません。先にユーザーを作成してください。")
+            return
+
         # カテゴリを名前で取得(名前をキーとした辞書を作成)
-        categories = db.query(Category).all()
+        categories = db.query(Category).filter(Category.user_uuid == user.uuid).all()
         categories_dict: dict[str, Category] = {str(category.name): category for category in categories}
 
         if not categories_dict:
@@ -62,6 +69,7 @@ def seed_expenses() -> None:
         expenses = []
         for data in expense_data:
             expense = Expense(
+                user_uuid=user.uuid,
                 name=data["name"],
                 amount=data["amount"],
             )
