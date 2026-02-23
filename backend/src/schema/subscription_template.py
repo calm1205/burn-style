@@ -2,21 +2,20 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from src.schema.category import CategoryResponse
 
 
 class SubscriptionTemplateResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     uuid: str
     name: str
     amount: int
     category: CategoryResponse
     created_at: datetime
     updated_at: datetime
-
-    class Config:
-        from_attributes = True
 
 
 class SubscriptionTemplateCreate(BaseModel):

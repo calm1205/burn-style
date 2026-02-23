@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class RegisterOptionsRequest(BaseModel):
@@ -41,8 +41,7 @@ class LoginVerifyResponse(BaseModel):
 
 
 class UserResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     uuid: str
     username: str
-
-    class Config:
-        from_attributes = True

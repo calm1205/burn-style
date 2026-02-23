@@ -1,11 +1,13 @@
 from datetime import datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from src.schema.category import CategoryResponse
 
 
 class ExpenseResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     uuid: str
     name: str
     amount: int
@@ -13,9 +15,6 @@ class ExpenseResponse(BaseModel):
     updated_at: datetime
     deleted_at: datetime | None
     categories: list[CategoryResponse]
-
-    class Config:
-        from_attributes = True
 
 
 class ExpenseCreate(BaseModel):
