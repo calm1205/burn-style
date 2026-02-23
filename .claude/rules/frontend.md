@@ -21,6 +21,7 @@
 ## コーディング規約
 - 関数定義はアロー関数 (`const fn = () => {}`) を使用（`function` 宣言は不可）
 - 型定義は可能な限り `interface` を使用（`type` は union型等 `interface` で表現できない場合のみ）
+- named export に統一（`export default` は使用しない）
 
 ## ビルド
 - `tsc -b && vite build` でビルド
