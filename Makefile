@@ -41,7 +41,7 @@ seed: ## User テーブルに seed データを投入
 	cd $(BACKEND_DIR) && uv run python scripts/seed_all.py
 
 db-clear: ## データベースの全テーブルを削除
-	cd $(BACKEND_DIR) && uv run alembic downgrade base
+	docker compose exec db sh -c 'psql -U $$POSTGRES_USER $$POSTGRES_DB -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"'
 
 db-reset: ## データベースをリセットしてseedデータを投入
 	make db-clear
@@ -58,7 +58,7 @@ seed-prod: ## Neon本番DBにseedデータを投入
 	cd $(BACKEND_DIR) && VERCEL_ENV=production uv run python scripts/seed_all.py
 
 db-clear-prod: ## Neon本番DBの全テーブルを削除
-	cd $(BACKEND_DIR) && VERCEL_ENV=production uv run alembic downgrade base
+	cd $(BACKEND_DIR) && VERCEL_ENV=production uv run python -c "from src.repository.database import engine; from sqlalchemy import text; c=engine.connect(); c.execute(text('DROP SCHEMA public CASCADE')); c.execute(text('CREATE SCHEMA public')); c.commit(); c.close()"
 
 db-reset-prod: ## Neon本番DBをリセットしてseedデータを投入
 	make db-clear-prod
