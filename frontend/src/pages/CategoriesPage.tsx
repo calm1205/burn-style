@@ -1,5 +1,7 @@
+import { TokensIcon } from "@radix-ui/react-icons"
 import { type SubmitEvent, useCallback, useEffect, useState } from "react"
 import { api } from "../lib/api"
+import type { CategoryResponse } from "../lib/types"
 
 export const CategoriesPage = () => {
   const [categories, setCategories] = useState<CategoryResponse[]>([])
@@ -119,6 +121,7 @@ export const CategoriesPage = () => {
               </div>
             ) : (
               <>
+                <TokensIcon className="size-4 shrink-0 text-gray-400" />
                 <span className="flex-1">{c.name}</span>
                 <button
                   type="button"
