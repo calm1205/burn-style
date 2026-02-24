@@ -30,16 +30,14 @@ def seed_expenses() -> None:
         # 最初のユーザーを取得
         user = db.query(User).first()
         if not user:
-            print("エラー: ユーザーが存在しません。先にユーザーを作成してください。")
-            return
+            raise RuntimeError("ユーザーが存在しません。先にユーザーを作成してください。")
 
         # カテゴリを名前で取得(名前をキーとした辞書を作成)
         categories = db.query(Category).filter(Category.user_uuid == user.uuid).all()
         categories_dict: dict[str, Category] = {str(category.name): category for category in categories}
 
         if not categories_dict:
-            print("エラー: カテゴリが存在しません。先に seed_categories.py を実行してください。")
-            return
+            raise RuntimeError("カテゴリが存在しません。先にseed_categories.pyを実行してください。")
 
         # seed データの定義
         expense_data: list[ExpenseData] = [

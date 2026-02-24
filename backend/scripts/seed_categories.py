@@ -23,8 +23,7 @@ def seed_categories() -> None:
         # 最初のユーザーを取得
         user = db.query(User).first()
         if not user:
-            print("エラー: ユーザーが存在しません。先にユーザーを作成してください。")
-            return
+            raise RuntimeError("ユーザーが存在しません。先にユーザーを作成してください。")
 
         # seed データの定義
         category_names = [
