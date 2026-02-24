@@ -29,6 +29,12 @@ const request = async <T>(
     localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, newToken)
   }
 
+  if (response.status === 401) {
+    localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN)
+    window.location.href = "/login"
+    throw new Error("認証が切れました")
+  }
+
   if (!response.ok) {
     const error = await response
       .json()
