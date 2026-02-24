@@ -1,6 +1,6 @@
 import { STORAGE_KEYS } from "./constants"
 
-const baseUrl = `http://localhost:${import.meta.env.VITE_API_PORT ?? "9999"}`
+const baseUrl = import.meta.env.VITE_API_URL ?? "http://localhost:9999"
 
 const getHeaders = (): HeadersInit => {
   const headers: Record<string, string> = {
