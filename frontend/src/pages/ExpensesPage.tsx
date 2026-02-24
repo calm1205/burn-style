@@ -1,5 +1,6 @@
 import { type SubmitEvent, useCallback, useEffect, useState } from "react"
 import { api } from "../lib/api"
+import type { CategoryResponse, ExpenseResponse } from "../lib/types"
 
 export const ExpensesPage = () => {
   const [expenses, setExpenses] = useState<ExpenseResponse[]>([])

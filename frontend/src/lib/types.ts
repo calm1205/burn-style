@@ -1,34 +1,34 @@
-interface RegisterOptionsResponse {
+export interface RegisterOptionsResponse {
   options: PublicKeyCredentialCreationOptionsJSON
 }
 
-interface RegisterVerifyResponse {
+export interface RegisterVerifyResponse {
   message: string
 }
 
-interface LoginOptionsResponse {
+export interface LoginOptionsResponse {
   options: PublicKeyCredentialRequestOptionsJSON
 }
 
-interface LoginVerifyResponse {
+export interface LoginVerifyResponse {
   access_token: string
   token_type: string
 }
 
-interface CategoryResponse {
+export interface CategoryResponse {
   uuid: string
   name: string
 }
 
-interface CategoryCreate {
+export interface CategoryCreate {
   name: string
 }
 
-interface CategoryUpdate {
+export interface CategoryUpdate {
   name?: string
 }
 
-interface ExpenseResponse {
+export interface ExpenseResponse {
   uuid: string
   name: string
   amount: number
@@ -38,14 +38,19 @@ interface ExpenseResponse {
   categories: CategoryResponse[]
 }
 
-interface ExpenseCreate {
+export interface ExpenseCreate {
   name: string
   amount: number
   category_uuids: string[]
 }
 
-interface ExpenseUpdate {
+export interface ExpenseUpdate {
   name?: string
   amount?: number
   category_uuids?: string[]
+}
+
+export interface UserResponse {
+  uuid: string
+  name: string
 }

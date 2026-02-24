@@ -1,146 +1,110 @@
-import { STORAGE_KEYS } from "./constants"
+import { client } from "./client"
+import type {
+  CategoryCreate,
+  CategoryResponse,
+  CategoryUpdate,
+  ExpenseCreate,
+  ExpenseResponse,
+  ExpenseUpdate,
+  LoginOptionsResponse,
+  LoginVerifyResponse,
+  RegisterOptionsResponse,
+  RegisterVerifyResponse,
+  UserResponse,
+} from "./types"
 
-class API {
-  private static instance: API
-  private baseUrl: string
+// --- 認証 ---
 
-  private constructor() {
-    this.baseUrl = `http://localhost:${import.meta.env.VITE_API_PORT ?? "9999"}`
+const register = async (username: string): Promise<RegisterVerifyResponse> => {
+  const { options } = await client.post<RegisterOptionsResponse>(
+    "/auth/register/options",
+    { name: username },
+  )
+
+  const credential = await navigator.credentials.create({
+    publicKey: PublicKeyCredential.parseCreationOptionsFromJSON(options),
+  })
+  if (!credential) {
+    throw new Error("パスキーの登録がキャンセルされました")
   }
 
-  static getInstance(): API {
-    if (!API.instance) {
-      API.instance = new API()
-    }
-    return API.instance
-  }
+  const credentialJson = (credential as PublicKeyCredential).toJSON()
 
-  private getHeaders(): HeadersInit {
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-    }
-    const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN)
-    if (token) {
-      headers.Authorization = `Bearer ${token}`
-    }
-    return headers
-  }
-
-  private async request<T>(
-    method: string,
-    path: string,
-    body?: unknown,
-  ): Promise<T> {
-    const response = await fetch(`${this.baseUrl}${path}`, {
-      method,
-      headers: this.getHeaders(),
-      body: body ? JSON.stringify(body) : undefined,
-    })
-
-    if (!response.ok) {
-      const error = await response
-        .json()
-        .catch(() => ({ detail: response.statusText }))
-      throw new Error(error.detail ?? response.statusText)
-    }
-
-    if (response.status === 204) {
-      return undefined as T
-    }
-
-    return response.json() as Promise<T>
-  }
-
-  // --- 認証 ---
-
-  async register(username: string): Promise<RegisterVerifyResponse> {
-    const { options } = await this.request<RegisterOptionsResponse>(
-      "POST",
-      "/auth/register/options",
-      { name: username },
-    )
-
-    const credential = await navigator.credentials.create({
-      publicKey: PublicKeyCredential.parseCreationOptionsFromJSON(options),
-    })
-    if (!credential) {
-      throw new Error("パスキーの登録がキャンセルされました")
-    }
-
-    const credentialJson = (credential as PublicKeyCredential).toJSON()
-
-    return this.request<RegisterVerifyResponse>(
-      "POST",
-      "/auth/register/verify",
-      {
-        name: username,
-        credential: credentialJson,
-      },
-    )
-  }
-
-  async login(username: string): Promise<LoginVerifyResponse> {
-    const { options } = await this.request<LoginOptionsResponse>(
-      "POST",
-      "/auth/login/options",
-      { name: username },
-    )
-
-    const credential = await navigator.credentials.get({
-      publicKey: PublicKeyCredential.parseRequestOptionsFromJSON(options),
-    })
-    if (!credential) {
-      throw new Error("認証がキャンセルされました")
-    }
-
-    const credentialJson = (credential as PublicKeyCredential).toJSON()
-
-    return this.request<LoginVerifyResponse>("POST", "/auth/login/verify", {
-      name: username,
-      credential: credentialJson,
-    })
-  }
-  // --- カテゴリ ---
-
-  async getCategories(): Promise<CategoryResponse[]> {
-    return this.request<CategoryResponse[]>("GET", "/categories")
-  }
-
-  async createCategory(data: CategoryCreate): Promise<CategoryResponse> {
-    return this.request<CategoryResponse>("POST", "/categories", data)
-  }
-
-  async updateCategory(
-    uuid: string,
-    data: CategoryUpdate,
-  ): Promise<CategoryResponse> {
-    return this.request<CategoryResponse>("PATCH", `/categories/${uuid}`, data)
-  }
-
-  async deleteCategory(uuid: string): Promise<void> {
-    return this.request<void>("DELETE", `/categories/${uuid}`)
-  }
-
-  // --- 支出 ---
-
-  async getExpenses(): Promise<ExpenseResponse[]> {
-    return this.request<ExpenseResponse[]>("GET", "/expenses")
-  }
-
-  async createExpense(data: ExpenseCreate): Promise<ExpenseResponse> {
-    return this.request<ExpenseResponse>("POST", "/expenses", data)
-  }
-
-  async updateExpense(
-    uuid: string,
-    data: ExpenseUpdate,
-  ): Promise<ExpenseResponse> {
-    return this.request<ExpenseResponse>("PATCH", `/expenses/${uuid}`, data)
-  }
-
-  async deleteExpense(uuid: string): Promise<void> {
-    return this.request<void>("DELETE", `/expenses/${uuid}`)
-  }
+  return client.post<RegisterVerifyResponse>("/auth/register/verify", {
+    name: username,
+    credential: credentialJson,
+  })
 }
 
-export const api = API.getInstance()
+const login = async (username: string): Promise<LoginVerifyResponse> => {
+  const { options } = await client.post<LoginOptionsResponse>(
+    "/auth/login/options",
+    { name: username },
+  )
+
+  const credential = await navigator.credentials.get({
+    publicKey: PublicKeyCredential.parseRequestOptionsFromJSON(options),
+  })
+  if (!credential) {
+    throw new Error("認証がキャンセルされました")
+  }
+
+  const credentialJson = (credential as PublicKeyCredential).toJSON()
+
+  return client.post<LoginVerifyResponse>("/auth/login/verify", {
+    name: username,
+    credential: credentialJson,
+  })
+}
+
+// --- ユーザー ---
+
+const getMe = (): Promise<UserResponse> => client.get<UserResponse>("/me")
+
+// --- カテゴリ ---
+
+const getCategories = (): Promise<CategoryResponse[]> =>
+  client.get<CategoryResponse[]>("/categories")
+
+const createCategory = (data: CategoryCreate): Promise<CategoryResponse> =>
+  client.post<CategoryResponse>("/categories", data)
+
+const updateCategory = (
+  uuid: string,
+  data: CategoryUpdate,
+): Promise<CategoryResponse> =>
+  client.patch<CategoryResponse>(`/categories/${uuid}`, data)
+
+const deleteCategory = (uuid: string): Promise<void> =>
+  client.delete<void>(`/categories/${uuid}`)
+
+// --- 支出 ---
+
+const getExpenses = (): Promise<ExpenseResponse[]> =>
+  client.get<ExpenseResponse[]>("/expenses")
+
+const createExpense = (data: ExpenseCreate): Promise<ExpenseResponse> =>
+  client.post<ExpenseResponse>("/expenses", data)
+
+const updateExpense = (
+  uuid: string,
+  data: ExpenseUpdate,
+): Promise<ExpenseResponse> =>
+  client.patch<ExpenseResponse>(`/expenses/${uuid}`, data)
+
+const deleteExpense = (uuid: string): Promise<void> =>
+  client.delete<void>(`/expenses/${uuid}`)
+
+export const api = {
+  register,
+  login,
+  getMe,
+  getCategories,
+  createCategory,
+  updateCategory,
+  deleteCategory,
+  getExpenses,
+  createExpense,
+  updateExpense,
+  deleteExpense,
+}
