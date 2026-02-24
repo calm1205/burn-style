@@ -56,50 +56,67 @@ export const ExpensesPage = () => {
 
   return (
     <div className="mx-auto max-w-2xl p-6">
-      <h1 className="mb-6 text-2xl font-bold">記帳</h1>
+      <h1 className="mb-8 text-2xl font-bold">記帳</h1>
 
-      {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
+      {error && <p className="mb-6 text-sm text-red-600">{error}</p>}
 
-      <form onSubmit={handleCreate} className="space-y-3">
-        <div className="flex gap-2">
+      <form onSubmit={handleCreate} className="flex flex-col gap-6">
+        <div className="flex flex-col gap-2">
+          <label htmlFor="expense-name" className="text-sm text-gray-600">
+            名前
+          </label>
           <input
+            id="expense-name"
             type="text"
-            placeholder="名前"
+            placeholder="例: ランチ"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="flex-1 rounded border px-3 py-2"
+            className="rounded border border-gray-200 px-4 py-3 text-sm placeholder:text-gray-200"
           />
+        </div>
+        <div className="flex flex-col gap-2">
+          <label htmlFor="expense-amount" className="text-sm text-gray-600">
+            金額
+          </label>
           <input
+            id="expense-amount"
             type="number"
-            placeholder="金額"
+            placeholder="例: 1000"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             required
             min={1}
-            className="w-28 rounded border px-3 py-2"
+            className="rounded border border-gray-200 px-4 py-3 text-sm placeholder:text-gray-200"
           />
-          <button
-            type="submit"
-            className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-          >
-            追加
-          </button>
         </div>
         {categories.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {categories.map((c) => (
-              <label key={c.uuid} className="flex items-center gap-1 text-sm">
-                <input
-                  type="checkbox"
-                  checked={selectedCategoryUuids.has(c.uuid)}
-                  onChange={() => toggleCategory(c.uuid)}
-                />
-                {c.name}
-              </label>
-            ))}
+          <div className="flex flex-col gap-2">
+            <span className="text-sm text-gray-600">カテゴリ</span>
+            <div className="flex flex-wrap gap-2">
+              {categories.map((c) => (
+                <button
+                  key={c.uuid}
+                  type="button"
+                  onClick={() => toggleCategory(c.uuid)}
+                  className={`rounded-sm px-4 py-2 text-sm ${
+                    selectedCategoryUuids.has(c.uuid)
+                      ? "border border-blue-600 bg-blue-600 text-white"
+                      : "border border-gray-200 text-gray-500"
+                  }`}
+                >
+                  {c.name}
+                </button>
+              ))}
+            </div>
           </div>
         )}
+        <button
+          type="submit"
+          className="mt-2 rounded bg-blue-600 px-5 py-4 text-white hover:bg-blue-700"
+        >
+          追加
+        </button>
       </form>
     </div>
   )
