@@ -1,3 +1,4 @@
+import { DashboardIcon, Pencil2Icon, TokensIcon } from "@radix-ui/react-icons"
 import { useCallback, useEffect, useState } from "react"
 import { Outlet, useNavigate } from "react-router"
 import { api } from "../lib/api"
@@ -7,9 +8,9 @@ import { LayoutLaptop } from "./LayoutLaptop"
 import { LayoutPhone } from "./LayoutPhone"
 
 const navItems = [
-  { label: "ダッシュボード", to: "/dashboard" },
-  { label: "記帳", to: "/expenses" },
-  { label: "カテゴリ", to: "/categories" },
+  { label: "ダッシュボード", to: "/dashboard", icon: DashboardIcon },
+  { label: "記帳", to: "/expenses", icon: Pencil2Icon },
+  { label: "カテゴリ", to: "/categories", icon: TokensIcon },
 ]
 
 export const AppLayout = () => {
