@@ -1,5 +1,18 @@
-import { TokensIcon } from "@radix-ui/react-icons"
-import { type SubmitEvent, useCallback, useEffect, useState } from "react"
+import {
+  CheckIcon,
+  Pencil1Icon,
+  PlusIcon,
+  ResetIcon,
+  TokensIcon,
+  TrashIcon,
+} from "@radix-ui/react-icons"
+import {
+  type SubmitEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react"
 import { api } from "../lib/api"
 import type { CategoryResponse } from "../lib/types"
 
@@ -13,6 +26,7 @@ export const CategoriesPage = () => {
   // 編集
   const [editingUuid, setEditingUuid] = useState<string | null>(null)
   const [editName, setEditName] = useState("")
+  const editInputRef = useRef<HTMLInputElement>(null)
 
   const fetchData = useCallback(async () => {
     try {
@@ -51,6 +65,7 @@ export const CategoriesPage = () => {
   const startEdit = (c: CategoryResponse) => {
     setEditingUuid(c.uuid)
     setEditName(c.name)
+    requestAnimationFrame(() => editInputRef.current?.focus())
   }
 
   const handleUpdate = async () => {
@@ -79,63 +94,70 @@ export const CategoriesPage = () => {
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
-          className="flex-1 rounded border px-3 py-2"
+          className="flex-1 rounded border border-gray-200 px-3 py-2 text-sm placeholder:text-gray-200"
         />
         <button
           type="submit"
-          className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          className="rounded bg-blue-600 px-3 py-2 text-white hover:bg-blue-700"
         >
-          追加
+          <PlusIcon className="size-4" />
         </button>
       </form>
 
       {/* カテゴリ一覧 */}
-      <ul className="flex flex-col gap-2">
+      <ul className="flex flex-col">
         {categories.map((c) => (
           <li
             key={c.uuid}
-            className="flex items-center gap-3 rounded border p-3"
+            className={`flex items-center gap-3 border-b py-3 ${
+              editingUuid === c.uuid ? "border-blue-600" : "border-gray-100"
+            }`}
           >
+            <TokensIcon
+              className={`size-3.5 shrink-0 ${
+                editingUuid === c.uuid ? "text-blue-600" : "text-gray-400"
+              }`}
+            />
             {editingUuid === c.uuid ? (
-              <div className="flex flex-1 gap-2">
+              <div className="flex flex-1 items-center gap-2">
                 <input
+                  ref={editInputRef}
                   type="text"
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
-                  className="flex-1 rounded border px-2 py-1"
+                  className="flex-1 text-sm outline-none"
                 />
                 <button
                   type="button"
                   onClick={handleUpdate}
-                  className="text-sm text-blue-600 hover:underline"
+                  className="text-blue-500 hover:text-blue-700"
                 >
-                  保存
+                  <CheckIcon className="size-3.5" />
                 </button>
                 <button
                   type="button"
                   onClick={() => setEditingUuid(null)}
-                  className="text-sm text-gray-500 hover:underline"
+                  className="text-gray-400 hover:text-gray-600"
                 >
-                  取消
+                  <ResetIcon className="size-3.5" />
                 </button>
               </div>
             ) : (
               <>
-                <TokensIcon className="size-4 shrink-0 text-gray-400" />
-                <span className="flex-1">{c.name}</span>
+                <span className="flex-1 text-sm">{c.name}</span>
                 <button
                   type="button"
                   onClick={() => startEdit(c)}
-                  className="text-sm text-blue-600 hover:underline"
+                  className="text-gray-400 hover:text-gray-600"
                 >
-                  編集
+                  <Pencil1Icon className="size-3.5" />
                 </button>
                 <button
                   type="button"
                   onClick={() => handleDelete(c.uuid)}
-                  className="text-sm text-red-600 hover:underline"
+                  className="text-red-400 hover:text-red-600"
                 >
-                  削除
+                  <TrashIcon className="size-3.5" />
                 </button>
               </>
             )}
