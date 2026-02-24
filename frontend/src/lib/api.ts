@@ -57,7 +57,7 @@ class API {
     const { options } = await this.request<RegisterOptionsResponse>(
       "POST",
       "/auth/register/options",
-      { username },
+      { name: username },
     )
 
     const credential = await navigator.credentials.create({
@@ -73,7 +73,7 @@ class API {
       "POST",
       "/auth/register/verify",
       {
-        username,
+        name: username,
         credential: credentialJson,
       },
     )
@@ -83,7 +83,7 @@ class API {
     const { options } = await this.request<LoginOptionsResponse>(
       "POST",
       "/auth/login/options",
-      { username },
+      { name: username },
     )
 
     const credential = await navigator.credentials.get({
@@ -96,7 +96,7 @@ class API {
     const credentialJson = (credential as PublicKeyCredential).toJSON()
 
     return this.request<LoginVerifyResponse>("POST", "/auth/login/verify", {
-      username,
+      name: username,
       credential: credentialJson,
     })
   }

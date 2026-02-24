@@ -13,7 +13,7 @@ class User(Base):
     __tablename__ = "users"
 
     uuid = Column(String(32), primary_key=True, default=generate_uuid_string)
-    username = Column(String, unique=True, nullable=False)
+    name = Column(String, unique=True, nullable=False)
     created_at = Column(DateTime, default=lambda: datetime.now(UTC), nullable=False)
     updated_at = Column(
         DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC), nullable=False,

@@ -10,15 +10,15 @@ class ChallengeStore:
         self._store: dict[str, tuple[bytes, float]] = {}
         self._ttl = ttl_seconds
 
-    def save(self, username: str, challenge: bytes) -> None:
+    def save(self, name: str, challenge: bytes) -> None:
         """チャレンジを保存"""
         self._cleanup()
-        self._store[username] = (challenge, time.monotonic())
+        self._store[name] = (challenge, time.monotonic())
 
-    def get(self, username: str) -> bytes | None:
+    def get(self, name: str) -> bytes | None:
         """チャレンジを取得して削除"""
         self._cleanup()
-        entry = self._store.pop(username, None)
+        entry = self._store.pop(name, None)
         if entry is None:
             return None
         challenge, _ = entry

@@ -16,7 +16,7 @@ from webauthn.helpers.structs import AuthenticatorTransport, PublicKeyCredential
 
 from src.config import get_frontend_origin, get_webauthn_rp_id, get_webauthn_rp_name
 from src.repository.database import get_db
-from src.repository.user_repository import create_user, get_user_by_username
+from src.repository.user_repository import create_user, get_user_by_name
 from src.repository.webauthn_repository import (
     create_credential,
     get_credential_by_credential_id,
@@ -45,17 +45,17 @@ def register_options(
     db: Annotated[Session, Depends(get_db)],
 ) -> RegisterOptionsResponse:
     """登録オプション生成"""
-    existing = get_user_by_username(db, body.username)
+    existing = get_user_by_name(db, body.name)
     if existing is not None:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Username already exists")
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Name already exists")
 
     options = generate_registration_options(
         rp_id=get_webauthn_rp_id(),
         rp_name=get_webauthn_rp_name(),
-        user_name=body.username,
+        user_name=body.name,
     )
 
-    challenge_store.save(body.username, options.challenge)
+    challenge_store.save(body.name, options.challenge)
 
     options_json: dict[str, Any] = json.loads(options_to_json(options))
     return RegisterOptionsResponse(options=options_json)
@@ -67,7 +67,7 @@ def register_verify(
     db: Annotated[Session, Depends(get_db)],
 ) -> RegisterVerifyResponse:
     """登録検証 → ユーザー+クレデンシャル作成"""
-    challenge = challenge_store.get(body.username)
+    challenge = challenge_store.get(body.name)
     if challenge is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Challenge not found or expired")
 
@@ -81,7 +81,7 @@ def register_verify(
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
 
-    user = create_user(db, body.username)
+    user = create_user(db, body.name)
 
     transports_json: str | None = None
     if body.credential.get("response", {}).get("transports"):
@@ -105,7 +105,7 @@ def login_options(
     db: Annotated[Session, Depends(get_db)],
 ) -> LoginOptionsResponse:
     """認証オプション生成"""
-    user = get_user_by_username(db, body.username)
+    user = get_user_by_name(db, body.name)
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
@@ -126,7 +126,7 @@ def login_options(
         allow_credentials=allow_credentials,
     )
 
-    challenge_store.save(body.username, options.challenge)
+    challenge_store.save(body.name, options.challenge)
 
     options_json: dict[str, Any] = json.loads(options_to_json(options))
     return LoginOptionsResponse(options=options_json)
@@ -138,11 +138,11 @@ def login_verify(
     db: Annotated[Session, Depends(get_db)],
 ) -> LoginVerifyResponse:
     """認証検証 → JWTトークン返却"""
-    challenge = challenge_store.get(body.username)
+    challenge = challenge_store.get(body.name)
     if challenge is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Challenge not found or expired")
 
-    user = get_user_by_username(db, body.username)
+    user = get_user_by_name(db, body.name)
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 

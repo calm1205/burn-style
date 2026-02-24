@@ -35,7 +35,7 @@ def db() -> Generator[Session]:
 
 @pytest.fixture
 def test_user(db: Session) -> User:
-    user = User(uuid="testuser0000000000000000000000", username="testuser")
+    user = User(uuid="testuser0000000000000000000000", name="testuser")
     db.add(user)
     db.commit()
     db.refresh(user)

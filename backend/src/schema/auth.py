@@ -6,7 +6,7 @@ from pydantic import BaseModel, ConfigDict
 
 
 class RegisterOptionsRequest(BaseModel):
-    username: str
+    name: str
 
 
 class RegisterOptionsResponse(BaseModel):
@@ -14,7 +14,7 @@ class RegisterOptionsResponse(BaseModel):
 
 
 class RegisterVerifyRequest(BaseModel):
-    username: str
+    name: str
     credential: dict[str, Any]
 
 
@@ -23,7 +23,7 @@ class RegisterVerifyResponse(BaseModel):
 
 
 class LoginOptionsRequest(BaseModel):
-    username: str
+    name: str
 
 
 class LoginOptionsResponse(BaseModel):
@@ -31,7 +31,7 @@ class LoginOptionsResponse(BaseModel):
 
 
 class LoginVerifyRequest(BaseModel):
-    username: str
+    name: str
     credential: dict[str, Any]
 
 
@@ -44,4 +44,4 @@ class UserResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     uuid: str
-    username: str
+    name: str

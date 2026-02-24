@@ -14,24 +14,24 @@ load_dotenv()
 from src.model.user import User  # noqa: E402
 from src.repository.database import SessionLocal  # noqa: E402
 
-SEED_USERNAME = "seed-user"
+SEED_NAME = "seed-user"
 
 
 def seed_user() -> None:
     """User テーブルに seed データを投入(既存なら作成をスキップ)"""
     db: Session = SessionLocal()
     try:
-        existing = db.query(User).filter(User.username == SEED_USERNAME).first()
+        existing = db.query(User).filter(User.name == SEED_NAME).first()
         if existing:
-            print(f"ユーザー '{SEED_USERNAME}' は既に存在します (UUID: {existing.uuid})")
+            print(f"ユーザー '{SEED_NAME}' は既に存在します (UUID: {existing.uuid})")
             return
 
-        user = User(username=SEED_USERNAME)
+        user = User(name=SEED_NAME)
         db.add(user)
         db.commit()
         db.refresh(user)
 
-        print(f"ユーザーを作成しました: {user.username} (UUID: {user.uuid})")
+        print(f"ユーザーを作成しました: {user.name} (UUID: {user.uuid})")
 
     except Exception as e:
         db.rollback()
