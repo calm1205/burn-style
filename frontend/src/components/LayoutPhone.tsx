@@ -1,10 +1,12 @@
-import { PersonIcon } from "@radix-ui/react-icons"
+import { ExitIcon, PersonIcon } from "@radix-ui/react-icons"
 import { Popover } from "radix-ui"
+import type { ComponentType } from "react"
 import { NavLink } from "react-router"
 
 interface NavItem {
   label: string
   to: string
+  icon?: ComponentType<{ className?: string }>
 }
 
 interface LayoutPhoneProps {
@@ -42,8 +44,9 @@ export const LayoutPhone = ({
               <button
                 type="button"
                 onClick={onLogout}
-                className="w-full rounded px-3 py-2 text-left text-sm text-red-600 hover:bg-gray-50"
+                className="flex w-full items-center gap-2 rounded px-3 py-2 text-left text-sm text-red-600 hover:bg-gray-50"
               >
+                <ExitIcon className="size-4 shrink-0" />
                 ログアウト
               </button>
             </Popover.Content>
@@ -59,7 +62,7 @@ export const LayoutPhone = ({
               `flex flex-1 items-center justify-center py-3 text-xs font-medium ${isActive ? "text-gray-900" : "text-gray-500"}`
             }
           >
-            {item.label}
+            {item.icon ? <item.icon className="size-5" /> : item.label}
           </NavLink>
         ))}
       </nav>
