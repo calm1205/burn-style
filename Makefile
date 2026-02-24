@@ -1,7 +1,13 @@
-.PHONY: help ruff mypy biome lint test-backend migrate upgrade revision seed db-clear db-reset db-connect upgrade-local downgrade-local revision-local upgrade-prod seed-prod db-clear-prod db-reset-prod
+.PHONY: init help ruff mypy biome lint test-backend migrate upgrade revision seed db-clear db-reset db-connect upgrade-local downgrade-local revision-local upgrade-prod seed-prod db-clear-prod db-reset-prod
 
 BACKEND_DIR = backend
 FRONTEND_DIR = frontend
+
+init: ## プロジェクトの初期セットアップ
+	cp .env.template .env
+	uv venv --python 3.14.0
+	uv sync --all-groups
+	docker compose watch
 
 help: ## このヘルプメッセージを表示
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
