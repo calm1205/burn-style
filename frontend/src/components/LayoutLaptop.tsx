@@ -1,4 +1,5 @@
 import { NavLink } from "react-router"
+import { UserMenu } from "./UserMenu"
 
 interface NavItem {
   label: string
@@ -7,10 +8,15 @@ interface NavItem {
 
 interface LayoutLaptopProps {
   navItems: NavItem[]
+  userName?: string
   onLogout: () => void
 }
 
-export const LayoutLaptop = ({ navItems, onLogout }: LayoutLaptopProps) => {
+export const LayoutLaptop = ({
+  navItems,
+  userName,
+  onLogout,
+}: LayoutLaptopProps) => {
   return (
     <aside className="hidden md:flex md:flex-col w-56 border-r border-gray-200 bg-white">
       <div className="p-4 font-bold text-lg border-b border-gray-200">
@@ -30,13 +36,7 @@ export const LayoutLaptop = ({ navItems, onLogout }: LayoutLaptopProps) => {
         ))}
       </nav>
       <div className="p-2 border-t border-gray-200">
-        <button
-          type="button"
-          onClick={onLogout}
-          className="w-full rounded-md px-3 py-2 text-left text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-        >
-          ログアウト
-        </button>
+        <UserMenu userName={userName} onLogout={onLogout} />
       </div>
     </aside>
   )
