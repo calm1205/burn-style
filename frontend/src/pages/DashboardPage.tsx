@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 import { api } from "../lib/api"
 import type { ExpenseResponse } from "../lib/types"
 
@@ -15,6 +16,26 @@ const formatDate = (dateStr: string) => {
   const d = new Date(dateStr)
   const pad = (n: number) => String(n).padStart(2, "0")
   return `${d.getFullYear()}/${pad(d.getMonth() + 1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
+
+const buildMonthlyChart = (expenses: ExpenseResponse[]) => {
+  const now = new Date()
+  const months: { label: string; total: number }[] = []
+
+  for (let i = 11; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
+    const year = d.getFullYear()
+    const month = d.getMonth()
+    const total = expenses
+      .filter((e) => {
+        const ed = new Date(e.created_at)
+        return ed.getFullYear() === year && ed.getMonth() === month
+      })
+      .reduce((sum, e) => sum + e.amount, 0)
+    months.push({ label: `${month + 1}月`, total })
+  }
+
+  return months
 }
 
 export const DashboardPage = () => {
@@ -35,6 +56,7 @@ export const DashboardPage = () => {
 
   const monthlyExpenses = expenses.filter((e) => isCurrentMonth(e.created_at))
   const total = monthlyExpenses.reduce((sum, e) => sum + e.amount, 0)
+  const chartData = useMemo(() => buildMonthlyChart(expenses), [expenses])
 
   return (
     <div className="mx-auto flex h-full max-w-2xl flex-col px-6">
@@ -79,6 +101,17 @@ export const DashboardPage = () => {
             今月の支出はありません
           </p>
         )}
+
+        <div className="mt-8">
+          <p className="mb-4 text-sm text-gray-500">月別支出（直近12ヶ月）</p>
+          <ResponsiveContainer width="100%" height={250}>
+            <BarChart data={chartData}>
+              <XAxis dataKey="label" tick={{ fontSize: 12 }} />
+              <YAxis tick={{ fontSize: 12 }} />
+              <Bar dataKey="total" fill="#2563eb" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   )
