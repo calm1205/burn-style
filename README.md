@@ -1,10 +1,13 @@
-# Finance API
+# Finance
 
-## setup
+家計管理アプリ
+
+## セットアップ
 
 ```bash
-cp .env.template .env
-uv venv --python 3.14.0
-uv sync --all-groups
-docker compose watch
+make init
 ```
+
+## 仕様
+
+[docs/](docs/) を参照
