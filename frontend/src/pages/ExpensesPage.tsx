@@ -55,12 +55,12 @@ export const ExpensesPage = () => {
   }
 
   return (
-    <div className="mx-auto max-w-2xl p-6">
-      <h1 className="mb-8 text-2xl font-bold">記帳</h1>
+    <div className="mx-auto flex max-w-2xl flex-col items-stretch gap-12 px-6" style={{ paddingTop: "20vh" }}>
+      <h1 className="text-center text-2xl font-bold">記帳</h1>
 
-      {error && <p className="mb-6 text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-red-600">{error}</p>}
 
-      <form onSubmit={handleCreate} className="flex flex-col gap-6">
+      <form id="expense-form" onSubmit={handleCreate} className="flex flex-col gap-6">
         <div className="flex flex-col gap-2">
           <label htmlFor="expense-name" className="text-sm text-gray-600">
             名前
@@ -111,13 +111,14 @@ export const ExpensesPage = () => {
             </div>
           </div>
         )}
-        <button
-          type="submit"
-          className="mt-2 rounded bg-blue-600 px-5 py-4 text-white hover:bg-blue-700"
-        >
-          追加
-        </button>
       </form>
+      <button
+        type="submit"
+        form="expense-form"
+        className="rounded bg-black px-5 py-4 text-white hover:bg-gray-800"
+      >
+        追加
+      </button>
     </div>
   )
 }
