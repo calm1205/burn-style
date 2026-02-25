@@ -87,15 +87,18 @@ export const CategoriesPage = () => {
       {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
 
       {/* 作成フォーム */}
-      <form onSubmit={handleCreate} className="mb-6 flex gap-2">
-        <input
-          type="text"
-          placeholder="カテゴリ名"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-          className="flex-1 rounded border border-gray-200 px-3 py-2 text-sm placeholder:text-gray-200"
-        />
+      <form onSubmit={handleCreate} className="mb-6 flex items-end gap-2">
+        <div className="flex-1">
+          <label className="mb-1 block text-xs text-gray-500">カテゴリ名</label>
+          <input
+            type="text"
+            placeholder="例: 食費、交通費"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            className="w-full border-b border-gray-300 px-1 py-2 text-sm outline-none placeholder:text-gray-300 focus:border-gray-900"
+          />
+        </div>
         <button
           type="submit"
           className="rounded bg-blue-600 px-3 py-2 text-white hover:bg-blue-700"
