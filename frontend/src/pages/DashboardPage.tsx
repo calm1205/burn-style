@@ -5,8 +5,7 @@ import type { ExpenseResponse } from "../lib/types"
 
 const toDateKey = (dateStr: string) => {
   const d = new Date(dateStr)
-  const pad = (n: number) => String(n).padStart(2, "0")
-  return `${d.getFullYear()}/${pad(d.getMonth() + 1)}/${pad(d.getDate())}`
+  return `${d.getMonth() + 1}/${d.getDate()}`
 }
 
 const formatTime = (dateStr: string) => {
@@ -16,8 +15,11 @@ const formatTime = (dateStr: string) => {
 }
 
 const groupByDate = (expenses: ExpenseResponse[]) => {
+  const sorted = [...expenses].sort(
+    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+  )
   const groups: { date: string; items: ExpenseResponse[] }[] = []
-  for (const e of expenses) {
+  for (const e of sorted) {
     const key = toDateKey(e.created_at)
     const last = groups[groups.length - 1]
     if (last?.date === key) {
@@ -69,21 +71,21 @@ export const DashboardPage = () => {
   const total = expenses.reduce((sum, e) => sum + e.amount, 0)
 
   return (
-    <div className="mx-auto flex h-full max-w-2xl flex-col px-6" style={{ paddingTop: "20vh" }}>
+    <div className="mx-auto flex h-full max-w-2xl flex-col px-6" style={{ paddingTop: "10vh" }}>
       {error && <p className="mt-6 text-sm text-red-600">{error}</p>}
-      <div className="shrink-0 bg-white py-8 text-center">
-        <div className="flex items-center justify-between">
-          <button type="button" className="text-gray-400 hover:text-gray-600" onClick={goPrev}>
-            <DoubleArrowLeftIcon className="size-4" />
-          </button>
+      <div className="flex shrink-0 items-center justify-between bg-white py-8">
+        <button type="button" className="text-gray-400 hover:text-gray-600" onClick={goPrev}>
+          <DoubleArrowLeftIcon className="size-4" />
+        </button>
+        <div className="text-center">
           <p className="text-sm text-gray-500">
             {year}/{month}の支出
           </p>
-          <button type="button" className="text-gray-400 hover:text-gray-600" onClick={goNext}>
-            <DoubleArrowRightIcon className="size-4" />
-          </button>
+          <p className="text-3xl font-bold">{total.toLocaleString()}円</p>
         </div>
-        <p className="text-3xl font-bold">{total.toLocaleString()}円</p>
+        <button type="button" className="text-gray-400 hover:text-gray-600" onClick={goNext}>
+          <DoubleArrowRightIcon className="size-4" />
+        </button>
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto flex flex-col gap-6">
