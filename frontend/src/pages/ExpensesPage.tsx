@@ -62,7 +62,7 @@ export const ExpensesPage = () => {
 
       <form id="expense-form" onSubmit={handleCreate} className="flex flex-col gap-6">
         <div className="flex flex-col gap-2">
-          <label htmlFor="expense-name" className="text-sm text-gray-600">
+          <label htmlFor="expense-name" className="text-xs text-gray-500">
             名前
           </label>
           <input
@@ -76,7 +76,7 @@ export const ExpensesPage = () => {
           />
         </div>
         <div className="flex flex-col gap-2">
-          <label htmlFor="expense-amount" className="text-sm text-gray-600">
+          <label htmlFor="expense-amount" className="text-xs text-gray-500">
             金額
           </label>
           <input
@@ -92,7 +92,7 @@ export const ExpensesPage = () => {
         </div>
         {categories.length > 0 && (
           <div className="flex flex-col gap-2">
-            <span className="text-sm text-gray-600">カテゴリ</span>
+            <span className="text-xs text-gray-500">カテゴリ</span>
             <div className="flex flex-wrap gap-2">
               {categories.map((c) => (
                 <button
