@@ -42,11 +42,12 @@ export const AppLayout = () => {
         userName={user?.name}
         onLogout={onLogout}
       />
-      <main className="flex-1 overflow-y-auto pt-12 pb-16 md:pt-0 md:pb-0">
+      <main className="flex-1 overflow-y-auto pb-16 md:pb-0">
         <Outlet />
       </main>
       <LayoutPhone
         navItems={navItems}
+        settingsTo="/settings"
         userName={user?.name}
         onLogout={onLogout}
       />
