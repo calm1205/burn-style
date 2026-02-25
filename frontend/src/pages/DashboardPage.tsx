@@ -86,32 +86,34 @@ export const DashboardPage = () => {
         <p className="text-3xl font-bold">{total.toLocaleString()}円</p>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <div className="min-h-0 flex-1 overflow-y-auto flex flex-col gap-6">
         {groupByDate(expenses).map((group) => (
           <div key={group.date}>
-            <p className="pt-4 pb-2 text-xs font-medium text-gray-400">{group.date}</p>
+            <p className="border-b border-gray-200 pb-2 text-xs font-medium text-gray-400">{group.date}</p>
             <ul className="flex flex-col">
               {group.items.map((e) => (
-                <li
-                  key={e.uuid}
-                  className="flex items-center justify-between border-b border-gray-100 py-3"
-                >
-                  <div className="flex flex-col">
-                    <div>
-                      <span className="text-sm">{e.name}</span>
-                      {e.categories.length > 0 && (
-                        <span className="ml-2 text-xs text-gray-400">
-                          {e.categories.map((c) => c.name).join(", ")}
-                        </span>
-                      )}
-                    </div>
-                    <span className="text-xs text-gray-300">
+                <li key={e.uuid} className="flex flex-col gap-1 py-3">
+                  <div className="flex items-center gap-3">
+                    <span className="shrink-0 text-xs text-transparent" aria-hidden="true">
                       {formatTime(e.created_at)}
                     </span>
+                    {e.categories.length > 0 && (
+                      <div className="flex gap-2">
+                        {e.categories.map((c) => (
+                          <span key={c.uuid} className="text-xs text-gray-400">{c.name}</span>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                  <span className="shrink-0 text-sm font-mono">
-                    {e.amount.toLocaleString()}円
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className="shrink-0 text-xs text-gray-300">
+                      {formatTime(e.created_at)}
+                    </span>
+                    <span className="flex-1 text-sm">{e.name}</span>
+                    <span className="shrink-0 text-sm font-mono">
+                      {e.amount.toLocaleString()}円
+                    </span>
+                  </div>
                 </li>
               ))}
             </ul>
