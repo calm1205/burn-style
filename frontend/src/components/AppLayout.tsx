@@ -43,7 +43,7 @@ export const AppLayout = () => {
         onLogout={onLogout}
       />
       <main className="flex-1 overflow-y-auto pb-16 md:pb-0">
-        <Outlet />
+        <Outlet context={{ user, onLogout }} />
       </main>
       <LayoutPhone
         navItems={navItems}
