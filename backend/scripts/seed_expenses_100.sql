@@ -4,21 +4,19 @@ DO $$
 DECLARE
   v_user_uuid TEXT := '019c9496a174750ea12ea264b8864bed';
   v_cat_food TEXT;
-  v_cat_transport TEXT;
+  v_cat_water TEXT;
+  v_cat_electric TEXT;
+  v_cat_gas TEXT;
   v_cat_entertainment TEXT;
-  v_cat_utility TEXT;
-  v_cat_telecom TEXT;
-  v_cat_medical TEXT;
-  v_cat_education TEXT;
+  v_cat_shopping TEXT;
 BEGIN
   -- カテゴリUUID取得
   SELECT uuid INTO v_cat_food FROM categories WHERE name = '食費' AND user_uuid = v_user_uuid LIMIT 1;
-  SELECT uuid INTO v_cat_transport FROM categories WHERE name = '交通費' AND user_uuid = v_user_uuid LIMIT 1;
+  SELECT uuid INTO v_cat_water FROM categories WHERE name = '水道' AND user_uuid = v_user_uuid LIMIT 1;
+  SELECT uuid INTO v_cat_electric FROM categories WHERE name = '電気' AND user_uuid = v_user_uuid LIMIT 1;
+  SELECT uuid INTO v_cat_gas FROM categories WHERE name = 'ガス' AND user_uuid = v_user_uuid LIMIT 1;
   SELECT uuid INTO v_cat_entertainment FROM categories WHERE name = '娯楽' AND user_uuid = v_user_uuid LIMIT 1;
-  SELECT uuid INTO v_cat_utility FROM categories WHERE name = '光熱費' AND user_uuid = v_user_uuid LIMIT 1;
-  SELECT uuid INTO v_cat_telecom FROM categories WHERE name = '通信費' AND user_uuid = v_user_uuid LIMIT 1;
-  SELECT uuid INTO v_cat_medical FROM categories WHERE name = '医療費' AND user_uuid = v_user_uuid LIMIT 1;
-  SELECT uuid INTO v_cat_education FROM categories WHERE name = '教育費' AND user_uuid = v_user_uuid LIMIT 1;
+  SELECT uuid INTO v_cat_shopping FROM categories WHERE name = '買い物' AND user_uuid = v_user_uuid LIMIT 1;
 
   -- expenses + association を一括投入
   -- 2025/03 ~ 2026/02 の12ヶ月分、各月8~9件
@@ -159,15 +157,25 @@ BEGIN
     (replace(gen_random_uuid()::text, '-', ''), v_user_uuid, 'カフェ', 480, '2026-02-22 14:00:00', '2026-02-22 14:00:00'),
     (replace(gen_random_uuid()::text, '-', ''), v_user_uuid, 'ドラッグストア', 1500, '2026-02-25 17:00:00', '2026-02-25 17:00:00');
 
-  -- カテゴリ紐付け（直近のINSERTで作成された支出に対して）
+  -- カテゴリ紐付け
   INSERT INTO expense_category_association (expense_uuid, category_uuid, created_at)
   SELECT e.uuid, v_cat_food, e.created_at FROM expenses e
   WHERE e.user_uuid = v_user_uuid AND e.name IN ('スーパー', 'コンビニ', 'ランチ', 'カフェ', 'お土産', '年末買い出し')
   ON CONFLICT DO NOTHING;
 
   INSERT INTO expense_category_association (expense_uuid, category_uuid, created_at)
-  SELECT e.uuid, v_cat_transport, e.created_at FROM expenses e
-  WHERE e.user_uuid = v_user_uuid AND e.name IN ('電車定期', '電車', 'タクシー', 'バス')
+  SELECT e.uuid, v_cat_water, e.created_at FROM expenses e
+  WHERE e.user_uuid = v_user_uuid AND e.name = '水道代'
+  ON CONFLICT DO NOTHING;
+
+  INSERT INTO expense_category_association (expense_uuid, category_uuid, created_at)
+  SELECT e.uuid, v_cat_electric, e.created_at FROM expenses e
+  WHERE e.user_uuid = v_user_uuid AND e.name = '電気代'
+  ON CONFLICT DO NOTHING;
+
+  INSERT INTO expense_category_association (expense_uuid, category_uuid, created_at)
+  SELECT e.uuid, v_cat_gas, e.created_at FROM expenses e
+  WHERE e.user_uuid = v_user_uuid AND e.name = 'ガス代'
   ON CONFLICT DO NOTHING;
 
   INSERT INTO expense_category_association (expense_uuid, category_uuid, created_at)
@@ -176,23 +184,8 @@ BEGIN
   ON CONFLICT DO NOTHING;
 
   INSERT INTO expense_category_association (expense_uuid, category_uuid, created_at)
-  SELECT e.uuid, v_cat_utility, e.created_at FROM expenses e
-  WHERE e.user_uuid = v_user_uuid AND e.name IN ('電気代', 'ガス代', '水道代')
-  ON CONFLICT DO NOTHING;
-
-  INSERT INTO expense_category_association (expense_uuid, category_uuid, created_at)
-  SELECT e.uuid, v_cat_telecom, e.created_at FROM expenses e
-  WHERE e.user_uuid = v_user_uuid AND e.name = '携帯料金'
-  ON CONFLICT DO NOTHING;
-
-  INSERT INTO expense_category_association (expense_uuid, category_uuid, created_at)
-  SELECT e.uuid, v_cat_medical, e.created_at FROM expenses e
-  WHERE e.user_uuid = v_user_uuid AND e.name IN ('歯医者', 'ドラッグストア')
-  ON CONFLICT DO NOTHING;
-
-  INSERT INTO expense_category_association (expense_uuid, category_uuid, created_at)
-  SELECT e.uuid, v_cat_education, e.created_at FROM expenses e
-  WHERE e.user_uuid = v_user_uuid AND e.name = '本'
+  SELECT e.uuid, v_cat_shopping, e.created_at FROM expenses e
+  WHERE e.user_uuid = v_user_uuid AND e.name IN ('クリスマスプレゼント', 'バレンタイン', '雑貨', '美容院', '本', 'ドラッグストア', '旅行', '電車定期', '電車', 'タクシー', 'バス', '携帯料金', '歯医者')
   ON CONFLICT DO NOTHING;
 
   RAISE NOTICE '100件のサンプル支出データを投入しました';
