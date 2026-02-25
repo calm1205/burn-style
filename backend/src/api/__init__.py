@@ -5,4 +5,11 @@ from src.api.health import health_router
 from src.api.subscription_templates import subscription_template_router
 from src.api.users import user_router
 
-__all__ = ["auth_router", "category_router", "expense_router", "health_router", "subscription_template_router", "user_router"]
+__all__ = [
+    "auth_router",
+    "category_router",
+    "expense_router",
+    "health_router",
+    "subscription_template_router",
+    "user_router",
+]

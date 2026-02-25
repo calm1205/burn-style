@@ -1,7 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.api import auth_router, category_router, expense_router, health_router, subscription_template_router, user_router
+from src.api import (
+    auth_router,
+    category_router,
+    expense_router,
+    health_router,
+    subscription_template_router,
+    user_router,
+)
 from src.config import get_frontend_origin
 from src.middleware import TokenRefreshMiddleware
 
