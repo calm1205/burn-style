@@ -81,8 +81,8 @@ export const CategoriesPage = () => {
   }
 
   return (
-    <div className="mx-auto max-w-2xl p-6">
-      <h1 className="mb-6 text-2xl font-bold">カテゴリ</h1>
+    <div className="mx-auto max-w-2xl px-6" style={{ paddingTop: "20vh" }}>
+      <h1 className="mb-6 text-2xl font-bold text-center">カテゴリ</h1>
 
       {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
 
@@ -101,7 +101,7 @@ export const CategoriesPage = () => {
         </div>
         <button
           type="submit"
-          className="rounded bg-blue-600 px-3 py-2 text-white hover:bg-blue-700"
+          className="rounded bg-black px-3 py-2 text-white hover:bg-gray-800"
         >
           <PlusIcon className="size-4" />
         </button>
