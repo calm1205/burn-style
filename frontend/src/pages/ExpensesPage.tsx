@@ -72,7 +72,7 @@ export const ExpensesPage = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="rounded border border-gray-200 px-4 py-3 text-sm placeholder:text-gray-200"
+            className="border-b border-gray-200 px-4 py-3 text-sm placeholder:text-gray-200 focus:border-gray-900 focus:outline-none"
           />
         </div>
         <div className="flex flex-col gap-2">
@@ -87,7 +87,7 @@ export const ExpensesPage = () => {
             onChange={(e) => setAmount(e.target.value)}
             required
             min={1}
-            className="rounded border border-gray-200 px-4 py-3 text-sm placeholder:text-gray-200"
+            className="border-b border-gray-200 px-4 py-3 text-sm placeholder:text-gray-200 focus:border-gray-900 focus:outline-none"
           />
         </div>
         {categories.length > 0 && (
