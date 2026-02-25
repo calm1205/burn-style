@@ -3,7 +3,7 @@ import {
   Pencil1Icon,
   PlusIcon,
   ResetIcon,
-  TokensIcon,
+  BookmarkIcon,
   TrashIcon,
 } from "@radix-ui/react-icons"
 import {
@@ -113,7 +113,7 @@ export const CategoriesPage = () => {
               editingUuid === c.uuid ? "border-blue-600" : "border-gray-100"
             }`}
           >
-            <TokensIcon
+            <BookmarkIcon
               className={`size-3.5 shrink-0 ${
                 editingUuid === c.uuid ? "text-blue-600" : "text-gray-400"
               }`}
