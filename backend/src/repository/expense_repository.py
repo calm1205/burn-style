@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import calendar
 from datetime import UTC, datetime
 
 from sqlalchemy.orm import Session
@@ -8,11 +9,23 @@ from src.model.category import Category
 from src.model.expense import Expense
 
 
-def get_all_expenses(db: Session, user_uuid: str, *, include_deleted: bool = False) -> list[Expense]:
+def get_all_expenses(
+    db: Session,
+    user_uuid: str,
+    *,
+    year: int | None = None,
+    month: int | None = None,
+    include_deleted: bool = False,
+) -> list[Expense]:
     """すべての支出を取得する(削除されていないもののみ)"""
     query = db.query(Expense).filter(Expense.user_uuid == user_uuid)
     if not include_deleted:
         query = query.filter(Expense.deleted_at.is_(None))
+    if year is not None and month is not None:
+        start = datetime(year, month, 1, tzinfo=UTC)
+        last_day = calendar.monthrange(year, month)[1]
+        end = datetime(year, month, last_day, 23, 59, 59, tzinfo=UTC)
+        query = query.filter(Expense.created_at >= start, Expense.created_at <= end)
     return query.all()
 
 

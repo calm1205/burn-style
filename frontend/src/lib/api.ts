@@ -80,8 +80,13 @@ const deleteCategory = (uuid: string): Promise<void> =>
 
 // --- 支出 ---
 
-const getExpenses = (): Promise<ExpenseResponse[]> =>
-  client.get<ExpenseResponse[]>("/expenses")
+const getExpenses = (year?: number, month?: number): Promise<ExpenseResponse[]> => {
+  const params = new URLSearchParams()
+  if (year !== undefined) params.set("year", String(year))
+  if (month !== undefined) params.set("month", String(month))
+  const qs = params.toString()
+  return client.get<ExpenseResponse[]>(`/expenses${qs ? `?${qs}` : ""}`)
+}
 
 const createExpense = (data: ExpenseCreate): Promise<ExpenseResponse> =>
   client.post<ExpenseResponse>("/expenses", data)

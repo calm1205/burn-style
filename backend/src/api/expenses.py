@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from sqlalchemy.orm import Session, joinedload
 
 from src.api.deps import get_current_user
@@ -25,8 +25,10 @@ expense_router = APIRouter(prefix="/expenses", tags=["expenses"])
 def list_expenses(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
+    year: Annotated[int | None, Query()] = None,
+    month: Annotated[int | None, Query()] = None,
 ) -> list[ExpenseResponse]:
-    expenses = get_all_expenses(db, str(user.uuid))
+    expenses = get_all_expenses(db, str(user.uuid), year=year, month=month)
     return [ExpenseResponse.model_validate(e) for e in expenses]
 
 
