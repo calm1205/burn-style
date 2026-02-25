@@ -1,4 +1,4 @@
-import { BookmarkIcon, DashboardIcon, PlusIcon } from "@radix-ui/react-icons"
+import { BookmarkIcon, GearIcon, HomeIcon, PlusIcon } from "@radix-ui/react-icons"
 import { useCallback, useEffect, useState } from "react"
 import { Outlet, useNavigate } from "react-router"
 import { api } from "../lib/api"
@@ -8,8 +8,9 @@ import { LayoutLaptop } from "./LayoutLaptop"
 import { LayoutPhone } from "./LayoutPhone"
 
 const navItems = [
-  { label: "ダッシュボード", to: "/dashboard", icon: DashboardIcon },
+  { label: "ダッシュボード", to: "/dashboard", icon: HomeIcon },
   { label: "カテゴリ", to: "/categories", icon: BookmarkIcon },
+  { label: "設定", to: "/settings", icon: GearIcon },
   { label: "記帳", to: "/expenses", icon: PlusIcon },
 ]
 
