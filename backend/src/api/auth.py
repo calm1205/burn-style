@@ -47,7 +47,7 @@ def register_options(
     """登録オプション生成"""
     existing = get_user_by_name(db, body.name)
     if existing is not None:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Name already exists")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Registration failed")
 
     options = generate_registration_options(
         rp_id=get_webauthn_rp_id(),
@@ -107,7 +107,7 @@ def login_options(
     """認証オプション生成"""
     user = get_user_by_name(db, body.name)
     if user is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Authentication failed")
 
     credentials = get_credentials_by_user_uuid(db, user.uuid)  # type: ignore[arg-type]
 
@@ -144,7 +144,7 @@ def login_verify(
 
     user = get_user_by_name(db, body.name)
     if user is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Authentication failed")
 
     raw_id = body.credential.get("rawId", "")
     from webauthn import base64url_to_bytes  # noqa: PLC0415
