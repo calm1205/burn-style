@@ -78,8 +78,8 @@ def register_verify(
             expected_rp_id=get_webauthn_rp_id(),
             expected_origin=get_frontend_origin(),
         )
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+    except Exception:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Registration failed")
 
     user = create_user(db, body.name)
 
@@ -164,8 +164,8 @@ def login_verify(
             credential_public_key=stored_credential.credential_public_key,  # type: ignore[arg-type]
             credential_current_sign_count=stored_credential.sign_count,  # type: ignore[arg-type]
         )
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+    except Exception:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Authentication failed")
 
     update_sign_count(db, stored_credential, verification.new_sign_count)
 
