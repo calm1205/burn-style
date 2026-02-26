@@ -1,5 +1,19 @@
 import { STORAGE_KEYS } from "./constants"
 
+export interface ApiError {
+  status: number
+  message: string
+}
+
+const STATUS_MESSAGES: Record<number, string> = {
+  400: "リクエストが不正です",
+  403: "アクセス権限がありません",
+  404: "リソースが見つかりません",
+  409: "データが競合しています",
+  422: "入力内容に誤りがあります",
+  500: "サーバーエラーが発生しました",
+}
+
 const baseUrl = import.meta.env.VITE_API_URL ?? "http://localhost:9999"
 
 const getHeaders = (): HeadersInit => {
@@ -32,14 +46,19 @@ const request = async <T>(
   if (response.status === 401) {
     localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN)
     window.location.href = "/login"
-    throw new Error("認証が切れました")
+    const apiError: ApiError = { status: 401, message: "認証が切れました" }
+    throw apiError
   }
 
   if (!response.ok) {
-    const error = await response
-      .json()
-      .catch(() => ({ detail: response.statusText }))
-    throw new Error(error.detail ?? response.statusText)
+    const body = await response.json().catch(() => null)
+    const detail = body?.detail
+    const message =
+      typeof detail === "string"
+        ? detail
+        : (STATUS_MESSAGES[response.status] ?? response.statusText)
+    const apiError: ApiError = { status: response.status, message }
+    throw apiError
   }
 
   if (response.status === 204) {
@@ -48,6 +67,15 @@ const request = async <T>(
 
   return response.json() as Promise<T>
 }
+
+export const isApiError = (err: unknown): err is ApiError =>
+  typeof err === "object" &&
+  err !== null &&
+  "status" in err &&
+  "message" in err
+
+export const getErrorMessage = (err: unknown, fallback: string): string =>
+  isApiError(err) ? err.message : fallback
 
 export const client = {
   get: <T>(path: string) => request<T>("GET", path),
