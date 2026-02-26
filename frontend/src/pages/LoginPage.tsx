@@ -1,6 +1,7 @@
 import { type SubmitEvent, useState } from "react"
 import { Link, useNavigate } from "react-router"
 import { api } from "../lib/api"
+import { getErrorMessage } from "../lib/client"
 import { STORAGE_KEYS } from "../lib/constants"
 
 export const LoginPage = () => {
@@ -19,7 +20,7 @@ export const LoginPage = () => {
       localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, result.access_token)
       navigate("/dashboard")
     } catch (err) {
-      setError(err instanceof Error ? err.message : "ログインに失敗しました")
+      setError(getErrorMessage(err, "ログインに失敗"))
     } finally {
       setLoading(false)
     }
@@ -36,6 +37,7 @@ export const LoginPage = () => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
+          maxLength={50}
           disabled={loading}
           className="rounded border px-3 py-2 disabled:opacity-50"
         />

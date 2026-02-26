@@ -1,6 +1,7 @@
 import { type SubmitEvent, useState } from "react"
 import { Link, useNavigate } from "react-router"
 import { api } from "../lib/api"
+import { getErrorMessage } from "../lib/client"
 
 export const SignupPage = () => {
   const [username, setUsername] = useState("")
@@ -17,7 +18,7 @@ export const SignupPage = () => {
       await api.register(username)
       navigate("/login")
     } catch (err) {
-      setError(err instanceof Error ? err.message : "登録に失敗しました")
+      setError(getErrorMessage(err, "登録に失敗"))
     } finally {
       setLoading(false)
     }
@@ -34,6 +35,7 @@ export const SignupPage = () => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
+          maxLength={50}
           disabled={loading}
           className="rounded border px-3 py-2 disabled:opacity-50"
         />

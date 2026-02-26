@@ -14,6 +14,7 @@ import {
   useState,
 } from "react"
 import { api } from "../lib/api"
+import { getErrorMessage } from "../lib/client"
 import type { CategoryResponse } from "../lib/types"
 
 export const CategoriesPage = () => {
@@ -24,15 +25,14 @@ export const CategoriesPage = () => {
   const [name, setName] = useState("")
 
   // 編集
-  const [editingUuid, setEditingUuid] = useState<string | null>(null)
-  const [editName, setEditName] = useState("")
+  const [editing, setEditing] = useState<{ uuid: string; name: string } | null>(null)
   const editInputRef = useRef<HTMLInputElement>(null)
 
   const fetchData = useCallback(async () => {
     try {
       setCategories(await api.getCategories())
     } catch (err) {
-      setError(err instanceof Error ? err.message : "データ取得に失敗")
+      setError(getErrorMessage(err, "データ取得に失敗"))
     }
   }, [])
 
@@ -48,7 +48,7 @@ export const CategoriesPage = () => {
       setName("")
       await fetchData()
     } catch (err) {
-      setError(err instanceof Error ? err.message : "作成に失敗")
+      setError(getErrorMessage(err, "作成に失敗"))
     }
   }
 
@@ -58,25 +58,24 @@ export const CategoriesPage = () => {
       await api.deleteCategory(uuid)
       await fetchData()
     } catch (err) {
-      setError(err instanceof Error ? err.message : "削除に失敗")
+      setError(getErrorMessage(err, "削除に失敗"))
     }
   }
 
   const startEdit = (c: CategoryResponse) => {
-    setEditingUuid(c.uuid)
-    setEditName(c.name)
+    setEditing({ uuid: c.uuid, name: c.name })
     requestAnimationFrame(() => editInputRef.current?.focus())
   }
 
   const handleUpdate = async () => {
-    if (!editingUuid) return
+    if (!editing) return
     setError("")
     try {
-      await api.updateCategory(editingUuid, { name: editName })
-      setEditingUuid(null)
+      await api.updateCategory(editing.uuid, { name: editing.name })
+      setEditing(null)
       await fetchData()
     } catch (err) {
-      setError(err instanceof Error ? err.message : "更新に失敗")
+      setError(getErrorMessage(err, "更新に失敗"))
     }
   }
 
@@ -96,6 +95,7 @@ export const CategoriesPage = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
+            maxLength={50}
             className="w-full border-b border-gray-300 px-1 py-2 text-sm outline-none placeholder:text-gray-300 focus:border-gray-900"
           />
         </div>
@@ -113,21 +113,22 @@ export const CategoriesPage = () => {
           <li
             key={c.uuid}
             className={`flex items-center gap-3 border-b py-3 ${
-              editingUuid === c.uuid ? "border-blue-600" : "border-gray-100"
+              editing?.uuid === c.uuid ? "border-blue-600" : "border-gray-100"
             }`}
           >
             <BookmarkIcon
               className={`size-3.5 shrink-0 ${
-                editingUuid === c.uuid ? "text-blue-600" : "text-gray-400"
+                editing?.uuid === c.uuid ? "text-blue-600" : "text-gray-400"
               }`}
             />
-            {editingUuid === c.uuid ? (
+            {editing?.uuid === c.uuid ? (
               <div className="flex flex-1 items-center gap-2">
                 <input
                   ref={editInputRef}
                   type="text"
-                  value={editName}
-                  onChange={(e) => setEditName(e.target.value)}
+                  value={editing?.name ?? ""}
+                  onChange={(e) => setEditing((prev) => prev ? { ...prev, name: e.target.value } : null)}
+                  maxLength={50}
                   className="flex-1 text-sm outline-none"
                 />
                 <button
@@ -139,7 +140,7 @@ export const CategoriesPage = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setEditingUuid(null)}
+                  onClick={() => setEditing(null)}
                   className="text-gray-400 hover:text-gray-600"
                 >
                   <ResetIcon className="size-3.5" />

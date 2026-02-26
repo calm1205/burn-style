@@ -1,6 +1,7 @@
 import { DoubleArrowLeftIcon, DoubleArrowRightIcon } from "@radix-ui/react-icons"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { api } from "../lib/api"
+import { getErrorMessage } from "../lib/client"
 import type { ExpenseResponse } from "../lib/types"
 
 const toDateKey = (dateStr: string) => {
@@ -42,7 +43,7 @@ export const DashboardPage = () => {
     try {
       setExpenses(await api.getExpenses(year, month))
     } catch (err) {
-      setError(err instanceof Error ? err.message : "データ取得に失敗")
+      setError(getErrorMessage(err, "データ取得に失敗"))
     }
   }, [year, month])
 
@@ -68,7 +69,8 @@ export const DashboardPage = () => {
     }
   }
 
-  const total = expenses.reduce((sum, e) => sum + e.amount, 0)
+  const total = useMemo(() => expenses.reduce((sum, e) => sum + e.amount, 0), [expenses])
+  const groups = useMemo(() => groupByDate(expenses), [expenses])
 
   return (
     <div className="mx-auto flex h-full max-w-2xl flex-col px-6" style={{ paddingTop: "10vh" }}>
@@ -89,7 +91,7 @@ export const DashboardPage = () => {
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto flex flex-col gap-6">
-        {groupByDate(expenses).map((group) => (
+        {groups.map((group) => (
           <div key={group.date}>
             <p className="border-b border-gray-200 pb-2 text-xs font-medium text-gray-400">{group.date}</p>
             <ul className="flex flex-col">

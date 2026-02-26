@@ -1,5 +1,6 @@
 import { type SubmitEvent, useCallback, useEffect, useState } from "react"
 import { api } from "../lib/api"
+import { getErrorMessage } from "../lib/client"
 import type { CategoryResponse } from "../lib/types"
 
 export const ExpensesPage = () => {
@@ -7,17 +8,17 @@ export const ExpensesPage = () => {
   const [error, setError] = useState("")
 
   // 作成フォーム
-  const [name, setName] = useState("")
-  const [amount, setAmount] = useState("")
-  const [selectedCategoryUuids, setSelectedCategoryUuids] = useState<
-    Set<string>
-  >(new Set())
+  const [form, setForm] = useState({
+    name: "",
+    amount: "",
+    categoryUuids: new Set<string>(),
+  })
 
   const fetchData = useCallback(async () => {
     try {
       setCategories(await api.getCategories())
     } catch (err) {
-      setError(err instanceof Error ? err.message : "データ取得に失敗")
+      setError(getErrorMessage(err, "データ取得に失敗"))
     }
   }, [])
 
@@ -26,14 +27,14 @@ export const ExpensesPage = () => {
   }, [fetchData])
 
   const toggleCategory = (uuid: string) => {
-    setSelectedCategoryUuids((prev) => {
-      const next = new Set(prev)
+    setForm((prev) => {
+      const next = new Set(prev.categoryUuids)
       if (next.has(uuid)) {
         next.delete(uuid)
       } else {
         next.add(uuid)
       }
-      return next
+      return { ...prev, categoryUuids: next }
     })
   }
 
@@ -42,15 +43,13 @@ export const ExpensesPage = () => {
     setError("")
     try {
       await api.createExpense({
-        name,
-        amount: Number(amount),
-        category_uuids: [...selectedCategoryUuids],
+        name: form.name,
+        amount: Number(form.amount),
+        category_uuids: [...form.categoryUuids],
       })
-      setName("")
-      setAmount("")
-      setSelectedCategoryUuids(new Set())
+      setForm({ name: "", amount: "", categoryUuids: new Set() })
     } catch (err) {
-      setError(err instanceof Error ? err.message : "作成に失敗")
+      setError(getErrorMessage(err, "作成に失敗"))
     }
   }
 
@@ -69,9 +68,10 @@ export const ExpensesPage = () => {
             id="expense-name"
             type="text"
             placeholder="例: ランチ"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={form.name}
+            onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
             required
+            maxLength={100}
             className="border-b border-gray-200 px-4 py-3 text-sm placeholder:text-gray-200 focus:border-gray-900 focus:outline-none"
           />
         </div>
@@ -83,10 +83,11 @@ export const ExpensesPage = () => {
             id="expense-amount"
             type="number"
             placeholder="例: 1000"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
+            value={form.amount}
+            onChange={(e) => setForm((prev) => ({ ...prev, amount: e.target.value }))}
             required
             min={1}
+            max={99999999}
             className="border-b border-gray-200 px-4 py-3 text-sm placeholder:text-gray-200 focus:border-gray-900 focus:outline-none"
           />
         </div>
@@ -100,7 +101,7 @@ export const ExpensesPage = () => {
                   type="button"
                   onClick={() => toggleCategory(c.uuid)}
                   className={`rounded-sm px-4 py-2 text-sm ${
-                    selectedCategoryUuids.has(c.uuid)
+                    form.categoryUuids.has(c.uuid)
                       ? "border border-blue-600 bg-blue-600 text-white"
                       : "border border-gray-200 text-gray-500"
                   }`}
