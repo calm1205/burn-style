@@ -3,7 +3,7 @@ from __future__ import annotations
 import calendar
 from datetime import UTC, datetime
 
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from src.model.category import Category
 from src.model.expense import Expense
@@ -18,7 +18,7 @@ def get_all_expenses(
     include_deleted: bool = False,
 ) -> list[Expense]:
     """すべての支出を取得する(削除されていないもののみ)"""
-    query = db.query(Expense).filter(Expense.user_uuid == user_uuid)
+    query = db.query(Expense).options(selectinload(Expense.categories)).filter(Expense.user_uuid == user_uuid)
     if not include_deleted:
         query = query.filter(Expense.deleted_at.is_(None))
     if year is not None and month is not None:

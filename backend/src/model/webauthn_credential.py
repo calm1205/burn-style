@@ -13,7 +13,7 @@ class WebAuthnCredential(Base):
     __tablename__ = "webauthn_credentials"
 
     uuid = Column(String(32), primary_key=True, default=generate_uuid_string)
-    user_uuid = Column(String(32), ForeignKey("users.uuid"), nullable=False)
+    user_uuid = Column(String(32), ForeignKey("users.uuid", ondelete="CASCADE"), nullable=False)
     credential_id = Column(LargeBinary, unique=True, nullable=False)
     credential_public_key = Column(LargeBinary, nullable=False)
     sign_count = Column(Integer, nullable=False, default=0)

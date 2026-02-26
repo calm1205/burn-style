@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from sqlalchemy import Column, ForeignKey, String
 from sqlalchemy.orm import relationship
 
@@ -9,7 +11,7 @@ class Category(Base):
     __tablename__ = "categories"
 
     uuid = Column(String(32), primary_key=True, default=generate_uuid_string)
-    user_uuid = Column(String(32), ForeignKey("users.uuid"), nullable=False)
+    user_uuid = Column(String(32), ForeignKey("users.uuid", ondelete="CASCADE"), nullable=False)
     name = Column(String, nullable=False)
 
     user = relationship("User")
