@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import calendar
 from datetime import UTC, datetime
 
 from sqlalchemy.orm import Session, selectinload
@@ -23,9 +22,11 @@ def get_all_expenses(
         query = query.filter(Expense.deleted_at.is_(None))
     if year is not None and month is not None:
         start = datetime(year, month, 1, tzinfo=UTC)
-        last_day = calendar.monthrange(year, month)[1]
-        end = datetime(year, month, last_day, 23, 59, 59, tzinfo=UTC)
-        query = query.filter(Expense.created_at >= start, Expense.created_at <= end)
+        if month == 12:
+            next_month_start = datetime(year + 1, 1, 1, tzinfo=UTC)
+        else:
+            next_month_start = datetime(year, month + 1, 1, tzinfo=UTC)
+        query = query.filter(Expense.created_at >= start, Expense.created_at < next_month_start)
     return query.all()
 
 
