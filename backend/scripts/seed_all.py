@@ -32,7 +32,8 @@ def resolve_user(db: Session, user_name: str | None) -> User:
     else:
         user = db.query(User).first()
         if not user:
-            raise RuntimeError("ユーザーが存在しません。先にユーザーを作成してください。")
+            print("ユーザーが存在しません。サインアップ後に再実行してください。")
+            sys.exit(0)
     return user
 
 
