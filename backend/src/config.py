@@ -23,7 +23,7 @@ def get_webauthn_rp_id() -> str:
 
 def get_webauthn_rp_name() -> str:
     """WebAuthn Relying Party名を取得"""
-    return os.getenv("WEBAUTHN_RP_NAME", "Finance API")
+    return os.getenv("WEBAUTHN_RP_NAME", "BurnStyle")
 
 
 def get_frontend_origin() -> str:

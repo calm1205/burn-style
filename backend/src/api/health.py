@@ -7,7 +7,7 @@ health_router = APIRouter()
 
 @health_router.get("/")
 async def root() -> dict[str, str]:
-    return {"message": "Finance API is running"}
+    return {"message": "BurnStyle API is running"}
 
 
 @health_router.get("/health")

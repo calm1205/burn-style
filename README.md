@@ -1,4 +1,4 @@
-# Finance
+# BurnStyle
 
 家計管理アプリ
 

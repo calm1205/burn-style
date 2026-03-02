@@ -26,7 +26,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         return response
 
 
-app = FastAPI(title="Finance API", version="1.0.0")
+app = FastAPI(title="BurnStyle API", version="1.0.0")
 
 # CORS設定
 app.add_middleware(

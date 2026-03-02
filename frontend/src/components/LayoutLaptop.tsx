@@ -22,7 +22,7 @@ export const LayoutLaptop = ({
   return (
     <aside className="hidden md:flex md:flex-col w-56 border-r border-gray-200 bg-white">
       <div className="p-4 font-bold text-lg border-b border-gray-200">
-        Finance
+        BurnStyle
       </div>
       <nav className="flex flex-1 flex-col gap-1 p-2">
         {navItems.map((item) => (
