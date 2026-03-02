@@ -1,9 +1,12 @@
+from __future__ import annotations
+
 import os
 from collections.abc import Generator
+from functools import lru_cache
 from pathlib import Path
 
 from dotenv import load_dotenv
-from sqlalchemy import create_engine
+from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 # .envファイルから環境変数を読み込む
@@ -38,24 +41,30 @@ def get_database_url() -> str:
     # ホストマシンから実行する場合のみ、ホスト名をlocalhostに変更
     # Dockerコンテナ内では"db"、ホストマシンからは"localhost"を使用
     if not is_docker and "://" in database_url and ("@db/" in database_url or "@db:" in database_url):
-        # ホストマシンから実行する場合、dbをlocalhostに置き換え
         database_url = database_url.replace("@db/", "@localhost/").replace("@db:", "@localhost:")
 
     return database_url
 
 
-DATABASE_URL = get_database_url()
-
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
 class Base(DeclarativeBase):
     pass
 
 
+@lru_cache(maxsize=1)
+def get_engine() -> Engine:
+    """エンジンを遅延生成"""
+    return create_engine(get_database_url())
+
+
+@lru_cache(maxsize=1)
+def get_session_local() -> sessionmaker[Session]:
+    """セッションファクトリを遅延生成"""
+    return sessionmaker(autocommit=False, autoflush=False, bind=get_engine())
+
+
 def get_db() -> Generator[Session]:
     """データベースセッションを取得する依存性注入用の関数"""
-    db = SessionLocal()
+    db = get_session_local()()
     try:
         yield db
     finally:

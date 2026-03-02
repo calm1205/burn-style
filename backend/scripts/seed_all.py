@@ -20,7 +20,7 @@ from sqlalchemy.orm import Session  # noqa: E402
 from scripts.seed_categories import seed_categories  # noqa: E402
 from scripts.seed_expenses import seed_expenses  # noqa: E402
 from src.model.user import User  # noqa: E402
-from src.repository.database import SessionLocal  # noqa: E402
+from src.repository.database import get_session_local  # noqa: E402
 
 
 def resolve_user(db: Session, user_name: str | None) -> User:
@@ -39,7 +39,7 @@ def resolve_user(db: Session, user_name: str | None) -> User:
 
 def seed_all(user_name: str | None = None) -> None:
     """Category、Expense テーブルに順番に seed データを投入"""
-    db: Session = SessionLocal()
+    db: Session = get_session_local()()
     try:
         user = resolve_user(db, user_name)
         print("=" * 60)
