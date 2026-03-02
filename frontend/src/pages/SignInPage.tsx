@@ -2,12 +2,13 @@ import { type SubmitEvent, useState } from "react"
 import { Link, useNavigate } from "react-router"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
+import { STORAGE_KEYS } from "../lib/constants"
 
-export const SignupPage = () => {
+export const SignInPage = () => {
+  const navigate = useNavigate()
   const [username, setUsername] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-  const navigate = useNavigate()
 
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -15,10 +16,11 @@ export const SignupPage = () => {
     setLoading(true)
 
     try {
-      await api.register(username)
-      navigate("/signin")
+      const result = await api.signIn(username)
+      localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, result.access_token)
+      navigate("/dashboard")
     } catch (err) {
-      setError(getErrorMessage(err, "Failed to sign up"))
+      setError(getErrorMessage(err, "Failed to sign in"))
     } finally {
       setLoading(false)
     }
@@ -31,7 +33,7 @@ export const SignupPage = () => {
         className="flex w-full max-w-sm flex-col gap-8"
       >
         <h1 className="text-center text-3xl font-light tracking-tight">
-          Sign Up
+          Sign In
         </h1>
 
         <div className="flex flex-col gap-6">
@@ -57,19 +59,19 @@ export const SignupPage = () => {
             disabled={loading}
             className="rounded bg-black py-3 text-sm font-medium tracking-wide text-white transition-opacity hover:opacity-80 disabled:opacity-50"
           >
-            {loading ? "Signing up..." : "Sign Up"}
+            {loading ? "Signing in..." : "Sign In"}
           </button>
         </div>
 
         {error && <p className="text-center text-sm text-red-600">{error}</p>}
 
         <p className="text-center text-sm text-gray-500">
-          {"Already have an account? "}
+          {"Don't have an account? "}
           <Link
-            to="/signin"
+            to="/signup"
             className="text-black underline underline-offset-4 hover:opacity-70"
           >
-            Sign In
+            Sign Up
           </Link>
         </p>
       </form>

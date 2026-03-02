@@ -1,2 +1,6 @@
 @import "tailwindcss";
 @import "@radix-ui/themes/styles.css";
+
+input::placeholder {
+  color: var(--color-gray-300);
+}
