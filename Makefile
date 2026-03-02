@@ -37,8 +37,9 @@ MESSAGE ?= "auto migration"
 revision: ## 新しいマイグレーションファイルを作成（使用例: make revision MESSAGE="create table"）
 	cd $(BACKEND_DIR) && uv run alembic revision --autogenerate -m "$(MESSAGE)"
 
-seed: ## seedデータを投入（使用例: make seed USER="username"）
-	cd $(BACKEND_DIR) && uv run python scripts/seed_all.py $(USER)
+SEED_USER ?=
+seed: ## seedデータを投入（使用例: make seed SEED_USER="username"）
+	cd $(BACKEND_DIR) && uv run python scripts/seed_all.py $(SEED_USER)
 
 db-clear: ## データベースの全テーブルを削除
 	@echo "全テーブルを削除します。よろしいですか? [y/N]" && read ans && [ "$$ans" = "y" ] || (echo "中止" && exit 1)
@@ -55,8 +56,8 @@ db-connect: ## PostgreSQL CLIに接続
 upgrade-prod: ## Neon本番DBにマイグレーション実行
 	cd $(BACKEND_DIR) && VERCEL_ENV=production uv run alembic upgrade head
 
-seed-prod: ## Neon本番DBにseedデータを投入（使用例: make seed-prod USER="username"）
-	cd $(BACKEND_DIR) && VERCEL_ENV=production uv run python scripts/seed_all.py $(USER)
+seed-prod: ## Neon本番DBにseedデータを投入（使用例: make seed-prod SEED_USER="username"）
+	cd $(BACKEND_DIR) && VERCEL_ENV=production uv run python scripts/seed_all.py $(SEED_USER)
 
 db-clear-prod: ## Neon本番DBの全テーブルを削除
 	@echo "本番DBの全テーブルを削除します。よろしいですか? [y/N]" && read ans && [ "$$ans" = "y" ] || (echo "中止" && exit 1)
