@@ -1,102 +1,189 @@
-"""Expense テーブルに seed データを投入するスクリプト"""
-import sys
-from pathlib import Path
+"""Expense テーブルに seed データを投入するスクリプト
+
+直近3年分のリアルなデータを生成(月ごとにカテゴリ別のパターン)
+"""
+import random
+from datetime import UTC, datetime, timedelta
 from typing import TypedDict
 
-from dotenv import load_dotenv
 from sqlalchemy.orm import Session
 
-# プロジェクトのルートをパスに追加
-sys.path.insert(0, str(Path(__file__).parent.parent))
+from src.model import Category, Expense
+from src.model.user import User
 
-# .envファイルから環境変数を読み込む(インポートの前に実行)
-load_dotenv()
+# 再現性のための固定シード
+RANDOM_SEED = 42
 
-from src.model import Category, Expense  # noqa: E402
-from src.model.user import User  # noqa: E402
-from src.repository.database import SessionLocal  # noqa: E402
+DECEMBER = 12
+
+# 賞与月(6月・12月)
+BONUS_MONTHS = {6, DECEMBER}
 
 
-class ExpenseData(TypedDict):
+class CategoryPattern(TypedDict):
+    names: list[str]
+    count: tuple[int, int]
+    amount: tuple[int, int]
+
+
+MONTHLY_PATTERNS: dict[str, CategoryPattern] = {
+    "食費": {
+        "names": [
+            "スーパー", "コンビニ", "外食ランチ", "外食ディナー",
+            "カフェ", "デリバリー", "ドラッグストア食品", "パン屋",
+        ],
+        "count": (8, 15),
+        "amount": (300, 8000),
+    },
+    "交通費": {
+        "names": ["電車代", "バス代", "タクシー代", "定期券", "ガソリン代", "駐車場代", "高速道路"],
+        "count": (3, 8),
+        "amount": (200, 5000),
+    },
+    "娯楽": {
+        "names": [
+            "映画", "書籍", "ゲーム", "サブスク(動画)", "サブスク(音楽)",
+            "カラオケ", "ボウリング", "飲み会", "旅行", "コンサート",
+        ],
+        "count": (2, 6),
+        "amount": (500, 15000),
+    },
+    "光熱費": {
+        "names": ["電気代", "ガス代", "水道代"],
+        "count": (2, 3),
+        "amount": (2000, 8000),
+    },
+    "通信費": {
+        "names": ["スマートフォン料金", "インターネット料金"],
+        "count": (1, 2),
+        "amount": (2000, 6000),
+    },
+    "医療費": {
+        "names": ["病院(内科)", "病院(歯科)", "薬代", "健康診断"],
+        "count": (0, 2),
+        "amount": (1000, 10000),
+    },
+    "教育費": {
+        "names": ["書籍(技術書)", "オンライン講座", "セミナー参加費", "資格試験"],
+        "count": (0, 2),
+        "amount": (1000, 20000),
+    },
+    "給与": {
+        "names": ["給与"],
+        "count": (1, 1),
+        "amount": (250000, 350000),
+    },
+    "賞与": {
+        "names": ["賞与"],
+        "count": (0, 0),  # 6月・12月のみ別処理
+        "amount": (400000, 600000),
+    },
+    "その他収入": {
+        "names": ["副業収入", "フリマ売上", "ポイント換金", "お祝い金"],
+        "count": (0, 1),
+        "amount": (3000, 50000),
+    },
+}
+
+
+def _random_date_in_month(year: int, month: int, rng: random.Random) -> datetime:
+    """指定月内のランダムな日時を生成"""
+    start = datetime(year, month, 1, tzinfo=UTC)
+    if month == DECEMBER:
+        next_month_start = datetime(year + 1, 1, 1, tzinfo=UTC)
+    else:
+        next_month_start = datetime(year, month + 1, 1, tzinfo=UTC)
+    delta = (next_month_start - start).days
+    day_offset = rng.randint(0, delta - 1)
+    hour = rng.randint(7, 22)
+    minute = rng.randint(0, 59)
+    return start + timedelta(days=day_offset, hours=hour, minutes=minute)
+
+
+class ExpenseRecord(TypedDict):
     name: str
     amount: int
+    created_at: datetime
     category_names: list[str]
 
 
-def seed_expenses() -> None:
-    """Expense テーブルに seed データを投入"""
-    db: Session = SessionLocal()
-    try:
-        # 最初のユーザーを取得
-        user = db.query(User).first()
-        if not user:
-            raise RuntimeError("ユーザーが存在しません。先にユーザーを作成してください。")
+def _generate_expenses(rng: random.Random) -> list[ExpenseRecord]:
+    """3年分の支出・収入データを生成"""
+    now = datetime.now(UTC)
+    records: list[ExpenseRecord] = []
 
-        # カテゴリを名前で取得(名前をキーとした辞書を作成)
-        categories = db.query(Category).filter(Category.user_uuid == user.uuid).all()
-        categories_dict: dict[str, Category] = {str(category.name): category for category in categories}
+    for year_offset in range(3):
+        year = now.year - 2 + year_offset
+        for month in range(1, 13):
+            # 未来月はスキップ
+            if datetime(year, month, 1, tzinfo=UTC) > now:
+                break
 
-        if not categories_dict:
-            raise RuntimeError("カテゴリが存在しません。先にseed_categories.pyを実行してください。")
+            for category_name, pattern in MONTHLY_PATTERNS.items():
+                # 賞与は6月・12月のみ
+                if category_name == "賞与":
+                    if month in BONUS_MONTHS:
+                        count = 1
+                    else:
+                        continue
+                else:
+                    count = rng.randint(pattern["count"][0], pattern["count"][1])
 
-        # seed データの定義
-        expense_data: list[ExpenseData] = [
-            {"name": "スーパーマーケットでの買い物", "amount": 3500, "category_names": ["食費"]},
-            {"name": "電車代", "amount": 280, "category_names": ["交通費"]},
-            {"name": "映画鑑賞", "amount": 1800, "category_names": ["娯楽"]},
-            {"name": "電気代", "amount": 4500, "category_names": ["光熱費"]},
-            {"name": "スマートフォン料金", "amount": 3500, "category_names": ["通信費"]},
-            {"name": "病院の診察料", "amount": 5000, "category_names": ["医療費"]},
-            {"name": "書籍代", "amount": 1200, "category_names": ["教育費"]},
-            {"name": "給与", "amount": 300000, "category_names": ["給与"]},
-            {"name": "ボーナス", "amount": 500000, "category_names": ["賞与"]},
-            {"name": "副業収入", "amount": 50000, "category_names": ["その他収入"]},
-            {"name": "コンビニでの買い物", "amount": 500, "category_names": ["食費"]},
-            {"name": "バス代", "amount": 210, "category_names": ["交通費"]},
-            {"name": "ゲームソフト購入", "amount": 6000, "category_names": ["娯楽"]},
-            {"name": "ガス代", "amount": 3200, "category_names": ["光熱費"]},
-            {"name": "インターネット料金", "amount": 4000, "category_names": ["通信費"]},
-            {"name": "薬代", "amount": 2000, "category_names": ["医療費"]},
-            {"name": "オンライン講座", "amount": 15000, "category_names": ["教育費"]},
-            {"name": "外食", "amount": 2500, "category_names": ["食費", "娯楽"]},
-            {"name": "タクシー代", "amount": 1200, "category_names": ["交通費"]},
-            {"name": "コンサートチケット", "amount": 8000, "category_names": ["娯楽"]},
+                for _ in range(count):
+                    amount = rng.randint(pattern["amount"][0], pattern["amount"][1])
+                    # 100円単位に丸め
+                    amount = max(100, (amount // 100) * 100)
+
+                    records.append({
+                        "name": rng.choice(pattern["names"]),
+                        "amount": amount,
+                        "created_at": _random_date_in_month(year, month, rng),
+                        "category_names": [category_name],
+                    })
+
+    return records
+
+
+def seed_expenses(db: Session, user: User) -> None:
+    """Expense テーブルに3年分の seed データを投入(既存データがあればスキップ)"""
+    existing_count = db.query(Expense).filter(Expense.user_uuid == user.uuid).count()
+    if existing_count > 0:
+        print(f"既に {existing_count} 件の支出が存在します。スキップ。")
+        return
+
+    categories = db.query(Category).filter(Category.user_uuid == user.uuid).all()
+    categories_dict: dict[str, Category] = {str(c.name): c for c in categories}
+
+    if not categories_dict:
+        raise RuntimeError("カテゴリが存在しません。先にカテゴリを投入してください。")
+
+    rng = random.Random(RANDOM_SEED)  # noqa: S311
+    records = _generate_expenses(rng)
+
+    expenses = []
+    for record in records:
+        expense = Expense(
+            user_uuid=user.uuid,
+            name=record["name"],
+            amount=record["amount"],
+            created_at=record["created_at"],
+        )
+        expense.categories = [
+            categories_dict[name]
+            for name in record["category_names"]
+            if name in categories_dict
         ]
+        expenses.append(expense)
 
-        # データを投入
-        expenses = []
-        for data in expense_data:
-            expense = Expense(
-                user_uuid=user.uuid,
-                name=data["name"],
-                amount=data["amount"],
-            )
-            # カテゴリを関連付け
-            category_names = data["category_names"]
-            expense.categories = [
-                categories_dict[name] for name in category_names if name in categories_dict
-            ]
-            expenses.append(expense)
+    db.add_all(expenses)
+    db.commit()
 
-        db.add_all(expenses)
-        db.commit()
+    # 集計表示
+    by_year: dict[int, int] = {}
+    for record in records:
+        y = record["created_at"].year
+        by_year[y] = by_year.get(y, 0) + 1
 
-        # リフレッシュしてUUIDを取得
-        for expense in expenses:
-            db.refresh(expense)
-
-        print(f"{len(expenses)} 件の支出を追加しました。")
-        for expense in expenses:
-            cat_names = ", ".join([str(cat.name) for cat in expense.categories])
-            print(f"  - {expense.name}: {expense.amount:,.0f}円 (カテゴリ: {cat_names})")
-
-    except Exception as e:
-        db.rollback()
-        print(f"エラーが発生しました: {e}")
-        raise
-    finally:
-        db.close()
-
-
-if __name__ == "__main__":
-    seed_expenses()
+    print(f"{len(expenses)} 件の支出・収入を追加しました。")
+    for y in sorted(by_year):
+        print(f"  {y}年: {by_year[y]} 件")

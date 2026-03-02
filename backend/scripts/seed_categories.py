@@ -1,66 +1,42 @@
 """Category テーブルに seed データを投入するスクリプト"""
-import sys
-from pathlib import Path
-
-from dotenv import load_dotenv
 from sqlalchemy.orm import Session
 
-# プロジェクトのルートをパスに追加
-sys.path.insert(0, str(Path(__file__).parent.parent))
+from src.model import Category
+from src.model.user import User
 
-# .envファイルから環境変数を読み込む(インポートの前に実行)
-load_dotenv()
-
-from src.model import Category  # noqa: E402
-from src.model.user import User  # noqa: E402
-from src.repository.database import SessionLocal  # noqa: E402
-
-
-def seed_categories() -> None:
-    """Category テーブルに seed データを投入"""
-    db: Session = SessionLocal()
-    try:
-        # 最初のユーザーを取得
-        user = db.query(User).first()
-        if not user:
-            raise RuntimeError("ユーザーが存在しません。先にユーザーを作成してください。")
-
-        # seed データの定義
-        category_names = [
-            "食費",
-            "交通費",
-            "娯楽",
-            "光熱費",
-            "通信費",
-            "医療費",
-            "教育費",
-            "給与",
-            "賞与",
-            "その他収入",
-        ]
-
-        # カテゴリを作成
-        categories = [Category(user_uuid=user.uuid, name=name) for name in category_names]
-
-        # データを投入
-        db.add_all(categories)
-        db.commit()
-
-        # リフレッシュしてUUIDを取得
-        for category in categories:
-            db.refresh(category)
-
-        print(f"{len(categories)} 個のカテゴリを追加しました。")
-        for category in categories:
-            print(f"  - {category.name} (UUID: {category.uuid})")
-
-    except Exception as e:
-        db.rollback()
-        print(f"エラーが発生しました: {e}")
-        raise
-    finally:
-        db.close()
+CATEGORY_NAMES = [
+    "食費",
+    "交通費",
+    "娯楽",
+    "光熱費",
+    "通信費",
+    "医療費",
+    "教育費",
+    "給与",
+    "賞与",
+    "その他収入",
+]
 
 
-if __name__ == "__main__":
-    seed_categories()
+def seed_categories(db: Session, user: User) -> None:
+    """Category テーブルに seed データを投入(既存カテゴリはスキップ)"""
+    existing = {
+        str(c.name)
+        for c in db.query(Category).filter(Category.user_uuid == user.uuid).all()
+    }
+
+    new_names = [name for name in CATEGORY_NAMES if name not in existing]
+    if not new_names:
+        print("すべてのカテゴリが既に存在します。スキップ。")
+        return
+
+    categories = [Category(user_uuid=user.uuid, name=name) for name in new_names]
+    db.add_all(categories)
+    db.commit()
+
+    for category in categories:
+        db.refresh(category)
+
+    print(f"{len(categories)} 個のカテゴリを追加しました。")
+    for category in categories:
+        print(f"  - {category.name} (UUID: {category.uuid})")
