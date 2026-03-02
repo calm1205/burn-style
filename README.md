@@ -1,6 +1,10 @@
 # BurnStyle
 
-家計管理アプリ
+> **Burn** your money, show your **Style**.
+>
+> お金の使い方には、その人の個性が宿る。
+
+支出管理アプリ。
 
 ## セットアップ
 
