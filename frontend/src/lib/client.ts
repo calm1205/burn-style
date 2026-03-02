@@ -69,10 +69,7 @@ const request = async <T>(
 }
 
 export const isApiError = (err: unknown): err is ApiError =>
-  typeof err === "object" &&
-  err !== null &&
-  "status" in err &&
-  "message" in err
+  typeof err === "object" && err !== null && "status" in err && "message" in err
 
 export const getErrorMessage = (err: unknown, fallback: string): string =>
   isApiError(err) ? err.message : fallback

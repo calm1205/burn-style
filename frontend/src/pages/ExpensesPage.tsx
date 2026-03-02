@@ -54,12 +54,19 @@ export const ExpensesPage = () => {
   }
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col items-stretch gap-12 px-6" style={{ paddingTop: "20vh" }}>
+    <div
+      className="mx-auto flex max-w-2xl flex-col items-stretch gap-12 px-6"
+      style={{ paddingTop: "20vh" }}
+    >
       <h1 className="text-center text-2xl font-bold">記帳</h1>
 
       {error && <p className="text-sm text-red-600">{error}</p>}
 
-      <form id="expense-form" onSubmit={handleCreate} className="flex flex-col gap-6">
+      <form
+        id="expense-form"
+        onSubmit={handleCreate}
+        className="flex flex-col gap-6"
+      >
         <div className="flex flex-col gap-2">
           <label htmlFor="expense-name" className="text-xs text-gray-500">
             名前
@@ -69,7 +76,9 @@ export const ExpensesPage = () => {
             type="text"
             placeholder="例: ランチ"
             value={form.name}
-            onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, name: e.target.value }))
+            }
             required
             maxLength={100}
             className="border-b border-gray-200 px-4 py-3 text-sm placeholder:text-gray-200 focus:border-gray-900 focus:outline-none"
@@ -84,7 +93,9 @@ export const ExpensesPage = () => {
             type="number"
             placeholder="例: 1000"
             value={form.amount}
-            onChange={(e) => setForm((prev) => ({ ...prev, amount: e.target.value }))}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, amount: e.target.value }))
+            }
             required
             min={1}
             max={99999999}

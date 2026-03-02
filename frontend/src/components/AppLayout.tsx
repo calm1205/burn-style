@@ -1,4 +1,9 @@
-import { BookmarkIcon, GearIcon, HomeIcon, PlusIcon } from "@radix-ui/react-icons"
+import {
+  BookmarkIcon,
+  GearIcon,
+  HomeIcon,
+  PlusIcon,
+} from "@radix-ui/react-icons"
 import { useCallback, useEffect, useState } from "react"
 import { Outlet, useNavigate } from "react-router"
 import { api } from "../lib/api"

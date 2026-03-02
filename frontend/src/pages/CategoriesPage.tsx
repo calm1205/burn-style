@@ -1,9 +1,9 @@
 import {
+  BookmarkIcon,
   CheckIcon,
   Pencil1Icon,
   PlusIcon,
   ResetIcon,
-  BookmarkIcon,
   TrashIcon,
 } from "@radix-ui/react-icons"
 import {
@@ -25,7 +25,9 @@ export const CategoriesPage = () => {
   const [name, setName] = useState("")
 
   // 編集
-  const [editing, setEditing] = useState<{ uuid: string; name: string } | null>(null)
+  const [editing, setEditing] = useState<{ uuid: string; name: string } | null>(
+    null,
+  )
   const editInputRef = useRef<HTMLInputElement>(null)
 
   const fetchData = useCallback(async () => {
@@ -88,8 +90,14 @@ export const CategoriesPage = () => {
       {/* 作成フォーム */}
       <form onSubmit={handleCreate} className="mb-6 flex items-end gap-2">
         <div className="flex-1">
-          <label className="mb-1 block text-xs text-gray-500">カテゴリ名</label>
+          <label
+            htmlFor="category-name"
+            className="mb-1 block text-xs text-gray-500"
+          >
+            カテゴリ名
+          </label>
           <input
+            id="category-name"
             type="text"
             placeholder="例: 食費、交通費"
             value={name}
@@ -127,7 +135,11 @@ export const CategoriesPage = () => {
                   ref={editInputRef}
                   type="text"
                   value={editing?.name ?? ""}
-                  onChange={(e) => setEditing((prev) => prev ? { ...prev, name: e.target.value } : null)}
+                  onChange={(e) =>
+                    setEditing((prev) =>
+                      prev ? { ...prev, name: e.target.value } : null,
+                    )
+                  }
                   maxLength={50}
                   className="flex-1 text-sm outline-none"
                 />

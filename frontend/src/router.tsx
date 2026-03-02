@@ -4,8 +4,8 @@ import { ProtectedRoute } from "./components/ProtectedRoute"
 import { CategoriesPage } from "./pages/CategoriesPage"
 import { DashboardPage } from "./pages/DashboardPage"
 import { ExpensesPage } from "./pages/ExpensesPage"
-import { SignInPage } from "./pages/SignInPage"
 import { SettingsPage } from "./pages/SettingsPage"
+import { SignInPage } from "./pages/SignInPage"
 import { SignupPage } from "./pages/SignupPage"
 
 export const router = createBrowserRouter([
