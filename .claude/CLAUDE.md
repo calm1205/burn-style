@@ -12,6 +12,10 @@
 - フロントエンド: React + Vite + Tailwind CSS v4
 - 認証: WebAuthn/パスキー + JWT
 
+## 開発フロー
+- コード修正後は必ず `make lint` と `make test-backend` を実行
+- エラーがあれば全て修正してから完了とする
+
 ## ルールファイル
 - [アーキテクチャ](rules/architecture.md) - レイヤド設計・ディレクトリ構造
 - [バックエンド](rules/backend.md) - Python / FastAPI / SQLAlchemy 規約
