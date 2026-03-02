@@ -8,7 +8,7 @@
 
 ## ディレクトリ構造
 ```
-finance/
+burn-style/
 ├── backend/
 │   ├── src/
 │   │   ├── api/          # ルーター・エンドポイント定義

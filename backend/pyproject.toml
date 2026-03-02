@@ -1,7 +1,7 @@
 [project]
-name = "finance"
+name = "burn-style"
 version = "0.1.0"
-description = "Finance API"
+description = "BurnStyle API"
 requires-python = ">=3.14"
 scripts = { app = "src.main:app" }
 dependencies = [

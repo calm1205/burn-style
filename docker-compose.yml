@@ -3,7 +3,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: finance_backend
+    container_name: burn-style_backend
     command: uv run uvicorn src.main:app --host 0.0.0.0 --port ${API_PORT} --reload
     env_file:
       - .env
@@ -31,7 +31,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: finance_frontend
+    container_name: burn-style_frontend
     command: npx vite --host 0.0.0.0 --port ${FRONTEND_PORT}
     env_file:
       - .env
@@ -52,7 +52,7 @@ services:
     build:
       context: ./db
       dockerfile: Dockerfile.db
-    container_name: finance_db
+    container_name: burn-style_db
     env_file:
       - .env
     ports:
