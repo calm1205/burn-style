@@ -28,7 +28,10 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
 app = FastAPI(title="BurnStyle API", version="1.0.0")
 
-# CORS設定
+# ミドルウェア（後から追加したものが外側になる）
+# リクエスト順: CORS → SecurityHeaders → TokenRefresh → ルーター
+app.add_middleware(TokenRefreshMiddleware)
+app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[get_frontend_origin()],
@@ -37,12 +40,6 @@ app.add_middleware(
     allow_headers=["Content-Type", "Authorization"],
     expose_headers=["X-New-Token"],
 )
-
-# セキュリティヘッダーミドルウェア
-app.add_middleware(SecurityHeadersMiddleware)
-
-# トークン自動更新ミドルウェア
-app.add_middleware(TokenRefreshMiddleware)
 
 # ルーターを登録
 app.include_router(health_router)
