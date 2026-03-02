@@ -79,7 +79,7 @@ def register_verify(
             expected_origin=get_frontend_origin(),
         )
     except Exception:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Registration failed")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Registration failed") from None
 
     user = create_user(db, body.name)
 
@@ -165,7 +165,7 @@ def sign_in_verify(
             credential_current_sign_count=stored_credential.sign_count,  # type: ignore[arg-type]
         )
     except Exception:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Authentication failed")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Authentication failed") from None
 
     update_sign_count(db, stored_credential, verification.new_sign_count)
 

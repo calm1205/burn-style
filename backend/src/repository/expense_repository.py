@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session, selectinload
 from src.model.category import Category
 from src.model.expense import Expense
 
+DECEMBER = 12
 
 def get_all_expenses(
     db: Session,
@@ -22,7 +23,7 @@ def get_all_expenses(
         query = query.filter(Expense.deleted_at.is_(None))
     if year is not None and month is not None:
         start = datetime(year, month, 1, tzinfo=UTC)
-        if month == 12:
+        if month == DECEMBER:
             next_month_start = datetime(year + 1, 1, 1, tzinfo=UTC)
         else:
             next_month_start = datetime(year, month + 1, 1, tzinfo=UTC)
