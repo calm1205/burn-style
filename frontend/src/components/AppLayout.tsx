@@ -32,7 +32,7 @@ export const AppLayout = () => {
 
   const onLogout = () => {
     localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN)
-    navigate("/login")
+    navigate("/signin")
   }
 
   return (

@@ -24,14 +24,14 @@ from src.repository.webauthn_repository import (
     update_sign_count,
 )
 from src.schema.auth import (
-    LoginOptionsRequest,
-    LoginOptionsResponse,
-    LoginVerifyRequest,
-    LoginVerifyResponse,
     RegisterOptionsRequest,
     RegisterOptionsResponse,
     RegisterVerifyRequest,
     RegisterVerifyResponse,
+    SignInOptionsRequest,
+    SignInOptionsResponse,
+    SignInVerifyRequest,
+    SignInVerifyResponse,
 )
 from src.service.challenge_store import challenge_store
 from src.service.jwt_service import create_access_token
@@ -99,11 +99,11 @@ def register_verify(
     return RegisterVerifyResponse(message="Registration successful")
 
 
-@auth_router.post("/login/options")
-def login_options(
-    body: LoginOptionsRequest,
+@auth_router.post("/signin/options")
+def sign_in_options(
+    body: SignInOptionsRequest,
     db: Annotated[Session, Depends(get_db)],
-) -> LoginOptionsResponse:
+) -> SignInOptionsResponse:
     """認証オプション生成"""
     user = get_user_by_name(db, body.name)
     if user is None:
@@ -129,14 +129,14 @@ def login_options(
     challenge_store.save(body.name, options.challenge)
 
     options_json: dict[str, Any] = json.loads(options_to_json(options))
-    return LoginOptionsResponse(options=options_json)
+    return SignInOptionsResponse(options=options_json)
 
 
-@auth_router.post("/login/verify")
-def login_verify(
-    body: LoginVerifyRequest,
+@auth_router.post("/signin/verify")
+def sign_in_verify(
+    body: SignInVerifyRequest,
     db: Annotated[Session, Depends(get_db)],
-) -> LoginVerifyResponse:
+) -> SignInVerifyResponse:
     """認証検証 → JWTトークン返却"""
     challenge = challenge_store.get(body.name)
     if challenge is None:
@@ -171,4 +171,4 @@ def login_verify(
 
     access_token = create_access_token(user.uuid)  # type: ignore[arg-type]
 
-    return LoginVerifyResponse(access_token=access_token, token_type="bearer")  # noqa: S106
+    return SignInVerifyResponse(access_token=access_token, token_type="bearer")  # noqa: S106

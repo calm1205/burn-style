@@ -22,20 +22,20 @@ class RegisterVerifyResponse(BaseModel):
     message: str
 
 
-class LoginOptionsRequest(BaseModel):
+class SignInOptionsRequest(BaseModel):
     name: str
 
 
-class LoginOptionsResponse(BaseModel):
+class SignInOptionsResponse(BaseModel):
     options: dict[str, Any]
 
 
-class LoginVerifyRequest(BaseModel):
+class SignInVerifyRequest(BaseModel):
     name: str
     credential: dict[str, Any]
 
 
-class LoginVerifyResponse(BaseModel):
+class SignInVerifyResponse(BaseModel):
     access_token: str
     token_type: str
 

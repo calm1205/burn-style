@@ -1,12 +1,12 @@
 from src.schema.auth import (
-    LoginOptionsRequest,
-    LoginOptionsResponse,
-    LoginVerifyRequest,
-    LoginVerifyResponse,
     RegisterOptionsRequest,
     RegisterOptionsResponse,
     RegisterVerifyRequest,
     RegisterVerifyResponse,
+    SignInOptionsRequest,
+    SignInOptionsResponse,
+    SignInVerifyRequest,
+    SignInVerifyResponse,
     UserResponse,
 )
 from src.schema.category import CategoryCreate, CategoryResponse
@@ -17,14 +17,14 @@ __all__ = [
     "CategoryResponse",
     "ExpenseCreate",
     "ExpenseResponse",
-    "LoginOptionsRequest",
-    "LoginOptionsResponse",
-    "LoginVerifyRequest",
-    "LoginVerifyResponse",
     "RegisterOptionsRequest",
     "RegisterOptionsResponse",
     "RegisterVerifyRequest",
     "RegisterVerifyResponse",
+    "SignInOptionsRequest",
+    "SignInOptionsResponse",
+    "SignInVerifyRequest",
+    "SignInVerifyResponse",
     "UserResponse",
 ]
 

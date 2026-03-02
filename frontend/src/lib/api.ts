@@ -6,10 +6,10 @@ import type {
   ExpenseCreate,
   ExpenseResponse,
   ExpenseUpdate,
-  LoginOptionsResponse,
-  LoginVerifyResponse,
   RegisterOptionsResponse,
   RegisterVerifyResponse,
+  SignInOptionsResponse,
+  SignInVerifyResponse,
   UserResponse,
 } from "./types"
 
@@ -36,9 +36,9 @@ const register = async (username: string): Promise<RegisterVerifyResponse> => {
   })
 }
 
-const login = async (username: string): Promise<LoginVerifyResponse> => {
-  const { options } = await client.post<LoginOptionsResponse>(
-    "/auth/login/options",
+const signIn = async (username: string): Promise<SignInVerifyResponse> => {
+  const { options } = await client.post<SignInOptionsResponse>(
+    "/auth/signin/options",
     { name: username },
   )
 
@@ -51,7 +51,7 @@ const login = async (username: string): Promise<LoginVerifyResponse> => {
 
   const credentialJson = (credential as PublicKeyCredential).toJSON()
 
-  return client.post<LoginVerifyResponse>("/auth/login/verify", {
+  return client.post<SignInVerifyResponse>("/auth/signin/verify", {
     name: username,
     credential: credentialJson,
   })
@@ -80,7 +80,10 @@ const deleteCategory = (uuid: string): Promise<void> =>
 
 // --- 支出 ---
 
-const getExpenses = (year?: number, month?: number): Promise<ExpenseResponse[]> => {
+const getExpenses = (
+  year?: number,
+  month?: number,
+): Promise<ExpenseResponse[]> => {
   const params = new URLSearchParams()
   if (year !== undefined) params.set("year", String(year))
   if (month !== undefined) params.set("month", String(month))
@@ -102,7 +105,7 @@ const deleteExpense = (uuid: string): Promise<void> =>
 
 export const api = {
   register,
-  login,
+  signIn,
   getMe,
   getCategories,
   createCategory,

@@ -4,13 +4,13 @@ import { ProtectedRoute } from "./components/ProtectedRoute"
 import { CategoriesPage } from "./pages/CategoriesPage"
 import { DashboardPage } from "./pages/DashboardPage"
 import { ExpensesPage } from "./pages/ExpensesPage"
-import { LoginPage } from "./pages/LoginPage"
+import { SignInPage } from "./pages/SignInPage"
 import { SettingsPage } from "./pages/SettingsPage"
 import { SignupPage } from "./pages/SignupPage"
 
 export const router = createBrowserRouter([
   { path: "/signup", element: <SignupPage /> },
-  { path: "/login", element: <LoginPage /> },
+  { path: "/signin", element: <SignInPage /> },
   {
     element: (
       <ProtectedRoute>

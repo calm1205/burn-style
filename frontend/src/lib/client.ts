@@ -45,7 +45,7 @@ const request = async <T>(
 
   if (response.status === 401) {
     localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN)
-    window.location.href = "/login"
+    window.location.href = "/signin"
     const apiError: ApiError = { status: 401, message: "認証が切れました" }
     throw apiError
   }

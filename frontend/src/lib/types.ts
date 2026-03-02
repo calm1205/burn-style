@@ -6,11 +6,11 @@ export interface RegisterVerifyResponse {
   message: string
 }
 
-export interface LoginOptionsResponse {
+export interface SignInOptionsResponse {
   options: PublicKeyCredentialRequestOptionsJSON
 }
 
-export interface LoginVerifyResponse {
+export interface SignInVerifyResponse {
   access_token: string
   token_type: string
 }
