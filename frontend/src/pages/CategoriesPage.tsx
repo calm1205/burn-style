@@ -54,10 +54,23 @@ export const CategoriesPage = () => {
     }
   }
 
-  const handleDelete = async (uuid: string) => {
+  const [deleteTarget, setDeleteTarget] = useState<CategoryResponse | null>(
+    null,
+  )
+  const dialogRef = useRef<HTMLDialogElement>(null)
+
+  const confirmDelete = (c: CategoryResponse) => {
+    setDeleteTarget(c)
+    dialogRef.current?.showModal()
+  }
+
+  const handleDelete = async () => {
+    if (!deleteTarget) return
     setError("")
     try {
-      await api.deleteCategory(uuid)
+      await api.deleteCategory(deleteTarget.uuid)
+      setDeleteTarget(null)
+      dialogRef.current?.close()
       await fetchData()
     } catch (err) {
       setError(getErrorMessage(err, "削除に失敗"))
@@ -170,7 +183,7 @@ export const CategoriesPage = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleDelete(c.uuid)}
+                  onClick={() => confirmDelete(c)}
                   className="text-red-400 hover:text-red-600"
                 >
                   <TrashIcon className="size-3.5" />
@@ -184,6 +197,30 @@ export const CategoriesPage = () => {
       {categories.length === 0 && (
         <p className="text-center text-gray-500">カテゴリがありません</p>
       )}
+
+      <dialog
+        ref={dialogRef}
+        className="rounded-lg p-6 backdrop:bg-black/50"
+        onClose={() => setDeleteTarget(null)}
+      >
+        <p className="mb-6 text-sm">「{deleteTarget?.name}」を削除しますか?</p>
+        <div className="flex justify-end gap-3">
+          <button
+            type="button"
+            onClick={() => dialogRef.current?.close()}
+            className="rounded px-4 py-2 text-sm text-gray-500 hover:bg-gray-100"
+          >
+            キャンセル
+          </button>
+          <button
+            type="button"
+            onClick={handleDelete}
+            className="rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
+          >
+            削除
+          </button>
+        </div>
+      </dialog>
     </div>
   )
 }
