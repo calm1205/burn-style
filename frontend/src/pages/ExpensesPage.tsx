@@ -8,7 +8,12 @@ export const ExpensesPage = () => {
   const [error, setError] = useState("")
 
   // 作成フォーム
-  const today = new Date().toISOString().slice(0, 10)
+  const now = new Date()
+  const toLocalDatetime = (d: Date) => {
+    const pad = (n: number) => String(n).padStart(2, "0")
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+  }
+  const today = toLocalDatetime(now)
   const [form, setForm] = useState({
     name: "",
     amount: "",
@@ -112,11 +117,11 @@ export const ExpensesPage = () => {
         </div>
         <div className="flex flex-col gap-2">
           <label htmlFor="expense-date" className="text-xs text-gray-500">
-            日付
+            日時
           </label>
           <input
             id="expense-date"
-            type="date"
+            type="datetime-local"
             value={form.expensedAt}
             onChange={(e) =>
               setForm((prev) => ({ ...prev, expensedAt: e.target.value }))
