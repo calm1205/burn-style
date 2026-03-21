@@ -1,4 +1,4 @@
-import { Cell, Pie, PieChart, type PieLabelRenderProps } from "recharts"
+import { Cell, Customized, Pie, PieChart } from "recharts"
 import type { ExpenseResponse } from "../lib/types"
 
 const COLORS = [
@@ -12,55 +12,121 @@ const COLORS = [
   "#b0a8b8",
 ]
 
+const CHART_WIDTH = 360
+const CHART_HEIGHT = 300
+const CX = CHART_WIDTH / 2
+const CY = CHART_HEIGHT / 2
+const INNER_RADIUS = 45
+const OUTER_RADIUS = 70
+const LABEL_HEIGHT = 30
+const RADIAN = Math.PI / 180
+
 interface CategoryTotal {
   name: string
   amount: number
 }
 
-const renderLabel = (props: PieLabelRenderProps) => {
-  const { cx, cy, midAngle, outerRadius, name, value } = props
-  const RADIAN = Math.PI / 180
-  const cxNum = Number(cx)
-  const cyNum = Number(cy)
-  const outerR = Number(outerRadius)
-  const angle = Number(midAngle)
+interface LabelPosition {
+  name: string
+  amount: number
+  startX: number
+  startY: number
+  endX: number
+  labelY: number
+  isRight: boolean
+}
 
-  const startX = cxNum + outerR * Math.cos(-angle * RADIAN)
-  const startY = cyNum + outerR * Math.sin(-angle * RADIAN)
-  const midX = cxNum + (outerR + 20) * Math.cos(-angle * RADIAN)
-  const midY = cyNum + (outerR + 20) * Math.sin(-angle * RADIAN)
-  const isRight = midX > cxNum
-  const endX = isRight ? midX + 20 : midX - 20
-  const textAnchor = isRight ? "start" : "end"
+const computeLabelPositions = (data: CategoryTotal[]): LabelPosition[] => {
+  const total = data.reduce((sum, d) => sum + d.amount, 0)
+  const raw: LabelPosition[] = []
+
+  let currentAngle = 90
+  for (const d of data) {
+    const sliceAngle = (d.amount / total) * 360
+    const midAngle = currentAngle - sliceAngle / 2
+
+    const startX = CX + OUTER_RADIUS * Math.cos(-midAngle * RADIAN)
+    const startY = CY + OUTER_RADIUS * Math.sin(-midAngle * RADIAN)
+    const midX = CX + (OUTER_RADIUS + 20) * Math.cos(-midAngle * RADIAN)
+    const midY = CY + (OUTER_RADIUS + 20) * Math.sin(-midAngle * RADIAN)
+    const isRight = midX > CX
+
+    raw.push({
+      name: d.name,
+      amount: d.amount,
+      startX,
+      startY,
+      endX: isRight ? CX + OUTER_RADIUS + 50 : CX - OUTER_RADIUS - 50,
+      labelY: midY,
+      isRight,
+    })
+
+    currentAngle -= sliceAngle
+  }
+
+  const rightLabels = raw
+    .filter((l) => l.isRight)
+    .sort((a, b) => a.labelY - b.labelY)
+  const leftLabels = raw
+    .filter((l) => !l.isRight)
+    .sort((a, b) => a.labelY - b.labelY)
+
+  const resolveOverlap = (labels: LabelPosition[]) => {
+    for (let i = 1; i < labels.length; i++) {
+      const prev = labels[i - 1]
+      const curr = labels[i]
+      if (curr.labelY - prev.labelY < LABEL_HEIGHT) {
+        curr.labelY = prev.labelY + LABEL_HEIGHT
+      }
+    }
+  }
+
+  resolveOverlap(rightLabels)
+  resolveOverlap(leftLabels)
+
+  return [...rightLabels, ...leftLabels]
+}
+
+const Labels = ({ data }: { data: CategoryTotal[] }) => {
+  const positions = computeLabelPositions(data)
 
   return (
     <g>
-      <polyline
-        points={`${startX},${startY} ${midX},${midY} ${endX},${midY}`}
-        fill="none"
-        stroke="#9ca3af"
-        strokeWidth={1}
-      />
-      <text
-        x={endX + (isRight ? 4 : -4)}
-        y={midY}
-        textAnchor={textAnchor}
-        dominantBaseline="central"
-        className="text-xs"
-        fill="#6b7280"
-      >
-        {name}
-      </text>
-      <text
-        x={endX + (isRight ? 4 : -4)}
-        y={midY + 14}
-        textAnchor={textAnchor}
-        dominantBaseline="central"
-        className="text-xs"
-        fill="#9ca3af"
-      >
-        {Number(value).toLocaleString()}円
-      </text>
+      {positions.map((p) => {
+        const textAnchor = p.isRight ? "start" : "end"
+        const textX = p.endX + (p.isRight ? 4 : -4)
+
+        return (
+          <g key={p.name}>
+            <polyline
+              points={`${p.startX},${p.startY} ${p.endX},${p.labelY} ${p.endX},${p.labelY}`}
+              fill="none"
+              stroke="#9ca3af"
+              strokeWidth={1}
+            />
+            <text
+              x={textX}
+              y={p.labelY - 6}
+              textAnchor={textAnchor}
+              dominantBaseline="central"
+              fontSize={11}
+              fill="#6b7280"
+            >
+              {p.name}
+            </text>
+            <text
+              x={textX}
+              y={p.labelY + 8}
+              textAnchor={textAnchor}
+              dominantBaseline="central"
+              fontSize={11}
+              fill="#9ca3af"
+            >
+              {p.amount.toLocaleString()}円
+            </text>
+          </g>
+        )
+      })}
     </g>
   )
 }
@@ -92,23 +158,23 @@ export const CategoryPieChart = ({ expenses }: CategoryPieChartProps) => {
 
   return (
     <div className="mt-6 flex justify-center">
-      <PieChart width={360} height={280}>
+      <PieChart width={CHART_WIDTH} height={CHART_HEIGHT}>
         <Pie
           data={categoryData}
           dataKey="amount"
           nameKey="name"
-          cx="50%"
-          cy="50%"
-          innerRadius={45}
-          outerRadius={70}
+          cx={CX}
+          cy={CY}
+          innerRadius={INNER_RADIUS}
+          outerRadius={OUTER_RADIUS}
           strokeWidth={2}
-          label={renderLabel}
           isAnimationActive={false}
         >
           {categoryData.map((_, i) => (
             <Cell key={categoryData[i].name} fill={COLORS[i % COLORS.length]} />
           ))}
         </Pie>
+        <Customized component={() => <Labels data={categoryData} />} />
       </PieChart>
     </div>
   )
