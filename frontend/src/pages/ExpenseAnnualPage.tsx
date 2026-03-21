@@ -1,13 +1,32 @@
 import {
+  ActivityLogIcon,
   DoubleArrowLeftIcon,
   DoubleArrowRightIcon,
+  ListBulletIcon,
+  MixIcon,
 } from "@radix-ui/react-icons"
 import { useCallback, useEffect, useMemo, useState } from "react"
+import { useSearchParams } from "react-router"
+import { AnnualAreaChart } from "../components/AnnualAreaChart"
+import { AnnualLineChart } from "../components/AnnualLineChart"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
 import type { ExpenseResponse } from "../lib/types"
 
+type Tab = "list" | "area" | "line"
+const VALID_TABS: Tab[] = ["list", "area", "line"]
+
 export const ExpenseAnnualPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const tabParam = searchParams.get("tab")
+  const tab: Tab = VALID_TABS.includes(tabParam as Tab)
+    ? (tabParam as Tab)
+    : "list"
+
+  const setTab = (t: Tab) => {
+    setSearchParams(t === "list" ? {} : { tab: t }, { replace: true })
+  }
+
   const now = new Date()
   const [year, setYear] = useState(now.getFullYear())
   const [expenses, setExpenses] = useState<ExpenseResponse[]>([])
@@ -66,19 +85,59 @@ export const ExpenseAnnualPage = () => {
         </button>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto flex flex-col gap-2 pt-4">
-        {monthlyTotals.map((amount, i) => (
-          <div
-            key={`month-${String(i)}`}
-            className="flex items-center justify-between rounded-lg border border-gray-200 px-4 py-3"
+      <div className="flex shrink-0 gap-4 border-b border-gray-200">
+        {[
+          { key: "list" as const, label: "list", icon: ListBulletIcon },
+          { key: "area" as const, label: "area chart", icon: MixIcon },
+          {
+            key: "line" as const,
+            label: "line chart",
+            icon: ActivityLogIcon,
+          },
+        ].map(({ key, label, icon: Icon }) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => setTab(key)}
+            className={`flex items-center gap-1.5 border-b-2 px-1 py-2 text-sm ${
+              tab === key
+                ? "border-blue-500 text-blue-500"
+                : "border-transparent text-gray-400 hover:text-gray-600"
+            }`}
           >
-            <span className="text-sm">{i + 1}月</span>
-            <span className="text-sm font-mono">
-              {amount.toLocaleString()}円
-            </span>
-          </div>
+            <Icon />
+            {label}
+          </button>
         ))}
       </div>
+
+      {tab === "list" && (
+        <div className="min-h-0 flex-1 overflow-y-auto flex flex-col gap-2 pt-4">
+          {monthlyTotals.map((amount, i) => (
+            <div
+              key={`month-${String(i)}`}
+              className="flex items-center justify-between rounded-lg border border-gray-200 px-4 py-3"
+            >
+              <span className="text-sm">{i + 1}月</span>
+              <span className="text-sm font-mono">
+                {amount.toLocaleString()}円
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {tab === "area" && (
+        <div className="min-h-0 flex-1 overflow-y-auto pt-4">
+          <AnnualAreaChart expenses={expenses} />
+        </div>
+      )}
+
+      {tab === "line" && (
+        <div className="min-h-0 flex-1 overflow-y-auto pt-4">
+          <AnnualLineChart expenses={expenses} />
+        </div>
+      )}
     </div>
   )
 }
