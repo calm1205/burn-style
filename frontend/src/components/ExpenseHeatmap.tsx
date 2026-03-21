@@ -56,7 +56,7 @@ export const ExpenseHeatmap = ({
   }
 
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div className="flex flex-col gap-2 px-5">
       <div className="grid grid-cols-7 gap-1">
         {WEEKDAYS.map((d) => (
           <div
