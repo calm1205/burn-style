@@ -1,3 +1,4 @@
+import { ChevronRightIcon } from "@radix-ui/react-icons"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router"
 import { CategoryPieChart } from "../components/CategoryPieChart"
@@ -32,21 +33,24 @@ export const TopPage = () => {
 
   return (
     <div className="flex h-full flex-col px-6">
-      <h1 className="shrink-0 pt-6 text-center text-lg font-bold">BurnStyle</h1>
+      <h1 className="shrink-0 pt-6 text-lg font-bold">BurnStyle</h1>
       {error && <p className="text-sm text-red-600">{error}</p>}
-      <div className="flex flex-1 flex-col items-center justify-center text-center">
-        <p className="text-sm text-gray-500">
-          {year}/{month}の支出
-        </p>
-        <p
-          className="cursor-pointer text-4xl font-bold hover:text-gray-600"
+      <div className="flex flex-1 flex-col items-center justify-center">
+        <button
+          type="button"
+          className="flex w-full max-w-sm items-center justify-between rounded-lg border border-gray-200 px-5 py-4 hover:bg-gray-50"
           onClick={() => navigate("/expense/monthly")}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") navigate("/expense/monthly")
-          }}
         >
-          {total.toLocaleString()}円
-        </p>
+          <div className="flex flex-col items-start gap-1">
+            <span className="text-sm text-gray-500">
+              {year}/{month}の支出
+            </span>
+            <span className="text-3xl font-bold">
+              {total.toLocaleString()}円
+            </span>
+          </div>
+          <ChevronRightIcon className="size-5 text-gray-400" />
+        </button>
 
         <CategoryPieChart expenses={expenses} />
 
