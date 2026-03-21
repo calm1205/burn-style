@@ -4,12 +4,14 @@ import type { ExpenseResponse } from "../lib/types"
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 const getColor = (amount: number, max: number) => {
-  if (amount === 0 || max === 0) return "bg-gray-100"
+  if (amount === 0 || max === 0)
+    return { bg: "bg-gray-100", text: "text-gray-600" }
   const ratio = amount / max
-  if (ratio > 0.75) return "bg-blue-700"
-  if (ratio > 0.5) return "bg-blue-500"
-  if (ratio > 0.25) return "bg-blue-300"
-  return "bg-blue-100"
+  if (ratio > 0.8) return { bg: "bg-blue-800", text: "text-white" }
+  if (ratio > 0.6) return { bg: "bg-blue-600", text: "text-gray-600" }
+  if (ratio > 0.4) return { bg: "bg-blue-400", text: "text-gray-600" }
+  if (ratio > 0.2) return { bg: "bg-blue-200", text: "text-gray-600" }
+  return { bg: "bg-blue-100", text: "text-gray-600" }
 }
 
 interface ExpenseHeatmapProps {
@@ -68,11 +70,12 @@ export const ExpenseHeatmap = ({
         ))}
         {cells.map((day, i) => {
           const amount = day ? (dailyTotals.get(day) ?? 0) : 0
+          const color = day !== null ? getColor(amount, maxAmount) : null
           return (
             <div
               key={`${day ?? "empty"}-${String(i)}`}
               className={`flex aspect-square items-center justify-center rounded text-xs ${
-                day === null ? "" : getColor(amount, maxAmount)
+                color ? `${color.bg} ${color.text}` : ""
               }`}
               title={
                 day
@@ -80,7 +83,7 @@ export const ExpenseHeatmap = ({
                   : undefined
               }
             >
-              {day && <span className="text-gray-600">{day}</span>}
+              {day}
             </div>
           )
         })}
