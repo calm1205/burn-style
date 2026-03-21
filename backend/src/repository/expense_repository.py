@@ -22,12 +22,16 @@ def get_all_expenses(
     query = db.query(Expense).options(selectinload(Expense.categories)).filter(Expense.user_uuid == user_uuid)
     if not include_deleted:
         query = query.filter(Expense.deleted_at.is_(None))
-    if year is not None and month is not None:
-        jst_start = dt.datetime(year, month, 1, tzinfo=JST)
-        if month == DECEMBER:
-            jst_next = dt.datetime(year + 1, 1, 1, tzinfo=JST)
+    if year is not None:
+        if month is not None:
+            jst_start = dt.datetime(year, month, 1, tzinfo=JST)
+            if month == DECEMBER:
+                jst_next = dt.datetime(year + 1, 1, 1, tzinfo=JST)
+            else:
+                jst_next = dt.datetime(year, month + 1, 1, tzinfo=JST)
         else:
-            jst_next = dt.datetime(year, month + 1, 1, tzinfo=JST)
+            jst_start = dt.datetime(year, 1, 1, tzinfo=JST)
+            jst_next = dt.datetime(year + 1, 1, 1, tzinfo=JST)
         utc_start = jst_start.astimezone(dt.UTC).replace(tzinfo=None)
         utc_next = jst_next.astimezone(dt.UTC).replace(tzinfo=None)
         query = query.filter(Expense.expensed_at >= utc_start, Expense.expensed_at < utc_next)
