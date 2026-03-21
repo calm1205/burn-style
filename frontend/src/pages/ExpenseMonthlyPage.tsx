@@ -8,16 +8,16 @@ import {
 } from "@radix-ui/react-icons"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useSearchParams } from "react-router"
+import { CategoryBubbleChart } from "../components/CategoryBubbleChart"
 import { CategoryPieChart } from "../components/CategoryPieChart"
-import { DailyAreaChart } from "../components/DailyAreaChart"
 import { ExpenseHeatmap } from "../components/ExpenseHeatmap"
 import { ExpenseList } from "../components/ExpenseList"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
 import type { ExpenseResponse } from "../lib/types"
 
-type Tab = "list" | "pie" | "heatmap" | "area"
-const VALID_TABS: Tab[] = ["list", "pie", "heatmap", "area"]
+type Tab = "list" | "pie" | "heatmap" | "bubble"
+const VALID_TABS: Tab[] = ["list", "pie", "heatmap", "bubble"]
 
 export const ExpenseMonthlyPage = () => {
   const now = new Date()
@@ -118,7 +118,7 @@ export const ExpenseMonthlyPage = () => {
           { key: "list" as const, label: "list", icon: ListBulletIcon },
           { key: "pie" as const, label: "pie", icon: PieChartIcon },
           { key: "heatmap" as const, label: "heat map", icon: CalendarIcon },
-          { key: "area" as const, label: "area", icon: MixIcon },
+          { key: "bubble" as const, label: "bubble", icon: MixIcon },
         ].map(({ key, label, icon: Icon }) => (
           <button
             key={key}
@@ -150,9 +150,9 @@ export const ExpenseMonthlyPage = () => {
         </div>
       )}
 
-      {tab === "area" && (
+      {tab === "bubble" && (
         <div className="min-h-0 flex-1 overflow-y-auto pt-4">
-          <DailyAreaChart year={year} month={month} expenses={expenses} />
+          <CategoryBubbleChart expenses={expenses} />
         </div>
       )}
     </div>
