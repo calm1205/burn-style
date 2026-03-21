@@ -18,7 +18,7 @@ export const SignInPage = () => {
     try {
       const result = await api.signIn(username)
       localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, result.access_token)
-      navigate("/dashboard")
+      navigate("/")
     } catch (err) {
       setError(getErrorMessage(err, "Failed to sign in"))
     } finally {
