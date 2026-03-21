@@ -3,7 +3,7 @@
 ## 技術スタック
 - **言語**: TypeScript 5.9
 - **UIライブラリ**: React 19
-- **ビルドツール**: Vite 7
+- **ビルドツール**: Vite 8
 - **CSS**: Tailwind CSS v4
 - **UIコンポーネント**: Radix UI Themes
 - **リンター/フォーマッター**: Biome 2.x
