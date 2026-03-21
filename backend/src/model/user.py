@@ -19,4 +19,15 @@ class User(Base):
         DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC), nullable=False,
     )
 
-    webauthn_credentials = relationship("WebAuthnCredential", back_populates="user")
+    webauthn_credentials = relationship(
+        "WebAuthnCredential", back_populates="user", cascade="all, delete-orphan", passive_deletes=True,
+    )
+    categories = relationship(
+        "Category", cascade="all, delete-orphan", passive_deletes=True, overlaps="user",
+    )
+    expenses = relationship(
+        "Expense", cascade="all, delete-orphan", passive_deletes=True, overlaps="user",
+    )
+    expense_templates = relationship(
+        "ExpenseTemplate", cascade="all, delete-orphan", passive_deletes=True, overlaps="user",
+    )
