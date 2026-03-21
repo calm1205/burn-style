@@ -9,10 +9,10 @@ from src.model.utils import generate_uuid_string
 from src.repository.database import Base
 
 
-class SubscriptionTemplate(Base):
-    __tablename__ = "subscription_templates"
+class ExpenseTemplate(Base):
+    __tablename__ = "expense_templates"
     __table_args__ = (
-        CheckConstraint("amount > 0", name="check_subscription_amount_positive"),
+        CheckConstraint("amount > 0", name="check_expense_template_amount_positive"),
     )
 
     uuid = Column(String(32), primary_key=True, default=generate_uuid_string)

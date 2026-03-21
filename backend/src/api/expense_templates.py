@@ -10,43 +10,43 @@ from src.api.deps import get_current_user
 from src.model.category import Category
 from src.model.expense import Expense
 from src.model.expense_category_association import ExpenseCategoryAssociation
-from src.model.subscription_template import SubscriptionTemplate
+from src.model.expense_template import ExpenseTemplate
 from src.model.user import User
 from src.repository.database import get_db
-from src.schema.subscription_template import (
+from src.schema.expense_template import (
     BulkRecordRequest,
     BulkRecordResponse,
-    SubscriptionTemplateCreate,
-    SubscriptionTemplateResponse,
-    SubscriptionTemplateUpdate,
+    ExpenseTemplateCreate,
+    ExpenseTemplateResponse,
+    ExpenseTemplateUpdate,
 )
 
-subscription_template_router = APIRouter(prefix="/subscription-templates", tags=["subscription-templates"])
+expense_template_router = APIRouter(prefix="/expense-templates", tags=["expense-templates"])
 
 
-@subscription_template_router.get("")
+@expense_template_router.get("")
 def list_templates(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
-) -> list[SubscriptionTemplateResponse]:
+) -> list[ExpenseTemplateResponse]:
     templates = (
-        db.query(SubscriptionTemplate)
-        .options(joinedload(SubscriptionTemplate.category))
+        db.query(ExpenseTemplate)
+        .options(joinedload(ExpenseTemplate.category))
         .filter(
-            SubscriptionTemplate.user_uuid == user.uuid,
-            SubscriptionTemplate.deleted_at.is_(None),
+            ExpenseTemplate.user_uuid == user.uuid,
+            ExpenseTemplate.deleted_at.is_(None),
         )
         .all()
     )
-    return [SubscriptionTemplateResponse.model_validate(t) for t in templates]
+    return [ExpenseTemplateResponse.model_validate(t) for t in templates]
 
 
-@subscription_template_router.post("", status_code=status.HTTP_201_CREATED)
+@expense_template_router.post("", status_code=status.HTTP_201_CREATED)
 def create_template(
-    body: SubscriptionTemplateCreate,
+    body: ExpenseTemplateCreate,
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
-) -> SubscriptionTemplateResponse:
+) -> ExpenseTemplateResponse:
     category = db.query(Category).filter(
         Category.uuid == body.category_uuid,
         Category.user_uuid == user.uuid,
@@ -54,7 +54,7 @@ def create_template(
     if not category:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Category not found")
 
-    template = SubscriptionTemplate(
+    template = ExpenseTemplate(
         user_uuid=user.uuid,
         name=body.name,
         amount=body.amount,
@@ -63,20 +63,20 @@ def create_template(
     db.add(template)
     db.commit()
     db.refresh(template)
-    return SubscriptionTemplateResponse.model_validate(template)
+    return ExpenseTemplateResponse.model_validate(template)
 
 
-@subscription_template_router.patch("/{uuid}")
+@expense_template_router.patch("/{uuid}")
 def update_template(
     uuid: str,
-    body: SubscriptionTemplateUpdate,
+    body: ExpenseTemplateUpdate,
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
-) -> SubscriptionTemplateResponse:
-    template = db.query(SubscriptionTemplate).options(joinedload(SubscriptionTemplate.category)).filter(
-        SubscriptionTemplate.uuid == uuid,
-        SubscriptionTemplate.user_uuid == user.uuid,
-        SubscriptionTemplate.deleted_at.is_(None),
+) -> ExpenseTemplateResponse:
+    template = db.query(ExpenseTemplate).options(joinedload(ExpenseTemplate.category)).filter(
+        ExpenseTemplate.uuid == uuid,
+        ExpenseTemplate.user_uuid == user.uuid,
+        ExpenseTemplate.deleted_at.is_(None),
     ).first()
     if not template:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Template not found")
@@ -95,19 +95,19 @@ def update_template(
 
     db.commit()
     db.refresh(template)
-    return SubscriptionTemplateResponse.model_validate(template)
+    return ExpenseTemplateResponse.model_validate(template)
 
 
-@subscription_template_router.delete("/{uuid}", status_code=status.HTTP_204_NO_CONTENT)
+@expense_template_router.delete("/{uuid}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_template(
     uuid: str,
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> Response:
-    template = db.query(SubscriptionTemplate).filter(
-        SubscriptionTemplate.uuid == uuid,
-        SubscriptionTemplate.user_uuid == user.uuid,
-        SubscriptionTemplate.deleted_at.is_(None),
+    template = db.query(ExpenseTemplate).filter(
+        ExpenseTemplate.uuid == uuid,
+        ExpenseTemplate.user_uuid == user.uuid,
+        ExpenseTemplate.deleted_at.is_(None),
     ).first()
     if not template:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Template not found")
@@ -117,18 +117,18 @@ def delete_template(
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@subscription_template_router.post("/bulk-record")
+@expense_template_router.post("/bulk-record")
 def bulk_record(
     body: BulkRecordRequest,
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> BulkRecordResponse:
     templates = (
-        db.query(SubscriptionTemplate)
+        db.query(ExpenseTemplate)
         .filter(
-            SubscriptionTemplate.uuid.in_(body.template_uuids),
-            SubscriptionTemplate.user_uuid == user.uuid,
-            SubscriptionTemplate.deleted_at.is_(None),
+            ExpenseTemplate.uuid.in_(body.template_uuids),
+            ExpenseTemplate.user_uuid == user.uuid,
+            ExpenseTemplate.deleted_at.is_(None),
         )
         .all()
     )

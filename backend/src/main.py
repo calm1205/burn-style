@@ -8,8 +8,8 @@ from src.api import (
     auth_router,
     category_router,
     expense_router,
+    expense_template_router,
     health_router,
-    subscription_template_router,
     user_router,
 )
 from src.config import get_frontend_origin
@@ -46,5 +46,5 @@ app.include_router(health_router)
 app.include_router(auth_router)
 app.include_router(category_router)
 app.include_router(expense_router)
-app.include_router(subscription_template_router)
+app.include_router(expense_template_router)
 app.include_router(user_router)
