@@ -8,9 +8,11 @@ export const ExpensesPage = () => {
   const [error, setError] = useState("")
 
   // 作成フォーム
+  const today = new Date().toISOString().slice(0, 10)
   const [form, setForm] = useState({
     name: "",
     amount: "",
+    expensedAt: today,
     categoryUuids: new Set<string>(),
   })
 
@@ -45,9 +47,15 @@ export const ExpensesPage = () => {
       await api.createExpense({
         name: form.name,
         amount: Number(form.amount),
+        expensed_at: new Date(form.expensedAt).toISOString(),
         category_uuids: [...form.categoryUuids],
       })
-      setForm({ name: "", amount: "", categoryUuids: new Set() })
+      setForm({
+        name: "",
+        amount: "",
+        expensedAt: today,
+        categoryUuids: new Set(),
+      })
     } catch (err) {
       setError(getErrorMessage(err, "作成に失敗"))
     }
@@ -100,6 +108,21 @@ export const ExpensesPage = () => {
             min={1}
             max={99999999}
             className="border-b border-gray-200 px-4 py-3 text-sm placeholder:text-gray-200 focus:border-gray-900 focus:outline-none"
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <label htmlFor="expense-date" className="text-xs text-gray-500">
+            日付
+          </label>
+          <input
+            id="expense-date"
+            type="date"
+            value={form.expensedAt}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, expensedAt: e.target.value }))
+            }
+            required
+            className="border-b border-gray-200 px-4 py-3 text-sm focus:border-gray-900 focus:outline-none"
           />
         </div>
         {categories.length > 0 && (

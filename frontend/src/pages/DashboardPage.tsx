@@ -25,7 +25,7 @@ const groupByDate = (expenses: ExpenseResponse[]) => {
   )
   const groups: { date: string; items: ExpenseResponse[] }[] = []
   for (const e of sorted) {
-    const key = toDateKey(e.created_at)
+    const key = toDateKey(e.expensed_at)
     const last = groups[groups.length - 1]
     if (last?.date === key) {
       last.items.push(e)
@@ -122,7 +122,7 @@ export const DashboardPage = () => {
                       className="shrink-0 text-xs text-transparent"
                       aria-hidden="true"
                     >
-                      {formatTime(e.created_at)}
+                      {formatTime(e.expensed_at)}
                     </span>
                     {e.categories.length > 0 && (
                       <div className="flex gap-2">
@@ -136,7 +136,7 @@ export const DashboardPage = () => {
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="shrink-0 text-xs text-gray-300">
-                      {formatTime(e.created_at)}
+                      {formatTime(e.expensed_at)}
                     </span>
                     <span className="flex-1 text-sm">{e.name}</span>
                     <span className="shrink-0 text-sm font-mono">

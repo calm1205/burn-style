@@ -32,6 +32,7 @@ export interface ExpenseResponse {
   uuid: string
   name: string
   amount: number
+  expensed_at: string
   created_at: string
   updated_at: string
   deleted_at: string | null
@@ -41,12 +42,14 @@ export interface ExpenseResponse {
 export interface ExpenseCreate {
   name: string
   amount: number
+  expensed_at: string
   category_uuids: string[]
 }
 
 export interface ExpenseUpdate {
   name?: string
   amount?: number
+  expensed_at?: string
   category_uuids?: string[]
 }
 
