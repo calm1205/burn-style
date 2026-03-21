@@ -6,14 +6,14 @@ import { getErrorMessage } from "../lib/client"
 import type { ExpenseResponse } from "../lib/types"
 
 const COLORS = [
-  "#3b82f6",
-  "#ef4444",
-  "#f59e0b",
-  "#10b981",
-  "#8b5cf6",
-  "#ec4899",
-  "#06b6d4",
-  "#f97316",
+  "#94a3b8",
+  "#a1a1aa",
+  "#9ca3af",
+  "#a3a3a3",
+  "#b4bcd0",
+  "#c4b5a0",
+  "#a8b8b0",
+  "#b0a8b8",
 ]
 
 interface CategoryTotal {
