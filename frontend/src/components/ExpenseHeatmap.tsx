@@ -88,9 +88,7 @@ export const ExpenseHeatmap = ({
                 color ? `${color.bg} ${color.text}` : ""
               }`}
               title={
-                day
-                  ? `${month}/${day}: ${amount.toLocaleString()}円`
-                  : undefined
+                day ? `${month}/${day}: ¥${amount.toLocaleString()}` : undefined
               }
             >
               {day}

@@ -73,7 +73,7 @@ export const AnnualLineChart = ({ expenses }: AnnualLineChartProps) => {
           width={40}
         />
         <Tooltip
-          formatter={(value) => [`${Number(value).toLocaleString()}円`]}
+          formatter={(value) => [`¥${Number(value).toLocaleString()}`]}
         />
         <Legend wrapperStyle={{ fontSize: 11 }} />
         {categories.map((cat, i) => (

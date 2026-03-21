@@ -81,7 +81,7 @@ export const CategoryPieChart = ({ expenses }: CategoryPieChartProps) => {
           />
           <Tooltip
             trigger="hover"
-            formatter={(value) => `${Number(value).toLocaleString()}円`}
+            formatter={(value) => `¥${Number(value).toLocaleString()}`}
           />
         </PieChart>
       </div>
@@ -100,7 +100,7 @@ export const CategoryPieChart = ({ expenses }: CategoryPieChartProps) => {
                 {Math.round((c.amount / total) * 100)}%
               </span>
               <span className="text-sm font-mono">
-                {c.amount.toLocaleString()}円
+                ¥{c.amount.toLocaleString()}
               </span>
             </div>
           </li>

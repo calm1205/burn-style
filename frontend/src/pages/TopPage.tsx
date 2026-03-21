@@ -47,7 +47,7 @@ export const TopPage = () => {
               Total - {year}/{String(month).padStart(2, "0")}
             </span>
             <span className="text-3xl font-bold">
-              {total.toLocaleString()}円
+              ¥{total.toLocaleString()}
             </span>
           </div>
           <ChevronRightIcon className="size-5 text-gray-400" />

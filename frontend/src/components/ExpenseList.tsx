@@ -46,7 +46,7 @@ export const ExpenseList = ({ expenses }: ExpenseListProps) => {
           </div>
           <div className="flex flex-col items-end gap-1">
             <span className="text-sm font-mono">
-              {e.amount.toLocaleString()}円
+              ¥{e.amount.toLocaleString()}
             </span>
             <span className="text-xs text-gray-400">
               {formatDateTime(e.expensed_at)}

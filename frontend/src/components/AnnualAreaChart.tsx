@@ -72,7 +72,7 @@ export const AnnualAreaChart = ({ expenses }: AnnualAreaChartProps) => {
           width={40}
         />
         <Tooltip
-          formatter={(value) => [`${Number(value).toLocaleString()}円`]}
+          formatter={(value) => [`¥${Number(value).toLocaleString()}`]}
         />
         {categories.map((cat, i) => (
           <Area

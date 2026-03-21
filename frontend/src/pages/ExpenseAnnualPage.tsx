@@ -89,7 +89,7 @@ export const ExpenseAnnualPage = () => {
         </button>
         <div className="text-center">
           <p className="text-sm text-gray-500">{year}年の支出</p>
-          <p className="text-3xl font-bold">{total.toLocaleString()}円</p>
+          <p className="text-3xl font-bold">¥{total.toLocaleString()}</p>
         </div>
         <button
           type="button"
@@ -135,7 +135,7 @@ export const ExpenseAnnualPage = () => {
             >
               <span className="text-sm">{i + 1}月</span>
               <span className="text-sm font-mono">
-                {amount.toLocaleString()}円
+                ¥{amount.toLocaleString()}
               </span>
             </div>
           ))}

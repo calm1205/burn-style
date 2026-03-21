@@ -79,7 +79,7 @@ export const MonthlyTrendChart = ({ year, month }: MonthlyTrendChartProps) => {
           width={40}
         />
         <Tooltip
-          formatter={(value) => [`${Number(value).toLocaleString()}円`]}
+          formatter={(value) => [`¥${Number(value).toLocaleString()}`]}
         />
         <Bar
           dataKey="amount"

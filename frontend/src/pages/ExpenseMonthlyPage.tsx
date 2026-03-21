@@ -100,7 +100,7 @@ export const ExpenseMonthlyPage = () => {
           <p className="text-sm text-gray-500">
             {year}/{month}の支出
           </p>
-          <p className="text-3xl font-bold">{total.toLocaleString()}円</p>
+          <p className="text-3xl font-bold">¥{total.toLocaleString()}</p>
         </div>
         <button
           type="button"
