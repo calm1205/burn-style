@@ -1,7 +1,7 @@
 import { ChevronRightIcon } from "@radix-ui/react-icons"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router"
-import { CategoryPieChart } from "../components/CategoryPieChart"
+import { SimplePieChart } from "../components/SimplePieChart"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
 import type { ExpenseResponse } from "../lib/types"
@@ -52,7 +52,7 @@ export const TopPage = () => {
           <ChevronRightIcon className="size-5 text-gray-400" />
         </button>
 
-        <CategoryPieChart expenses={expenses} />
+        <SimplePieChart expenses={expenses} />
 
         <div className="mt-8 flex gap-3">
           <button
