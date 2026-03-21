@@ -185,20 +185,22 @@ export const ExpenseDetailPage = () => {
           </div>
         )}
       </form>
-      <button
-        type="submit"
-        form="expense-detail-form"
-        className="rounded bg-black px-5 py-4 text-white hover:bg-gray-800"
-      >
-        更新
-      </button>
-      <button
-        type="button"
-        onClick={handleDelete}
-        className="rounded border border-red-600 px-5 py-4 text-red-600 hover:bg-red-50"
-      >
-        削除
-      </button>
+      <div className="flex flex-col gap-5">
+        <button
+          type="submit"
+          form="expense-detail-form"
+          className="rounded bg-black px-5 py-4 text-white hover:bg-gray-800"
+        >
+          更新
+        </button>
+        <button
+          type="button"
+          onClick={handleDelete}
+          className="rounded border border-red-600 px-5 py-4 text-red-600 hover:bg-red-50"
+        >
+          削除
+        </button>
+      </div>
     </div>
   )
 }
