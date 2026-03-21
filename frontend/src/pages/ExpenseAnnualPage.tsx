@@ -17,18 +17,31 @@ type Tab = "list" | "area" | "line"
 const VALID_TABS: Tab[] = ["list", "area", "line"]
 
 export const ExpenseAnnualPage = () => {
+  const now = new Date()
   const [searchParams, setSearchParams] = useSearchParams()
+
+  const year = Number(searchParams.get("year")) || now.getFullYear()
   const tabParam = searchParams.get("tab")
   const tab: Tab = VALID_TABS.includes(tabParam as Tab)
     ? (tabParam as Tab)
     : "list"
 
   const setTab = (t: Tab) => {
-    setSearchParams(t === "list" ? {} : { tab: t }, { replace: true })
+    const next = new URLSearchParams(searchParams)
+    if (t === "list") {
+      next.delete("tab")
+    } else {
+      next.set("tab", t)
+    }
+    setSearchParams(next, { replace: true })
   }
 
-  const now = new Date()
-  const [year, setYear] = useState(now.getFullYear())
+  const setYear = (y: number) => {
+    const next = new URLSearchParams(searchParams)
+    next.set("year", String(y))
+    setSearchParams(next, { replace: true })
+  }
+
   const [expenses, setExpenses] = useState<ExpenseResponse[]>([])
   const [error, setError] = useState("")
 
@@ -70,7 +83,7 @@ export const ExpenseAnnualPage = () => {
         <button
           type="button"
           className="text-gray-400 hover:text-gray-600"
-          onClick={() => setYear((y) => y - 1)}
+          onClick={() => setYear(year - 1)}
         >
           <DoubleArrowLeftIcon className="size-4" />
         </button>
@@ -81,7 +94,7 @@ export const ExpenseAnnualPage = () => {
         <button
           type="button"
           className="text-gray-400 hover:text-gray-600"
-          onClick={() => setYear((y) => y + 1)}
+          onClick={() => setYear(year + 1)}
         >
           <DoubleArrowRightIcon className="size-4" />
         </button>

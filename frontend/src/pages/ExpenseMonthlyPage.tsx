@@ -18,19 +18,34 @@ type Tab = "list" | "pie" | "heatmap"
 const VALID_TABS: Tab[] = ["list", "pie", "heatmap"]
 
 export const ExpenseMonthlyPage = () => {
+  const now = new Date()
   const [searchParams, setSearchParams] = useSearchParams()
+
+  const year = Number(searchParams.get("year")) || now.getFullYear()
+  const month = Number(searchParams.get("month")) || now.getMonth() + 1
   const tabParam = searchParams.get("tab")
   const tab: Tab = VALID_TABS.includes(tabParam as Tab)
     ? (tabParam as Tab)
     : "list"
 
-  const setTab = (t: Tab) => {
-    setSearchParams(t === "list" ? {} : { tab: t }, { replace: true })
+  const updateParams = (params: Record<string, string>) => {
+    const next = new URLSearchParams(searchParams)
+    for (const [k, v] of Object.entries(params)) {
+      next.set(k, v)
+    }
+    setSearchParams(next, { replace: true })
   }
 
-  const now = new Date()
-  const [year, setYear] = useState(now.getFullYear())
-  const [month, setMonth] = useState(now.getMonth() + 1)
+  const setTab = (t: Tab) => {
+    const next = new URLSearchParams(searchParams)
+    if (t === "list") {
+      next.delete("tab")
+    } else {
+      next.set("tab", t)
+    }
+    setSearchParams(next, { replace: true })
+  }
+
   const [expenses, setExpenses] = useState<ExpenseResponse[]>([])
   const [error, setError] = useState("")
 
@@ -48,19 +63,17 @@ export const ExpenseMonthlyPage = () => {
 
   const goPrev = () => {
     if (month === 1) {
-      setYear((y) => y - 1)
-      setMonth(12)
+      updateParams({ year: String(year - 1), month: "12" })
     } else {
-      setMonth((m) => m - 1)
+      updateParams({ year: String(year), month: String(month - 1) })
     }
   }
 
   const goNext = () => {
     if (month === 12) {
-      setYear((y) => y + 1)
-      setMonth(1)
+      updateParams({ year: String(year + 1), month: "1" })
     } else {
-      setMonth((m) => m + 1)
+      updateParams({ year: String(year), month: String(month + 1) })
     }
   }
 
