@@ -45,6 +45,8 @@ interface CategoryPieChartProps {
 export const CategoryPieChart = ({ expenses }: CategoryPieChartProps) => {
   const categoryData = aggregateByCategory(expenses)
 
+  const total = categoryData.reduce((sum, c) => sum + c.amount, 0)
+
   if (categoryData.length === 0) return null
 
   return (
@@ -93,9 +95,14 @@ export const CategoryPieChart = ({ expenses }: CategoryPieChartProps) => {
               />
               <span className="text-sm">{c.name}</span>
             </div>
-            <span className="text-sm font-mono">
-              {c.amount.toLocaleString()}円
-            </span>
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-gray-400">
+                {Math.round((c.amount / total) * 100)}%
+              </span>
+              <span className="text-sm font-mono">
+                {c.amount.toLocaleString()}円
+              </span>
+            </div>
           </li>
         ))}
       </ul>
