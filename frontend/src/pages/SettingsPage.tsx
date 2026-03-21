@@ -13,16 +13,16 @@ export const SettingsPage = () => {
 
   return (
     <div className="mx-auto max-w-2xl px-6" style={{ paddingTop: "20vh" }}>
-      <h1 className="mb-6 text-2xl font-bold">設定</h1>
+      <h1 className="mb-6 text-2xl font-bold">Setting</h1>
 
       <Separator size="4" mb="4" />
 
       <div className="mb-6">
         <Text size="3" weight="bold" as="p" mb="2">
-          アカウント
+          Account
         </Text>
         <Text size="2" color="gray" as="p">
-          ユーザー名: {user?.name ?? "---"}
+          Username: {user?.name ?? "---"}
         </Text>
       </div>
 
@@ -30,7 +30,7 @@ export const SettingsPage = () => {
 
       <Button variant="outline" color="red" onClick={onLogout}>
         <ExitIcon />
-        ログアウト
+        Logout
       </Button>
     </div>
   )
