@@ -22,3 +22,17 @@ def create_user(db: Session, name: str) -> User:
     db.commit()
     db.refresh(user)
     return user
+
+
+def update_user(db: Session, user: User, name: str) -> User:
+    """ユーザー名を更新"""
+    user.name = name  # type: ignore[assignment]
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+def delete_user(db: Session, user: User) -> None:
+    """ユーザーを削除"""
+    db.delete(user)
+    db.commit()
