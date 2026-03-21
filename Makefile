@@ -1,4 +1,4 @@
-.PHONY: init help ruff mypy biome lint test-backend migrate upgrade revision seed db-clear db-reset db-connect upgrade-local downgrade-local revision-local upgrade-prod seed-prod db-clear-prod db-reset-prod
+.PHONY: init help lint test-backend migrate upgrade revision seed db-clear db-reset db-connect upgrade-local downgrade-local revision-local prod-upgrade prod-seed prod-db-clear prod-db-reset
 
 BACKEND_DIR = backend
 FRONTEND_DIR = frontend
@@ -13,19 +13,10 @@ help: ## このヘルプメッセージを表示
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 
-mypy: ## mypyで型チェックを実行
-	cd $(BACKEND_DIR) && uv run mypy .
-
-ruff: ## ruffで自動修正可能な問題を修正
-	cd $(BACKEND_DIR) && uv run ruff check --fix .
-
-biome: ## biomeでフロントエンドのlint・formatチェックを実行
-	cd $(FRONTEND_DIR) && npx biome check .
-
 lint: ## backend(mypy & ruff) + frontend(biome)
-	make mypy
-	make ruff
-	make biome
+	cd $(BACKEND_DIR) && uv run mypy .
+	cd $(BACKEND_DIR) && uv run ruff check --fix .
+	cd $(FRONTEND_DIR) && npx biome check .
 
 test-backend: ## backendのテストを実行
 	cd $(BACKEND_DIR) && uv run pytest -v
@@ -53,17 +44,17 @@ db-reset: ## データベースをリセットしてseedデータを投入
 db-connect: ## PostgreSQL CLIに接続
 	docker compose exec db sh -c 'psql -U $$POSTGRES_USER $$POSTGRES_DB'
 
-upgrade-prod: ## Neon本番DBにマイグレーション実行
+prod-upgrade: ## Neon本番DBにマイグレーション実行
 	cd $(BACKEND_DIR) && VERCEL_ENV=production uv run alembic upgrade head
 
-seed-prod: ## Neon本番DBにseedデータを投入（使用例: make seed-prod SEED_USER="username"）
+prod-seed: ## Neon本番DBにseedデータを投入（使用例: make prod-seed SEED_USER="username"）
 	cd $(BACKEND_DIR) && VERCEL_ENV=production uv run python scripts/seed_all.py $(SEED_USER)
 
-db-clear-prod: ## Neon本番DBの全テーブルを削除
+prod-db-clear: ## Neon本番DBの全テーブルを削除
 	@echo "本番DBの全テーブルを削除します。よろしいですか? [y/N]" && read ans && [ "$$ans" = "y" ] || (echo "中止" && exit 1)
 	cd $(BACKEND_DIR) && VERCEL_ENV=production uv run python -c "from src.repository.database import engine; from sqlalchemy import text; c=engine.connect(); c.execute(text('DROP SCHEMA public CASCADE')); c.execute(text('CREATE SCHEMA public')); c.commit(); c.close()"
 
-db-reset-prod: ## Neon本番DBをリセットしてseedデータを投入
-	make db-clear-prod
-	make upgrade-prod
-	make seed-prod
+prod-db-reset: ## Neon本番DBをリセットしてseedデータを投入
+	make prod-db-clear
+	make prod-upgrade
+	make prod-seed

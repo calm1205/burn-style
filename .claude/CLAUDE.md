@@ -12,14 +12,11 @@
 - フロントエンド: React + Vite + Tailwind CSS v4
 - 認証: WebAuthn/パスキー + JWT
 
-## 開発フロー
-- コード修正後は必ず `make lint` と `make test-backend` を実行
-- エラーがあれば全て修正してから完了とする
-
 ## ルールファイル
 - [アーキテクチャ](rules/architecture.md) - レイヤド設計・ディレクトリ構造
 - [バックエンド](rules/backend.md) - Python / FastAPI / SQLAlchemy 規約
 - [フロントエンド](rules/frontend.md) - React / TypeScript / Tailwind CSS 規約
 - [データベース](rules/database.md) - PostgreSQL / Alembic / 接続設定
+- [開発フロー](rules/development.md) - lint・テスト必須プロセス
 - [開発コマンド](rules/commands.md) - Makefile コマンド一覧
 - [Git・デプロイ](rules/git.md) - Conventional Commits / GitHub Actions / Vercel

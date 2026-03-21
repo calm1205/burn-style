@@ -9,9 +9,6 @@
 | コマンド | 説明 |
 |---------|------|
 | `make lint` | backend (mypy + ruff) + frontend (biome) 実行 |
-| `make mypy` | mypy型チェック |
-| `make ruff` | ruff自動修正 |
-| `make biome` | Biomeチェック（frontend） |
 
 ## テスト
 | コマンド | 説明 |
@@ -32,7 +29,7 @@
 ## データベース（本番 Neon）
 | コマンド | 説明 |
 |---------|------|
-| `make upgrade-prod` | 本番DBにマイグレーション実行 |
-| `make seed-prod` | 本番DBにseedデータ投入（`SEED_USER="名前"` でユーザー指定可） |
-| `make db-clear-prod` | 本番DBの全テーブル削除 |
-| `make db-reset-prod` | 本番DBリセット + seed |
+| `make prod-upgrade` | 本番DBにマイグレーション実行 |
+| `make prod-seed` | 本番DBにseedデータ投入（`SEED_USER="名前"` でユーザー指定可） |
+| `make prod-db-clear` | 本番DBの全テーブル削除 |
+| `make prod-db-reset` | 本番DBリセット + seed |
