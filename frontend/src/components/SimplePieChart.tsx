@@ -54,7 +54,7 @@ export const SimplePieChart = ({ expenses }: SimplePieChartProps) => {
           isAnimationActive={false}
         />
       </PieChart>
-      <ul className="grid flex-1 grid-cols-2 gap-x-4 gap-y-1">
+      <ul className="grid flex-1 grid-cols-2 gap-x-1 gap-y-1">
         {data.map((c) => (
           <li key={c.name} className="flex items-center gap-2">
             <span
