@@ -46,9 +46,10 @@ def create_expense(
     name: str,
     amount: float,
     category_uuids: list[str] | None = None,
+    expensed_at: datetime | None = None,
 ) -> Expense:
     """新しい支出を作成する"""
-    expense = Expense(user_uuid=user_uuid, name=name, amount=amount)
+    expense = Expense(user_uuid=user_uuid, name=name, amount=amount, **({"expensed_at": expensed_at} if expensed_at else {}))
 
     if category_uuids:
         categories = db.query(Category).filter(
