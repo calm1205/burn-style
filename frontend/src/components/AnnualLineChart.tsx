@@ -1,7 +1,6 @@
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import {
   CartesianGrid,
-  Legend,
   Line,
   LineChart,
   ResponsiveContainer,
@@ -27,6 +26,8 @@ interface AnnualLineChartProps {
 }
 
 export const AnnualLineChart = ({ expenses }: AnnualLineChartProps) => {
+  const [hidden, setHidden] = useState<Set<string>>(new Set())
+
   const { data, categories } = useMemo(() => {
     const catSet = new Set<string>()
     for (const e of expenses) {
@@ -62,32 +63,74 @@ export const AnnualLineChart = ({ expenses }: AnnualLineChartProps) => {
     return { data: months, categories: cats }
   }, [expenses])
 
+  const toggle = (cat: string) => {
+    setHidden((prev) => {
+      const next = new Set(prev)
+      if (next.has(cat)) {
+        next.delete(cat)
+      } else {
+        next.add(cat)
+      }
+      return next
+    })
+  }
+
+  const visibleCategories = categories.filter((c) => !hidden.has(c))
+
   return (
-    <ResponsiveContainer width="100%" height={300}>
-      <LineChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" vertical={false} />
-        <XAxis dataKey="label" tick={{ fontSize: 11 }} />
-        <YAxis
-          tick={{ fontSize: 11 }}
-          tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`}
-          width={40}
-        />
-        <Tooltip
-          formatter={(value) => [`¥${Number(value).toLocaleString()}`]}
-        />
-        <Legend wrapperStyle={{ fontSize: 11 }} />
-        {categories.map((cat, i) => (
-          <Line
-            key={cat}
-            type="monotone"
-            dataKey={cat}
-            stroke={COLORS[i % COLORS.length]}
-            strokeWidth={2}
-            dot={{ r: 2 }}
-            isAnimationActive={false}
+    <div className="flex flex-col gap-3">
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={data}>
+          <CartesianGrid strokeDasharray="3 3" vertical={false} />
+          <XAxis dataKey="label" tick={{ fontSize: 11 }} />
+          <YAxis
+            tick={{ fontSize: 11 }}
+            tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`}
+            width={40}
           />
-        ))}
-      </LineChart>
-    </ResponsiveContainer>
+          <Tooltip
+            formatter={(value) => [`¥${Number(value).toLocaleString()}`]}
+          />
+          {visibleCategories.map((cat) => (
+            <Line
+              key={cat}
+              type="monotone"
+              dataKey={cat}
+              stroke={COLORS[categories.indexOf(cat) % COLORS.length]}
+              strokeWidth={2}
+              dot={{ r: 2 }}
+              isAnimationActive={false}
+            />
+          ))}
+        </LineChart>
+      </ResponsiveContainer>
+      <ul className="flex flex-wrap gap-x-3 gap-y-1.5 px-1">
+        {categories.map((cat, i) => {
+          const isHidden = hidden.has(cat)
+          return (
+            <li key={cat}>
+              <button
+                type="button"
+                onClick={() => toggle(cat)}
+                className={`flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] transition-opacity ${
+                  isHidden
+                    ? "border-gray-200 text-gray-300"
+                    : "border-gray-300 text-gray-700"
+                }`}
+              >
+                <span
+                  className="inline-block size-2 rounded-full"
+                  style={{
+                    backgroundColor: COLORS[i % COLORS.length],
+                    opacity: isHidden ? 0.2 : 1,
+                  }}
+                />
+                {cat}
+              </button>
+            </li>
+          )
+        })}
+      </ul>
+    </div>
   )
 }
