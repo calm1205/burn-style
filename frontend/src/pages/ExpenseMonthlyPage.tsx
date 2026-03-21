@@ -7,6 +7,7 @@ import {
 } from "@radix-ui/react-icons"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { CategoryPieChart } from "../components/CategoryPieChart"
+import { ExpenseHeatmap } from "../components/ExpenseHeatmap"
 import { ExpenseList } from "../components/ExpenseList"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
@@ -115,8 +116,8 @@ export const ExpenseMonthlyPage = () => {
       )}
 
       {tab === "heatmap" && (
-        <div className="min-h-0 flex-1 flex items-center justify-center pt-4">
-          <p className="text-sm text-gray-400">ヒートマップ（準備中）</p>
+        <div className="min-h-0 flex-1 overflow-y-auto pt-4">
+          <ExpenseHeatmap year={year} month={month} expenses={expenses} />
         </div>
       )}
     </div>
