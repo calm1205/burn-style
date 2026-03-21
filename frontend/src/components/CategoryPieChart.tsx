@@ -63,7 +63,10 @@ export const CategoryPieChart = ({ expenses }: CategoryPieChartProps) => {
           label={({ name }) => name}
           labelLine
         />
-        <Tooltip formatter={(value) => `${Number(value).toLocaleString()}円`} />
+        <Tooltip
+          trigger="hover"
+          formatter={(value) => `${Number(value).toLocaleString()}円`}
+        />
       </PieChart>
     </div>
   )
