@@ -6,6 +6,7 @@ import {
   PieChartIcon,
 } from "@radix-ui/react-icons"
 import { useCallback, useEffect, useMemo, useState } from "react"
+import { useSearchParams } from "react-router"
 import { CategoryPieChart } from "../components/CategoryPieChart"
 import { ExpenseHeatmap } from "../components/ExpenseHeatmap"
 import { ExpenseList } from "../components/ExpenseList"
@@ -13,12 +14,24 @@ import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
 import type { ExpenseResponse } from "../lib/types"
 
+type Tab = "list" | "pie" | "heatmap"
+const VALID_TABS: Tab[] = ["list", "pie", "heatmap"]
+
 export const ExpenseMonthlyPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const tabParam = searchParams.get("tab")
+  const tab: Tab = VALID_TABS.includes(tabParam as Tab)
+    ? (tabParam as Tab)
+    : "list"
+
+  const setTab = (t: Tab) => {
+    setSearchParams(t === "list" ? {} : { tab: t }, { replace: true })
+  }
+
   const now = new Date()
   const [year, setYear] = useState(now.getFullYear())
   const [month, setMonth] = useState(now.getMonth() + 1)
   const [expenses, setExpenses] = useState<ExpenseResponse[]>([])
-  const [tab, setTab] = useState<"list" | "pie" | "heatmap">("list")
   const [error, setError] = useState("")
 
   const fetchData = useCallback(async () => {

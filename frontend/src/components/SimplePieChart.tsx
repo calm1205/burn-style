@@ -38,7 +38,7 @@ export const SimplePieChart = ({ expenses }: SimplePieChartProps) => {
   if (data.length === 0) return null
 
   return (
-    <div className="mt-6 flex items-center justify-center gap-4">
+    <div className="flex items-center justify-center gap-4">
       <PieChart width={160} height={160}>
         <Pie
           data={data}

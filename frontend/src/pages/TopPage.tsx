@@ -52,7 +52,13 @@ export const TopPage = () => {
           <ChevronRightIcon className="size-5 text-gray-400" />
         </button>
 
-        <SimplePieChart expenses={expenses} />
+        <button
+          type="button"
+          className="mt-6 w-full max-w-sm rounded-lg border border-gray-200 px-4 py-3 hover:bg-gray-50"
+          onClick={() => navigate("/expense/monthly?tab=pie")}
+        >
+          <SimplePieChart expenses={expenses} />
+        </button>
 
         <div className="mt-8 flex gap-3">
           <button
