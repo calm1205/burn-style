@@ -13,6 +13,7 @@ class ExpenseResponse(BaseModel):
     uuid: str
     name: str
     amount: int
+    expensed_at: datetime
     created_at: datetime
     updated_at: datetime
     deleted_at: datetime | None
@@ -22,11 +23,13 @@ class ExpenseResponse(BaseModel):
 class ExpenseCreate(BaseModel):
     name: str
     amount: int = Field(gt=0, description="正の整数のみ許可")
+    expensed_at: datetime | None = None
     category_uuids: list[str] = []
 
 
 class ExpenseUpdate(BaseModel):
     name: str | None = None
     amount: int | None = Field(default=None, gt=0, description="正の整数のみ許可")
+    expensed_at: datetime | None = None
     category_uuids: list[str] | None = None
 

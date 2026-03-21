@@ -19,6 +19,7 @@ class Expense(Base):
     user_uuid = Column(String(32), ForeignKey("users.uuid", ondelete="CASCADE"), nullable=False)
     name = Column(String, nullable=False)
     amount = Column(Integer, nullable=False)
+    expensed_at = Column(DateTime, default=lambda: datetime.now(UTC), nullable=False)
     created_at = Column(DateTime, default=lambda: datetime.now(UTC), nullable=False)
     updated_at = Column(
         DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC), nullable=False,
