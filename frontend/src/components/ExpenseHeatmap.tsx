@@ -3,14 +3,14 @@ import type { ExpenseResponse } from "../lib/types"
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
-const getColor = (amount: number, max: number) => {
-  if (amount === 0 || max === 0)
-    return { bg: "bg-gray-100", text: "text-gray-600" }
-  const ratio = amount / max
-  if (ratio > 0.8) return { bg: "bg-blue-800", text: "text-white" }
-  if (ratio > 0.6) return { bg: "bg-blue-600", text: "text-gray-600" }
-  if (ratio > 0.4) return { bg: "bg-blue-400", text: "text-gray-600" }
-  if (ratio > 0.2) return { bg: "bg-blue-200", text: "text-gray-600" }
+const getColor = (amount: number, mean: number, sd: number) => {
+  if (amount === 0) return { bg: "bg-gray-100", text: "text-gray-600" }
+  if (sd === 0) return { bg: "bg-blue-300", text: "text-gray-600" }
+  const z = (amount - mean) / sd
+  if (z > 1.5) return { bg: "bg-blue-800", text: "text-white" }
+  if (z > 0.5) return { bg: "bg-blue-600", text: "text-gray-600" }
+  if (z > -0.5) return { bg: "bg-blue-400", text: "text-gray-600" }
+  if (z > -1.5) return { bg: "bg-blue-200", text: "text-gray-600" }
   return { bg: "bg-blue-100", text: "text-gray-600" }
 }
 
@@ -25,7 +25,7 @@ export const ExpenseHeatmap = ({
   month,
   expenses,
 }: ExpenseHeatmapProps) => {
-  const { dailyTotals, daysInMonth, startOffset, maxAmount } = useMemo(() => {
+  const { dailyTotals, daysInMonth, startOffset, mean, sd } = useMemo(() => {
     const totals = new Map<number, number>()
     for (const e of expenses) {
       const d = new Date(e.expensed_at)
@@ -35,15 +35,25 @@ export const ExpenseHeatmap = ({
 
     const days = new Date(year, month, 0).getDate()
     const firstDayOfWeek = new Date(year, month - 1, 1).getDay()
-    // Convert Sunday=0 to Monday-based offset (Mon=0, Sun=6)
     const offset = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1
-    const max = Math.max(0, ...totals.values())
+
+    // 支出のある日のみで平均・標準偏差を算出
+    const amounts = [...totals.values()]
+    const avg =
+      amounts.length > 0
+        ? amounts.reduce((s, v) => s + v, 0) / amounts.length
+        : 0
+    const variance =
+      amounts.length > 0
+        ? amounts.reduce((s, v) => s + (v - avg) ** 2, 0) / amounts.length
+        : 0
 
     return {
       dailyTotals: totals,
       daysInMonth: days,
       startOffset: offset,
-      maxAmount: max,
+      mean: avg,
+      sd: Math.sqrt(variance),
     }
   }, [year, month, expenses])
 
@@ -70,7 +80,7 @@ export const ExpenseHeatmap = ({
         ))}
         {cells.map((day, i) => {
           const amount = day ? (dailyTotals.get(day) ?? 0) : 0
-          const color = day !== null ? getColor(amount, maxAmount) : null
+          const color = day !== null ? getColor(amount, mean, sd) : null
           return (
             <div
               key={`${day ?? "empty"}-${String(i)}`}
