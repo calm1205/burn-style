@@ -33,9 +33,11 @@ export const ExpenseAnnualPage = () => {
   const [error, setError] = useState("")
 
   const fetchData = useCallback(async () => {
+    setError("")
     try {
       setExpenses(await api.getExpenses(year))
     } catch (err) {
+      setExpenses([])
       setError(getErrorMessage(err, "データ取得に失敗"))
     }
   }, [year])
