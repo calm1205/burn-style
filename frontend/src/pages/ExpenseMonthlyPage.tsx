@@ -6,6 +6,7 @@ import {
   PieChartIcon,
 } from "@radix-ui/react-icons"
 import { useCallback, useEffect, useMemo, useState } from "react"
+import { CategoryPieChart } from "../components/CategoryPieChart"
 import { ExpenseList } from "../components/ExpenseList"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
@@ -108,8 +109,8 @@ export const ExpenseMonthlyPage = () => {
       {tab === "list" && <ExpenseList expenses={expenses} />}
 
       {tab === "pie" && (
-        <div className="min-h-0 flex-1 flex items-center justify-center pt-4">
-          <p className="text-sm text-gray-400">円グラフ（準備中）</p>
+        <div className="min-h-0 flex-1 overflow-y-auto pt-4">
+          <CategoryPieChart expenses={expenses} />
         </div>
       )}
 
