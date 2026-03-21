@@ -115,16 +115,16 @@ export const ExpenseMonthlyPage = () => {
       </div>
 
       <Tabs.Root defaultValue="list" className="min-h-0 flex-1 flex flex-col">
-        <Tabs.List className="shrink-0">
-          <Tabs.Trigger value="list">
+        <Tabs.List className="shrink-0" color="blue">
+          <Tabs.Trigger value="list" className="flex items-center gap-1.5">
             <ListBulletIcon />
             list
           </Tabs.Trigger>
-          <Tabs.Trigger value="pie">
+          <Tabs.Trigger value="pie" className="flex items-center gap-1.5">
             <PieChartIcon />
             pie chart
           </Tabs.Trigger>
-          <Tabs.Trigger value="heatmap">
+          <Tabs.Trigger value="heatmap" className="flex items-center gap-1.5">
             <CalendarIcon />
             heat map
           </Tabs.Trigger>
