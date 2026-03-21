@@ -97,7 +97,7 @@ export const CategoriesPage = () => {
 
   return (
     <div className="mx-auto max-w-2xl px-6" style={{ paddingTop: "20vh" }}>
-      <h1 className="mb-6 text-2xl font-bold text-center">カテゴリ</h1>
+      <h1 className="mb-6 text-2xl font-bold text-center">Category</h1>
 
       {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
 
@@ -108,7 +108,7 @@ export const CategoriesPage = () => {
             htmlFor="category-name"
             className="mb-1 block text-xs text-gray-500"
           >
-            カテゴリ名
+            Name
           </label>
           <input
             id="category-name"
@@ -196,7 +196,7 @@ export const CategoriesPage = () => {
       </ul>
 
       {categories.length === 0 && (
-        <p className="text-center text-gray-500">カテゴリがありません</p>
+        <p className="text-center text-gray-500">No categories</p>
       )}
 
       <ConfirmDialog
