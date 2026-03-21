@@ -2,6 +2,7 @@ import {
   DoubleArrowLeftIcon,
   DoubleArrowRightIcon,
 } from "@radix-ui/react-icons"
+import { Tabs } from "@radix-ui/themes"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router"
 import { api } from "../lib/api"
@@ -110,60 +111,88 @@ export const ExpenseMonthlyPage = () => {
         </button>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto flex flex-col gap-6">
-        {groups.map((group) => (
-          <div key={group.date}>
-            <p className="border-b border-gray-200 pb-2 text-xs font-medium text-gray-400">
-              {group.date}
-            </p>
-            <ul className="flex flex-col">
-              {group.items.map((e) => (
-                <li
-                  key={e.uuid}
-                  className="flex cursor-pointer flex-col gap-1 py-3 hover:bg-gray-50"
-                  onClick={() => navigate(`/expense/${e.uuid}`)}
-                  onKeyDown={(ev) => {
-                    if (ev.key === "Enter") navigate(`/expense/${e.uuid}`)
-                  }}
-                >
-                  <div className="flex items-center gap-3">
-                    <span
-                      className="shrink-0 text-xs text-transparent"
-                      aria-hidden="true"
-                    >
-                      {formatTime(e.expensed_at)}
-                    </span>
-                    {e.categories.length > 0 && (
-                      <div className="flex gap-2">
-                        {e.categories.map((c) => (
-                          <span key={c.uuid} className="text-xs text-gray-400">
-                            {c.name}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="shrink-0 text-xs text-gray-300">
-                      {formatTime(e.expensed_at)}
-                    </span>
-                    <span className="flex-1 text-sm">{e.name}</span>
-                    <span className="shrink-0 text-sm font-mono">
-                      {e.amount.toLocaleString()}円
-                    </span>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+      <Tabs.Root defaultValue="list" className="min-h-0 flex-1 flex flex-col">
+        <Tabs.List className="shrink-0">
+          <Tabs.Trigger value="list">リスト</Tabs.Trigger>
+          <Tabs.Trigger value="pie">円グラフ</Tabs.Trigger>
+          <Tabs.Trigger value="heatmap">ヒートマップ</Tabs.Trigger>
+        </Tabs.List>
 
-        {expenses.length === 0 && (
-          <p className="text-center text-sm text-gray-400">
-            この月の支出はありません
-          </p>
-        )}
-      </div>
+        <Tabs.Content
+          value="list"
+          className="min-h-0 flex-1 overflow-y-auto flex flex-col gap-6 pt-4"
+        >
+          {groups.map((group) => (
+            <div key={group.date}>
+              <p className="border-b border-gray-200 pb-2 text-xs font-medium text-gray-400">
+                {group.date}
+              </p>
+              <ul className="flex flex-col">
+                {group.items.map((e) => (
+                  <li
+                    key={e.uuid}
+                    className="flex cursor-pointer flex-col gap-1 py-3 hover:bg-gray-50"
+                    onClick={() => navigate(`/expense/${e.uuid}`)}
+                    onKeyDown={(ev) => {
+                      if (ev.key === "Enter") navigate(`/expense/${e.uuid}`)
+                    }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span
+                        className="shrink-0 text-xs text-transparent"
+                        aria-hidden="true"
+                      >
+                        {formatTime(e.expensed_at)}
+                      </span>
+                      {e.categories.length > 0 && (
+                        <div className="flex gap-2">
+                          {e.categories.map((c) => (
+                            <span
+                              key={c.uuid}
+                              className="text-xs text-gray-400"
+                            >
+                              {c.name}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="shrink-0 text-xs text-gray-300">
+                        {formatTime(e.expensed_at)}
+                      </span>
+                      <span className="flex-1 text-sm">{e.name}</span>
+                      <span className="shrink-0 text-sm font-mono">
+                        {e.amount.toLocaleString()}円
+                      </span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+
+          {expenses.length === 0 && (
+            <p className="text-center text-sm text-gray-400">
+              この月の支出はありません
+            </p>
+          )}
+        </Tabs.Content>
+
+        <Tabs.Content
+          value="pie"
+          className="min-h-0 flex-1 flex items-center justify-center pt-4"
+        >
+          <p className="text-sm text-gray-400">円グラフ（準備中）</p>
+        </Tabs.Content>
+
+        <Tabs.Content
+          value="heatmap"
+          className="min-h-0 flex-1 flex items-center justify-center pt-4"
+        >
+          <p className="text-sm text-gray-400">ヒートマップ（準備中）</p>
+        </Tabs.Content>
+      </Tabs.Root>
     </div>
   )
 }
