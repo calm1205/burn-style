@@ -45,6 +45,29 @@ export const TopPage = () => {
         >
           {total.toLocaleString()}円
         </p>
+        <div className="mt-8 flex gap-3">
+          <button
+            type="button"
+            className="rounded-full bg-gray-100 px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
+            onClick={() => navigate("/category")}
+          >
+            カテゴリ
+          </button>
+          <button
+            type="button"
+            className="rounded-full bg-gray-100 px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
+            onClick={() => navigate("/analysis")}
+          >
+            年次の分析
+          </button>
+          <button
+            type="button"
+            className="rounded-full bg-gray-100 px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
+            onClick={() => navigate("/template")}
+          >
+            テンプレート
+          </button>
+        </div>
       </div>
     </div>
   )
