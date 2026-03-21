@@ -121,9 +121,9 @@ export const DashboardPage = () => {
                 <li
                   key={e.uuid}
                   className="flex cursor-pointer flex-col gap-1 py-3 hover:bg-gray-50"
-                  onClick={() => navigate(`/expenses/${e.uuid}`)}
+                  onClick={() => navigate(`/expense/${e.uuid}`)}
                   onKeyDown={(ev) => {
-                    if (ev.key === "Enter") navigate(`/expenses/${e.uuid}`)
+                    if (ev.key === "Enter") navigate(`/expense/${e.uuid}`)
                   }}
                 >
                   <div className="flex items-center gap-3">

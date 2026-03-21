@@ -20,8 +20,13 @@ export const router = createBrowserRouter([
     ),
     children: [
       { path: "/dashboard", element: <DashboardPage /> },
-      { path: "/expenses", element: <ExpensesPage /> },
-      { path: "/expenses/:uuid", element: <ExpenseDetailPage /> },
+      {
+        path: "/expense",
+        children: [
+          { index: true, element: <ExpensesPage /> },
+          { path: ":uuid", element: <ExpenseDetailPage /> },
+        ],
+      },
       { path: "/categories", element: <CategoriesPage /> },
       { path: "/settings", element: <SettingsPage /> },
     ],
