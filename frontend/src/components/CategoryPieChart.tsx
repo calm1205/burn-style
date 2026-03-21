@@ -1,4 +1,4 @@
-import { Cell, Customized, Pie, PieChart } from "recharts"
+import { Pie, PieChart } from "recharts"
 import type { ExpenseResponse } from "../lib/types"
 
 const COLORS = [
@@ -24,6 +24,7 @@ const RADIAN = Math.PI / 180
 interface CategoryTotal {
   name: string
   amount: number
+  fill: string
 }
 
 interface LabelPosition {
@@ -87,48 +88,50 @@ const computeLabelPositions = (data: CategoryTotal[]): LabelPosition[] => {
   return [...rightLabels, ...leftLabels]
 }
 
-const Labels = ({ data }: { data: CategoryTotal[] }) => {
-  const positions = computeLabelPositions(data)
+const createLabelRenderer = (data: CategoryTotal[]) => {
+  const positionMap = new Map<string, LabelPosition>()
+  for (const p of computeLabelPositions(data)) {
+    positionMap.set(p.name, p)
+  }
 
-  return (
-    <g>
-      {positions.map((p) => {
-        const textAnchor = p.isRight ? "start" : "end"
-        const textX = p.endX + (p.isRight ? 4 : -4)
+  return (props: { name: string }) => {
+    const p = positionMap.get(props.name)
+    if (!p) return null
 
-        return (
-          <g key={p.name}>
-            <polyline
-              points={`${p.startX},${p.startY} ${p.endX},${p.labelY} ${p.endX},${p.labelY}`}
-              fill="none"
-              stroke="#9ca3af"
-              strokeWidth={1}
-            />
-            <text
-              x={textX}
-              y={p.labelY - 6}
-              textAnchor={textAnchor}
-              dominantBaseline="central"
-              fontSize={11}
-              fill="#6b7280"
-            >
-              {p.name}
-            </text>
-            <text
-              x={textX}
-              y={p.labelY + 8}
-              textAnchor={textAnchor}
-              dominantBaseline="central"
-              fontSize={11}
-              fill="#9ca3af"
-            >
-              {p.amount.toLocaleString()}円
-            </text>
-          </g>
-        )
-      })}
-    </g>
-  )
+    const textAnchor = p.isRight ? "start" : "end"
+    const textX = p.endX + (p.isRight ? 4 : -4)
+
+    return (
+      <g>
+        <polyline
+          points={`${p.startX},${p.startY} ${p.endX},${p.labelY} ${p.endX},${p.labelY}`}
+          fill="none"
+          stroke="#9ca3af"
+          strokeWidth={1}
+        />
+        <text
+          x={textX}
+          y={p.labelY - 6}
+          textAnchor={textAnchor}
+          dominantBaseline="central"
+          fontSize={11}
+          fill="#6b7280"
+        >
+          {p.name}
+        </text>
+        <text
+          x={textX}
+          y={p.labelY + 8}
+          textAnchor={textAnchor}
+          dominantBaseline="central"
+          fontSize={11}
+          fill="#9ca3af"
+        >
+          {p.amount.toLocaleString()}円
+        </text>
+      </g>
+    )
+  }
 }
 
 const aggregateByCategory = (expenses: ExpenseResponse[]): CategoryTotal[] => {
@@ -143,7 +146,11 @@ const aggregateByCategory = (expenses: ExpenseResponse[]): CategoryTotal[] => {
     }
   }
   return [...map.entries()]
-    .map(([name, amount]) => ({ name, amount }))
+    .map(([name, amount], i) => ({
+      name,
+      amount,
+      fill: COLORS[i % COLORS.length],
+    }))
     .sort((a, b) => b.amount - a.amount)
 }
 
@@ -155,6 +162,8 @@ export const CategoryPieChart = ({ expenses }: CategoryPieChartProps) => {
   const categoryData = aggregateByCategory(expenses)
 
   if (categoryData.length === 0) return null
+
+  const renderLabel = createLabelRenderer(categoryData)
 
   return (
     <div className="mt-6 flex justify-center">
@@ -169,12 +178,8 @@ export const CategoryPieChart = ({ expenses }: CategoryPieChartProps) => {
           outerRadius={OUTER_RADIUS}
           strokeWidth={2}
           isAnimationActive={false}
-        >
-          {categoryData.map((_, i) => (
-            <Cell key={categoryData[i].name} fill={COLORS[i % COLORS.length]} />
-          ))}
-        </Pie>
-        <Customized component={() => <Labels data={categoryData} />} />
+          label={renderLabel}
+        />
       </PieChart>
     </div>
   )
