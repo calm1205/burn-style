@@ -16,9 +16,6 @@ RANDOM_SEED = 42
 
 DECEMBER = 12
 
-# 賞与月(6月・12月)
-BONUS_MONTHS = {6, DECEMBER}
-
 
 class CategoryPattern(TypedDict):
     names: list[str]
@@ -68,21 +65,6 @@ MONTHLY_PATTERNS: dict[str, CategoryPattern] = {
         "count": (0, 2),
         "amount": (1000, 20000),
     },
-    "給与": {
-        "names": ["給与"],
-        "count": (1, 1),
-        "amount": (250000, 350000),
-    },
-    "賞与": {
-        "names": ["賞与"],
-        "count": (0, 0),  # 6月・12月のみ別処理
-        "amount": (400000, 600000),
-    },
-    "その他収入": {
-        "names": ["副業収入", "フリマ売上", "ポイント換金", "お祝い金"],
-        "count": (0, 1),
-        "amount": (3000, 50000),
-    },
 }
 
 
@@ -109,7 +91,7 @@ class ExpenseRecord(TypedDict):
 
 
 def _generate_expenses(rng: random.Random) -> list[ExpenseRecord]:
-    """3年分の支出・収入データを生成"""
+    """3年分の支出データを生成"""
     now = datetime.now(UTC)
     records: list[ExpenseRecord] = []
 
@@ -121,14 +103,7 @@ def _generate_expenses(rng: random.Random) -> list[ExpenseRecord]:
                 break
 
             for category_name, pattern in MONTHLY_PATTERNS.items():
-                # 賞与は6月・12月のみ
-                if category_name == "賞与":
-                    if month in BONUS_MONTHS:
-                        count = 1
-                    else:
-                        continue
-                else:
-                    count = rng.randint(pattern["count"][0], pattern["count"][1])
+                count = rng.randint(pattern["count"][0], pattern["count"][1])
 
                 for _ in range(count):
                     amount = rng.randint(pattern["amount"][0], pattern["amount"][1])
@@ -188,6 +163,6 @@ def seed_expenses(db: Session, user: User) -> None:
         y = record["created_at"].year
         by_year[y] = by_year.get(y, 0) + 1
 
-    print(f"{len(expenses)} 件の支出・収入を追加しました。")
+    print(f"{len(expenses)} 件の支出を追加しました。")
     for y in sorted(by_year):
         print(f"  {y}年: {by_year[y]} 件")
