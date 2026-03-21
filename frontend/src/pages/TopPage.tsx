@@ -1,6 +1,7 @@
 import { ChevronRightIcon } from "@radix-ui/react-icons"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router"
+import { MonthlyTrendChart } from "../components/MonthlyTrendChart"
 import { SimplePieChart } from "../components/SimplePieChart"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
@@ -62,6 +63,13 @@ export const TopPage = () => {
           </p>
           <SimplePieChart expenses={expenses} />
         </button>
+
+        <div className="mt-6 w-full max-w-sm rounded-lg border border-gray-200 px-4 py-4">
+          <p className="mb-3 text-left text-xs font-medium text-gray-500">
+            Monthly Trend
+          </p>
+          <MonthlyTrendChart year={year} month={month} />
+        </div>
 
         <div className="mt-8 flex gap-3">
           <button
