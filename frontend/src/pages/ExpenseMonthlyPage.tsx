@@ -118,15 +118,15 @@ export const ExpenseMonthlyPage = () => {
         <Tabs.List className="shrink-0">
           <Tabs.Trigger value="list">
             <ListBulletIcon />
-            リスト
+            list
           </Tabs.Trigger>
           <Tabs.Trigger value="pie">
             <PieChartIcon />
-            円グラフ
+            pie chart
           </Tabs.Trigger>
           <Tabs.Trigger value="heatmap">
             <CalendarIcon />
-            ヒートマップ
+            heat map
           </Tabs.Trigger>
         </Tabs.List>
 
