@@ -64,36 +64,16 @@ export const TopPage = () => {
           <SimplePieChart expenses={expenses} />
         </button>
 
-        <div className="mt-6 w-full max-w-sm rounded-lg border border-gray-200 px-4 py-4">
+        <button
+          type="button"
+          className="mt-6 w-full max-w-sm rounded-lg border border-gray-200 px-4 py-4 hover:bg-gray-50"
+          onClick={() => navigate("/expense/annual")}
+        >
           <p className="mb-3 text-left text-xs font-medium text-gray-500">
             Monthly Trend
           </p>
           <MonthlyTrendChart year={year} month={month} />
-        </div>
-
-        <div className="mt-8 flex gap-3">
-          <button
-            type="button"
-            className="rounded-full bg-gray-100 px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
-            onClick={() => navigate("/category")}
-          >
-            カテゴリ
-          </button>
-          <button
-            type="button"
-            className="rounded-full bg-gray-100 px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
-            onClick={() => navigate("/analysis")}
-          >
-            年次の分析
-          </button>
-          <button
-            type="button"
-            className="rounded-full bg-gray-100 px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
-            onClick={() => navigate("/template")}
-          >
-            テンプレート
-          </button>
-        </div>
+        </button>
       </div>
     </div>
   )
