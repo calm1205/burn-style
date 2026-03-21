@@ -52,7 +52,7 @@ export const ExpensesPage = () => {
       await api.createExpense({
         name: form.name,
         amount: Number(form.amount),
-        expensed_at: new Date(form.expensedAt).toISOString(),
+        expensed_at: form.expensedAt,
         category_uuids: [...form.categoryUuids],
       })
       setForm({

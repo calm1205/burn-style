@@ -1,11 +1,9 @@
 from __future__ import annotations
 
-from datetime import datetime
-
 from pydantic import BaseModel, ConfigDict, Field
 
 from src.schema.category import CategoryResponse
-from src.schema.types import JstDatetime
+from src.schema.types import JstDatetime, JstInputDatetime
 
 
 class ExpenseResponse(BaseModel):
@@ -24,13 +22,13 @@ class ExpenseResponse(BaseModel):
 class ExpenseCreate(BaseModel):
     name: str
     amount: int = Field(gt=0, description="正の整数のみ許可")
-    expensed_at: datetime
+    expensed_at: JstInputDatetime
     category_uuids: list[str] = []
 
 
 class ExpenseUpdate(BaseModel):
     name: str | None = None
     amount: int | None = Field(default=None, gt=0, description="正の整数のみ許可")
-    expensed_at: datetime | None = None
+    expensed_at: JstInputDatetime | None = None
     category_uuids: list[str] | None = None
 
