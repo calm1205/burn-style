@@ -1,4 +1,5 @@
 import {
+  ActivityLogIcon,
   CalendarIcon,
   DoubleArrowLeftIcon,
   DoubleArrowRightIcon,
@@ -8,14 +9,15 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useSearchParams } from "react-router"
 import { CategoryPieChart } from "../components/CategoryPieChart"
+import { DailyLineChart } from "../components/DailyLineChart"
 import { ExpenseHeatmap } from "../components/ExpenseHeatmap"
 import { ExpenseList } from "../components/ExpenseList"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
 import type { ExpenseResponse } from "../lib/types"
 
-type Tab = "list" | "pie" | "heatmap"
-const VALID_TABS: Tab[] = ["list", "pie", "heatmap"]
+type Tab = "list" | "pie" | "heatmap" | "line"
+const VALID_TABS: Tab[] = ["list", "pie", "heatmap", "line"]
 
 export const ExpenseMonthlyPage = () => {
   const now = new Date()
@@ -116,6 +118,7 @@ export const ExpenseMonthlyPage = () => {
           { key: "list" as const, label: "list", icon: ListBulletIcon },
           { key: "pie" as const, label: "pie chart", icon: PieChartIcon },
           { key: "heatmap" as const, label: "heat map", icon: CalendarIcon },
+          { key: "line" as const, label: "line chart", icon: ActivityLogIcon },
         ].map(({ key, label, icon: Icon }) => (
           <button
             key={key}
@@ -144,6 +147,12 @@ export const ExpenseMonthlyPage = () => {
       {tab === "heatmap" && (
         <div className="min-h-0 flex-1 overflow-y-auto pt-4">
           <ExpenseHeatmap year={year} month={month} expenses={expenses} />
+        </div>
+      )}
+
+      {tab === "line" && (
+        <div className="min-h-0 flex-1 overflow-y-auto pt-4">
+          <DailyLineChart year={year} month={month} expenses={expenses} />
         </div>
       )}
     </div>
