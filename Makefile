@@ -13,9 +13,10 @@ help: ## このヘルプメッセージを表示
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 
-lint: ## backend(mypy & ruff) + frontend(biome)
+lint: ## backend(mypy & ruff) + frontend(typecheck & biome)
 	cd $(BACKEND_DIR) && uv run mypy .
 	cd $(BACKEND_DIR) && uv run ruff check --fix .
+	cd $(FRONTEND_DIR) && npm run typecheck
 	cd $(FRONTEND_DIR) && npx biome check .
 
 test-backend: ## backendのテストを実行
