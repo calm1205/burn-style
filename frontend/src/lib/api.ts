@@ -61,6 +61,11 @@ const signIn = async (username: string): Promise<SignInVerifyResponse> => {
 
 const getMe = (): Promise<UserResponse> => client.get<UserResponse>("/me")
 
+const updateMe = (data: { name: string }): Promise<UserResponse> =>
+  client.patch<UserResponse>("/me", data)
+
+const deleteMe = (): Promise<void> => client.delete<void>("/me")
+
 // --- カテゴリ ---
 
 const getCategories = (): Promise<CategoryResponse[]> =>
@@ -110,6 +115,8 @@ export const api = {
   register,
   signIn,
   getMe,
+  updateMe,
+  deleteMe,
   getCategories,
   createCategory,
   updateCategory,
