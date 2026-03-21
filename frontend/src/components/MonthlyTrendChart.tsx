@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import {
+  Bar,
+  BarChart,
   CartesianGrid,
-  Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -11,39 +11,66 @@ import {
 import { api } from "../lib/api"
 import type { ExpenseResponse } from "../lib/types"
 
+const getLast12Months = (year: number, month: number) => {
+  const months: { year: number; month: number; label: string }[] = []
+  for (let i = 11; i >= 0; i--) {
+    let y = year
+    let m = month - i
+    while (m <= 0) {
+      m += 12
+      y -= 1
+    }
+    months.push({ year: y, month: m, label: `${m}月` })
+  }
+  return months
+}
+
 interface MonthlyTrendChartProps {
   year: number
   month: number
 }
 
 export const MonthlyTrendChart = ({ year, month }: MonthlyTrendChartProps) => {
-  const [expenses, setExpenses] = useState<ExpenseResponse[]>([])
+  const [thisYearExpenses, setThisYearExpenses] = useState<ExpenseResponse[]>(
+    [],
+  )
+  const [lastYearExpenses, setLastYearExpenses] = useState<ExpenseResponse[]>(
+    [],
+  )
 
   const fetchData = useCallback(async () => {
     try {
-      setExpenses(await api.getExpenses(year))
+      const results = await Promise.all([
+        api.getExpenses(year),
+        month < 12 ? api.getExpenses(year - 1) : Promise.resolve([]),
+      ])
+      setThisYearExpenses(results[0])
+      setLastYearExpenses(results[1])
     } catch {
       // エラーは親で表示済み
     }
-  }, [year])
+  }, [year, month])
 
   useEffect(() => {
     fetchData()
   }, [fetchData])
 
   const data = useMemo(() => {
-    return Array.from({ length: month }, (_, i) => {
-      const m = i + 1
-      const total = expenses
-        .filter((e) => new Date(e.expensed_at).getMonth() + 1 === m)
+    const allExpenses = [...lastYearExpenses, ...thisYearExpenses]
+    return getLast12Months(year, month).map(({ year: y, month: m, label }) => {
+      const total = allExpenses
+        .filter((e) => {
+          const d = new Date(e.expensed_at)
+          return d.getFullYear() === y && d.getMonth() + 1 === m
+        })
         .reduce((sum, e) => sum + e.amount, 0)
-      return { label: `${m}月`, amount: total }
+      return { label, amount: total }
     })
-  }, [month, expenses])
+  }, [year, month, thisYearExpenses, lastYearExpenses])
 
   return (
     <ResponsiveContainer width="100%" height={200}>
-      <LineChart data={data}>
+      <BarChart data={data}>
         <CartesianGrid strokeDasharray="3 3" vertical={false} />
         <XAxis dataKey="label" tick={{ fontSize: 11 }} />
         <YAxis
@@ -54,15 +81,13 @@ export const MonthlyTrendChart = ({ year, month }: MonthlyTrendChartProps) => {
         <Tooltip
           formatter={(value) => [`${Number(value).toLocaleString()}円`]}
         />
-        <Line
-          type="monotone"
+        <Bar
           dataKey="amount"
-          stroke="#2563eb"
-          strokeWidth={2}
-          dot={{ r: 3 }}
+          fill="#2563eb"
+          radius={[3, 3, 0, 0]}
           isAnimationActive={false}
         />
-      </LineChart>
+      </BarChart>
     </ResponsiveContainer>
   )
 }
