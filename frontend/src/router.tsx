@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate } from "react-router"
 import { AppLayout } from "./components/AppLayout"
 import { ProtectedRoute } from "./components/ProtectedRoute"
 import { CategoriesPage } from "./pages/CategoriesPage"
+import { ExpenseAnnualPage } from "./pages/ExpenseAnnualPage"
 import { ExpenseDetailPage } from "./pages/ExpenseDetailPage"
 import { ExpenseMonthlyPage } from "./pages/ExpenseMonthlyPage"
 import { ExpensesPage } from "./pages/ExpensesPage"
@@ -25,6 +26,7 @@ export const router = createBrowserRouter([
         path: "/expense",
         children: [
           { path: "monthly", element: <ExpenseMonthlyPage /> },
+          { path: "annual", element: <ExpenseAnnualPage /> },
           { path: "new", element: <ExpensesPage /> },
           { path: ":uuid", element: <ExpenseDetailPage /> },
         ],
