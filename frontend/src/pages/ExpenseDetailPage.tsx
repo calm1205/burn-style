@@ -1,5 +1,11 @@
 import { ArrowLeftIcon } from "@radix-ui/react-icons"
-import { type SubmitEvent, useCallback, useEffect, useState } from "react"
+import {
+  type SubmitEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react"
 import { useNavigate, useParams } from "react-router"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
@@ -79,10 +85,13 @@ export const ExpenseDetailPage = () => {
     }
   }
 
+  const dialogRef = useRef<HTMLDialogElement>(null)
+
   const handleDelete = async () => {
     if (!uuid) return
     try {
       await api.deleteExpense(uuid)
+      dialogRef.current?.close()
       navigate("/dashboard")
     } catch (err) {
       setError(getErrorMessage(err, "削除に失敗"))
@@ -195,12 +204,35 @@ export const ExpenseDetailPage = () => {
         </button>
         <button
           type="button"
-          onClick={handleDelete}
+          onClick={() => dialogRef.current?.showModal()}
           className="rounded border border-red-600 px-5 py-4 text-red-600 hover:bg-red-50"
         >
           削除
         </button>
       </div>
+
+      <dialog
+        ref={dialogRef}
+        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg p-6 backdrop:bg-black/50"
+      >
+        <p className="mb-6 text-sm">この支出を削除しますか?</p>
+        <div className="flex justify-end gap-3">
+          <button
+            type="button"
+            onClick={() => dialogRef.current?.close()}
+            className="rounded px-4 py-2 text-sm text-gray-500 hover:bg-gray-100"
+          >
+            キャンセル
+          </button>
+          <button
+            type="button"
+            onClick={handleDelete}
+            className="rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
+          >
+            削除
+          </button>
+        </div>
+      </dialog>
     </div>
   )
 }
