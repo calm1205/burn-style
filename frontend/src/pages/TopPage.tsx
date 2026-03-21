@@ -31,9 +31,10 @@ export const TopPage = () => {
   )
 
   return (
-    <div className="flex h-full items-center justify-center px-6">
+    <div className="flex h-full flex-col px-6">
+      <h1 className="shrink-0 pt-6 text-center text-lg font-bold">BurnStyle</h1>
       {error && <p className="text-sm text-red-600">{error}</p>}
-      <div className="text-center">
+      <div className="flex flex-1 flex-col items-center justify-center text-center">
         <p className="text-sm text-gray-500">
           {year}/{month}の支出
         </p>
