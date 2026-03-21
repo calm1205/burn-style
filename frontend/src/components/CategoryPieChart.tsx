@@ -1,3 +1,4 @@
+import { useMemo, useState } from "react"
 import { Pie, PieChart, Tooltip } from "recharts"
 import type { ExpenseResponse } from "../lib/types"
 
@@ -18,36 +19,71 @@ interface CategoryTotal {
   fill: string
 }
 
-const aggregateByCategory = (expenses: ExpenseResponse[]): CategoryTotal[] => {
-  const map = new Map<string, number>()
-  for (const e of expenses) {
-    if (e.categories.length === 0) {
-      map.set("未分類", (map.get("未分類") ?? 0) + e.amount)
-    } else {
-      for (const c of e.categories) {
-        map.set(c.name, (map.get(c.name) ?? 0) + e.amount)
-      }
-    }
-  }
-  return [...map.entries()]
-    .map(([name, amount], i) => ({
-      name,
-      amount,
-      fill: COLORS[i % COLORS.length],
-    }))
-    .sort((a, b) => b.amount - a.amount)
-}
-
 interface CategoryPieChartProps {
   expenses: ExpenseResponse[]
 }
 
 export const CategoryPieChart = ({ expenses }: CategoryPieChartProps) => {
-  const categoryData = aggregateByCategory(expenses)
+  const [hidden, setHidden] = useState<Set<string>>(new Set())
+
+  const { allCategories, colorMap } = useMemo(() => {
+    const catSet = new Set<string>()
+    for (const e of expenses) {
+      if (e.categories.length === 0) {
+        catSet.add("未分類")
+      } else {
+        for (const c of e.categories) catSet.add(c.name)
+      }
+    }
+    const cats = [...catSet]
+    const cMap = new Map<string, string>()
+    for (let i = 0; i < cats.length; i++) {
+      cMap.set(cats[i], COLORS[i % COLORS.length])
+    }
+    return { allCategories: cats, colorMap: cMap }
+  }, [expenses])
+
+  const categoryData = useMemo(() => {
+    const map = new Map<string, number>()
+    for (const e of expenses) {
+      if (e.categories.length === 0) {
+        if (!hidden.has("未分類")) {
+          map.set("未分類", (map.get("未分類") ?? 0) + e.amount)
+        }
+      } else {
+        for (const c of e.categories) {
+          if (!hidden.has(c.name)) {
+            map.set(c.name, (map.get(c.name) ?? 0) + e.amount)
+          }
+        }
+      }
+    }
+    return [...map.entries()]
+      .map(
+        ([name, amount]): CategoryTotal => ({
+          name,
+          amount,
+          fill: colorMap.get(name) ?? COLORS[0],
+        }),
+      )
+      .sort((a, b) => b.amount - a.amount)
+  }, [expenses, hidden, colorMap])
 
   const total = categoryData.reduce((sum, c) => sum + c.amount, 0)
 
-  if (categoryData.length === 0) return null
+  const toggle = (cat: string) => {
+    setHidden((prev) => {
+      const next = new Set(prev)
+      if (next.has(cat)) {
+        next.delete(cat)
+      } else {
+        next.add(cat)
+      }
+      return next
+    })
+  }
+
+  if (allCategories.length === 0) return null
 
   return (
     <div className="mt-6">
@@ -86,25 +122,39 @@ export const CategoryPieChart = ({ expenses }: CategoryPieChartProps) => {
         </PieChart>
       </div>
       <ul className="mt-4 flex flex-col gap-2">
-        {categoryData.map((c) => (
-          <li key={c.name} className="flex items-center justify-between px-2">
-            <div className="flex items-center gap-2">
-              <span
-                className="inline-block size-3 rounded-full"
-                style={{ backgroundColor: c.fill }}
-              />
-              <span className="text-sm">{c.name}</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-xs text-gray-400">
-                {Math.round((c.amount / total) * 100)}%
-              </span>
-              <span className="text-sm font-mono">
-                ¥{c.amount.toLocaleString()}
-              </span>
-            </div>
-          </li>
-        ))}
+        {allCategories.map((cat) => {
+          const isHidden = hidden.has(cat)
+          const matched = categoryData.find((c) => c.name === cat)
+          return (
+            <li key={cat}>
+              <button
+                type="button"
+                onClick={() => toggle(cat)}
+                className={`flex w-full items-center justify-between px-2 ${
+                  isHidden ? "opacity-30" : ""
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <span
+                    className="inline-block size-3 rounded-full"
+                    style={{ backgroundColor: colorMap.get(cat) }}
+                  />
+                  <span className="text-sm">{cat}</span>
+                </div>
+                {matched && !isHidden && (
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-gray-400">
+                      {Math.round((matched.amount / total) * 100)}%
+                    </span>
+                    <span className="font-mono text-sm">
+                      ¥{matched.amount.toLocaleString()}
+                    </span>
+                  </div>
+                )}
+              </button>
+            </li>
+          )
+        })}
       </ul>
     </div>
   )

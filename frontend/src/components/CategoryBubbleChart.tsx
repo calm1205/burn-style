@@ -1,4 +1,4 @@
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import {
   CartesianGrid,
   ResponsiveContainer,
@@ -20,13 +20,24 @@ const AMOUNT_RANGES = [
   { label: "¥30,001~", min: 30001, max: Infinity },
 ]
 
-const COLORS = [
+const RANGE_COLORS = [
   "#bfdbfe",
   "#93c5fd",
   "#60a5fa",
   "#3b82f6",
   "#2563eb",
   "#1e3a5f",
+]
+
+const CAT_COLORS = [
+  "#1e3a5f",
+  "#2563eb",
+  "#3b82f6",
+  "#60a5fa",
+  "#93c5fd",
+  "#a5b4cd",
+  "#7ba1c7",
+  "#4a7fb5",
 ]
 
 interface BubbleData {
@@ -42,6 +53,28 @@ interface CategoryBubbleChartProps {
 }
 
 export const CategoryBubbleChart = ({ expenses }: CategoryBubbleChartProps) => {
+  const [hidden, setHidden] = useState<Set<string>>(new Set())
+
+  const allCategories = useMemo(() => {
+    const catSet = new Set<string>()
+    for (const e of expenses) {
+      if (e.categories.length === 0) {
+        catSet.add("未分類")
+      } else {
+        for (const c of e.categories) catSet.add(c.name)
+      }
+    }
+    return [...catSet]
+  }, [expenses])
+
+  const filteredExpenses = useMemo(() => {
+    if (hidden.size === 0) return expenses
+    return expenses.filter((e) => {
+      if (e.categories.length === 0) return !hidden.has("未分類")
+      return e.categories.some((c) => !hidden.has(c.name))
+    })
+  }, [expenses, hidden])
+
   const data = useMemo(() => {
     const buckets = AMOUNT_RANGES.map((range, i) => ({
       ...range,
@@ -50,7 +83,7 @@ export const CategoryBubbleChart = ({ expenses }: CategoryBubbleChartProps) => {
       total: 0,
     }))
 
-    for (const e of expenses) {
+    for (const e of filteredExpenses) {
       const bucket = buckets.find((b) => e.amount >= b.min && e.amount <= b.max)
       if (bucket) {
         bucket.count++
@@ -66,10 +99,22 @@ export const CategoryBubbleChart = ({ expenses }: CategoryBubbleChartProps) => {
           rangeIndex: b.index,
           frequency: b.count,
           total: b.total,
-          fill: COLORS[b.index % COLORS.length],
+          fill: RANGE_COLORS[b.index % RANGE_COLORS.length],
         }),
       )
-  }, [expenses])
+  }, [filteredExpenses])
+
+  const toggle = (cat: string) => {
+    setHidden((prev) => {
+      const next = new Set(prev)
+      if (next.has(cat)) {
+        next.delete(cat)
+      } else {
+        next.add(cat)
+      }
+      return next
+    })
+  }
 
   if (data.length === 0) return null
 
@@ -115,16 +160,32 @@ export const CategoryBubbleChart = ({ expenses }: CategoryBubbleChartProps) => {
           ))}
         </ScatterChart>
       </ResponsiveContainer>
-      <ul className="flex flex-wrap gap-x-4 gap-y-1 px-2">
-        {AMOUNT_RANGES.map((range, i) => (
-          <li key={range.label} className="flex items-center gap-1.5">
-            <span
-              className="inline-block size-2.5 rounded-full"
-              style={{ backgroundColor: COLORS[i], opacity: 0.8 }}
-            />
-            <span className="text-[10px] text-gray-600">{range.label}</span>
-          </li>
-        ))}
+      <ul className="flex flex-wrap gap-x-3 gap-y-1.5 px-1">
+        {allCategories.map((cat, i) => {
+          const isHidden = hidden.has(cat)
+          return (
+            <li key={cat}>
+              <button
+                type="button"
+                onClick={() => toggle(cat)}
+                className={`flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] transition-opacity ${
+                  isHidden
+                    ? "border-gray-200 text-gray-300"
+                    : "border-gray-300 text-gray-700"
+                }`}
+              >
+                <span
+                  className="inline-block size-2 rounded-full"
+                  style={{
+                    backgroundColor: CAT_COLORS[i % CAT_COLORS.length],
+                    opacity: isHidden ? 0.2 : 1,
+                  }}
+                />
+                {cat}
+              </button>
+            </li>
+          )
+        })}
       </ul>
     </div>
   )
