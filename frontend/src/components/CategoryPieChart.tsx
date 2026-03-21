@@ -2,14 +2,14 @@ import { Cell, Customized, Pie, PieChart } from "recharts"
 import type { ExpenseResponse } from "../lib/types"
 
 const COLORS = [
-  "#94a3b8",
-  "#a1a1aa",
-  "#9ca3af",
-  "#a3a3a3",
-  "#b4bcd0",
-  "#c4b5a0",
-  "#a8b8b0",
-  "#b0a8b8",
+  "#1e3a5f",
+  "#2563eb",
+  "#3b82f6",
+  "#60a5fa",
+  "#93c5fd",
+  "#a5b4cd",
+  "#7ba1c7",
+  "#4a7fb5",
 ]
 
 const CHART_WIDTH = 360
