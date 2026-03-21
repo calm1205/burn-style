@@ -14,8 +14,8 @@ import { LayoutPhone } from "./LayoutPhone"
 
 const navItems = [
   { label: "ダッシュボード", to: "/dashboard", icon: HomeIcon },
-  { label: "カテゴリ", to: "/categories", icon: BookmarkIcon },
-  { label: "設定", to: "/settings", icon: GearIcon },
+  { label: "カテゴリ", to: "/category", icon: BookmarkIcon },
+  { label: "設定", to: "/setting", icon: GearIcon },
   { label: "記帳", to: "/expense", icon: PlusIcon },
 ]
 
