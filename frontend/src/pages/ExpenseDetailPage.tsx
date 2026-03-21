@@ -1,4 +1,4 @@
-import { ArrowLeftIcon, TrashIcon } from "@radix-ui/react-icons"
+import { ArrowLeftIcon } from "@radix-ui/react-icons"
 import { type SubmitEvent, useCallback, useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router"
 import { api } from "../lib/api"
@@ -98,20 +98,13 @@ export const ExpenseDetailPage = () => {
       className="mx-auto flex max-w-2xl flex-col items-stretch gap-12 px-6"
       style={{ paddingTop: "10vh" }}
     >
-      <div className="flex items-center justify-between">
+      <div className="flex items-center">
         <button
           type="button"
           onClick={() => navigate(-1)}
           className="text-gray-400 hover:text-gray-600"
         >
           <ArrowLeftIcon className="size-5" />
-        </button>
-        <button
-          type="button"
-          onClick={handleDelete}
-          className="text-gray-400 hover:text-red-600"
-        >
-          <TrashIcon className="size-5" />
         </button>
       </div>
 
@@ -198,6 +191,13 @@ export const ExpenseDetailPage = () => {
         className="rounded bg-black px-5 py-4 text-white hover:bg-gray-800"
       >
         更新
+      </button>
+      <button
+        type="button"
+        onClick={handleDelete}
+        className="rounded border border-red-600 px-5 py-4 text-red-600 hover:bg-red-50"
+      >
+        削除
       </button>
     </div>
   )
