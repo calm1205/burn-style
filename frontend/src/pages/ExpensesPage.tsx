@@ -68,7 +68,7 @@ export const ExpensesPage = () => {
       className="mx-auto flex max-w-2xl flex-col items-stretch gap-12 px-6"
       style={{ paddingTop: "20vh" }}
     >
-      <h1 className="text-center text-2xl font-bold">記帳</h1>
+      <h1 className="text-center text-2xl font-bold">Expense</h1>
 
       {error && <p className="text-sm text-red-600">{error}</p>}
 
@@ -79,7 +79,7 @@ export const ExpensesPage = () => {
       >
         <div className="flex flex-col gap-2">
           <label htmlFor="expense-name" className="text-xs text-gray-500">
-            名前
+            Name
           </label>
           <input
             id="expense-name"
@@ -96,7 +96,7 @@ export const ExpensesPage = () => {
         </div>
         <div className="flex flex-col gap-2">
           <label htmlFor="expense-amount" className="text-xs text-gray-500">
-            金額
+            Amount
           </label>
           <input
             id="expense-amount"
@@ -114,7 +114,7 @@ export const ExpensesPage = () => {
         </div>
         <div className="flex flex-col gap-2">
           <label htmlFor="expense-date" className="text-xs text-gray-500">
-            日時
+            Date
           </label>
           <input
             id="expense-date"
@@ -129,7 +129,7 @@ export const ExpensesPage = () => {
         </div>
         {categories.length > 0 && (
           <div className="flex flex-col gap-2">
-            <span className="text-xs text-gray-500">カテゴリ</span>
+            <span className="text-xs text-gray-500">Category</span>
             <div className="flex flex-wrap gap-2">
               {categories.map((c) => (
                 <button
@@ -154,7 +154,7 @@ export const ExpensesPage = () => {
         form="expense-form"
         className="rounded bg-black px-5 py-4 text-white hover:bg-gray-800"
       >
-        追加
+        Add
       </button>
     </div>
   )

@@ -16,7 +16,7 @@ const navItems = [
   { label: "ダッシュボード", to: "/", icon: HomeIcon },
   { label: "カテゴリ", to: "/category", icon: BookmarkIcon },
   { label: "設定", to: "/setting", icon: GearIcon },
-  { label: "記帳", to: "/expense/new", icon: PlusIcon },
+  { label: "Expense", to: "/expense/new", icon: PlusIcon },
 ]
 
 export const AppLayout = () => {
