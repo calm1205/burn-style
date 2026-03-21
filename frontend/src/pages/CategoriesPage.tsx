@@ -13,6 +13,7 @@ import {
   useRef,
   useState,
 } from "react"
+import { ConfirmDialog, useConfirmDialog } from "../components/ConfirmDialog"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
 import type { CategoryResponse } from "../lib/types"
@@ -57,11 +58,11 @@ export const CategoriesPage = () => {
   const [deleteTarget, setDeleteTarget] = useState<CategoryResponse | null>(
     null,
   )
-  const dialogRef = useRef<HTMLDialogElement>(null)
+  const { dialogRef, open: openDialog } = useConfirmDialog()
 
   const confirmDelete = (c: CategoryResponse) => {
     setDeleteTarget(c)
-    dialogRef.current?.showModal()
+    openDialog()
   }
 
   const handleDelete = async () => {
@@ -198,29 +199,11 @@ export const CategoriesPage = () => {
         <p className="text-center text-gray-500">カテゴリがありません</p>
       )}
 
-      <dialog
-        ref={dialogRef}
-        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg p-6 backdrop:bg-black/50"
-        onClose={() => setDeleteTarget(null)}
-      >
-        <p className="mb-6 text-sm">「{deleteTarget?.name}」を削除しますか?</p>
-        <div className="flex justify-end gap-3">
-          <button
-            type="button"
-            onClick={() => dialogRef.current?.close()}
-            className="rounded px-4 py-2 text-sm text-gray-500 hover:bg-gray-100"
-          >
-            キャンセル
-          </button>
-          <button
-            type="button"
-            onClick={handleDelete}
-            className="rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
-          >
-            削除
-          </button>
-        </div>
-      </dialog>
+      <ConfirmDialog
+        message={`「${deleteTarget?.name}」を削除しますか?`}
+        onConfirm={handleDelete}
+        dialogRef={dialogRef}
+      />
     </div>
   )
 }
