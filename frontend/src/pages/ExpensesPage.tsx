@@ -1,9 +1,11 @@
 import { type SubmitEvent, useCallback, useEffect, useState } from "react"
+import { useNavigate } from "react-router"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
 import type { CategoryResponse } from "../lib/types"
 
 export const ExpensesPage = () => {
+  const navigate = useNavigate()
   const [categories, setCategories] = useState<CategoryResponse[]>([])
   const [error, setError] = useState("")
 
@@ -55,12 +57,7 @@ export const ExpensesPage = () => {
         expensed_at: form.expensedAt,
         category_uuids: [...form.categoryUuids],
       })
-      setForm({
-        name: "",
-        amount: "",
-        expensedAt: today,
-        categoryUuids: new Set(),
-      })
+      navigate("/dashboard")
     } catch (err) {
       setError(getErrorMessage(err, "作成に失敗"))
     }
