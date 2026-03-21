@@ -27,7 +27,7 @@ def get_all_expenses(
             next_month_start = datetime(year + 1, 1, 1, tzinfo=UTC)
         else:
             next_month_start = datetime(year, month + 1, 1, tzinfo=UTC)
-        query = query.filter(Expense.created_at >= start, Expense.created_at < next_month_start)
+        query = query.filter(Expense.expensed_at >= start, Expense.expensed_at < next_month_start)
     return query.all()
 
 
@@ -40,16 +40,17 @@ def get_expense_by_uuid(db: Session, uuid: str, user_uuid: str) -> Expense | Non
     ).first()
 
 
-def create_expense(
+def create_expense(  # noqa: PLR0913
     db: Session,
     user_uuid: str,
     name: str,
     amount: float,
+    expensed_at: datetime,
+    *,
     category_uuids: list[str] | None = None,
-    expensed_at: datetime | None = None,
 ) -> Expense:
     """新しい支出を作成する"""
-    expense = Expense(user_uuid=user_uuid, name=name, amount=amount, **({"expensed_at": expensed_at} if expensed_at else {}))
+    expense = Expense(user_uuid=user_uuid, name=name, amount=amount, expensed_at=expensed_at)
 
     if category_uuids:
         categories = db.query(Category).filter(

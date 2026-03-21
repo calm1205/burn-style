@@ -103,6 +103,7 @@ def _random_date_in_month(year: int, month: int, rng: random.Random) -> datetime
 class ExpenseRecord(TypedDict):
     name: str
     amount: int
+    expensed_at: datetime
     created_at: datetime
     category_names: list[str]
 
@@ -134,10 +135,12 @@ def _generate_expenses(rng: random.Random) -> list[ExpenseRecord]:
                     # 100円単位に丸め
                     amount = max(100, (amount // 100) * 100)
 
+                    expensed_at = _random_date_in_month(year, month, rng)
                     records.append({
                         "name": rng.choice(pattern["names"]),
                         "amount": amount,
-                        "created_at": _random_date_in_month(year, month, rng),
+                        "expensed_at": expensed_at,
+                        "created_at": expensed_at,
                         "category_names": [category_name],
                     })
 
@@ -166,6 +169,7 @@ def seed_expenses(db: Session, user: User) -> None:
             user_uuid=user.uuid,
             name=record["name"],
             amount=record["amount"],
+            expensed_at=record["expensed_at"],
             created_at=record["created_at"],
         )
         expense.categories = [

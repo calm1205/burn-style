@@ -23,7 +23,7 @@ class ExpenseResponse(BaseModel):
 class ExpenseCreate(BaseModel):
     name: str
     amount: int = Field(gt=0, description="正の整数のみ許可")
-    expensed_at: datetime | None = None
+    expensed_at: datetime
     category_uuids: list[str] = []
 
 

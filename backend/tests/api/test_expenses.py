@@ -1,11 +1,15 @@
 from __future__ import annotations
 
+from datetime import UTC, datetime
+
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
 from src.model.category import Category
 from src.model.expense import Expense
 from src.model.user import User
+
+SAMPLE_EXPENSED_AT = "2025-03-15T12:00:00Z"
 
 
 def _create_category(db: Session, user_uuid: str, name: str = "食費") -> Category:
@@ -16,8 +20,11 @@ def _create_category(db: Session, user_uuid: str, name: str = "食費") -> Categ
     return cat
 
 
-def _create_expense(db: Session, user_uuid: str, name: str = "ランチ", amount: int = 1000) -> Expense:
-    expense = Expense(user_uuid=user_uuid, name=name, amount=amount)
+def _create_expense(
+    db: Session, user_uuid: str, name: str = "ランチ", amount: int = 1000,
+    expensed_at: datetime | None = None,
+) -> Expense:
+    expense = Expense(user_uuid=user_uuid, name=name, amount=amount, expensed_at=expensed_at or datetime.now(UTC))
     db.add(expense)
     db.commit()
     db.refresh(expense)
@@ -43,11 +50,12 @@ class TestListExpenses:
 
 class TestPostExpense:
     def test_creates_expense(self, auth_client: TestClient) -> None:
-        res = auth_client.post("/expenses", json={"name": "ランチ", "amount": 800})
+        res = auth_client.post("/expenses", json={"name": "ランチ", "amount": 800, "expensed_at": SAMPLE_EXPENSED_AT})
         assert res.status_code == 201
         data = res.json()
         assert data["name"] == "ランチ"
         assert data["amount"] == 800
+        assert data["expensed_at"] is not None
         assert "uuid" in data
 
     def test_creates_expense_with_categories(
@@ -55,13 +63,20 @@ class TestPostExpense:
     ) -> None:
         cat = _create_category(db, str(test_user.uuid))
 
-        res = auth_client.post("/expenses", json={"name": "ランチ", "amount": 800, "category_uuids": [cat.uuid]})
+        res = auth_client.post(
+            "/expenses",
+            json={"name": "ランチ", "amount": 800, "expensed_at": SAMPLE_EXPENSED_AT, "category_uuids": [cat.uuid]},
+        )
         assert res.status_code == 201
         assert len(res.json()["categories"]) == 1
         assert res.json()["categories"][0]["uuid"] == cat.uuid
 
     def test_rejects_zero_amount(self, auth_client: TestClient) -> None:
-        res = auth_client.post("/expenses", json={"name": "ランチ", "amount": 0})
+        res = auth_client.post("/expenses", json={"name": "ランチ", "amount": 0, "expensed_at": SAMPLE_EXPENSED_AT})
+        assert res.status_code == 422
+
+    def test_rejects_missing_expensed_at(self, auth_client: TestClient) -> None:
+        res = auth_client.post("/expenses", json={"name": "ランチ", "amount": 800})
         assert res.status_code == 422
 
     def test_rejects_empty_body(self, auth_client: TestClient) -> None:

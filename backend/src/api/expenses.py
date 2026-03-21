@@ -39,7 +39,8 @@ def post_expense(
     db: Annotated[Session, Depends(get_db)],
 ) -> ExpenseResponse:
     expense = create_expense(
-        db, str(user.uuid), body.name, body.amount, body.category_uuids or None, expensed_at=body.expensed_at,
+        db, str(user.uuid), body.name, body.amount, body.expensed_at,
+        category_uuids=body.category_uuids or None,
     )
     return ExpenseResponse.model_validate(expense)
 
