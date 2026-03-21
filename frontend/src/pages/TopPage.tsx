@@ -39,9 +39,9 @@ export const TopPage = () => {
         </p>
         <p
           className="cursor-pointer text-4xl font-bold hover:text-gray-600"
-          onClick={() => navigate("/dashboard")}
+          onClick={() => navigate("/expense/monthly")}
           onKeyDown={(e) => {
-            if (e.key === "Enter") navigate("/dashboard")
+            if (e.key === "Enter") navigate("/expense/monthly")
           }}
         >
           {total.toLocaleString()}円

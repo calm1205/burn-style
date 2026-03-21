@@ -57,7 +57,7 @@ export const ExpensesPage = () => {
         expensed_at: form.expensedAt,
         category_uuids: [...form.categoryUuids],
       })
-      navigate("/dashboard")
+      navigate("/expense/monthly")
     } catch (err) {
       setError(getErrorMessage(err, "作成に失敗"))
     }

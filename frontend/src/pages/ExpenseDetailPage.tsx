@@ -87,7 +87,7 @@ export const ExpenseDetailPage = () => {
     try {
       await api.deleteExpense(uuid)
       dialogRef.current?.close()
-      navigate("/dashboard")
+      navigate("/expense/monthly")
     } catch (err) {
       setError(getErrorMessage(err, "削除に失敗"))
     }

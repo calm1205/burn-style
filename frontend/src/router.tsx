@@ -21,11 +21,11 @@ export const router = createBrowserRouter([
     ),
     children: [
       { path: "/", element: <TopPage /> },
-      { path: "/dashboard", element: <DashboardPage /> },
       {
         path: "/expense",
         children: [
-          { index: true, element: <ExpensesPage /> },
+          { path: "monthly", element: <DashboardPage /> },
+          { path: "new", element: <ExpensesPage /> },
           { path: ":uuid", element: <ExpenseDetailPage /> },
         ],
       },
