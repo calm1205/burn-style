@@ -82,16 +82,16 @@ export const TopPage = () => {
         </p>
 
         {categoryData.length > 0 && (
-          <div className="mt-6 flex flex-col items-center">
-            <PieChart width={200} height={200}>
+          <div className="mt-6 flex items-center justify-center gap-6">
+            <PieChart width={160} height={160}>
               <Pie
                 data={categoryData}
                 dataKey="amount"
                 nameKey="name"
                 cx="50%"
                 cy="50%"
-                innerRadius={50}
-                outerRadius={80}
+                innerRadius={40}
+                outerRadius={65}
                 strokeWidth={2}
               >
                 {categoryData.map((_, i) => (
@@ -102,14 +102,14 @@ export const TopPage = () => {
                 ))}
               </Pie>
             </PieChart>
-            <div className="mt-2 flex flex-wrap justify-center gap-x-4 gap-y-1">
+            <div className="flex flex-col gap-2">
               {categoryData.map((d, i) => (
                 <span
                   key={d.name}
-                  className="flex items-center gap-1 text-xs text-gray-600"
+                  className="flex items-center gap-2 text-xs text-gray-600"
                 >
                   <span
-                    className="inline-block size-2 rounded-full"
+                    className="inline-block size-2 shrink-0 rounded-full"
                     style={{ backgroundColor: COLORS[i % COLORS.length] }}
                   />
                   {d.name} {d.amount.toLocaleString()}円
