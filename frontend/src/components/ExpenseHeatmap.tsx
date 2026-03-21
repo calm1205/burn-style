@@ -7,10 +7,10 @@ const getColor = (amount: number, mean: number, sd: number) => {
   if (amount === 0) return { bg: "bg-gray-100", text: "text-gray-600" }
   if (sd === 0) return { bg: "bg-blue-300", text: "text-gray-600" }
   const z = (amount - mean) / sd
-  if (z > 1.5) return { bg: "bg-blue-800", text: "text-white" }
-  if (z > 0.5) return { bg: "bg-blue-600", text: "text-gray-600" }
-  if (z > -0.5) return { bg: "bg-blue-400", text: "text-gray-600" }
-  if (z > -1.5) return { bg: "bg-blue-200", text: "text-gray-600" }
+  if (z > 0.75) return { bg: "bg-blue-800", text: "text-white" }
+  if (z > 0.25) return { bg: "bg-blue-600", text: "text-gray-600" }
+  if (z > -0.25) return { bg: "bg-blue-400", text: "text-gray-600" }
+  if (z > -0.75) return { bg: "bg-blue-200", text: "text-gray-600" }
   return { bg: "bg-blue-100", text: "text-gray-600" }
 }
 
