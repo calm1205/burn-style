@@ -44,7 +44,7 @@ export const TopPage = () => {
         >
           <div className="flex flex-col items-start gap-1">
             <span className="text-sm text-gray-500">
-              Total Spending - {year}/{month}
+              total - {year}/{String(month).padStart(2, "0")}
             </span>
             <span className="text-3xl font-bold">
               {total.toLocaleString()}円
