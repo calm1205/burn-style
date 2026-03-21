@@ -75,13 +75,11 @@ export const MonthlyTrendChart = ({ year, month }: MonthlyTrendChartProps) => {
         <XAxis
           dataKey="label"
           tick={{ fontSize: 10 }}
-          interval={2}
+          interval={0}
           ticks={(() => {
             const labels = data.map((d) => d.label)
-            const shown = labels.filter((_, i) => i % 3 === 0)
-            const last = labels[labels.length - 1]
-            if (!shown.includes(last)) shown.push(last)
-            return shown
+            const last = labels.length - 1
+            return labels.filter((_, i) => (last - i) % 3 === 0)
           })()}
         />
         <YAxis
