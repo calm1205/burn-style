@@ -72,7 +72,18 @@ export const MonthlyTrendChart = ({ year, month }: MonthlyTrendChartProps) => {
     <ResponsiveContainer width="100%" height={200}>
       <BarChart data={data}>
         <CartesianGrid strokeDasharray="3 3" vertical={false} />
-        <XAxis dataKey="label" tick={{ fontSize: 10 }} interval={2} />
+        <XAxis
+          dataKey="label"
+          tick={{ fontSize: 10 }}
+          interval={2}
+          ticks={(() => {
+            const labels = data.map((d) => d.label)
+            const shown = labels.filter((_, i) => i % 3 === 0)
+            const last = labels[labels.length - 1]
+            if (!shown.includes(last)) shown.push(last)
+            return shown
+          })()}
+        />
         <YAxis
           tick={{ fontSize: 11 }}
           tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`}
