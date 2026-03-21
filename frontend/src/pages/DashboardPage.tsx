@@ -3,6 +3,7 @@ import {
   DoubleArrowRightIcon,
 } from "@radix-ui/react-icons"
 import { useCallback, useEffect, useMemo, useState } from "react"
+import { useNavigate } from "react-router"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
 import type { ExpenseResponse } from "../lib/types"
@@ -37,6 +38,7 @@ const groupByDate = (expenses: ExpenseResponse[]) => {
 }
 
 export const DashboardPage = () => {
+  const navigate = useNavigate()
   const now = new Date()
   const [year, setYear] = useState(now.getFullYear())
   const [month, setMonth] = useState(now.getMonth() + 1)
@@ -116,7 +118,14 @@ export const DashboardPage = () => {
             </p>
             <ul className="flex flex-col">
               {group.items.map((e) => (
-                <li key={e.uuid} className="flex flex-col gap-1 py-3">
+                <li
+                  key={e.uuid}
+                  className="flex cursor-pointer flex-col gap-1 py-3 hover:bg-gray-50"
+                  onClick={() => navigate(`/expenses/${e.uuid}`)}
+                  onKeyDown={(ev) => {
+                    if (ev.key === "Enter") navigate(`/expenses/${e.uuid}`)
+                  }}
+                >
                   <div className="flex items-center gap-3">
                     <span
                       className="shrink-0 text-xs text-transparent"

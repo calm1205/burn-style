@@ -80,6 +80,9 @@ const deleteCategory = (uuid: string): Promise<void> =>
 
 // --- 支出 ---
 
+const getExpense = (uuid: string): Promise<ExpenseResponse> =>
+  client.get<ExpenseResponse>(`/expenses/${uuid}`)
+
 const getExpenses = (
   year?: number,
   month?: number,
@@ -111,6 +114,7 @@ export const api = {
   createCategory,
   updateCategory,
   deleteCategory,
+  getExpense,
   getExpenses,
   createExpense,
   updateExpense,

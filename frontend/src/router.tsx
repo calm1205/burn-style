@@ -3,6 +3,7 @@ import { AppLayout } from "./components/AppLayout"
 import { ProtectedRoute } from "./components/ProtectedRoute"
 import { CategoriesPage } from "./pages/CategoriesPage"
 import { DashboardPage } from "./pages/DashboardPage"
+import { ExpenseDetailPage } from "./pages/ExpenseDetailPage"
 import { ExpensesPage } from "./pages/ExpensesPage"
 import { SettingsPage } from "./pages/SettingsPage"
 import { SignInPage } from "./pages/SignInPage"
@@ -20,6 +21,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "/dashboard", element: <DashboardPage /> },
       { path: "/expenses", element: <ExpensesPage /> },
+      { path: "/expenses/:uuid", element: <ExpenseDetailPage /> },
       { path: "/categories", element: <CategoriesPage /> },
       { path: "/settings", element: <SettingsPage /> },
     ],
