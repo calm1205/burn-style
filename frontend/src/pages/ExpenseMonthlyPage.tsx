@@ -37,7 +37,7 @@ const groupByDate = (expenses: ExpenseResponse[]) => {
   return groups
 }
 
-export const DashboardPage = () => {
+export const ExpenseMonthlyPage = () => {
   const navigate = useNavigate()
   const now = new Date()
   const [year, setYear] = useState(now.getFullYear())

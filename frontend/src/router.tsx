@@ -2,8 +2,8 @@ import { createBrowserRouter, Navigate } from "react-router"
 import { AppLayout } from "./components/AppLayout"
 import { ProtectedRoute } from "./components/ProtectedRoute"
 import { CategoriesPage } from "./pages/CategoriesPage"
-import { DashboardPage } from "./pages/DashboardPage"
 import { ExpenseDetailPage } from "./pages/ExpenseDetailPage"
+import { ExpenseMonthlyPage } from "./pages/ExpenseMonthlyPage"
 import { ExpensesPage } from "./pages/ExpensesPage"
 import { SettingsPage } from "./pages/SettingsPage"
 import { SignInPage } from "./pages/SignInPage"
@@ -24,7 +24,7 @@ export const router = createBrowserRouter([
       {
         path: "/expense",
         children: [
-          { path: "monthly", element: <DashboardPage /> },
+          { path: "monthly", element: <ExpenseMonthlyPage /> },
           { path: "new", element: <ExpensesPage /> },
           { path: ":uuid", element: <ExpenseDetailPage /> },
         ],
