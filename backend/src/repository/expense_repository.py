@@ -33,7 +33,7 @@ def get_all_expenses(
 
 def get_expense_by_uuid(db: Session, uuid: str, user_uuid: str) -> Expense | None:
     """UUIDで支出を取得する"""
-    return db.query(Expense).filter(
+    return db.query(Expense).options(selectinload(Expense.categories)).filter(
         Expense.uuid == uuid,
         Expense.user_uuid == user_uuid,
         Expense.deleted_at.is_(None),

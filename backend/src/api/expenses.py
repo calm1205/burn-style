@@ -32,6 +32,18 @@ def list_expenses(
     return [ExpenseResponse.model_validate(e) for e in expenses]
 
 
+@expense_router.get("/{uuid}")
+def get_expense(
+    uuid: str,
+    user: Annotated[User, Depends(get_current_user)],
+    db: Annotated[Session, Depends(get_db)],
+) -> ExpenseResponse:
+    expense = get_expense_by_uuid(db, uuid, str(user.uuid))
+    if not expense:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Expense not found")
+    return ExpenseResponse.model_validate(expense)
+
+
 @expense_router.post("", status_code=status.HTTP_201_CREATED)
 def post_expense(
     body: ExpenseCreate,
