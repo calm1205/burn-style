@@ -13,12 +13,21 @@ import type { ExpenseResponse } from "../lib/types"
 
 const AMOUNT_RANGES = [
   { label: "~¥500", min: 1, max: 500 },
-  { label: "¥501~2,000", min: 501, max: 2000 },
-  { label: "¥2,001~10,000", min: 2001, max: 10000 },
-  { label: "¥10,001~", min: 10001, max: Infinity },
+  { label: "¥501~1,500", min: 501, max: 1500 },
+  { label: "¥1,501~5,000", min: 1501, max: 5000 },
+  { label: "¥5,001~10,000", min: 5001, max: 10000 },
+  { label: "¥10,001~30,000", min: 10001, max: 30000 },
+  { label: "¥30,001~", min: 30001, max: Infinity },
 ]
 
-const COLORS = ["#93c5fd", "#3b82f6", "#2563eb", "#1e3a5f"]
+const COLORS = [
+  "#bfdbfe",
+  "#93c5fd",
+  "#60a5fa",
+  "#3b82f6",
+  "#2563eb",
+  "#1e3a5f",
+]
 
 interface BubbleData {
   label: string
