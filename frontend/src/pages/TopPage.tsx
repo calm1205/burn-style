@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router"
-import { Cell, Pie, PieChart } from "recharts"
+import { Cell, Pie, PieChart, type PieLabelRenderProps } from "recharts"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
 import type { ExpenseResponse } from "../lib/types"
@@ -19,6 +19,54 @@ const COLORS = [
 interface CategoryTotal {
   name: string
   amount: number
+}
+
+const renderLabel = (props: PieLabelRenderProps) => {
+  const { cx, cy, midAngle, outerRadius, name, value } = props
+  const RADIAN = Math.PI / 180
+  const cxNum = Number(cx)
+  const cyNum = Number(cy)
+  const outerR = Number(outerRadius)
+  const angle = Number(midAngle)
+
+  const startX = cxNum + outerR * Math.cos(-angle * RADIAN)
+  const startY = cyNum + outerR * Math.sin(-angle * RADIAN)
+  const midX = cxNum + (outerR + 20) * Math.cos(-angle * RADIAN)
+  const midY = cyNum + (outerR + 20) * Math.sin(-angle * RADIAN)
+  const isRight = midX > cxNum
+  const endX = isRight ? midX + 20 : midX - 20
+  const textAnchor = isRight ? "start" : "end"
+
+  return (
+    <g>
+      <polyline
+        points={`${startX},${startY} ${midX},${midY} ${endX},${midY}`}
+        fill="none"
+        stroke="#9ca3af"
+        strokeWidth={1}
+      />
+      <text
+        x={endX + (isRight ? 4 : -4)}
+        y={midY}
+        textAnchor={textAnchor}
+        dominantBaseline="central"
+        className="text-xs"
+        fill="#6b7280"
+      >
+        {name}
+      </text>
+      <text
+        x={endX + (isRight ? 4 : -4)}
+        y={midY + 14}
+        textAnchor={textAnchor}
+        dominantBaseline="central"
+        className="text-xs"
+        fill="#9ca3af"
+      >
+        {Number(value).toLocaleString()}円
+      </text>
+    </g>
+  )
 }
 
 const aggregateByCategory = (expenses: ExpenseResponse[]): CategoryTotal[] => {
@@ -82,17 +130,19 @@ export const TopPage = () => {
         </p>
 
         {categoryData.length > 0 && (
-          <div className="mt-6 flex items-center justify-center gap-6">
-            <PieChart width={160} height={160}>
+          <div className="mt-6 flex justify-center">
+            <PieChart width={360} height={280}>
               <Pie
                 data={categoryData}
                 dataKey="amount"
                 nameKey="name"
                 cx="50%"
                 cy="50%"
-                innerRadius={40}
-                outerRadius={65}
+                innerRadius={45}
+                outerRadius={70}
                 strokeWidth={2}
+                label={renderLabel}
+                isAnimationActive={false}
               >
                 {categoryData.map((_, i) => (
                   <Cell
@@ -102,20 +152,6 @@ export const TopPage = () => {
                 ))}
               </Pie>
             </PieChart>
-            <div className="flex flex-col gap-2">
-              {categoryData.map((d, i) => (
-                <span
-                  key={d.name}
-                  className="flex items-center gap-2 text-xs text-gray-600"
-                >
-                  <span
-                    className="inline-block size-2 shrink-0 rounded-full"
-                    style={{ backgroundColor: COLORS[i % COLORS.length] }}
-                  />
-                  {d.name} {d.amount.toLocaleString()}円
-                </span>
-              ))}
-            </div>
           </div>
         )}
 
