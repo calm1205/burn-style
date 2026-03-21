@@ -57,6 +57,8 @@ export const CategoryPieChart = ({ expenses }: CategoryPieChartProps) => {
             nameKey="name"
             cx="50%"
             cy="50%"
+            startAngle={90}
+            endAngle={-270}
             innerRadius={45}
             outerRadius={70}
             strokeWidth={2}
