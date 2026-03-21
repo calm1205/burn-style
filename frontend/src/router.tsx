@@ -8,6 +8,7 @@ import { ExpensesPage } from "./pages/ExpensesPage"
 import { SettingsPage } from "./pages/SettingsPage"
 import { SignInPage } from "./pages/SignInPage"
 import { SignupPage } from "./pages/SignupPage"
+import { TopPage } from "./pages/TopPage"
 
 export const router = createBrowserRouter([
   { path: "/signup", element: <SignupPage /> },
@@ -19,6 +20,7 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
+      { path: "/", element: <TopPage /> },
       { path: "/dashboard", element: <DashboardPage /> },
       {
         path: "/expense",
@@ -31,5 +33,5 @@ export const router = createBrowserRouter([
       { path: "/setting", element: <SettingsPage /> },
     ],
   },
-  { path: "*", element: <Navigate to="/dashboard" replace /> },
+  { path: "*", element: <Navigate to="/" replace /> },
 ])
