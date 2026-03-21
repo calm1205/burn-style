@@ -60,7 +60,18 @@ export const CategoryPieChart = ({ expenses }: CategoryPieChartProps) => {
           outerRadius={70}
           strokeWidth={2}
           isAnimationActive={false}
-          label={({ name }) => name}
+          label={({ x, y, name, textAnchor }) => (
+            <text
+              x={x}
+              y={y}
+              textAnchor={textAnchor}
+              dominantBaseline="central"
+              fontSize={11}
+              fill="#6b7280"
+            >
+              {name}
+            </text>
+          )}
           labelLine
         />
         <Tooltip
