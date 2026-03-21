@@ -200,7 +200,7 @@ export const CategoriesPage = () => {
 
       <dialog
         ref={dialogRef}
-        className="rounded-lg p-6 backdrop:bg-black/50"
+        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg p-6 backdrop:bg-black/50"
         onClose={() => setDeleteTarget(null)}
       >
         <p className="mb-6 text-sm">「{deleteTarget?.name}」を削除しますか?</p>
