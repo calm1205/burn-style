@@ -40,10 +40,10 @@ const computeLabelPositions = (data: CategoryTotal[]): LabelPosition[] => {
   const total = data.reduce((sum, d) => sum + d.amount, 0)
   const raw: LabelPosition[] = []
 
-  let currentAngle = 90
+  let currentAngle = 0
   for (const d of data) {
     const sliceAngle = (d.amount / total) * 360
-    const midAngle = currentAngle - sliceAngle / 2
+    const midAngle = currentAngle + sliceAngle / 2
 
     const startX = CX + OUTER_RADIUS * Math.cos(-midAngle * RADIAN)
     const startY = CY + OUTER_RADIUS * Math.sin(-midAngle * RADIAN)
@@ -61,7 +61,7 @@ const computeLabelPositions = (data: CategoryTotal[]): LabelPosition[] => {
       isRight,
     })
 
-    currentAngle -= sliceAngle
+    currentAngle += sliceAngle
   }
 
   const rightLabels = raw
