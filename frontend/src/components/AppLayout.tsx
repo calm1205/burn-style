@@ -48,7 +48,7 @@ export const AppLayout = () => {
         onLogout={onLogout}
       />
       <main className="flex-1 overflow-y-auto pb-16 md:pb-0">
-        <Outlet context={{ user, onLogout }} />
+        <Outlet context={{ user, onLogout, refreshUser: fetchUser }} />
       </main>
       <LayoutPhone navItems={navItems} />
     </div>
