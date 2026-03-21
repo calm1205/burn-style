@@ -59,7 +59,7 @@ export const TopPage = () => {
           onClick={() => navigate("/expense/monthly?tab=pie")}
         >
           <p className="text-left text-xs font-medium text-gray-500">
-            Spending by Category
+            Burning by Category
           </p>
           <SimplePieChart expenses={expenses} />
         </button>
