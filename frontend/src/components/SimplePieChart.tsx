@@ -61,7 +61,7 @@ export const SimplePieChart = ({ expenses }: SimplePieChartProps) => {
               className="inline-block size-2.5 shrink-0 rounded-full"
               style={{ backgroundColor: c.fill }}
             />
-            <span className="truncate text-xs text-gray-600">{c.name}</span>
+            <span className="truncate text-[10px] text-gray-600">{c.name}</span>
           </li>
         ))}
       </ul>
