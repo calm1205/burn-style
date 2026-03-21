@@ -1,6 +1,9 @@
 import {
+  CalendarIcon,
   DoubleArrowLeftIcon,
   DoubleArrowRightIcon,
+  ListBulletIcon,
+  PieChartIcon,
 } from "@radix-ui/react-icons"
 import { Tabs } from "@radix-ui/themes"
 import { useCallback, useEffect, useMemo, useState } from "react"
@@ -113,9 +116,18 @@ export const ExpenseMonthlyPage = () => {
 
       <Tabs.Root defaultValue="list" className="min-h-0 flex-1 flex flex-col">
         <Tabs.List className="shrink-0">
-          <Tabs.Trigger value="list">リスト</Tabs.Trigger>
-          <Tabs.Trigger value="pie">円グラフ</Tabs.Trigger>
-          <Tabs.Trigger value="heatmap">ヒートマップ</Tabs.Trigger>
+          <Tabs.Trigger value="list">
+            <ListBulletIcon />
+            リスト
+          </Tabs.Trigger>
+          <Tabs.Trigger value="pie">
+            <PieChartIcon />
+            円グラフ
+          </Tabs.Trigger>
+          <Tabs.Trigger value="heatmap">
+            <CalendarIcon />
+            ヒートマップ
+          </Tabs.Trigger>
         </Tabs.List>
 
         <Tabs.Content
