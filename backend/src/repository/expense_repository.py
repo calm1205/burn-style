@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from datetime import UTC, datetime
+import datetime as dt
 
 from sqlalchemy.orm import Session, selectinload
 
 from src.model.category import Category
 from src.model.expense import Expense
 
+JST = dt.timezone(dt.timedelta(hours=9))
 DECEMBER = 12
 
 def get_all_expenses(
@@ -22,12 +23,14 @@ def get_all_expenses(
     if not include_deleted:
         query = query.filter(Expense.deleted_at.is_(None))
     if year is not None and month is not None:
-        start = datetime(year, month, 1, tzinfo=UTC)
+        jst_start = dt.datetime(year, month, 1, tzinfo=JST)
         if month == DECEMBER:
-            next_month_start = datetime(year + 1, 1, 1, tzinfo=UTC)
+            jst_next = dt.datetime(year + 1, 1, 1, tzinfo=JST)
         else:
-            next_month_start = datetime(year, month + 1, 1, tzinfo=UTC)
-        query = query.filter(Expense.expensed_at >= start, Expense.expensed_at < next_month_start)
+            jst_next = dt.datetime(year, month + 1, 1, tzinfo=JST)
+        utc_start = jst_start.astimezone(dt.UTC).replace(tzinfo=None)
+        utc_next = jst_next.astimezone(dt.UTC).replace(tzinfo=None)
+        query = query.filter(Expense.expensed_at >= utc_start, Expense.expensed_at < utc_next)
     return query.all()
 
 
@@ -45,7 +48,7 @@ def create_expense(  # noqa: PLR0913
     user_uuid: str,
     name: str,
     amount: float,
-    expensed_at: datetime,
+    expensed_at: dt.datetime,
     *,
     category_uuids: list[str] | None = None,
 ) -> Expense:
@@ -76,5 +79,5 @@ def update_expense_categories(db: Session, expense: Expense, user_uuid: str, cat
 
 def soft_delete_expense(db: Session, expense: Expense) -> None:
     """支出を論理削除する"""
-    expense.deleted_at = datetime.now(UTC)  # type: ignore[assignment]
+    expense.deleted_at = dt.datetime.now(dt.UTC)  # type: ignore[assignment]
     db.commit()
