@@ -54,9 +54,12 @@ export const TopPage = () => {
 
         <button
           type="button"
-          className="mt-6 w-full max-w-sm rounded-lg border border-gray-200 px-4 py-3 hover:bg-gray-50"
+          className="mt-6 w-full max-w-sm rounded-lg border border-gray-200 px-4 py-4 hover:bg-gray-50"
           onClick={() => navigate("/expense/monthly?tab=pie")}
         >
+          <p className="text-left text-xs font-medium text-gray-500">
+            Spending by Category
+          </p>
           <SimplePieChart expenses={expenses} />
         </button>
 
