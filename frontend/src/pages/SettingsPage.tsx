@@ -4,7 +4,7 @@ import {
   Pencil1Icon,
   ResetIcon,
 } from "@radix-ui/react-icons"
-import { Button, Separator, Text } from "@radix-ui/themes"
+import { Button, Text } from "@radix-ui/themes"
 import { useState } from "react"
 import { useOutletContext } from "react-router"
 import { ConfirmDialog, useConfirmDialog } from "../components/ConfirmDialog"
@@ -60,14 +60,12 @@ export const SettingsPage = () => {
 
       {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
 
-      <Separator size="4" mb="4" />
-
-      <div className="mb-6">
-        <Text size="3" weight="bold" as="p" mb="2">
-          Account
-        </Text>
+      <div className="mb-8">
         {editing ? (
           <div className="flex items-center gap-2">
+            <Text size="3" weight="bold" as="span" className="shrink-0">
+              Account
+            </Text>
             <input
               type="text"
               value={name}
@@ -92,8 +90,11 @@ export const SettingsPage = () => {
           </div>
         ) : (
           <div className="flex items-center gap-2">
-            <Text size="2" color="gray" as="p">
-              Username: {user?.name ?? "---"}
+            <Text size="3" weight="bold" as="span">
+              Account
+            </Text>
+            <Text size="2" color="gray" as="span">
+              {user?.name ?? "---"}
             </Text>
             <button
               type="button"
@@ -106,9 +107,7 @@ export const SettingsPage = () => {
         )}
       </div>
 
-      <Separator size="4" mb="4" />
-
-      <div className="flex gap-3">
+      <div className="flex flex-col gap-3">
         <Button variant="outline" color="red" onClick={onLogout}>
           <ExitIcon />
           Logout
