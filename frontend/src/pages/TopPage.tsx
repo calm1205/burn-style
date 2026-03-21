@@ -70,7 +70,7 @@ export const TopPage = () => {
           onClick={() => navigate("/expense/annual")}
         >
           <p className="mb-3 text-left text-xs font-medium text-gray-500">
-            Monthly
+            Annual
           </p>
           <MonthlyTrendChart year={year} month={month} />
         </button>
