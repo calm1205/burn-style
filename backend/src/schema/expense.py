@@ -5,6 +5,7 @@ from datetime import datetime
 from pydantic import BaseModel, ConfigDict, Field
 
 from src.schema.category import CategoryResponse
+from src.schema.types import JstDatetime
 
 
 class ExpenseResponse(BaseModel):
@@ -13,10 +14,10 @@ class ExpenseResponse(BaseModel):
     uuid: str
     name: str
     amount: int
-    expensed_at: datetime
-    created_at: datetime
-    updated_at: datetime
-    deleted_at: datetime | None
+    expensed_at: JstDatetime
+    created_at: JstDatetime
+    updated_at: JstDatetime
+    deleted_at: JstDatetime | None
     categories: list[CategoryResponse]
 
 

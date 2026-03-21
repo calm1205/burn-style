@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-from datetime import datetime
-
 from pydantic import BaseModel, ConfigDict, Field
 
 from src.schema.category import CategoryResponse
+from src.schema.types import JstDatetime
 
 
 class ExpenseTemplateResponse(BaseModel):
@@ -14,8 +13,8 @@ class ExpenseTemplateResponse(BaseModel):
     name: str
     amount: int
     category: CategoryResponse
-    created_at: datetime
-    updated_at: datetime
+    created_at: JstDatetime
+    updated_at: JstDatetime
 
 
 class ExpenseTemplateCreate(BaseModel):
