@@ -38,8 +38,8 @@ export const SimplePieChart = ({ expenses }: SimplePieChartProps) => {
   if (data.length === 0) return null
 
   return (
-    <div className="flex items-center justify-center gap-4">
-      <PieChart width={160} height={160}>
+    <div className="flex items-center gap-4">
+      <PieChart width={130} height={130}>
         <Pie
           data={data}
           dataKey="amount"
@@ -48,20 +48,20 @@ export const SimplePieChart = ({ expenses }: SimplePieChartProps) => {
           cy="50%"
           startAngle={90}
           endAngle={-270}
-          innerRadius={40}
-          outerRadius={65}
+          innerRadius={35}
+          outerRadius={55}
           strokeWidth={2}
           isAnimationActive={false}
         />
       </PieChart>
-      <ul className="flex flex-col gap-1">
+      <ul className="grid flex-1 grid-cols-2 gap-x-4 gap-y-1">
         {data.map((c) => (
           <li key={c.name} className="flex items-center gap-2">
             <span
               className="inline-block size-2.5 shrink-0 rounded-full"
               style={{ backgroundColor: c.fill }}
             />
-            <span className="text-xs text-gray-600">{c.name}</span>
+            <span className="truncate text-xs text-gray-600">{c.name}</span>
           </li>
         ))}
       </ul>
