@@ -1,8 +1,41 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router"
+import { Cell, Pie, PieChart } from "recharts"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
 import type { ExpenseResponse } from "../lib/types"
+
+const COLORS = [
+  "#3b82f6",
+  "#ef4444",
+  "#f59e0b",
+  "#10b981",
+  "#8b5cf6",
+  "#ec4899",
+  "#06b6d4",
+  "#f97316",
+]
+
+interface CategoryTotal {
+  name: string
+  amount: number
+}
+
+const aggregateByCategory = (expenses: ExpenseResponse[]): CategoryTotal[] => {
+  const map = new Map<string, number>()
+  for (const e of expenses) {
+    if (e.categories.length === 0) {
+      map.set("未分類", (map.get("未分類") ?? 0) + e.amount)
+    } else {
+      for (const c of e.categories) {
+        map.set(c.name, (map.get(c.name) ?? 0) + e.amount)
+      }
+    }
+  }
+  return [...map.entries()]
+    .map(([name, amount]) => ({ name, amount }))
+    .sort((a, b) => b.amount - a.amount)
+}
 
 export const TopPage = () => {
   const navigate = useNavigate()
@@ -29,6 +62,8 @@ export const TopPage = () => {
     [expenses],
   )
 
+  const categoryData = useMemo(() => aggregateByCategory(expenses), [expenses])
+
   return (
     <div className="flex h-full items-center justify-center px-6">
       {error && <p className="text-sm text-red-600">{error}</p>}
@@ -45,6 +80,45 @@ export const TopPage = () => {
         >
           {total.toLocaleString()}円
         </p>
+
+        {categoryData.length > 0 && (
+          <div className="mt-6 flex flex-col items-center">
+            <PieChart width={200} height={200}>
+              <Pie
+                data={categoryData}
+                dataKey="amount"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                innerRadius={50}
+                outerRadius={80}
+                strokeWidth={2}
+              >
+                {categoryData.map((_, i) => (
+                  <Cell
+                    key={categoryData[i].name}
+                    fill={COLORS[i % COLORS.length]}
+                  />
+                ))}
+              </Pie>
+            </PieChart>
+            <div className="mt-2 flex flex-wrap justify-center gap-x-4 gap-y-1">
+              {categoryData.map((d, i) => (
+                <span
+                  key={d.name}
+                  className="flex items-center gap-1 text-xs text-gray-600"
+                >
+                  <span
+                    className="inline-block size-2 rounded-full"
+                    style={{ backgroundColor: COLORS[i % COLORS.length] }}
+                  />
+                  {d.name} {d.amount.toLocaleString()}円
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="mt-8 flex gap-3">
           <button
             type="button"
