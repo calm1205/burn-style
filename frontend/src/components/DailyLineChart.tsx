@@ -30,7 +30,7 @@ export const DailyLineChart = ({
     }
     return totals.map((amount, i) => ({
       label: `${i + 1}`,
-      amount,
+      amount: amount || 1,
     }))
   }, [year, month, expenses])
 
@@ -40,12 +40,20 @@ export const DailyLineChart = ({
         <CartesianGrid strokeDasharray="3 3" vertical={false} />
         <XAxis dataKey="label" tick={{ fontSize: 10 }} interval={2} />
         <YAxis
+          scale="log"
+          domain={[1, "auto"]}
+          allowDataOverflow
           tick={{ fontSize: 11 }}
-          tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`}
+          tickFormatter={(v: number) =>
+            v >= 1000 ? `${(v / 1000).toFixed(0)}k` : `${v}`
+          }
           width={40}
         />
         <Tooltip
-          formatter={(value) => [`¥${Number(value).toLocaleString()}`]}
+          formatter={(value) => {
+            const v = Number(value)
+            return [`¥${(v <= 1 ? 0 : v).toLocaleString()}`]
+          }}
         />
         <Line
           type="monotone"
