@@ -5,7 +5,6 @@ import {
   ListBulletIcon,
   PieChartIcon,
 } from "@radix-ui/react-icons"
-import { Tabs } from "@radix-ui/themes"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router"
 import { api } from "../lib/api"
@@ -47,6 +46,7 @@ export const ExpenseMonthlyPage = () => {
   const [year, setYear] = useState(now.getFullYear())
   const [month, setMonth] = useState(now.getMonth() + 1)
   const [expenses, setExpenses] = useState<ExpenseResponse[]>([])
+  const [tab, setTab] = useState<"list" | "pie" | "heatmap">("list")
   const [error, setError] = useState("")
 
   const fetchData = useCallback(async () => {
@@ -114,26 +114,30 @@ export const ExpenseMonthlyPage = () => {
         </button>
       </div>
 
-      <Tabs.Root defaultValue="list" className="min-h-0 flex-1 flex flex-col">
-        <Tabs.List className="shrink-0" color="blue">
-          <Tabs.Trigger value="list" className="flex items-center gap-1.5">
-            <ListBulletIcon />
-            list
-          </Tabs.Trigger>
-          <Tabs.Trigger value="pie" className="flex items-center gap-1.5">
-            <PieChartIcon />
-            pie chart
-          </Tabs.Trigger>
-          <Tabs.Trigger value="heatmap" className="flex items-center gap-1.5">
-            <CalendarIcon />
-            heat map
-          </Tabs.Trigger>
-        </Tabs.List>
+      <div className="flex shrink-0 gap-4 border-b border-gray-200">
+        {[
+          { key: "list" as const, label: "list", icon: ListBulletIcon },
+          { key: "pie" as const, label: "pie chart", icon: PieChartIcon },
+          { key: "heatmap" as const, label: "heat map", icon: CalendarIcon },
+        ].map(({ key, label, icon: Icon }) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => setTab(key)}
+            className={`flex items-center gap-1.5 border-b-2 px-1 py-2 text-sm ${
+              tab === key
+                ? "border-blue-500 text-blue-500"
+                : "border-transparent text-gray-400 hover:text-gray-600"
+            }`}
+          >
+            <Icon />
+            {label}
+          </button>
+        ))}
+      </div>
 
-        <Tabs.Content
-          value="list"
-          className="min-h-0 flex-1 overflow-y-auto flex flex-col gap-6 pt-4"
-        >
+      {tab === "list" && (
+        <div className="min-h-0 flex-1 overflow-y-auto flex flex-col gap-6 pt-4">
           {groups.map((group) => (
             <div key={group.date}>
               <p className="border-b border-gray-200 pb-2 text-xs font-medium text-gray-400">
@@ -189,22 +193,20 @@ export const ExpenseMonthlyPage = () => {
               この月の支出はありません
             </p>
           )}
-        </Tabs.Content>
+        </div>
+      )}
 
-        <Tabs.Content
-          value="pie"
-          className="min-h-0 flex-1 flex items-center justify-center pt-4"
-        >
+      {tab === "pie" && (
+        <div className="min-h-0 flex-1 flex items-center justify-center pt-4">
           <p className="text-sm text-gray-400">円グラフ（準備中）</p>
-        </Tabs.Content>
+        </div>
+      )}
 
-        <Tabs.Content
-          value="heatmap"
-          className="min-h-0 flex-1 flex items-center justify-center pt-4"
-        >
+      {tab === "heatmap" && (
+        <div className="min-h-0 flex-1 flex items-center justify-center pt-4">
           <p className="text-sm text-gray-400">ヒートマップ（準備中）</p>
-        </Tabs.Content>
-      </Tabs.Root>
+        </div>
+      )}
     </div>
   )
 }
