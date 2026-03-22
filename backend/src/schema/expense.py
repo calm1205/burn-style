@@ -23,12 +23,12 @@ class ExpenseCreate(BaseModel):
     name: str
     amount: int = Field(gt=0, description="正の整数のみ許可")
     expensed_at: JstInputDatetime
-    category_uuids: list[str] = []
+    category_uuid: str | None = None
 
 
 class ExpenseUpdate(BaseModel):
     name: str | None = None
     amount: int | None = Field(default=None, gt=0, description="正の整数のみ許可")
     expensed_at: JstInputDatetime | None = None
-    category_uuids: list[str] | None = None
+    category_uuid: str | None = None
 

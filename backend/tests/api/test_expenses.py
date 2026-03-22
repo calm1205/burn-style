@@ -65,7 +65,7 @@ class TestPostExpense:
 
         res = auth_client.post(
             "/expenses",
-            json={"name": "ランチ", "amount": 800, "expensed_at": SAMPLE_EXPENSED_AT, "category_uuids": [cat.uuid]},
+            json={"name": "ランチ", "amount": 800, "expensed_at": SAMPLE_EXPENSED_AT, "category_uuid": cat.uuid},
         )
         assert res.status_code == 201
         assert len(res.json()["categories"]) == 1
@@ -104,7 +104,7 @@ class TestPatchExpense:
         expense = _create_expense(db, str(test_user.uuid))
         cat = _create_category(db, str(test_user.uuid))
 
-        res = auth_client.patch(f"/expenses/{expense.uuid}", json={"category_uuids": [cat.uuid]})
+        res = auth_client.patch(f"/expenses/{expense.uuid}", json={"category_uuid": cat.uuid})
         assert res.status_code == 200
         assert len(res.json()["categories"]) == 1
 

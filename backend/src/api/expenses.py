@@ -52,7 +52,7 @@ def post_expense(
 ) -> ExpenseResponse:
     expense = create_expense(
         db, str(user.uuid), body.name, body.amount, body.expensed_at,
-        category_uuids=body.category_uuids or None,
+        category_uuids=[body.category_uuid] if body.category_uuid else None,
     )
     return ExpenseResponse.model_validate(expense)
 
@@ -74,13 +74,14 @@ def patch_expense(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Expense not found")
 
     update_data = body.model_dump(exclude_unset=True)
-    category_uuids = update_data.pop("category_uuids", None)
+    category_uuid = update_data.pop("category_uuid", None)
 
     for key, value in update_data.items():
         setattr(expense, key, value)
 
-    if category_uuids is not None:
-        update_expense_categories(db, expense, str(user.uuid), category_uuids)
+    if "category_uuid" in body.model_fields_set:
+        uuids = [category_uuid] if category_uuid else []
+        update_expense_categories(db, expense, str(user.uuid), uuids)
 
     db.commit()
     db.refresh(expense)
