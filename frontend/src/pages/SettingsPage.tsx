@@ -1,11 +1,12 @@
 import {
   CheckIcon,
+  ChevronRightIcon,
   DownloadIcon,
   ExitIcon,
   Pencil1Icon,
   ResetIcon,
+  TrashIcon,
 } from "@radix-ui/react-icons"
-import { Button, Text } from "@radix-ui/themes"
 import { useState } from "react"
 import { useOutletContext } from "react-router"
 import { ConfirmDialog, useConfirmDialog } from "../components/ConfirmDialog"
@@ -55,14 +56,29 @@ export const SettingsPage = () => {
     }
   }
 
-  return (
-    <div className="mx-auto max-w-2xl px-6">
-      {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
+  const handleExport = async () => {
+    try {
+      const data = await api.exportMe()
+      const blob = new Blob([JSON.stringify(data, null, 2)], {
+        type: "application/json",
+      })
+      const a = document.createElement("a")
+      a.href = URL.createObjectURL(blob)
+      a.download = `${user?.name ?? "export"}_expense.json`
+      a.click()
+      URL.revokeObjectURL(a.href)
+    } catch (err) {
+      setError(getErrorMessage(err, "Export failed"))
+    }
+  }
 
-      <div className="mb-8 flex flex-col gap-1">
-        <Text size="2" color="gray" as="p">
-          Username
-        </Text>
+  return (
+    <div className="mx-auto flex max-w-2xl flex-col gap-6 px-6">
+      {error && <p className="text-sm text-red-600">{error}</p>}
+
+      {/* Profile */}
+      <div className="rounded-2xl bg-white p-5 shadow-sm">
+        <p className="mb-1 text-xs text-gray-500">Username</p>
         {editing ? (
           <div className="flex items-center gap-2">
             <input
@@ -88,51 +104,49 @@ export const SettingsPage = () => {
             </button>
           </div>
         ) : (
-          <div className="flex items-center gap-2">
-            <Text size="3" weight="bold" as="span">
-              {user?.name ?? "---"}
-            </Text>
-            <button
-              type="button"
-              onClick={startEdit}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <Pencil1Icon className="size-3.5" />
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={startEdit}
+            className="flex w-full items-center justify-between"
+          >
+            <span className="text-base font-bold">{user?.name ?? "---"}</span>
+            <Pencil1Icon className="size-3.5 text-gray-400" />
+          </button>
         )}
       </div>
 
-      <div className="flex flex-col gap-3">
-        <Button
-          variant="outline"
-          color="gray"
-          onClick={async () => {
-            try {
-              const data = await api.exportMe()
-              const blob = new Blob([JSON.stringify(data, null, 2)], {
-                type: "application/json",
-              })
-              const a = document.createElement("a")
-              a.href = URL.createObjectURL(blob)
-              a.download = `${user?.name ?? "export"}_expense.json`
-              a.click()
-              URL.revokeObjectURL(a.href)
-            } catch (err) {
-              setError(getErrorMessage(err, "Export failed"))
-            }
-          }}
+      {/* Actions */}
+      <div className="divide-y divide-gray-100 overflow-hidden rounded-2xl bg-white shadow-sm">
+        <button
+          type="button"
+          onClick={handleExport}
+          className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm text-gray-700 hover:bg-gray-50"
         >
-          <DownloadIcon />
-          Export Data
-        </Button>
-        <Button variant="outline" color="red" onClick={onLogout}>
-          <ExitIcon />
-          Logout
-        </Button>
-        <Button variant="solid" color="red" onClick={openDialog}>
-          Delete Account
-        </Button>
+          <DownloadIcon className="size-4 text-gray-400" />
+          <span className="flex-1">Export Data</span>
+          <ChevronRightIcon className="size-4 text-gray-300" />
+        </button>
+        <button
+          type="button"
+          onClick={onLogout}
+          className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm text-gray-700 hover:bg-gray-50"
+        >
+          <ExitIcon className="size-4 text-gray-400" />
+          <span className="flex-1">Logout</span>
+          <ChevronRightIcon className="size-4 text-gray-300" />
+        </button>
+      </div>
+
+      {/* Danger Zone */}
+      <div className="overflow-hidden rounded-2xl bg-white shadow-sm">
+        <button
+          type="button"
+          onClick={openDialog}
+          className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm text-red-600 hover:bg-red-50"
+        >
+          <TrashIcon className="size-4" />
+          <span className="flex-1">Delete Account</span>
+        </button>
       </div>
 
       <ConfirmDialog
