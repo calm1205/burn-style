@@ -1,4 +1,4 @@
-import { ArrowLeftIcon } from "@radix-ui/react-icons"
+import { ArrowLeftIcon, TrashIcon } from "@radix-ui/react-icons"
 import { type SubmitEvent, useCallback, useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router"
 import { ConfirmDialog, useConfirmDialog } from "../components/ConfirmDialog"
@@ -93,25 +93,23 @@ export const ExpenseDetailPage = () => {
   }
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col items-stretch gap-12 px-6">
-      <div className="flex items-center">
-        <button
-          type="button"
-          onClick={() => navigate(-1)}
-          className="text-gray-400 hover:text-gray-600"
-        >
-          <ArrowLeftIcon className="size-5" />
-        </button>
-      </div>
+    <div className="mx-auto flex max-w-2xl flex-col gap-6 px-6">
+      <button
+        type="button"
+        onClick={() => navigate(-1)}
+        className="flex size-9 items-center justify-center rounded-xl bg-white shadow-sm hover:shadow-md"
+      >
+        <ArrowLeftIcon className="size-4 text-gray-600" />
+      </button>
 
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       <form
         id="expense-detail-form"
         onSubmit={handleUpdate}
-        className="flex flex-col gap-6"
+        className="flex flex-col gap-4 rounded-2xl bg-white p-5 shadow-sm"
       >
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1.5">
           <label htmlFor="detail-name" className="text-xs text-gray-500">
             Name
           </label>
@@ -124,10 +122,10 @@ export const ExpenseDetailPage = () => {
             }
             required
             maxLength={100}
-            className="border-b border-gray-200 px-4 py-3 text-base placeholder:text-gray-200 focus:border-primary focus:outline-none"
+            className="rounded-xl bg-gray-50 px-4 py-3 text-base outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20"
           />
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1.5">
           <label htmlFor="detail-amount" className="text-xs text-gray-500">
             Amount
           </label>
@@ -142,10 +140,10 @@ export const ExpenseDetailPage = () => {
               setForm((prev) => ({ ...prev, amount: formatted }))
             }}
             required
-            className="border-b border-gray-200 px-4 py-3 text-base placeholder:text-gray-200 focus:border-primary focus:outline-none"
+            className="rounded-xl bg-gray-50 px-4 py-3 text-base outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20"
           />
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1.5">
           <label htmlFor="detail-date" className="text-xs text-gray-500">
             Date
           </label>
@@ -157,11 +155,11 @@ export const ExpenseDetailPage = () => {
               setForm((prev) => ({ ...prev, expensedAt: e.target.value }))
             }
             required
-            className="border-b border-gray-200 px-4 py-3 text-base focus:border-primary focus:outline-none"
+            className="rounded-xl bg-gray-50 px-4 py-3 text-base outline-none focus:ring-2 focus:ring-primary/20"
           />
         </div>
         {categories.length > 0 && (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1.5">
             <span className="text-xs text-gray-500">Category</span>
             <div className="flex flex-wrap gap-2">
               {categories.map((c) => (
@@ -169,10 +167,10 @@ export const ExpenseDetailPage = () => {
                   key={c.uuid}
                   type="button"
                   onClick={() => selectCategory(c.uuid)}
-                  className={`rounded-full px-4 py-2 text-sm ${
+                  className={`rounded-full px-4 py-2 text-sm transition-colors ${
                     form.categoryUuid === c.uuid
-                      ? "border border-primary bg-primary text-white"
-                      : "border border-gray-200 text-gray-500"
+                      ? "bg-primary text-white"
+                      : "bg-gray-50 text-gray-500 hover:bg-gray-100"
                   }`}
                 >
                   {c.name}
@@ -182,22 +180,23 @@ export const ExpenseDetailPage = () => {
           </div>
         )}
       </form>
-      <div className="flex flex-col gap-5">
-        <button
-          type="submit"
-          form="expense-detail-form"
-          className="rounded-xl bg-primary px-5 py-4 text-white hover:bg-primary-hover"
-        >
-          Update
-        </button>
-        <button
-          type="button"
-          onClick={openDeleteDialog}
-          className="rounded-xl border border-red-600 px-5 py-4 text-red-600 hover:bg-red-50"
-        >
-          Delete
-        </button>
-      </div>
+
+      <button
+        type="submit"
+        form="expense-detail-form"
+        className="rounded-xl bg-primary px-5 py-4 text-white hover:bg-primary-hover"
+      >
+        Update
+      </button>
+
+      <button
+        type="button"
+        onClick={openDeleteDialog}
+        className="flex items-center justify-center gap-2 text-sm text-red-500 hover:text-red-600"
+      >
+        <TrashIcon className="size-3.5" />
+        Delete
+      </button>
 
       <ConfirmDialog
         message="Delete this expense?"
