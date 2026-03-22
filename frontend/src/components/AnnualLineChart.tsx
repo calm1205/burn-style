@@ -8,18 +8,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
+import { CHART_COLORS } from "../lib/colors"
 import type { ExpenseResponse } from "../lib/types"
-
-const COLORS = [
-  "#1e3a5f",
-  "#2563eb",
-  "#3b82f6",
-  "#60a5fa",
-  "#93c5fd",
-  "#a5b4cd",
-  "#7ba1c7",
-  "#4a7fb5",
-]
 
 interface AnnualLineChartProps {
   expenses: ExpenseResponse[]
@@ -96,7 +86,9 @@ export const AnnualLineChart = ({ expenses }: AnnualLineChartProps) => {
               key={cat}
               type="monotone"
               dataKey={cat}
-              stroke={COLORS[categories.indexOf(cat) % COLORS.length]}
+              stroke={
+                CHART_COLORS[categories.indexOf(cat) % CHART_COLORS.length]
+              }
               strokeWidth={2}
               dot={{ r: 2 }}
               isAnimationActive={false}
@@ -121,7 +113,7 @@ export const AnnualLineChart = ({ expenses }: AnnualLineChartProps) => {
                 <span
                   className="inline-block size-2 rounded-full"
                   style={{
-                    backgroundColor: COLORS[i % COLORS.length],
+                    backgroundColor: CHART_COLORS[i % CHART_COLORS.length],
                     opacity: isHidden ? 0.2 : 1,
                   }}
                 />

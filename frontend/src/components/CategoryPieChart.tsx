@@ -1,17 +1,7 @@
 import { useMemo, useState } from "react"
 import { Pie, PieChart, Tooltip } from "recharts"
+import { CHART_COLORS } from "../lib/colors"
 import type { ExpenseResponse } from "../lib/types"
-
-const COLORS = [
-  "#1e3a5f",
-  "#2563eb",
-  "#3b82f6",
-  "#60a5fa",
-  "#93c5fd",
-  "#a5b4cd",
-  "#7ba1c7",
-  "#4a7fb5",
-]
 
 interface CategoryTotal {
   name: string
@@ -38,7 +28,7 @@ export const CategoryPieChart = ({ expenses }: CategoryPieChartProps) => {
     const cats = [...catSet]
     const cMap = new Map<string, string>()
     for (let i = 0; i < cats.length; i++) {
-      cMap.set(cats[i], COLORS[i % COLORS.length])
+      cMap.set(cats[i], CHART_COLORS[i % CHART_COLORS.length])
     }
     return { allCategories: cats, colorMap: cMap }
   }, [expenses])
@@ -63,7 +53,7 @@ export const CategoryPieChart = ({ expenses }: CategoryPieChartProps) => {
         ([name, amount]): CategoryTotal => ({
           name,
           amount,
-          fill: colorMap.get(name) ?? COLORS[0],
+          fill: colorMap.get(name) ?? CHART_COLORS[0],
         }),
       )
       .sort((a, b) => b.amount - a.amount)

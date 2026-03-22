@@ -1,18 +1,8 @@
 import { useMemo, useState } from "react"
+import { CHART_COLORS } from "../lib/colors"
 import type { ExpenseResponse } from "../lib/types"
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-
-const COLORS = [
-  "#1e3a5f",
-  "#2563eb",
-  "#3b82f6",
-  "#60a5fa",
-  "#93c5fd",
-  "#a5b4cd",
-  "#7ba1c7",
-  "#4a7fb5",
-]
 
 const getColor = (amount: number, mean: number, sd: number) => {
   if (amount === 0) return { bg: "bg-gray-100", text: "text-gray-600" }
@@ -156,7 +146,7 @@ export const ExpenseHeatmap = ({
                 <span
                   className="inline-block size-2 rounded-full"
                   style={{
-                    backgroundColor: COLORS[i % COLORS.length],
+                    backgroundColor: CHART_COLORS[i % CHART_COLORS.length],
                     opacity: isHidden ? 0.2 : 1,
                   }}
                 />

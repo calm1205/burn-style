@@ -1,16 +1,6 @@
 import { Pie, PieChart } from "recharts"
+import { CHART_COLORS } from "../lib/colors"
 import type { ExpenseResponse } from "../lib/types"
-
-const COLORS = [
-  "#1e3a5f",
-  "#2563eb",
-  "#3b82f6",
-  "#60a5fa",
-  "#93c5fd",
-  "#a5b4cd",
-  "#7ba1c7",
-  "#4a7fb5",
-]
 
 interface SimplePieChartProps {
   expenses: ExpenseResponse[]
@@ -31,7 +21,7 @@ export const SimplePieChart = ({ expenses }: SimplePieChartProps) => {
     .map(([name, amount], i) => ({
       name,
       amount,
-      fill: COLORS[i % COLORS.length],
+      fill: CHART_COLORS[i % CHART_COLORS.length],
     }))
     .sort((a, b) => b.amount - a.amount)
 

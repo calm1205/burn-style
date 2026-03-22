@@ -9,6 +9,7 @@ import {
   YAxis,
   ZAxis,
 } from "recharts"
+import { CHART_COLORS, RANGE_COLORS } from "../lib/colors"
 import type { ExpenseResponse } from "../lib/types"
 
 const AMOUNT_RANGES = [
@@ -18,26 +19,6 @@ const AMOUNT_RANGES = [
   { label: "¥5,001~10,000", min: 5001, max: 10000 },
   { label: "¥10,001~30,000", min: 10001, max: 30000 },
   { label: "¥30,001~", min: 30001, max: Infinity },
-]
-
-const RANGE_COLORS = [
-  "#bfdbfe",
-  "#93c5fd",
-  "#60a5fa",
-  "#3b82f6",
-  "#2563eb",
-  "#1e3a5f",
-]
-
-const CAT_COLORS = [
-  "#1e3a5f",
-  "#2563eb",
-  "#3b82f6",
-  "#60a5fa",
-  "#93c5fd",
-  "#a5b4cd",
-  "#7ba1c7",
-  "#4a7fb5",
 ]
 
 interface BubbleData {
@@ -177,7 +158,7 @@ export const CategoryBubbleChart = ({ expenses }: CategoryBubbleChartProps) => {
                 <span
                   className="inline-block size-2 rounded-full"
                   style={{
-                    backgroundColor: CAT_COLORS[i % CAT_COLORS.length],
+                    backgroundColor: CHART_COLORS[i % CHART_COLORS.length],
                     opacity: isHidden ? 0.2 : 1,
                   }}
                 />

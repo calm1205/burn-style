@@ -92,7 +92,7 @@ export const MonthlyTrendChart = ({ year, month }: MonthlyTrendChartProps) => {
         />
         <Bar
           dataKey="amount"
-          fill="#2563eb"
+          fill="var(--color-accent)"
           radius={[2, 2, 0, 0]}
           barSize={12}
           isAnimationActive={false}
