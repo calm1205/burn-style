@@ -48,7 +48,7 @@ export const ExpensesPage = () => {
     try {
       await api.createExpense({
         name: form.name,
-        amount: Number(form.amount),
+        amount: Number(form.amount.replace(/,/g, "")),
         expensed_at: form.expensedAt,
         category_uuid: form.categoryUuid,
       })
@@ -95,15 +95,16 @@ export const ExpensesPage = () => {
           </label>
           <input
             id="expense-amount"
-            type="number"
-            placeholder="e.g. 1000"
+            type="text"
+            inputMode="numeric"
+            placeholder="e.g. 1,000"
             value={form.amount}
-            onChange={(e) =>
-              setForm((prev) => ({ ...prev, amount: e.target.value }))
-            }
+            onChange={(e) => {
+              const raw = e.target.value.replace(/[^0-9]/g, "")
+              const formatted = raw ? Number(raw).toLocaleString() : ""
+              setForm((prev) => ({ ...prev, amount: formatted }))
+            }}
             required
-            min={1}
-            max={99999999}
             className="border-b border-gray-200 px-4 py-3 text-sm placeholder:text-gray-200 focus:border-gray-900 focus:outline-none"
           />
         </div>

@@ -38,7 +38,7 @@ export const ExpenseDetailPage = () => {
       setCategories(cats)
       setForm({
         name: exp.name,
-        amount: String(exp.amount),
+        amount: exp.amount.toLocaleString(),
         expensedAt: toLocalDatetime(exp.expensed_at),
         categoryUuid: exp.categories[0]?.uuid ?? null,
       })
@@ -65,7 +65,7 @@ export const ExpenseDetailPage = () => {
     try {
       await api.updateExpense(uuid, {
         name: form.name,
-        amount: Number(form.amount),
+        amount: Number(form.amount.replace(/,/g, "")),
         expensed_at: new Date(form.expensedAt).toISOString(),
         category_uuid: form.categoryUuid,
       })
@@ -136,14 +136,15 @@ export const ExpenseDetailPage = () => {
           </label>
           <input
             id="detail-amount"
-            type="number"
+            type="text"
+            inputMode="numeric"
             value={form.amount}
-            onChange={(e) =>
-              setForm((prev) => ({ ...prev, amount: e.target.value }))
-            }
+            onChange={(e) => {
+              const raw = e.target.value.replace(/[^0-9]/g, "")
+              const formatted = raw ? Number(raw).toLocaleString() : ""
+              setForm((prev) => ({ ...prev, amount: formatted }))
+            }}
             required
-            min={1}
-            max={99999999}
             className="border-b border-gray-200 px-4 py-3 text-sm placeholder:text-gray-200 focus:border-gray-900 focus:outline-none"
           />
         </div>
