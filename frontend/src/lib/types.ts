@@ -43,14 +43,14 @@ export interface ExpenseCreate {
   name: string
   amount: number
   expensed_at: string
-  category_uuids: string[]
+  category_uuid?: string | null
 }
 
 export interface ExpenseUpdate {
   name?: string
   amount?: number
   expensed_at?: string
-  category_uuids?: string[]
+  category_uuid?: string | null
 }
 
 export interface UserResponse {

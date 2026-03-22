@@ -24,7 +24,7 @@ export const ExpenseDetailPage = () => {
     name: "",
     amount: "",
     expensedAt: "",
-    categoryUuids: new Set<string>(),
+    categoryUuid: null as string | null,
   })
 
   const fetchData = useCallback(async () => {
@@ -40,10 +40,10 @@ export const ExpenseDetailPage = () => {
         name: exp.name,
         amount: String(exp.amount),
         expensedAt: toLocalDatetime(exp.expensed_at),
-        categoryUuids: new Set(exp.categories.map((c) => c.uuid)),
+        categoryUuid: exp.categories[0]?.uuid ?? null,
       })
     } catch (err) {
-      setError(getErrorMessage(err, "データ取得に失敗"))
+      setError(getErrorMessage(err, "Failed to load"))
     }
   }, [uuid])
 
@@ -51,16 +51,11 @@ export const ExpenseDetailPage = () => {
     fetchData()
   }, [fetchData])
 
-  const toggleCategory = (catUuid: string) => {
-    setForm((prev) => {
-      const next = new Set(prev.categoryUuids)
-      if (next.has(catUuid)) {
-        next.delete(catUuid)
-      } else {
-        next.add(catUuid)
-      }
-      return { ...prev, categoryUuids: next }
-    })
+  const selectCategory = (catUuid: string) => {
+    setForm((prev) => ({
+      ...prev,
+      categoryUuid: prev.categoryUuid === catUuid ? null : catUuid,
+    }))
   }
 
   const handleUpdate = async (e: SubmitEvent<HTMLFormElement>) => {
@@ -72,11 +67,11 @@ export const ExpenseDetailPage = () => {
         name: form.name,
         amount: Number(form.amount),
         expensed_at: new Date(form.expensedAt).toISOString(),
-        category_uuids: [...form.categoryUuids],
+        category_uuid: form.categoryUuid,
       })
       navigate(-1)
     } catch (err) {
-      setError(getErrorMessage(err, "更新に失敗"))
+      setError(getErrorMessage(err, "Update failed"))
     }
   }
 
@@ -121,7 +116,7 @@ export const ExpenseDetailPage = () => {
       >
         <div className="flex flex-col gap-2">
           <label htmlFor="detail-name" className="text-xs text-gray-500">
-            名前
+            Name
           </label>
           <input
             id="detail-name"
@@ -137,7 +132,7 @@ export const ExpenseDetailPage = () => {
         </div>
         <div className="flex flex-col gap-2">
           <label htmlFor="detail-amount" className="text-xs text-gray-500">
-            金額
+            Amount
           </label>
           <input
             id="detail-amount"
@@ -154,7 +149,7 @@ export const ExpenseDetailPage = () => {
         </div>
         <div className="flex flex-col gap-2">
           <label htmlFor="detail-date" className="text-xs text-gray-500">
-            日時
+            Date
           </label>
           <input
             id="detail-date"
@@ -169,15 +164,15 @@ export const ExpenseDetailPage = () => {
         </div>
         {categories.length > 0 && (
           <div className="flex flex-col gap-2">
-            <span className="text-xs text-gray-500">カテゴリ</span>
+            <span className="text-xs text-gray-500">Category</span>
             <div className="flex flex-wrap gap-2">
               {categories.map((c) => (
                 <button
                   key={c.uuid}
                   type="button"
-                  onClick={() => toggleCategory(c.uuid)}
+                  onClick={() => selectCategory(c.uuid)}
                   className={`rounded-sm px-4 py-2 text-sm ${
-                    form.categoryUuids.has(c.uuid)
+                    form.categoryUuid === c.uuid
                       ? "border border-blue-600 bg-blue-600 text-white"
                       : "border border-gray-200 text-gray-500"
                   }`}
@@ -195,7 +190,7 @@ export const ExpenseDetailPage = () => {
           form="expense-detail-form"
           className="rounded bg-black px-5 py-4 text-white hover:bg-gray-800"
         >
-          更新
+          Update
         </button>
         <button
           type="button"

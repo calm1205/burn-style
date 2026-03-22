@@ -20,7 +20,7 @@ export const ExpensesPage = () => {
     name: "",
     amount: "",
     expensedAt: today,
-    categoryUuids: new Set<string>(),
+    categoryUuid: null as string | null,
   })
 
   const fetchData = useCallback(async () => {
@@ -35,16 +35,11 @@ export const ExpensesPage = () => {
     fetchData()
   }, [fetchData])
 
-  const toggleCategory = (uuid: string) => {
-    setForm((prev) => {
-      const next = new Set(prev.categoryUuids)
-      if (next.has(uuid)) {
-        next.delete(uuid)
-      } else {
-        next.add(uuid)
-      }
-      return { ...prev, categoryUuids: next }
-    })
+  const selectCategory = (uuid: string) => {
+    setForm((prev) => ({
+      ...prev,
+      categoryUuid: prev.categoryUuid === uuid ? null : uuid,
+    }))
   }
 
   const handleCreate = async (e: SubmitEvent<HTMLFormElement>) => {
@@ -55,7 +50,7 @@ export const ExpensesPage = () => {
         name: form.name,
         amount: Number(form.amount),
         expensed_at: form.expensedAt,
-        category_uuids: [...form.categoryUuids],
+        category_uuid: form.categoryUuid,
       })
       navigate("/expense/monthly")
     } catch (err) {
@@ -135,9 +130,9 @@ export const ExpensesPage = () => {
                 <button
                   key={c.uuid}
                   type="button"
-                  onClick={() => toggleCategory(c.uuid)}
+                  onClick={() => selectCategory(c.uuid)}
                   className={`rounded-sm px-4 py-2 text-sm ${
-                    form.categoryUuids.has(c.uuid)
+                    form.categoryUuid === c.uuid
                       ? "border border-blue-600 bg-blue-600 text-white"
                       : "border border-gray-200 text-gray-500"
                   }`}
