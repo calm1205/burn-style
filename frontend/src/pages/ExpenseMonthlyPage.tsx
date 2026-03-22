@@ -87,7 +87,7 @@ export const ExpenseMonthlyPage = () => {
   return (
     <div className="mx-auto flex h-full max-w-2xl flex-col px-6">
       {error && <p className="mt-6 text-sm text-red-600">{error}</p>}
-      <div className="flex shrink-0 items-center justify-between bg-white py-8">
+      <div className="flex shrink-0 items-center justify-between py-8">
         <button
           type="button"
           className="text-gray-400 hover:text-gray-600"
@@ -99,7 +99,7 @@ export const ExpenseMonthlyPage = () => {
           <p className="text-sm text-gray-500">
             {year}/{month}の支出
           </p>
-          <p className="text-3xl font-bold">¥{total.toLocaleString()}</p>
+          <p className="text-4xl font-extrabold">¥{total.toLocaleString()}</p>
         </div>
         <button
           type="button"
@@ -110,7 +110,7 @@ export const ExpenseMonthlyPage = () => {
         </button>
       </div>
 
-      <div className="flex shrink-0 gap-4 border-b border-gray-200">
+      <div className="flex shrink-0 gap-4 border-b border-gray-100">
         {[
           { key: "list" as const, label: "list", icon: ListBulletIcon },
           { key: "pie" as const, label: "pie", icon: PieChartIcon },

@@ -22,7 +22,7 @@ export const UserMenu = ({ userName, onLogout }: UserMenuProps) => {
         <Popover.Content
           side="top"
           sideOffset={4}
-          className="rounded-md border border-gray-200 bg-white p-1 shadow-md"
+          className="rounded-xl border border-gray-100 bg-white p-1 shadow-lg"
         >
           <button
             type="button"

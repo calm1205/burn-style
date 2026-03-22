@@ -29,7 +29,7 @@ export const ExpenseList = ({ expenses }: ExpenseListProps) => {
         <button
           key={e.uuid}
           type="button"
-          className="flex items-center justify-between rounded-lg border border-gray-200 px-4 py-3 text-left hover:bg-gray-50"
+          className="flex items-center justify-between rounded-xl bg-white px-4 py-3 text-left shadow-sm transition-shadow hover:shadow-md"
           onClick={() => navigate(`/expense/${e.uuid}`)}
         >
           <div className="flex min-w-0 flex-1 flex-col gap-1">

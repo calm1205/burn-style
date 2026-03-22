@@ -136,7 +136,7 @@ export const ExpensesPage = () => {
                   key={c.uuid}
                   type="button"
                   onClick={() => selectCategory(c.uuid)}
-                  className={`rounded-sm px-4 py-2 text-sm ${
+                  className={`rounded-full px-4 py-2 text-sm ${
                     form.categoryUuid === c.uuid
                       ? "border border-primary bg-primary text-white"
                       : "border border-gray-200 text-gray-500"
@@ -152,7 +152,7 @@ export const ExpensesPage = () => {
       <button
         type="submit"
         form="expense-form"
-        className="rounded bg-primary px-5 py-4 text-white hover:bg-primary-hover"
+        className="rounded-xl bg-primary px-5 py-4 text-white hover:bg-primary-hover"
       >
         Add
       </button>

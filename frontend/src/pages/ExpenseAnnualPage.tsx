@@ -76,7 +76,7 @@ export const ExpenseAnnualPage = () => {
   return (
     <div className="mx-auto flex h-full max-w-2xl flex-col px-6">
       {error && <p className="mt-6 text-sm text-red-600">{error}</p>}
-      <div className="flex shrink-0 items-center justify-between bg-white py-8">
+      <div className="flex shrink-0 items-center justify-between py-8">
         <button
           type="button"
           className="text-gray-400 hover:text-gray-600"
@@ -86,7 +86,7 @@ export const ExpenseAnnualPage = () => {
         </button>
         <div className="text-center">
           <p className="text-sm text-gray-500">{year}年の支出</p>
-          <p className="text-3xl font-bold">¥{total.toLocaleString()}</p>
+          <p className="text-4xl font-extrabold">¥{total.toLocaleString()}</p>
         </div>
         <button
           type="button"
@@ -97,7 +97,7 @@ export const ExpenseAnnualPage = () => {
         </button>
       </div>
 
-      <div className="flex shrink-0 gap-4 border-b border-gray-200">
+      <div className="flex shrink-0 gap-4 border-b border-gray-100">
         {[
           { key: "list" as const, label: "list", icon: ListBulletIcon },
           { key: "area" as const, label: "area chart", icon: MixIcon },
@@ -128,7 +128,7 @@ export const ExpenseAnnualPage = () => {
           {monthlyTotals.map((amount, i) => (
             <div
               key={`month-${String(i)}`}
-              className="flex items-center justify-between rounded-lg border border-gray-200 px-4 py-3"
+              className="flex items-center justify-between rounded-xl bg-white px-4 py-3 shadow-sm"
             >
               <span className="text-sm">{i + 1}月</span>
               <span className="text-sm font-mono">
