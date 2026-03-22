@@ -2,17 +2,36 @@
 @import "@radix-ui/themes/styles.css";
 
 @theme {
-  --color-primary: #1a1a1a;
-  --color-primary-hover: #374151;
-  --color-accent: #2563eb;
-  --color-chart-1: #1e3a5f;
-  --color-chart-2: #2563eb;
-  --color-chart-3: #3b82f6;
-  --color-chart-4: #60a5fa;
-  --color-chart-5: #93c5fd;
-  --color-chart-6: #a5b4cd;
-  --color-chart-7: #7ba1c7;
-  --color-chart-8: #4a7fb5;
+  /* Brand */
+  --color-primary: #2f74d0;
+  --color-primary-hover: #1e5bb8;
+  --color-primary-active: #0b3c91;
+
+  /* Neutral (blue-gray scale) */
+  --color-gray-50: #f7fafc;
+  --color-gray-100: #edf2f7;
+  --color-gray-200: #e2e8f0;
+  --color-gray-300: #cbd5e0;
+  --color-gray-400: #b3bed0;
+  --color-gray-500: #a0aec0;
+  --color-gray-600: #718096;
+  --color-gray-700: #4a5568;
+  --color-gray-800: #2d3748;
+  --color-gray-900: #1a1a1a;
+
+  /* Chart - Category */
+  --color-chart-1: #4a90e2;
+  --color-chart-2: #3bc9db;
+  --color-chart-3: #5a67d8;
+  --color-chart-4: #63b3ed;
+  --color-chart-5: #2c5282;
+
+  /* Chart - Scale */
+  --color-chart-scale-1: #e6f0ff;
+  --color-chart-scale-2: #b3d1ff;
+  --color-chart-scale-3: #80b3ff;
+  --color-chart-scale-4: #4d94ff;
+  --color-chart-scale-5: #1a75ff;
 }
 
 input::placeholder {
