@@ -20,8 +20,8 @@ export const LayoutLaptop = ({
   onLogout,
 }: LayoutLaptopProps) => {
   return (
-    <aside className="hidden md:flex md:flex-col w-56 border-r border-gray-200 bg-white">
-      <div className="p-4 font-bold text-lg border-b border-gray-200">
+    <aside className="hidden md:flex md:flex-col w-56 border-r border-gray-100 bg-white">
+      <div className="p-4 font-bold text-lg border-b border-gray-100">
         BurnStyle
       </div>
       <nav className="flex flex-1 flex-col gap-1 p-2">
@@ -30,7 +30,7 @@ export const LayoutLaptop = ({
             key={item.to}
             to={item.to}
             className={({ isActive }) =>
-              `flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${isActive ? "bg-gray-100 text-gray-900" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}`
+              `flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium ${isActive ? "bg-gray-100 text-gray-900" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}`
             }
           >
             {item.icon && <item.icon className="size-4 shrink-0" />}
@@ -38,7 +38,7 @@ export const LayoutLaptop = ({
           </NavLink>
         ))}
       </nav>
-      <div className="p-2 border-t border-gray-200">
+      <div className="p-2 border-t border-gray-100">
         <UserMenu userName={userName} onLogout={onLogout} />
       </div>
     </aside>

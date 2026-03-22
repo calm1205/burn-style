@@ -27,7 +27,7 @@ export const SignInPage = () => {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
       <form
         onSubmit={handleSubmit}
         className="flex w-full max-w-sm flex-col gap-8"
@@ -57,7 +57,7 @@ export const SignInPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className="rounded bg-primary py-3 text-sm font-medium tracking-wide text-white transition-opacity hover:opacity-80 disabled:opacity-50"
+            className="rounded-xl bg-primary py-3 text-sm font-medium tracking-wide text-white transition-opacity hover:opacity-80 disabled:opacity-50"
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>

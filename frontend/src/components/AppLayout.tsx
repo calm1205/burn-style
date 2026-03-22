@@ -54,14 +54,14 @@ export const AppLayout = () => {
   }
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen bg-gray-50">
       <LayoutLaptop
         navItems={navItems}
         userName={user?.name}
         onLogout={onLogout}
       />
       <div className="flex flex-1 flex-col overflow-hidden">
-        <header className="flex shrink-0 items-center border-b border-gray-200 px-4 py-3 md:hidden">
+        <header className="flex shrink-0 items-center border-b border-gray-100 px-4 py-3 md:hidden">
           <h1 className="text-lg font-bold">
             {getPageTitle(location.pathname)}
           </h1>
