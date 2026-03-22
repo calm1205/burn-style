@@ -71,10 +71,19 @@ export const AnnualLineChart = ({ expenses }: AnnualLineChartProps) => {
     <div className="flex flex-col gap-3">
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} />
-          <XAxis dataKey="label" tick={{ fontSize: 11 }} />
+          <CartesianGrid
+            strokeDasharray="3 3"
+            vertical={false}
+            stroke="#E2E8F0"
+          />
+          <XAxis
+            dataKey="label"
+            tick={{ fontSize: 11, fill: "#4A5568" }}
+            stroke="#E2E8F0"
+          />
           <YAxis
-            tick={{ fontSize: 11 }}
+            tick={{ fontSize: 11, fill: "#4A5568" }}
+            stroke="#E2E8F0"
             tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`}
             width={40}
           />

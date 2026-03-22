@@ -103,13 +103,19 @@ export const CategoryBubbleChart = ({ expenses }: CategoryBubbleChartProps) => {
     <div className="flex flex-col gap-4">
       <ResponsiveContainer width="100%" height={300}>
         <ScatterChart margin={{ left: 10, right: 20, top: 10, bottom: 25 }}>
-          <CartesianGrid strokeDasharray="3 3" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
           <XAxis
             dataKey="frequency"
             name="頻度"
             type="number"
-            tick={{ fontSize: 11 }}
-            label={{ value: "頻度（回）", position: "bottom", fontSize: 11 }}
+            tick={{ fontSize: 11, fill: "#4A5568" }}
+            stroke="#E2E8F0"
+            label={{
+              value: "頻度（回）",
+              position: "bottom",
+              fontSize: 11,
+              fill: "#4A5568",
+            }}
             allowDecimals={false}
           />
           <YAxis
@@ -119,7 +125,8 @@ export const CategoryBubbleChart = ({ expenses }: CategoryBubbleChartProps) => {
             domain={[-0.5, AMOUNT_RANGES.length - 0.5]}
             ticks={AMOUNT_RANGES.map((_, i) => i)}
             tickFormatter={(v: number) => AMOUNT_RANGES[v]?.label ?? ""}
-            tick={{ fontSize: 10 }}
+            tick={{ fontSize: 10, fill: "#4A5568" }}
+            stroke="#E2E8F0"
             width={80}
           />
           <ZAxis dataKey="total" range={[60, 500]} name="合計" type="number" />

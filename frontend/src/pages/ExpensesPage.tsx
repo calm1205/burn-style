@@ -90,7 +90,7 @@ export const ExpensesPage = () => {
             }
             required
             maxLength={100}
-            className="border-b border-gray-200 px-4 py-3 text-base placeholder:text-gray-200 focus:border-gray-900 focus:outline-none"
+            className="border-b border-gray-200 px-4 py-3 text-base placeholder:text-gray-200 focus:border-primary focus:outline-none"
           />
         </div>
         <div className="flex flex-col gap-2">
@@ -109,7 +109,7 @@ export const ExpensesPage = () => {
               setForm((prev) => ({ ...prev, amount: formatted }))
             }}
             required
-            className="border-b border-gray-200 px-4 py-3 text-base placeholder:text-gray-200 focus:border-gray-900 focus:outline-none"
+            className="border-b border-gray-200 px-4 py-3 text-base placeholder:text-gray-200 focus:border-primary focus:outline-none"
           />
         </div>
         <div className="flex flex-col gap-2">
@@ -124,7 +124,7 @@ export const ExpensesPage = () => {
               setForm((prev) => ({ ...prev, expensedAt: e.target.value }))
             }
             required
-            className="border-b border-gray-200 px-4 py-3 text-base focus:border-gray-900 focus:outline-none"
+            className="border-b border-gray-200 px-4 py-3 text-base focus:border-primary focus:outline-none"
           />
         </div>
         {categories.length > 0 && (
@@ -138,7 +138,7 @@ export const ExpensesPage = () => {
                   onClick={() => selectCategory(c.uuid)}
                   className={`rounded-sm px-4 py-2 text-sm ${
                     form.categoryUuid === c.uuid
-                      ? "border border-blue-600 bg-blue-600 text-white"
+                      ? "border border-primary bg-primary text-white"
                       : "border border-gray-200 text-gray-500"
                   }`}
                 >

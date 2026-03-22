@@ -116,7 +116,7 @@ export const CategoriesPage = () => {
             onChange={(e) => setName(e.target.value)}
             required
             maxLength={50}
-            className="w-full border-b border-gray-300 px-1 py-2 text-sm outline-none placeholder:text-gray-300 focus:border-gray-900"
+            className="w-full border-b border-gray-300 px-1 py-2 text-sm outline-none placeholder:text-gray-300 focus:border-primary"
           />
         </div>
         <button
@@ -133,12 +133,12 @@ export const CategoriesPage = () => {
           <li
             key={c.uuid}
             className={`flex items-center gap-3 border-b py-3 ${
-              editing?.uuid === c.uuid ? "border-blue-600" : "border-gray-100"
+              editing?.uuid === c.uuid ? "border-primary" : "border-gray-100"
             }`}
           >
             <BookmarkIcon
               className={`size-3.5 shrink-0 ${
-                editing?.uuid === c.uuid ? "text-blue-600" : "text-gray-400"
+                editing?.uuid === c.uuid ? "text-primary" : "text-gray-400"
               }`}
             />
             {editing?.uuid === c.uuid ? (
@@ -158,7 +158,7 @@ export const CategoriesPage = () => {
                 <button
                   type="button"
                   onClick={handleUpdate}
-                  className="text-blue-500 hover:text-blue-700"
+                  className="text-primary hover:text-primary-hover"
                 >
                   <CheckIcon className="size-3.5" />
                 </button>

@@ -98,7 +98,7 @@ export const CategoryPieChart = ({ expenses }: CategoryPieChartProps) => {
                 textAnchor={textAnchor}
                 dominantBaseline="central"
                 fontSize={11}
-                fill="#6b7280"
+                fill="#4A5568"
               >
                 {name}
               </text>

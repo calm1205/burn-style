@@ -48,7 +48,7 @@ export const SignupPage = () => {
               required
               maxLength={50}
               disabled={loading}
-              className="border-x-0 border-t-0 border-b border-gray-300 bg-transparent px-1 py-3 outline-none transition-colors focus:border-black disabled:opacity-50"
+              className="border-x-0 border-t-0 border-b border-gray-300 bg-transparent px-1 py-3 outline-none transition-colors focus:border-primary disabled:opacity-50"
             />
           </div>
 
@@ -67,7 +67,7 @@ export const SignupPage = () => {
           {"Already have an account? "}
           <Link
             to="/signin"
-            className="text-black underline underline-offset-4 hover:opacity-70"
+            className="text-primary underline underline-offset-4 hover:opacity-70"
           >
             Sign In
           </Link>

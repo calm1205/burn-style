@@ -70,12 +70,12 @@ export const SettingsPage = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               maxLength={50}
-              className="flex-1 border-b border-gray-300 px-1 py-1 text-base outline-none focus:border-gray-900"
+              className="flex-1 border-b border-gray-300 px-1 py-1 text-base outline-none focus:border-primary"
             />
             <button
               type="button"
               onClick={handleUpdate}
-              className="text-blue-500 hover:text-blue-700"
+              className="text-primary hover:text-primary-hover"
             >
               <CheckIcon className="size-4" />
             </button>

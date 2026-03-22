@@ -5,14 +5,18 @@ import type { ExpenseResponse } from "../lib/types"
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 const getColor = (amount: number, mean: number, sd: number) => {
-  if (amount === 0) return { bg: "bg-gray-100", text: "text-gray-600" }
-  if (sd === 0) return { bg: "bg-blue-300", text: "text-gray-600" }
+  if (amount === 0)
+    return { bg: "var(--color-gray-100)", text: "var(--color-gray-700)" }
+  if (sd === 0)
+    return { bg: "var(--color-chart-scale-3)", text: "var(--color-gray-700)" }
   const z = (amount - mean) / sd
-  if (z > 0.75) return { bg: "bg-blue-800", text: "text-white" }
-  if (z > 0.25) return { bg: "bg-blue-600", text: "text-gray-600" }
-  if (z > -0.25) return { bg: "bg-blue-400", text: "text-gray-600" }
-  if (z > -0.75) return { bg: "bg-blue-200", text: "text-gray-600" }
-  return { bg: "bg-blue-100", text: "text-gray-600" }
+  if (z > 0.75) return { bg: "var(--color-chart-scale-5)", text: "#FFFFFF" }
+  if (z > 0.25) return { bg: "var(--color-chart-scale-4)", text: "#FFFFFF" }
+  if (z > -0.25)
+    return { bg: "var(--color-chart-scale-3)", text: "var(--color-gray-700)" }
+  if (z > -0.75)
+    return { bg: "var(--color-chart-scale-2)", text: "var(--color-gray-700)" }
+  return { bg: "var(--color-chart-scale-1)", text: "var(--color-gray-700)" }
 }
 
 interface ExpenseHeatmapProps {
@@ -117,9 +121,12 @@ export const ExpenseHeatmap = ({
           return (
             <div
               key={`${day ?? "empty"}-${String(i)}`}
-              className={`flex aspect-square items-center justify-center rounded text-xs ${
-                color ? `${color.bg} ${color.text}` : ""
-              }`}
+              className="flex aspect-square items-center justify-center rounded text-xs"
+              style={
+                color
+                  ? { backgroundColor: color.bg, color: color.text }
+                  : undefined
+              }
               title={
                 day ? `${month}/${day}: ¥${amount.toLocaleString()}` : undefined
               }

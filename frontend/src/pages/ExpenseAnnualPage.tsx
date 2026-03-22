@@ -113,7 +113,7 @@ export const ExpenseAnnualPage = () => {
             onClick={() => setTab(key)}
             className={`flex items-center gap-1.5 border-b-2 px-1 py-2 text-sm ${
               tab === key
-                ? "border-blue-500 text-blue-500"
+                ? "border-primary text-primary"
                 : "border-transparent text-gray-400 hover:text-gray-600"
             }`}
           >
