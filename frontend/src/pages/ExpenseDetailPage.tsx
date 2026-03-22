@@ -89,7 +89,7 @@ export const ExpenseDetailPage = () => {
       dialogRef.current?.close()
       navigate("/expense/monthly")
     } catch (err) {
-      setError(getErrorMessage(err, "削除に失敗"))
+      setError(getErrorMessage(err, "Delete failed"))
     }
   }
 
@@ -202,12 +202,12 @@ export const ExpenseDetailPage = () => {
           onClick={openDeleteDialog}
           className="rounded border border-red-600 px-5 py-4 text-red-600 hover:bg-red-50"
         >
-          削除
+          Delete
         </button>
       </div>
 
       <ConfirmDialog
-        message="この支出を削除しますか?"
+        message="Delete this expense?"
         onConfirm={handleDelete}
         dialogRef={dialogRef}
       />

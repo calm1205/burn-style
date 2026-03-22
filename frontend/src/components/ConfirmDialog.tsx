@@ -30,14 +30,14 @@ export const ConfirmDialog = ({
           onClick={() => dialogRef.current?.close()}
           className="rounded px-4 py-2 text-sm text-gray-500 hover:bg-gray-100"
         >
-          キャンセル
+          Cancel
         </button>
         <button
           type="button"
           onClick={onConfirm}
           className="rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
         >
-          削除
+          Delete
         </button>
       </div>
     </dialog>

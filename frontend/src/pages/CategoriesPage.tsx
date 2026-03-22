@@ -74,7 +74,7 @@ export const CategoriesPage = () => {
       dialogRef.current?.close()
       await fetchData()
     } catch (err) {
-      setError(getErrorMessage(err, "削除に失敗"))
+      setError(getErrorMessage(err, "Delete failed"))
     }
   }
 
@@ -200,7 +200,7 @@ export const CategoriesPage = () => {
       )}
 
       <ConfirmDialog
-        message={`「${deleteTarget?.name}」を削除しますか?`}
+        message={`Delete "${deleteTarget?.name}"?`}
         onConfirm={handleDelete}
         dialogRef={dialogRef}
       />
