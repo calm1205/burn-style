@@ -32,8 +32,8 @@ export const ExpenseList = ({ expenses }: ExpenseListProps) => {
           className="flex items-center justify-between rounded-lg border border-gray-200 px-4 py-3 text-left hover:bg-gray-50"
           onClick={() => navigate(`/expense/${e.uuid}`)}
         >
-          <div className="flex flex-col gap-1">
-            <span className="text-sm">{e.name}</span>
+          <div className="flex min-w-0 flex-1 flex-col gap-1">
+            <span className="truncate text-sm">{e.name}</span>
             {e.categories.length > 0 && (
               <div className="flex gap-2">
                 {e.categories.map((c) => (
@@ -44,7 +44,7 @@ export const ExpenseList = ({ expenses }: ExpenseListProps) => {
               </div>
             )}
           </div>
-          <div className="flex flex-col items-end gap-1">
+          <div className="flex shrink-0 flex-col items-end gap-1">
             <span className="text-sm font-mono">
               ¥{e.amount.toLocaleString()}
             </span>
