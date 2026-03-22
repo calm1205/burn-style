@@ -84,7 +84,7 @@ export const ExpensesPage = () => {
           <input
             id="expense-name"
             type="text"
-            placeholder="例: ランチ"
+            placeholder="e.g. Lunch"
             value={form.name}
             onChange={(e) =>
               setForm((prev) => ({ ...prev, name: e.target.value }))
@@ -101,7 +101,7 @@ export const ExpensesPage = () => {
           <input
             id="expense-amount"
             type="number"
-            placeholder="例: 1000"
+            placeholder="e.g. 1000"
             value={form.amount}
             onChange={(e) =>
               setForm((prev) => ({ ...prev, amount: e.target.value }))

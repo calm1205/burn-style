@@ -113,7 +113,7 @@ export const CategoriesPage = () => {
           <input
             id="category-name"
             type="text"
-            placeholder="例: 食費、交通費"
+            placeholder="e.g. Food, Transport"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
