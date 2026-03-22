@@ -53,7 +53,7 @@ prod-seed: ## Neon本番DBにseedデータを投入（使用例: make prod-seed 
 
 prod-db-clear: ## Neon本番DBの全テーブルを削除
 	@echo "本番DBの全テーブルを削除します。よろしいですか? [y/N]" && read ans && [ "$$ans" = "y" ] || (echo "中止" && exit 1)
-	cd $(BACKEND_DIR) && VERCEL_ENV=production uv run python -c "from src.repository.database import engine; from sqlalchemy import text; c=engine.connect(); c.execute(text('DROP SCHEMA public CASCADE')); c.execute(text('CREATE SCHEMA public')); c.commit(); c.close()"
+	cd $(BACKEND_DIR) && VERCEL_ENV=production uv run python -c "from src.repository.database import get_engine; from sqlalchemy import text; c=get_engine().connect(); c.execute(text('DROP SCHEMA public CASCADE')); c.execute(text('CREATE SCHEMA public')); c.commit(); c.close()"
 
 prod-db-reset: ## Neon本番DBをリセットしてseedデータを投入
 	make prod-db-clear
