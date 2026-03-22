@@ -1,4 +1,10 @@
-import { type SubmitEvent, useCallback, useEffect, useState } from "react"
+import {
+  type SubmitEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react"
 import { useNavigate } from "react-router"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
@@ -6,6 +12,7 @@ import type { CategoryResponse } from "../lib/types"
 
 export const ExpensesPage = () => {
   const navigate = useNavigate()
+  const nameRef = useRef<HTMLInputElement>(null)
   const [categories, setCategories] = useState<CategoryResponse[]>([])
   const [error, setError] = useState("")
 
@@ -33,6 +40,7 @@ export const ExpensesPage = () => {
 
   useEffect(() => {
     fetchData()
+    nameRef.current?.focus()
   }, [fetchData])
 
   const selectCategory = (uuid: string) => {
@@ -72,6 +80,7 @@ export const ExpensesPage = () => {
             Name
           </label>
           <input
+            ref={nameRef}
             id="expense-name"
             type="text"
             placeholder="e.g. Lunch"
