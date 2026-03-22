@@ -43,6 +43,9 @@ services:
           path: ./frontend/src
           target: /app/src
         - action: sync
+          path: ./frontend/public
+          target: /app/public
+        - action: sync
           path: ./frontend/index.html
           target: /app/index.html
         - action: rebuild
