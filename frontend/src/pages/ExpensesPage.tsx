@@ -83,7 +83,7 @@ export const ExpensesPage = () => {
             ref={nameRef}
             id="expense-name"
             type="text"
-            placeholder="e.g. Lunch"
+            placeholder="Lunch"
             value={form.name}
             onChange={(e) =>
               setForm((prev) => ({ ...prev, name: e.target.value }))
@@ -101,7 +101,7 @@ export const ExpensesPage = () => {
             id="expense-amount"
             type="text"
             inputMode="numeric"
-            placeholder="e.g. 1,000"
+            placeholder="1,000"
             value={form.amount}
             onChange={(e) => {
               const raw = e.target.value.replace(/[^0-9]/g, "")

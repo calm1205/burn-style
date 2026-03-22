@@ -111,7 +111,7 @@ export const CategoriesPage = () => {
           <input
             id="category-name"
             type="text"
-            placeholder="e.g. Food, Transport"
+            placeholder="Food, Transport"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
