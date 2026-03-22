@@ -59,18 +59,18 @@ export const SettingsPage = () => {
     <div className="mx-auto max-w-2xl px-6">
       {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
 
-      <div className="mb-8">
+      <div className="mb-8 flex flex-col gap-1">
+        <Text size="2" color="gray" as="p">
+          Username
+        </Text>
         {editing ? (
           <div className="flex items-center gap-2">
-            <Text size="3" weight="bold" as="span" className="shrink-0">
-              Account
-            </Text>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               maxLength={50}
-              className="flex-1 border-b border-gray-300 px-1 py-1 text-sm outline-none focus:border-gray-900"
+              className="flex-1 border-b border-gray-300 px-1 py-1 text-base outline-none focus:border-gray-900"
             />
             <button
               type="button"
@@ -90,9 +90,6 @@ export const SettingsPage = () => {
         ) : (
           <div className="flex items-center gap-2">
             <Text size="3" weight="bold" as="span">
-              Account
-            </Text>
-            <Text size="2" color="gray" as="span">
               {user?.name ?? "---"}
             </Text>
             <button
