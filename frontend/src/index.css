@@ -1,6 +1,20 @@
 @import "tailwindcss";
 @import "@radix-ui/themes/styles.css";
 
+@theme {
+  --color-primary: #1a1a1a;
+  --color-primary-hover: #374151;
+  --color-accent: #2563eb;
+  --color-chart-1: #1e3a5f;
+  --color-chart-2: #2563eb;
+  --color-chart-3: #3b82f6;
+  --color-chart-4: #60a5fa;
+  --color-chart-5: #93c5fd;
+  --color-chart-6: #a5b4cd;
+  --color-chart-7: #7ba1c7;
+  --color-chart-8: #4a7fb5;
+}
+
 input::placeholder {
   color: var(--color-gray-300);
 }
