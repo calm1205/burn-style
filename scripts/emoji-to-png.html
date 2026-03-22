@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head><title>Emoji to PNG</title></head>
+<body>
+<script>
+const size = 180;
+const canvas = document.createElement("canvas");
+canvas.width = size;
+canvas.height = size;
+const ctx = canvas.getContext("2d");
+
+// 背景
+ctx.fillStyle = "#1a1a1a";
+ctx.beginPath();
+ctx.roundRect(0, 0, size, size, 40);
+ctx.fill();
+
+// 絵文字
+ctx.font = "120px serif";
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
+ctx.fillText("🔥", size / 2, size / 2 + 8);
+
+// ダウンロード
+const a = document.createElement("a");
+a.download = "apple-touch-icon.png";
+a.href = canvas.toDataURL("image/png");
+a.click();
+</script>
+</body>
+</html>
