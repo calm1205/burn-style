@@ -20,11 +20,14 @@
   --color-gray-900: #1a1a1a;
 
   /* Chart - Category */
-  --color-chart-1: #4a90e2;
-  --color-chart-2: #3bc9db;
-  --color-chart-3: #5a67d8;
-  --color-chart-4: #63b3ed;
-  --color-chart-5: #2c5282;
+  --color-chart-1: #6366f1;
+  --color-chart-2: #8b5cf6;
+  --color-chart-3: #ec4899;
+  --color-chart-4: #f59e0b;
+  --color-chart-5: #10b981;
+  --color-chart-6: #06b6d4;
+  --color-chart-7: #f97316;
+  --color-chart-8: #64748b;
 
   /* Chart - Scale */
   --color-chart-scale-1: #e6f0ff;

@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import {
   Bar,
   BarChart,
-  CartesianGrid,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -69,17 +68,13 @@ export const MonthlyTrendChart = ({ year, month }: MonthlyTrendChartProps) => {
   }, [year, month, thisYearExpenses, lastYearExpenses])
 
   return (
-    <ResponsiveContainer width="100%" height={200}>
-      <BarChart data={data}>
-        <CartesianGrid
-          strokeDasharray="3 3"
-          vertical={false}
-          stroke="#E2E8F0"
-        />
+    <ResponsiveContainer width="100%" height={180}>
+      <BarChart data={data} barCategoryGap="20%">
         <XAxis
           dataKey="label"
-          tick={{ fontSize: 10, fill: "#4A5568" }}
-          stroke="#E2E8F0"
+          axisLine={false}
+          tickLine={false}
+          tick={{ fontSize: 10, fill: "#A0AEC0" }}
           interval={0}
           ticks={(() => {
             const labels = data.map((d) => d.label)
@@ -88,25 +83,27 @@ export const MonthlyTrendChart = ({ year, month }: MonthlyTrendChartProps) => {
           })()}
         />
         <YAxis
-          tick={{ fontSize: 11, fill: "#4A5568" }}
-          stroke="#E2E8F0"
+          axisLine={false}
+          tickLine={false}
+          tick={{ fontSize: 10, fill: "#A0AEC0" }}
           tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`}
-          width={40}
+          width={35}
         />
         <Tooltip
           formatter={(value) => [`¥${Number(value).toLocaleString()}`]}
           contentStyle={{
             borderRadius: "12px",
             border: "none",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
             fontSize: "12px",
           }}
+          cursor={{ fill: "rgba(99,102,241,0.06)" }}
         />
         <Bar
           dataKey="amount"
-          fill="var(--color-primary)"
-          radius={[2, 2, 0, 0]}
-          barSize={12}
+          fill="#6366F1"
+          radius={[6, 6, 6, 6]}
+          barSize={14}
           isAnimationActive={false}
         />
       </BarChart>
