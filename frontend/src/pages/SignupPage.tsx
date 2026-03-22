@@ -25,7 +25,7 @@ export const SignupPage = () => {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+    <div className="flex min-h-dvh items-center justify-center bg-gray-50 px-4">
       <form
         onSubmit={handleSubmit}
         className="flex w-full max-w-sm flex-col gap-8"
