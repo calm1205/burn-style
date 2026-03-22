@@ -108,6 +108,12 @@ export const CategoryPieChart = ({ expenses }: CategoryPieChartProps) => {
           <Tooltip
             trigger="hover"
             formatter={(value) => `¥${Number(value).toLocaleString()}`}
+            contentStyle={{
+              borderRadius: "12px",
+              border: "none",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+              fontSize: "12px",
+            }}
           />
         </PieChart>
       </div>

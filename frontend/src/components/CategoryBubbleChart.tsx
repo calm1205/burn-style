@@ -135,7 +135,7 @@ export const CategoryBubbleChart = ({ expenses }: CategoryBubbleChartProps) => {
               if (!payload?.[0]) return null
               const d = payload[0].payload as BubbleData
               return (
-                <div className="rounded border border-gray-200 bg-white px-3 py-2 text-xs shadow">
+                <div className="rounded-xl bg-white px-3 py-2 text-xs shadow-md">
                   <p className="font-medium">{d.label}</p>
                   <p>回数: {d.frequency}</p>
                   <p>合計: ¥{d.total.toLocaleString()}</p>
