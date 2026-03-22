@@ -66,7 +66,7 @@ export const AppLayout = () => {
             {getPageTitle(location.pathname)}
           </h1>
         </header>
-        <main className="flex-1 overflow-y-auto pb-16 md:pb-0">
+        <main className="flex-1 overflow-y-auto pt-6 pb-16 md:pb-0">
           <Outlet context={{ user, onLogout, refreshUser: fetchUser }} />
         </main>
       </div>

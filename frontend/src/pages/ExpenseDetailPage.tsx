@@ -93,10 +93,7 @@ export const ExpenseDetailPage = () => {
   }
 
   return (
-    <div
-      className="mx-auto flex max-w-2xl flex-col items-stretch gap-12 px-6"
-      style={{ paddingTop: "10vh" }}
-    >
+    <div className="mx-auto flex max-w-2xl flex-col items-stretch gap-12 px-6">
       <div className="flex items-center">
         <button
           type="button"

@@ -56,7 +56,7 @@ export const SettingsPage = () => {
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-6" style={{ paddingTop: "20vh" }}>
+    <div className="mx-auto max-w-2xl px-6">
       {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
 
       <div className="mb-8">
