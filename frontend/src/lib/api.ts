@@ -66,6 +66,8 @@ const updateMe = (data: { name: string }): Promise<UserResponse> =>
 
 const deleteMe = (): Promise<void> => client.delete<void>("/me")
 
+const exportMe = (): Promise<unknown> => client.get<unknown>("/me/export")
+
 // --- カテゴリ ---
 
 const getCategories = (): Promise<CategoryResponse[]> =>
@@ -117,6 +119,7 @@ export const api = {
   getMe,
   updateMe,
   deleteMe,
+  exportMe,
   getCategories,
   createCategory,
   updateCategory,

@@ -1,5 +1,6 @@
 import {
   CheckIcon,
+  DownloadIcon,
   ExitIcon,
   Pencil1Icon,
   ResetIcon,
@@ -108,6 +109,28 @@ export const SettingsPage = () => {
       </div>
 
       <div className="flex flex-col gap-3">
+        <Button
+          variant="outline"
+          color="gray"
+          onClick={async () => {
+            try {
+              const data = await api.exportMe()
+              const blob = new Blob([JSON.stringify(data, null, 2)], {
+                type: "application/json",
+              })
+              const a = document.createElement("a")
+              a.href = URL.createObjectURL(blob)
+              a.download = `${user?.name ?? "export"}_expense.json`
+              a.click()
+              URL.revokeObjectURL(a.href)
+            } catch (err) {
+              setError(getErrorMessage(err, "Export failed"))
+            }
+          }}
+        >
+          <DownloadIcon />
+          Export Data
+        </Button>
         <Button variant="outline" color="red" onClick={onLogout}>
           <ExitIcon />
           Logout
