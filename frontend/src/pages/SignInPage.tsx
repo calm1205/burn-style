@@ -57,7 +57,7 @@ export const SignInPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className="rounded bg-black py-3 text-sm font-medium tracking-wide text-white transition-opacity hover:opacity-80 disabled:opacity-50"
+            className="rounded bg-primary py-3 text-sm font-medium tracking-wide text-white transition-opacity hover:opacity-80 disabled:opacity-50"
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>

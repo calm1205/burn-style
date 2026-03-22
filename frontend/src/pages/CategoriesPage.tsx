@@ -121,7 +121,7 @@ export const CategoriesPage = () => {
         </div>
         <button
           type="submit"
-          className="rounded bg-black px-3 py-2 text-white hover:bg-gray-800"
+          className="rounded bg-primary px-3 py-2 text-white hover:bg-primary-hover"
         >
           <PlusIcon className="size-4" />
         </button>

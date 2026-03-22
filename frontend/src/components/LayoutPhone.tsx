@@ -23,7 +23,7 @@ export const LayoutPhone = ({ navItems }: LayoutPhoneProps) => {
             to={item.to}
             className="flex flex-1 items-center justify-center py-3"
           >
-            <span className="flex items-center justify-center rounded-full bg-black p-2">
+            <span className="flex items-center justify-center rounded-full bg-primary p-2">
               {item.icon && <item.icon className="size-5 text-white" />}
             </span>
           </NavLink>

@@ -186,7 +186,7 @@ export const ExpenseDetailPage = () => {
         <button
           type="submit"
           form="expense-detail-form"
-          className="rounded bg-black px-5 py-4 text-white hover:bg-gray-800"
+          className="rounded bg-primary px-5 py-4 text-white hover:bg-primary-hover"
         >
           Update
         </button>
