@@ -127,7 +127,7 @@ export const ExpenseDetailPage = () => {
             }
             required
             maxLength={100}
-            className="border-b border-gray-200 px-4 py-3 text-sm placeholder:text-gray-200 focus:border-gray-900 focus:outline-none"
+            className="border-b border-gray-200 px-4 py-3 text-base placeholder:text-gray-200 focus:border-gray-900 focus:outline-none"
           />
         </div>
         <div className="flex flex-col gap-2">
@@ -145,7 +145,7 @@ export const ExpenseDetailPage = () => {
               setForm((prev) => ({ ...prev, amount: formatted }))
             }}
             required
-            className="border-b border-gray-200 px-4 py-3 text-sm placeholder:text-gray-200 focus:border-gray-900 focus:outline-none"
+            className="border-b border-gray-200 px-4 py-3 text-base placeholder:text-gray-200 focus:border-gray-900 focus:outline-none"
           />
         </div>
         <div className="flex flex-col gap-2">
@@ -160,7 +160,7 @@ export const ExpenseDetailPage = () => {
               setForm((prev) => ({ ...prev, expensedAt: e.target.value }))
             }
             required
-            className="border-b border-gray-200 px-4 py-3 text-sm focus:border-gray-900 focus:outline-none"
+            className="border-b border-gray-200 px-4 py-3 text-base focus:border-gray-900 focus:outline-none"
           />
         </div>
         {categories.length > 0 && (
