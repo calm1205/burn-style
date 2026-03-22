@@ -57,8 +57,6 @@ export const SettingsPage = () => {
 
   return (
     <div className="mx-auto max-w-2xl px-6" style={{ paddingTop: "20vh" }}>
-      <h1 className="mb-6 text-2xl font-bold">Setting</h1>
-
       {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
 
       <div className="mb-8">

@@ -63,8 +63,6 @@ export const ExpensesPage = () => {
       className="mx-auto flex max-w-2xl flex-col items-stretch gap-12 px-6"
       style={{ paddingTop: "20vh" }}
     >
-      <h1 className="text-center text-2xl font-bold">Expense</h1>
-
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       <form
