@@ -1,5 +1,4 @@
 import {
-  BookmarkIcon,
   CheckIcon,
   Pencil1Icon,
   PlusIcon,
@@ -26,9 +25,10 @@ export const CategoriesPage = () => {
   const [name, setName] = useState("")
 
   // 編集
-  const [editing, setEditing] = useState<{ uuid: string; name: string } | null>(
-    null,
-  )
+  const [editing, setEditing] = useState<{
+    uuid: string
+    name: string
+  } | null>(null)
   const editInputRef = useRef<HTMLInputElement>(null)
 
   const fetchData = useCallback(async () => {
@@ -96,105 +96,90 @@ export const CategoriesPage = () => {
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-6">
-      {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
+    <div className="mx-auto flex max-w-2xl flex-col gap-6 px-6">
+      {error && <p className="text-sm text-red-600">{error}</p>}
 
       {/* 作成フォーム */}
-      <form onSubmit={handleCreate} className="mb-6 flex items-end gap-2">
-        <div className="flex-1">
-          <label
-            htmlFor="category-name"
-            className="mb-1 block text-xs text-gray-500"
-          >
-            Name
-          </label>
-          <input
-            id="category-name"
-            type="text"
-            placeholder="Food, Transport"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            maxLength={50}
-            className="w-full border-b border-gray-300 px-1 py-2 text-sm outline-none placeholder:text-gray-300 focus:border-primary"
-          />
-        </div>
+      <form
+        onSubmit={handleCreate}
+        className="flex items-center gap-2 rounded-2xl bg-white p-4 shadow-sm"
+      >
+        <input
+          id="category-name"
+          type="text"
+          placeholder="Food, Transport"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+          maxLength={50}
+          className="flex-1 rounded-xl bg-gray-50 px-4 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20"
+        />
         <button
           type="submit"
-          className="rounded-lg bg-primary px-3 py-2 text-white hover:bg-primary-hover"
+          className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary text-white hover:bg-primary-hover"
         >
           <PlusIcon className="size-4" />
         </button>
       </form>
 
       {/* カテゴリ一覧 */}
-      <ul className="flex flex-col">
-        {categories.map((c) => (
-          <li
-            key={c.uuid}
-            className={`flex items-center gap-3 border-b py-3 ${
-              editing?.uuid === c.uuid ? "border-primary" : "border-gray-100"
-            }`}
-          >
-            <BookmarkIcon
-              className={`size-3.5 shrink-0 ${
-                editing?.uuid === c.uuid ? "text-primary" : "text-gray-400"
-              }`}
-            />
-            {editing?.uuid === c.uuid ? (
-              <div className="flex flex-1 items-center gap-2">
-                <input
-                  ref={editInputRef}
-                  type="text"
-                  value={editing?.name ?? ""}
-                  onChange={(e) =>
-                    setEditing((prev) =>
-                      prev ? { ...prev, name: e.target.value } : null,
-                    )
-                  }
-                  maxLength={50}
-                  className="flex-1 text-sm outline-none"
-                />
-                <button
-                  type="button"
-                  onClick={handleUpdate}
-                  className="text-primary hover:text-primary-hover"
-                >
-                  <CheckIcon className="size-3.5" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setEditing(null)}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  <ResetIcon className="size-3.5" />
-                </button>
-              </div>
-            ) : (
-              <>
-                <span className="flex-1 text-sm">{c.name}</span>
-                <button
-                  type="button"
-                  onClick={() => startEdit(c)}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  <Pencil1Icon className="size-3.5" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => confirmDelete(c)}
-                  className="text-red-400 hover:text-red-600"
-                >
-                  <TrashIcon className="size-3.5" />
-                </button>
-              </>
-            )}
-          </li>
-        ))}
-      </ul>
-
-      {categories.length === 0 && (
-        <p className="text-center text-gray-500">No categories</p>
+      {categories.length > 0 ? (
+        <div className="divide-y divide-gray-100 overflow-hidden rounded-2xl bg-white shadow-sm">
+          {categories.map((c) => (
+            <div key={c.uuid} className="flex items-center gap-3 px-5 py-3.5">
+              {editing?.uuid === c.uuid ? (
+                <div className="flex flex-1 items-center gap-2">
+                  <input
+                    ref={editInputRef}
+                    type="text"
+                    value={editing?.name ?? ""}
+                    onChange={(e) =>
+                      setEditing((prev) =>
+                        prev ? { ...prev, name: e.target.value } : null,
+                      )
+                    }
+                    maxLength={50}
+                    className="flex-1 rounded-lg bg-gray-50 px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-primary/20"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleUpdate}
+                    className="text-primary hover:text-primary-hover"
+                  >
+                    <CheckIcon className="size-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEditing(null)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <ResetIcon className="size-4" />
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <span className="flex-1 text-sm">{c.name}</span>
+                  <button
+                    type="button"
+                    onClick={() => startEdit(c)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <Pencil1Icon className="size-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => confirmDelete(c)}
+                    className="text-red-400 hover:text-red-600"
+                  >
+                    <TrashIcon className="size-3.5" />
+                  </button>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="py-8 text-center text-sm text-gray-400">No categories</p>
       )}
 
       <ConfirmDialog
