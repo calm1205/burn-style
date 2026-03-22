@@ -13,7 +13,7 @@ interface LayoutPhoneProps {
 
 export const LayoutPhone = ({ navItems }: LayoutPhoneProps) => {
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-50 flex border-t border-gray-200 bg-white md:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-50 flex h-20 border-t border-gray-200 bg-white md:hidden">
       {navItems.map((item, index) => {
         const isLast = index === navItems.length - 1
 
