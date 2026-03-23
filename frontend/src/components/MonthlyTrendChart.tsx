@@ -86,8 +86,9 @@ export const MonthlyTrendChart = ({ year, month }: MonthlyTrendChartProps) => {
           axisLine={false}
           tickLine={false}
           tick={{ fontSize: 10, fill: "#A0AEC0" }}
-          tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`}
-          width={35}
+          tickFormatter={(v: number) => `${(v / 10000).toFixed(0)}`}
+          unit="万"
+          width={40}
         />
         <Tooltip
           formatter={(value) => [`¥${Number(value).toLocaleString()}`]}
