@@ -92,6 +92,7 @@ export const CategoryPieChart = ({ expenses }: CategoryPieChartProps) => {
             endAngle={-270}
             innerRadius={45}
             outerRadius={70}
+            stroke="var(--chart-pie-stroke)"
             strokeWidth={2}
             isAnimationActive={false}
             label={({ x, y, name, textAnchor }) => (
