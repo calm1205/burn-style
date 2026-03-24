@@ -13,6 +13,7 @@ import { ConfirmDialog, useConfirmDialog } from "../components/ConfirmDialog"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
 import { STORAGE_KEYS } from "../lib/constants"
+import { applyTheme, getStoredTheme, type ThemeMode } from "../lib/theme"
 import type { UserResponse } from "../lib/types"
 
 interface OutletContext {
@@ -26,7 +27,13 @@ export const SettingsPage = () => {
   const [error, setError] = useState("")
   const [editing, setEditing] = useState(false)
   const [name, setName] = useState("")
+  const [theme, setTheme] = useState<ThemeMode>(getStoredTheme)
   const { dialogRef, open: openDialog } = useConfirmDialog()
+
+  const changeTheme = (mode: ThemeMode) => {
+    setTheme(mode)
+    applyTheme(mode)
+  }
 
   const startEdit = () => {
     setName(user?.name ?? "")
@@ -115,6 +122,31 @@ export const SettingsPage = () => {
             <Pencil1Icon className="size-3.5 text-gray-400 dark:text-gray-500" />
           </button>
         )}
+      </div>
+
+      {/* Theme */}
+      <div className="rounded-2xl bg-white p-5 shadow-sm dark:bg-gray-800">
+        <p className="mb-3 text-xs text-gray-500 dark:text-gray-400">Theme</p>
+        <div className="flex gap-2">
+          {(["system", "light", "dark"] as const).map((mode) => (
+            <button
+              key={mode}
+              type="button"
+              onClick={() => changeTheme(mode)}
+              className={`flex-1 rounded-xl py-2 text-sm transition-colors ${
+                theme === mode
+                  ? "bg-primary text-white"
+                  : "bg-gray-50 text-gray-500 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600"
+              }`}
+            >
+              {mode === "system"
+                ? "System"
+                : mode === "light"
+                  ? "Light"
+                  : "Dark"}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Actions */}
