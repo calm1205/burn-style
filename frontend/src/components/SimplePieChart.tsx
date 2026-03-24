@@ -1,5 +1,5 @@
 import { Pie, PieChart } from "recharts"
-import { CHART_COLORS } from "../lib/colors"
+import { assignChartColors, CHART_COLORS } from "../lib/colors"
 import type { ExpenseResponse } from "../lib/types"
 
 interface SimplePieChartProps {
@@ -17,13 +17,14 @@ export const SimplePieChart = ({ expenses }: SimplePieChartProps) => {
       }
     }
   }
-  const data = [...map.entries()]
-    .map(([name, amount], i) => ({
-      name,
-      amount,
-      fill: CHART_COLORS[i % CHART_COLORS.length],
-    }))
+  const sorted = [...map.entries()]
+    .map(([name, amount]) => ({ name, amount }))
     .sort((a, b) => b.amount - a.amount)
+  const colorMap = assignChartColors(sorted)
+  const data = sorted.map((item) => ({
+    ...item,
+    fill: colorMap.get(item.name) ?? CHART_COLORS[0],
+  }))
 
   if (data.length === 0) return null
 

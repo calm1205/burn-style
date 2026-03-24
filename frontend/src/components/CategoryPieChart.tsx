@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import { Pie, PieChart, Tooltip } from "recharts"
-import { CHART_COLORS } from "../lib/colors"
+import { assignChartColors, CHART_COLORS } from "../lib/colors"
 import type { ExpenseResponse } from "../lib/types"
 
 interface CategoryTotal {
@@ -17,20 +17,23 @@ export const CategoryPieChart = ({ expenses }: CategoryPieChartProps) => {
   const [hidden, setHidden] = useState<Set<string>>(new Set())
 
   const { allCategories, colorMap } = useMemo(() => {
-    const catSet = new Set<string>()
+    const map = new Map<string, number>()
     for (const e of expenses) {
       if (e.categories.length === 0) {
-        catSet.add("未分類")
+        map.set("未分類", (map.get("未分類") ?? 0) + e.amount)
       } else {
-        for (const c of e.categories) catSet.add(c.name)
+        for (const c of e.categories) {
+          map.set(c.name, (map.get(c.name) ?? 0) + e.amount)
+        }
       }
     }
-    const cats = [...catSet]
-    const cMap = new Map<string, string>()
-    for (let i = 0; i < cats.length; i++) {
-      cMap.set(cats[i], CHART_COLORS[i % CHART_COLORS.length])
+    const sorted = [...map.entries()]
+      .map(([name, amount]) => ({ name, amount }))
+      .sort((a, b) => b.amount - a.amount)
+    return {
+      allCategories: sorted.map((s) => s.name),
+      colorMap: assignChartColors(sorted),
     }
-    return { allCategories: cats, colorMap: cMap }
   }, [expenses])
 
   const categoryData = useMemo(() => {
