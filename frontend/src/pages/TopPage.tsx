@@ -60,7 +60,9 @@ export const TopPage = () => {
 
   return (
     <div className="flex h-full flex-col px-6">
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && (
+        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+      )}
       <div className="flex flex-1 flex-col items-center justify-center">
         <button
           type="button"

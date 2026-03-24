@@ -81,7 +81,9 @@ export const SettingsPage = () => {
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-6 px-6">
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && (
+        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+      )}
 
       {/* Profile */}
       <div className="rounded-2xl bg-white p-5 shadow-sm dark:bg-gray-800">
@@ -176,7 +178,7 @@ export const SettingsPage = () => {
         <button
           type="button"
           onClick={openDialog}
-          className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950"
+          className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950"
         >
           <TrashIcon className="size-4" />
           <span className="flex-1">Delete Account</span>

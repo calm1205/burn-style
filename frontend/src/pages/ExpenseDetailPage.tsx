@@ -102,7 +102,9 @@ export const ExpenseDetailPage = () => {
         <ArrowLeftIcon className="size-4 text-gray-600 dark:text-gray-400" />
       </button>
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && (
+        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+      )}
 
       <form
         id="expense-detail-form"
@@ -203,7 +205,7 @@ export const ExpenseDetailPage = () => {
       <button
         type="button"
         onClick={openDeleteDialog}
-        className="flex items-center justify-center gap-2 text-sm text-red-500 hover:text-red-600"
+        className="flex items-center justify-center gap-2 text-sm text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300"
       >
         <TrashIcon className="size-3.5" />
         Delete

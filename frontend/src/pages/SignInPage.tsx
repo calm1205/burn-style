@@ -66,7 +66,11 @@ export const SignInPage = () => {
           </button>
         </div>
 
-        {error && <p className="text-center text-sm text-red-600">{error}</p>}
+        {error && (
+          <p className="text-center text-sm text-red-600 dark:text-red-400">
+            {error}
+          </p>
+        )}
 
         <p className="text-center text-sm text-gray-500 dark:text-gray-400">
           {"Don't have an account? "}

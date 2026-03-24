@@ -86,7 +86,9 @@ export const ExpenseMonthlyPage = () => {
 
   return (
     <div className="mx-auto flex h-full max-w-2xl flex-col px-6">
-      {error && <p className="mt-6 text-sm text-red-600">{error}</p>}
+      {error && (
+        <p className="mt-6 text-sm text-red-600 dark:text-red-400">{error}</p>
+      )}
       <div className="flex shrink-0 items-center justify-between py-8">
         <button
           type="button"
