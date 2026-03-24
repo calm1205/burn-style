@@ -64,3 +64,9 @@
 input::placeholder {
   color: var(--color-gray-300);
 }
+
+@media (prefers-color-scheme: dark) {
+  input::placeholder {
+    color: var(--color-gray-600);
+  }
+}
