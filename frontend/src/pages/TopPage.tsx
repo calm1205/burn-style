@@ -9,11 +9,11 @@ import type { ExpenseResponse } from "../lib/types"
 
 const SkeletonPieChart = () => (
   <div className="mt-3 flex items-center gap-5">
-    <div className="size-[120px] shrink-0 rounded-full bg-gray-100" />
+    <div className="size-[120px] shrink-0 rounded-full bg-gray-100 dark:bg-gray-700" />
     <div className="flex flex-1 flex-col gap-2">
-      <div className="h-3 w-20 rounded bg-gray-100" />
-      <div className="h-3 w-16 rounded bg-gray-100" />
-      <div className="h-3 w-24 rounded bg-gray-100" />
+      <div className="h-3 w-20 rounded bg-gray-100 dark:bg-gray-700" />
+      <div className="h-3 w-16 rounded bg-gray-100 dark:bg-gray-700" />
+      <div className="h-3 w-24 rounded bg-gray-100 dark:bg-gray-700" />
     </div>
   </div>
 )
@@ -23,7 +23,7 @@ const SkeletonBarChart = () => (
     {Array.from({ length: 12 }, (_, i) => (
       <div
         key={`bar-${String(i)}`}
-        className="flex-1 animate-pulse rounded-md bg-gray-100"
+        className="flex-1 animate-pulse rounded-md bg-gray-100 dark:bg-gray-700"
         style={{ height: `${30 + Math.random() * 50}%` }}
       />
     ))}
@@ -64,23 +64,23 @@ export const TopPage = () => {
       <div className="flex flex-1 flex-col items-center justify-center">
         <button
           type="button"
-          className="w-full max-w-sm rounded-2xl bg-white px-5 py-4 shadow-sm transition-shadow hover:shadow-md"
+          className="w-full max-w-sm rounded-2xl bg-white px-5 py-4 shadow-sm transition-shadow hover:shadow-md dark:bg-gray-800"
           onClick={() => navigate("/expense/monthly")}
         >
           <div className="flex items-center justify-between">
             <div className="flex flex-col items-start gap-1">
-              <span className="text-sm text-gray-500">
+              <span className="text-sm text-gray-500 dark:text-gray-400">
                 {year}/{String(month).padStart(2, "0")}
               </span>
               {loading ? (
-                <div className="my-1 h-8 w-40 animate-pulse rounded-lg bg-gray-100" />
+                <div className="my-1 h-8 w-40 animate-pulse rounded-lg bg-gray-100 dark:bg-gray-700" />
               ) : (
                 <span className="text-3xl font-extrabold">
                   ¥{total.toLocaleString()}
                 </span>
               )}
             </div>
-            <ChevronRightIcon className="size-5 text-gray-400" />
+            <ChevronRightIcon className="size-5 text-gray-400 dark:text-gray-500" />
           </div>
           {loading ? (
             <SkeletonPieChart />
@@ -91,10 +91,10 @@ export const TopPage = () => {
 
         <button
           type="button"
-          className="mt-6 w-full max-w-sm rounded-2xl bg-white px-4 py-4 shadow-sm transition-shadow hover:shadow-md"
+          className="mt-6 w-full max-w-sm rounded-2xl bg-white px-4 py-4 shadow-sm transition-shadow hover:shadow-md dark:bg-gray-800"
           onClick={() => navigate("/expense/annual")}
         >
-          <p className="mb-3 text-left text-xs font-medium text-gray-500">
+          <p className="mb-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
             Annual
           </p>
           {loading ? (

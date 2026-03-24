@@ -77,8 +77,10 @@ export const SettingsPage = () => {
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       {/* Profile */}
-      <div className="rounded-2xl bg-white p-5 shadow-sm">
-        <p className="mb-1 text-xs text-gray-500">Username</p>
+      <div className="rounded-2xl bg-white p-5 shadow-sm dark:bg-gray-800">
+        <p className="mb-1 text-xs text-gray-500 dark:text-gray-400">
+          Username
+        </p>
         {editing ? (
           <div className="flex items-center gap-2">
             <input
@@ -86,7 +88,7 @@ export const SettingsPage = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               maxLength={50}
-              className="flex-1 border-b border-gray-300 px-1 py-1 text-base outline-none focus:border-primary"
+              className="flex-1 border-b border-gray-300 px-1 py-1 text-base outline-none focus:border-primary dark:border-gray-600 dark:bg-transparent dark:text-gray-100"
             />
             <button
               type="button"
@@ -98,7 +100,7 @@ export const SettingsPage = () => {
             <button
               type="button"
               onClick={() => setEditing(false)}
-              className="text-gray-400 hover:text-gray-600"
+              className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
             >
               <ResetIcon className="size-4" />
             </button>
@@ -110,39 +112,39 @@ export const SettingsPage = () => {
             className="flex w-full items-center justify-between"
           >
             <span className="text-base font-bold">{user?.name ?? "---"}</span>
-            <Pencil1Icon className="size-3.5 text-gray-400" />
+            <Pencil1Icon className="size-3.5 text-gray-400 dark:text-gray-500" />
           </button>
         )}
       </div>
 
       {/* Actions */}
-      <div className="divide-y divide-gray-100 overflow-hidden rounded-2xl bg-white shadow-sm">
+      <div className="divide-y divide-gray-100 overflow-hidden rounded-2xl bg-white shadow-sm dark:divide-gray-700 dark:bg-gray-800">
         <button
           type="button"
           onClick={handleExport}
-          className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm text-gray-700 hover:bg-gray-50"
+          className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
         >
-          <DownloadIcon className="size-4 text-gray-400" />
+          <DownloadIcon className="size-4 text-gray-400 dark:text-gray-500" />
           <span className="flex-1">Export Data</span>
-          <ChevronRightIcon className="size-4 text-gray-300" />
+          <ChevronRightIcon className="size-4 text-gray-300 dark:text-gray-600" />
         </button>
         <button
           type="button"
           onClick={onLogout}
-          className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm text-gray-700 hover:bg-gray-50"
+          className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
         >
-          <ExitIcon className="size-4 text-gray-400" />
+          <ExitIcon className="size-4 text-gray-400 dark:text-gray-500" />
           <span className="flex-1">Logout</span>
-          <ChevronRightIcon className="size-4 text-gray-300" />
+          <ChevronRightIcon className="size-4 text-gray-300 dark:text-gray-600" />
         </button>
       </div>
 
       {/* Danger Zone */}
-      <div className="overflow-hidden rounded-2xl bg-white shadow-sm">
+      <div className="overflow-hidden rounded-2xl bg-white shadow-sm dark:bg-gray-800">
         <button
           type="button"
           onClick={openDialog}
-          className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm text-red-600 hover:bg-red-50"
+          className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950"
         >
           <TrashIcon className="size-4" />
           <span className="flex-1">Delete Account</span>

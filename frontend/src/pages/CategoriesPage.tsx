@@ -102,7 +102,7 @@ export const CategoriesPage = () => {
       {/* 作成フォーム */}
       <form
         onSubmit={handleCreate}
-        className="flex items-center gap-2 rounded-2xl bg-white p-4 shadow-sm"
+        className="flex items-center gap-2 rounded-2xl bg-white p-4 shadow-sm dark:bg-gray-800"
       >
         <input
           id="category-name"
@@ -112,7 +112,7 @@ export const CategoriesPage = () => {
           onChange={(e) => setName(e.target.value)}
           required
           maxLength={50}
-          className="flex-1 rounded-xl bg-gray-50 px-4 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20"
+          className="flex-1 rounded-xl bg-gray-50 px-4 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
         />
         <button
           type="submit"
@@ -124,7 +124,7 @@ export const CategoriesPage = () => {
 
       {/* カテゴリ一覧 */}
       {categories.length > 0 ? (
-        <div className="divide-y divide-gray-100 overflow-hidden rounded-2xl bg-white shadow-sm">
+        <div className="divide-y divide-gray-100 overflow-hidden rounded-2xl bg-white shadow-sm dark:divide-gray-700 dark:bg-gray-800">
           {categories.map((c) => (
             <div key={c.uuid} className="flex items-center gap-3 px-5 py-3.5">
               {editing?.uuid === c.uuid ? (
@@ -139,7 +139,7 @@ export const CategoriesPage = () => {
                       )
                     }
                     maxLength={50}
-                    className="flex-1 rounded-lg bg-gray-50 px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-primary/20"
+                    className="flex-1 rounded-lg bg-gray-50 px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
                   />
                   <button
                     type="button"
@@ -151,7 +151,7 @@ export const CategoriesPage = () => {
                   <button
                     type="button"
                     onClick={() => setEditing(null)}
-                    className="text-gray-400 hover:text-gray-600"
+                    className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
                   >
                     <ResetIcon className="size-4" />
                   </button>
@@ -162,7 +162,7 @@ export const CategoriesPage = () => {
                   <button
                     type="button"
                     onClick={() => startEdit(c)}
-                    className="text-gray-400 hover:text-gray-600"
+                    className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
                   >
                     <Pencil1Icon className="size-3.5" />
                   </button>
@@ -179,7 +179,9 @@ export const CategoriesPage = () => {
           ))}
         </div>
       ) : (
-        <p className="py-8 text-center text-sm text-gray-400">No categories</p>
+        <p className="py-8 text-center text-sm text-gray-400 dark:text-gray-500">
+          No categories
+        </p>
       )}
 
       <ConfirmDialog

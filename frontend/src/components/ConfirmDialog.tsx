@@ -21,14 +21,14 @@ export const ConfirmDialog = ({
   return (
     <dialog
       ref={dialogRef}
-      className="fixed top-1/2 left-1/2 w-[60vw] -translate-x-1/2 -translate-y-1/2 rounded-2xl p-6 shadow-lg backdrop:bg-black/50"
+      className="fixed top-1/2 left-1/2 w-[60vw] -translate-x-1/2 -translate-y-1/2 rounded-2xl p-6 shadow-lg backdrop:bg-black/50 dark:bg-gray-800 dark:text-gray-100"
     >
       <p className="mb-6 text-sm">{message}</p>
       <div className="flex justify-center gap-3">
         <button
           type="button"
           onClick={() => dialogRef.current?.close()}
-          className="rounded-full px-4 py-2 text-sm text-gray-500 hover:bg-gray-100"
+          className="rounded-full px-4 py-2 text-sm text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
         >
           Cancel
         </button>

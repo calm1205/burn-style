@@ -27,7 +27,7 @@ export const SignInPage = () => {
   }
 
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-gray-50 px-4">
+    <div className="flex min-h-dvh items-center justify-center bg-gray-50 px-4 dark:bg-gray-900 dark:text-gray-100">
       <form
         onSubmit={handleSubmit}
         className="flex w-full max-w-sm flex-col gap-8"
@@ -38,7 +38,10 @@ export const SignInPage = () => {
 
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-1">
-            <label htmlFor="username" className="text-xs text-gray-500">
+            <label
+              htmlFor="username"
+              className="text-xs text-gray-500 dark:text-gray-400"
+            >
               Username
             </label>
             <input
@@ -50,7 +53,7 @@ export const SignInPage = () => {
               required
               maxLength={50}
               disabled={loading}
-              className="border-x-0 border-t-0 border-b border-gray-300 bg-transparent px-1 py-3 outline-none transition-colors focus:border-primary disabled:opacity-50"
+              className="border-x-0 border-t-0 border-b border-gray-300 bg-transparent px-1 py-3 outline-none transition-colors focus:border-primary disabled:opacity-50 dark:border-gray-600 dark:text-gray-100"
             />
           </div>
 
@@ -65,7 +68,7 @@ export const SignInPage = () => {
 
         {error && <p className="text-center text-sm text-red-600">{error}</p>}
 
-        <p className="text-center text-sm text-gray-500">
+        <p className="text-center text-sm text-gray-500 dark:text-gray-400">
           {"Don't have an account? "}
           <Link
             to="/signup"

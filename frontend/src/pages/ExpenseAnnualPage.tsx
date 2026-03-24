@@ -79,25 +79,27 @@ export const ExpenseAnnualPage = () => {
       <div className="flex shrink-0 items-center justify-between py-8">
         <button
           type="button"
-          className="text-gray-400 hover:text-gray-600"
+          className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
           onClick={() => setYear(year - 1)}
         >
           <DoubleArrowLeftIcon className="size-4" />
         </button>
         <div className="text-center">
-          <p className="text-sm text-gray-500">{year}年の支出</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            {year}年の支出
+          </p>
           <p className="text-4xl font-extrabold">¥{total.toLocaleString()}</p>
         </div>
         <button
           type="button"
-          className="text-gray-400 hover:text-gray-600"
+          className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
           onClick={() => setYear(year + 1)}
         >
           <DoubleArrowRightIcon className="size-4" />
         </button>
       </div>
 
-      <div className="flex shrink-0 gap-4 border-b border-gray-100">
+      <div className="flex shrink-0 gap-4 border-b border-gray-100 dark:border-gray-700">
         {[
           { key: "list" as const, label: "list", icon: ListBulletIcon },
           { key: "area" as const, label: "area chart", icon: MixIcon },
@@ -114,7 +116,7 @@ export const ExpenseAnnualPage = () => {
             className={`flex items-center gap-1.5 border-b-2 px-1 py-2 text-sm ${
               tab === key
                 ? "border-primary text-primary"
-                : "border-transparent text-gray-400 hover:text-gray-600"
+                : "border-transparent text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
             }`}
           >
             <Icon />
@@ -128,7 +130,7 @@ export const ExpenseAnnualPage = () => {
           {monthlyTotals.map((amount, i) => (
             <div
               key={`month-${String(i)}`}
-              className="flex items-center justify-between rounded-xl bg-white px-4 py-3 shadow-sm"
+              className="flex items-center justify-between rounded-xl bg-white px-4 py-3 shadow-sm dark:bg-gray-800"
             >
               <span className="text-sm">{i + 1}月</span>
               <span className="text-sm font-mono">

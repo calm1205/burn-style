@@ -29,7 +29,7 @@ export const ExpenseList = ({ expenses }: ExpenseListProps) => {
         <button
           key={e.uuid}
           type="button"
-          className="flex items-center justify-between rounded-xl bg-white px-4 py-3 text-left shadow-sm transition-shadow hover:shadow-md"
+          className="flex items-center justify-between rounded-xl bg-white px-4 py-3 text-left shadow-sm transition-shadow hover:shadow-md dark:bg-gray-800"
           onClick={() => navigate(`/expense/${e.uuid}`)}
         >
           <div className="flex min-w-0 flex-1 flex-col gap-1">
@@ -37,7 +37,10 @@ export const ExpenseList = ({ expenses }: ExpenseListProps) => {
             {e.categories.length > 0 && (
               <div className="flex gap-2">
                 {e.categories.map((c) => (
-                  <span key={c.uuid} className="text-xs text-gray-400">
+                  <span
+                    key={c.uuid}
+                    className="text-xs text-gray-400 dark:text-gray-500"
+                  >
                     {c.name}
                   </span>
                 ))}
@@ -48,7 +51,7 @@ export const ExpenseList = ({ expenses }: ExpenseListProps) => {
             <span className="text-sm font-mono">
               ¥{e.amount.toLocaleString()}
             </span>
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-gray-400 dark:text-gray-500">
               {formatDateTime(e.expensed_at)}
             </span>
           </div>
@@ -56,7 +59,7 @@ export const ExpenseList = ({ expenses }: ExpenseListProps) => {
       ))}
 
       {expenses.length === 0 && (
-        <p className="text-center text-sm text-gray-400">
+        <p className="text-center text-sm text-gray-400 dark:text-gray-500">
           この月の支出はありません
         </p>
       )}

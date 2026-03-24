@@ -90,27 +90,27 @@ export const ExpenseMonthlyPage = () => {
       <div className="flex shrink-0 items-center justify-between py-8">
         <button
           type="button"
-          className="text-gray-400 hover:text-gray-600"
+          className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
           onClick={goPrev}
         >
           <DoubleArrowLeftIcon className="size-4" />
         </button>
         <div className="text-center">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             {year}/{month}の支出
           </p>
           <p className="text-4xl font-extrabold">¥{total.toLocaleString()}</p>
         </div>
         <button
           type="button"
-          className="text-gray-400 hover:text-gray-600"
+          className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
           onClick={goNext}
         >
           <DoubleArrowRightIcon className="size-4" />
         </button>
       </div>
 
-      <div className="flex shrink-0 gap-4 border-b border-gray-100">
+      <div className="flex shrink-0 gap-4 border-b border-gray-100 dark:border-gray-700">
         {[
           { key: "list" as const, label: "list", icon: ListBulletIcon },
           { key: "pie" as const, label: "pie", icon: PieChartIcon },
@@ -124,7 +124,7 @@ export const ExpenseMonthlyPage = () => {
             className={`flex items-center gap-1.5 border-b-2 px-1 py-2 text-sm ${
               tab === key
                 ? "border-primary text-primary"
-                : "border-transparent text-gray-400 hover:text-gray-600"
+                : "border-transparent text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
             }`}
           >
             <Icon />

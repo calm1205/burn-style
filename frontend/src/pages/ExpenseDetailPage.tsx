@@ -97,9 +97,9 @@ export const ExpenseDetailPage = () => {
       <button
         type="button"
         onClick={() => navigate(-1)}
-        className="flex size-9 items-center justify-center rounded-xl bg-white shadow-sm hover:shadow-md"
+        className="flex size-9 items-center justify-center rounded-xl bg-white shadow-sm hover:shadow-md dark:bg-gray-800"
       >
-        <ArrowLeftIcon className="size-4 text-gray-600" />
+        <ArrowLeftIcon className="size-4 text-gray-600 dark:text-gray-400" />
       </button>
 
       {error && <p className="text-sm text-red-600">{error}</p>}
@@ -107,10 +107,13 @@ export const ExpenseDetailPage = () => {
       <form
         id="expense-detail-form"
         onSubmit={handleUpdate}
-        className="flex flex-col gap-4 rounded-2xl bg-white p-5 shadow-sm"
+        className="flex flex-col gap-4 rounded-2xl bg-white p-5 shadow-sm dark:bg-gray-800"
       >
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="detail-name" className="text-xs text-gray-500">
+          <label
+            htmlFor="detail-name"
+            className="text-xs text-gray-500 dark:text-gray-400"
+          >
             Name
           </label>
           <input
@@ -122,11 +125,14 @@ export const ExpenseDetailPage = () => {
             }
             required
             maxLength={100}
-            className="rounded-xl bg-gray-50 px-4 py-3 text-base outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20"
+            className="rounded-xl bg-gray-50 px-4 py-3 text-base outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
           />
         </div>
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="detail-amount" className="text-xs text-gray-500">
+          <label
+            htmlFor="detail-amount"
+            className="text-xs text-gray-500 dark:text-gray-400"
+          >
             Amount
           </label>
           <input
@@ -140,11 +146,14 @@ export const ExpenseDetailPage = () => {
               setForm((prev) => ({ ...prev, amount: formatted }))
             }}
             required
-            className="rounded-xl bg-gray-50 px-4 py-3 text-base outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20"
+            className="rounded-xl bg-gray-50 px-4 py-3 text-base outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
           />
         </div>
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="detail-date" className="text-xs text-gray-500">
+          <label
+            htmlFor="detail-date"
+            className="text-xs text-gray-500 dark:text-gray-400"
+          >
             Date
           </label>
           <input
@@ -155,12 +164,14 @@ export const ExpenseDetailPage = () => {
               setForm((prev) => ({ ...prev, expensedAt: e.target.value }))
             }
             required
-            className="rounded-xl bg-gray-50 px-4 py-3 text-base outline-none focus:ring-2 focus:ring-primary/20"
+            className="rounded-xl bg-gray-50 px-4 py-3 text-base outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
           />
         </div>
         {categories.length > 0 && (
           <div className="flex flex-col gap-1.5">
-            <span className="text-xs text-gray-500">Category</span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">
+              Category
+            </span>
             <div className="flex flex-wrap gap-2">
               {categories.map((c) => (
                 <button
@@ -170,7 +181,7 @@ export const ExpenseDetailPage = () => {
                   className={`rounded-full px-4 py-2 text-sm transition-colors ${
                     form.categoryUuid === c.uuid
                       ? "bg-primary text-white"
-                      : "bg-gray-50 text-gray-500 hover:bg-gray-100"
+                      : "bg-gray-50 text-gray-500 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600"
                   }`}
                 >
                   {c.name}
