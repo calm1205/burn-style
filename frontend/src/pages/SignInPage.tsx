@@ -1,3 +1,4 @@
+import { Cross2Icon } from "@radix-ui/react-icons"
 import { type SubmitEvent, useState } from "react"
 import { Link, useNavigate } from "react-router"
 import { api } from "../lib/api"
@@ -6,9 +7,16 @@ import { STORAGE_KEYS } from "../lib/constants"
 
 export const SignInPage = () => {
   const navigate = useNavigate()
-  const [username, setUsername] = useState("")
+  const [username, setUsername] = useState(
+    () => localStorage.getItem(STORAGE_KEYS.LAST_USERNAME) ?? "",
+  )
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+
+  const clearUsername = () => {
+    setUsername("")
+    localStorage.removeItem(STORAGE_KEYS.LAST_USERNAME)
+  }
 
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -18,6 +26,7 @@ export const SignInPage = () => {
     try {
       const result = await api.signIn(username)
       localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, result.access_token)
+      localStorage.setItem(STORAGE_KEYS.LAST_USERNAME, username)
       navigate("/")
     } catch (err) {
       setError(getErrorMessage(err, "Failed to sign in"))
@@ -44,17 +53,28 @@ export const SignInPage = () => {
             >
               Username
             </label>
-            <input
-              id="username"
-              type="text"
-              placeholder="Warren Buffett"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              maxLength={50}
-              disabled={loading}
-              className="border-x-0 border-t-0 border-b border-gray-300 bg-transparent px-1 py-3 outline-none transition-colors focus:border-primary disabled:opacity-50 dark:border-gray-600 dark:text-gray-100"
-            />
+            <div className="relative">
+              <input
+                id="username"
+                type="text"
+                placeholder="Warren Buffett"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+                maxLength={50}
+                disabled={loading}
+                className="w-full border-x-0 border-t-0 border-b border-gray-300 bg-transparent px-1 py-3 pr-8 outline-none transition-colors focus:border-primary disabled:opacity-50 dark:border-gray-600 dark:text-gray-100"
+              />
+              {username && !loading && (
+                <button
+                  type="button"
+                  onClick={clearUsername}
+                  className="absolute top-1/2 right-1 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+                >
+                  <Cross2Icon className="size-3.5" />
+                </button>
+              )}
+            </div>
           </div>
 
           <button

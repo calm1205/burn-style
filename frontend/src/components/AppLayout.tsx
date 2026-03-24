@@ -50,6 +50,7 @@ export const AppLayout = () => {
 
   const onLogout = () => {
     localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN)
+    localStorage.removeItem(STORAGE_KEYS.LAST_USERNAME)
     navigate("/signin")
   }
 
