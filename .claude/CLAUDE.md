@@ -11,6 +11,7 @@
 - バックエンド: FastAPI + SQLAlchemy + PostgreSQL
 - フロントエンド: React + Vite + Tailwind CSS v4
 - 認証: WebAuthn/パスキー + JWT
+- クライアント: iPhoneのSafariで「ホーム画面に追加」したPWA利用が前提
 
 ## ルールファイル
 
