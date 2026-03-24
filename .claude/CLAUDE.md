@@ -13,6 +13,8 @@
 - 認証: WebAuthn/パスキー + JWT
 
 ## ルールファイル
+
+### 開発規約
 - [アーキテクチャ](rules/architecture.md) - レイヤド設計・ディレクトリ構造
 - [バックエンド](rules/backend.md) - Python / FastAPI / SQLAlchemy 規約
 - [フロントエンド](rules/frontend.md) - React / TypeScript / Tailwind CSS 規約
@@ -20,3 +22,11 @@
 - [開発フロー](rules/development.md) - lint・テスト必須プロセス
 - [開発コマンド](rules/commands.md) - Makefile コマンド一覧
 - [Git・デプロイ](rules/git.md) - Conventional Commits / GitHub Actions / Vercel
+
+### アプリケーション仕様
+- [プロダクトコンセプト](rules/concept.md) - ビジョン・ターゲット・設計思想
+- [画面構成](rules/screens.md) - 画面一覧・遷移フロー・データ可視化
+- [API仕様](rules/api.md) - エンドポイント・リクエスト・レスポンス
+- [認証](rules/auth.md) - WebAuthn/パスキー + JWT フロー
+- [データモデル](rules/data-model.md) - テーブル定義・ER図
+- [インフラ・デプロイ](rules/infra.md) - Docker / CI/CD / Vercel / 環境変数
