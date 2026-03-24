@@ -10,6 +10,10 @@ on:
         options:
           - production
           - preview
+      version:
+        description: "Release version (production only, e.g. 1.2.0)"
+        required: false
+        type: string
 
 jobs:
   backend:
@@ -23,3 +27,17 @@ jobs:
     with:
       environment: ${{ inputs.environment }}
     secrets: inherit
+
+  create-release:
+    if: inputs.environment == 'production' && inputs.version != ''
+    needs: [backend, frontend]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Create GitHub Release
+        run: gh release create "v${{ inputs.version }}" --generate-notes --target main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
