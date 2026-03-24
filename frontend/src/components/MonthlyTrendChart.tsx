@@ -74,7 +74,7 @@ export const MonthlyTrendChart = ({ year, month }: MonthlyTrendChartProps) => {
           dataKey="label"
           axisLine={false}
           tickLine={false}
-          tick={{ fontSize: 10, fill: "#A0AEC0" }}
+          tick={{ fontSize: 10, fill: "var(--chart-label)" }}
           interval={0}
           ticks={(() => {
             const labels = data.map((d) => d.label)
@@ -85,7 +85,7 @@ export const MonthlyTrendChart = ({ year, month }: MonthlyTrendChartProps) => {
         <YAxis
           axisLine={false}
           tickLine={false}
-          tick={{ fontSize: 10, fill: "#A0AEC0" }}
+          tick={{ fontSize: 10, fill: "var(--chart-label)" }}
           tickFormatter={(v: number) => `${(v / 10000).toFixed(0)}`}
           unit="万"
           width={40}
@@ -97,12 +97,14 @@ export const MonthlyTrendChart = ({ year, month }: MonthlyTrendChartProps) => {
             border: "none",
             boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
             fontSize: "12px",
+            backgroundColor: "var(--chart-tooltip-bg)",
+            color: "var(--chart-tooltip-text)",
           }}
-          cursor={{ fill: "rgba(99,102,241,0.06)" }}
+          cursor={{ fill: "var(--chart-cursor)" }}
         />
         <Bar
           dataKey="amount"
-          fill="#6366F1"
+          fill="var(--chart-bar)"
           radius={[6, 6, 6, 6]}
           barSize={14}
           isAnimationActive={false}

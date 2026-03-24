@@ -10,8 +10,10 @@ const getColor = (amount: number, mean: number, sd: number) => {
   if (sd === 0)
     return { bg: "var(--color-chart-scale-3)", text: "var(--color-gray-700)" }
   const z = (amount - mean) / sd
-  if (z > 0.75) return { bg: "var(--color-chart-scale-5)", text: "#FFFFFF" }
-  if (z > 0.25) return { bg: "var(--color-chart-scale-4)", text: "#FFFFFF" }
+  if (z > 0.75)
+    return { bg: "var(--color-chart-scale-5)", text: "var(--color-gray-50)" }
+  if (z > 0.25)
+    return { bg: "var(--color-chart-scale-4)", text: "var(--color-gray-50)" }
   if (z > -0.25)
     return { bg: "var(--color-chart-scale-3)", text: "var(--color-gray-700)" }
   if (z > -0.75)
@@ -110,7 +112,7 @@ export const ExpenseHeatmap = ({
         {WEEKDAYS.map((d) => (
           <div
             key={d}
-            className="flex items-center justify-center text-xs text-gray-400"
+            className="flex items-center justify-center text-xs text-gray-400 dark:text-gray-500"
           >
             {d}
           </div>
@@ -146,8 +148,8 @@ export const ExpenseHeatmap = ({
                 onClick={() => toggle(cat)}
                 className={`flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] transition-opacity ${
                   isHidden
-                    ? "border-gray-200 text-gray-300"
-                    : "border-gray-300 text-gray-700"
+                    ? "border-gray-200 text-gray-300 dark:border-gray-700 dark:text-gray-600"
+                    : "border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-300"
                 }`}
               >
                 <span

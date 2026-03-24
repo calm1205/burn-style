@@ -101,7 +101,7 @@ export const CategoryPieChart = ({ expenses }: CategoryPieChartProps) => {
                 textAnchor={textAnchor}
                 dominantBaseline="central"
                 fontSize={11}
-                fill="#4A5568"
+                fill="var(--chart-label)"
               >
                 {name}
               </text>
@@ -116,6 +116,8 @@ export const CategoryPieChart = ({ expenses }: CategoryPieChartProps) => {
               border: "none",
               boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
               fontSize: "12px",
+              backgroundColor: "var(--chart-tooltip-bg)",
+              color: "var(--chart-tooltip-text)",
             }}
           />
         </PieChart>
@@ -142,7 +144,7 @@ export const CategoryPieChart = ({ expenses }: CategoryPieChartProps) => {
                 </div>
                 {matched && !isHidden && (
                   <div className="flex items-center gap-3">
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-gray-400 dark:text-gray-500">
                       {Math.round((matched.amount / total) * 100)}%
                     </span>
                     <span className="font-mono text-sm">

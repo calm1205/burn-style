@@ -41,7 +41,7 @@ export const SimplePieChart = ({ expenses }: SimplePieChartProps) => {
           endAngle={-270}
           innerRadius={32}
           outerRadius={52}
-          stroke="#fff"
+          stroke="var(--chart-pie-stroke)"
           strokeWidth={3}
           isAnimationActive={false}
         />
@@ -53,7 +53,9 @@ export const SimplePieChart = ({ expenses }: SimplePieChartProps) => {
               className="inline-block size-2 shrink-0 rounded-full"
               style={{ backgroundColor: c.fill }}
             />
-            <span className="truncate text-xs text-gray-500">{c.name}</span>
+            <span className="truncate text-xs text-gray-500 dark:text-gray-400">
+              {c.name}
+            </span>
           </li>
         ))}
       </ul>

@@ -74,16 +74,16 @@ export const AnnualAreaChart = ({ expenses }: AnnualAreaChartProps) => {
           <CartesianGrid
             strokeDasharray="3 3"
             vertical={false}
-            stroke="#E2E8F0"
+            stroke="var(--chart-grid)"
           />
           <XAxis
             dataKey="label"
-            tick={{ fontSize: 11, fill: "#4A5568" }}
-            stroke="#E2E8F0"
+            tick={{ fontSize: 11, fill: "var(--chart-label)" }}
+            stroke="var(--chart-grid)"
           />
           <YAxis
-            tick={{ fontSize: 11, fill: "#4A5568" }}
-            stroke="#E2E8F0"
+            tick={{ fontSize: 11, fill: "var(--chart-label)" }}
+            stroke="var(--chart-grid)"
             tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`}
             width={40}
           />
@@ -94,6 +94,8 @@ export const AnnualAreaChart = ({ expenses }: AnnualAreaChartProps) => {
               border: "none",
               boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
               fontSize: "12px",
+              backgroundColor: "var(--chart-tooltip-bg)",
+              color: "var(--chart-tooltip-text)",
             }}
           />
           {visibleCategories.map((cat) => (
@@ -121,8 +123,8 @@ export const AnnualAreaChart = ({ expenses }: AnnualAreaChartProps) => {
                 onClick={() => toggle(cat)}
                 className={`flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] transition-opacity ${
                   isHidden
-                    ? "border-gray-200 text-gray-300"
-                    : "border-gray-300 text-gray-700"
+                    ? "border-gray-200 text-gray-300 dark:border-gray-700 dark:text-gray-600"
+                    : "border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-300"
                 }`}
               >
                 <span

@@ -103,18 +103,18 @@ export const CategoryBubbleChart = ({ expenses }: CategoryBubbleChartProps) => {
     <div className="flex flex-col gap-4">
       <ResponsiveContainer width="100%" height={300}>
         <ScatterChart margin={{ left: 10, right: 20, top: 10, bottom: 25 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
           <XAxis
             dataKey="frequency"
             name="頻度"
             type="number"
-            tick={{ fontSize: 11, fill: "#4A5568" }}
-            stroke="#E2E8F0"
+            tick={{ fontSize: 11, fill: "var(--chart-label)" }}
+            stroke="var(--chart-grid)"
             label={{
               value: "頻度（回）",
               position: "bottom",
               fontSize: 11,
-              fill: "#4A5568",
+              fill: "var(--chart-label)",
             }}
             allowDecimals={false}
           />
@@ -125,8 +125,8 @@ export const CategoryBubbleChart = ({ expenses }: CategoryBubbleChartProps) => {
             domain={[-0.5, AMOUNT_RANGES.length - 0.5]}
             ticks={AMOUNT_RANGES.map((_, i) => i)}
             tickFormatter={(v: number) => AMOUNT_RANGES[v]?.label ?? ""}
-            tick={{ fontSize: 10, fill: "#4A5568" }}
-            stroke="#E2E8F0"
+            tick={{ fontSize: 10, fill: "var(--chart-label)" }}
+            stroke="var(--chart-grid)"
             width={80}
           />
           <ZAxis dataKey="total" range={[60, 500]} name="合計" type="number" />
@@ -135,7 +135,13 @@ export const CategoryBubbleChart = ({ expenses }: CategoryBubbleChartProps) => {
               if (!payload?.[0]) return null
               const d = payload[0].payload as BubbleData
               return (
-                <div className="rounded-xl bg-white px-3 py-2 text-xs shadow-md">
+                <div
+                  className="rounded-xl px-3 py-2 text-xs shadow-md"
+                  style={{
+                    backgroundColor: "var(--chart-tooltip-bg)",
+                    color: "var(--chart-tooltip-text)",
+                  }}
+                >
                   <p className="font-medium">{d.label}</p>
                   <p>回数: {d.frequency}</p>
                   <p>合計: ¥{d.total.toLocaleString()}</p>
@@ -158,8 +164,8 @@ export const CategoryBubbleChart = ({ expenses }: CategoryBubbleChartProps) => {
                 onClick={() => toggle(cat)}
                 className={`flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] transition-opacity ${
                   isHidden
-                    ? "border-gray-200 text-gray-300"
-                    : "border-gray-300 text-gray-700"
+                    ? "border-gray-200 text-gray-300 dark:border-gray-700 dark:text-gray-600"
+                    : "border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-300"
                 }`}
               >
                 <span
