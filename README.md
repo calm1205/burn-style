@@ -4,5 +4,5 @@
 
 お金の使い方には、その人の個性が宿る。
 
-
-仕様は[docs/](docs/) を参照
+- **本番URL**: https://burn-style.vercel.app/
+- 仕様は [docs/](docs/) を参照
