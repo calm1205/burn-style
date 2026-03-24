@@ -37,7 +37,23 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Generate release notes from commits
+        id: notes
+        run: |
+          PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$PREV_TAG" ]; then
+            LOG=$(git log --pretty=format:"- %s" --no-merges)
+          else
+            LOG=$(git log "${PREV_TAG}..HEAD" --pretty=format:"- %s" --no-merges)
+          fi
+          {
+            echo "body<<EOF"
+            echo "$LOG"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
       - name: Create GitHub Release
-        run: gh release create "v${{ inputs.version }}" --generate-notes --target main
+        run: gh release create "v${{ inputs.version }}" --notes "${{ steps.notes.outputs.body }}" --target main
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
