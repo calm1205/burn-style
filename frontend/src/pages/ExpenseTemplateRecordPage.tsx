@@ -6,7 +6,7 @@ import type { ExpenseResponse, ExpenseTemplateResponse } from "../lib/types"
 
 interface TemplateRow {
   template: ExpenseTemplateResponse
-  checked: boolean
+  selected: boolean
   amount: string
   recorded: boolean
 }
@@ -39,7 +39,7 @@ export const ExpenseTemplateRecordPage = () => {
           const alreadyRecorded = isRecorded(t, expenses)
           return {
             template: t,
-            checked: !alreadyRecorded,
+            selected: !alreadyRecorded,
             amount: t.amount.toLocaleString(),
             recorded: alreadyRecorded,
           }
@@ -56,9 +56,9 @@ export const ExpenseTemplateRecordPage = () => {
     fetchData()
   }, [fetchData])
 
-  const toggleCheck = (idx: number) => {
+  const toggleSelect = (idx: number) => {
     setRows((prev) =>
-      prev.map((r, i) => (i === idx ? { ...r, checked: !r.checked } : r)),
+      prev.map((r, i) => (i === idx ? { ...r, selected: !r.selected } : r)),
     )
   }
 
@@ -70,13 +70,13 @@ export const ExpenseTemplateRecordPage = () => {
     )
   }
 
-  const checkedCount = rows.filter((r) => r.checked).length
+  const selectedCount = rows.filter((r) => r.selected).length
 
   const handleRecord = async () => {
     setError("")
     setSubmitting(true)
     try {
-      const targets = rows.filter((r) => r.checked)
+      const targets = rows.filter((r) => r.selected)
       const now = new Date()
       const pad = (n: number) => String(n).padStart(2, "0")
       const expensedAt = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`
@@ -101,7 +101,7 @@ export const ExpenseTemplateRecordPage = () => {
 
   if (loading) {
     return (
-      <div className="mx-auto flex max-w-2xl flex-col gap-4 px-6">
+      <div className="mx-auto flex max-w-2xl flex-col gap-3 px-6">
         {Array.from({ length: 3 }, (_, i) => (
           <div
             key={`skeleton-${String(i)}`}
@@ -119,20 +119,21 @@ export const ExpenseTemplateRecordPage = () => {
       )}
 
       {rows.length > 0 ? (
-        <div className="divide-y divide-gray-100 overflow-hidden rounded-2xl bg-white shadow-sm dark:divide-gray-700 dark:bg-gray-800">
+        <div className="flex flex-col gap-3">
           {rows.map((r, idx) => (
-            <div key={r.template.uuid} className="flex flex-col px-5 py-3.5">
+            <button
+              key={r.template.uuid}
+              type="button"
+              onClick={() => toggleSelect(idx)}
+              className={`rounded-2xl px-5 py-3.5 text-left shadow-sm transition-all ${
+                r.selected
+                  ? "ring-2 ring-primary bg-white dark:bg-gray-800"
+                  : "bg-gray-100 opacity-50 dark:bg-gray-800/50"
+              }`}
+            >
               <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  checked={r.checked}
-                  onChange={() => toggleCheck(idx)}
-                  className="size-4 shrink-0 accent-primary"
-                />
                 <div className="flex flex-1 flex-col">
-                  <span
-                    className={`text-sm ${r.recorded ? "text-gray-400 dark:text-gray-500" : ""}`}
-                  >
+                  <span className="text-sm">
                     {r.template.name}
                     {r.recorded && (
                       <span className="ml-2 text-xs text-green-500">
@@ -144,22 +145,25 @@ export const ExpenseTemplateRecordPage = () => {
                     {r.template.category.name}
                   </span>
                 </div>
-              </div>
-              {r.checked && (
-                <div className="mt-2 ml-7">
+                {r.selected ? (
                   <div className="flex items-center gap-1">
                     <span className="text-sm text-gray-500">¥</span>
                     <input
                       type="text"
                       inputMode="numeric"
                       value={r.amount}
+                      onClick={(e) => e.stopPropagation()}
                       onChange={(e) => updateAmount(idx, e.target.value)}
-                      className="w-28 rounded-lg bg-gray-50 px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+                      className="w-24 rounded-lg bg-gray-50 px-3 py-1.5 text-right text-sm tabular-nums outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
                     />
                   </div>
-                </div>
-              )}
-            </div>
+                ) : (
+                  <span className="text-sm tabular-nums text-gray-400">
+                    ¥{r.amount}
+                  </span>
+                )}
+              </div>
+            </button>
           ))}
         </div>
       ) : (
@@ -171,10 +175,10 @@ export const ExpenseTemplateRecordPage = () => {
       <button
         type="button"
         onClick={handleRecord}
-        disabled={checkedCount === 0 || submitting}
+        disabled={selectedCount === 0 || submitting}
         className="rounded-xl bg-primary px-5 py-4 text-white hover:bg-primary-hover disabled:opacity-50"
       >
-        {submitting ? "記帳中..." : `記帳 (${String(checkedCount)})`}
+        {submitting ? "記帳中..." : `記帳 (${String(selectedCount)})`}
       </button>
     </div>
   )
