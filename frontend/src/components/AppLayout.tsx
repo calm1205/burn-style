@@ -24,6 +24,8 @@ const PAGE_TITLES: Record<string, string> = {
   "/expense/new": "Expense",
   "/expense/monthly": "Monthly",
   "/expense/annual": "Annual",
+  "/expense/template": "Template",
+  "/expense/template/new": "Record",
   "/category": "Category",
   "/setting": "Setting",
 }
