@@ -44,7 +44,7 @@ export const useSwipe = <T extends HTMLElement>({
         isSwiping = deltaX > deltaY * 1.5
       }
 
-      if (isSwiping) {
+      if (isSwiping && e.cancelable) {
         e.preventDefault()
       }
     }
