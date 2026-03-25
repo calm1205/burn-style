@@ -50,6 +50,7 @@ export const ExpenseMonthlyPage = () => {
 
   const [expenses, setExpenses] = useState<ExpenseResponse[]>([])
   const [error, setError] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 
   const fetchData = useCallback(async () => {
     try {
@@ -62,6 +63,34 @@ export const ExpenseMonthlyPage = () => {
   useEffect(() => {
     fetchData()
   }, [fetchData])
+
+  const categories = useMemo(() => {
+    const map = new Map<string, number>()
+    for (const e of expenses) {
+      if (e.categories.length === 0) {
+        map.set("未分類", (map.get("未分類") ?? 0) + e.amount)
+      } else {
+        for (const c of e.categories) {
+          map.set(c.name, (map.get(c.name) ?? 0) + e.amount)
+        }
+      }
+    }
+    return [...map.entries()].sort((a, b) => b[1] - a[1]).map(([name]) => name)
+  }, [expenses])
+
+  useEffect(() => {
+    if (selectedCategory && !categories.includes(selectedCategory)) {
+      setSelectedCategory(null)
+    }
+  }, [categories, selectedCategory])
+
+  const filteredExpenses = useMemo(() => {
+    if (!selectedCategory) return expenses
+    return expenses.filter((e) => {
+      if (selectedCategory === "未分類") return e.categories.length === 0
+      return e.categories.some((c) => c.name === selectedCategory)
+    })
+  }, [expenses, selectedCategory])
 
   const goPrev = () => {
     if (month === 1) {
@@ -80,8 +109,8 @@ export const ExpenseMonthlyPage = () => {
   }
 
   const total = useMemo(
-    () => expenses.reduce((sum, e) => sum + e.amount, 0),
-    [expenses],
+    () => filteredExpenses.reduce((sum, e) => sum + e.amount, 0),
+    [filteredExpenses],
   )
 
   return (
@@ -112,6 +141,27 @@ export const ExpenseMonthlyPage = () => {
         </button>
       </div>
 
+      {categories.length > 1 && (
+        <div className="flex shrink-0 gap-2 overflow-x-auto pb-2">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              onClick={() =>
+                setSelectedCategory(selectedCategory === cat ? null : cat)
+              }
+              className={`shrink-0 rounded-full border px-3 py-1 text-xs transition-colors ${
+                selectedCategory === cat
+                  ? "border-primary bg-primary text-white"
+                  : "border-gray-200 text-gray-500 hover:border-gray-300 dark:border-gray-700 dark:text-gray-400 dark:hover:border-gray-600"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className="flex shrink-0 gap-4 border-b border-gray-100 dark:border-gray-700">
         {[
           { key: "list" as const, label: "list", icon: ListBulletIcon },
@@ -135,23 +185,27 @@ export const ExpenseMonthlyPage = () => {
         ))}
       </div>
 
-      {tab === "list" && <ExpenseList expenses={expenses} />}
+      {tab === "list" && <ExpenseList expenses={filteredExpenses} />}
 
       {tab === "pie" && (
         <div className="min-h-0 flex-1 overflow-y-auto pt-4">
-          <CategoryPieChart expenses={expenses} />
+          <CategoryPieChart expenses={filteredExpenses} />
         </div>
       )}
 
       {tab === "heatmap" && (
         <div className="min-h-0 flex-1 overflow-y-auto pt-4">
-          <ExpenseHeatmap year={year} month={month} expenses={expenses} />
+          <ExpenseHeatmap
+            year={year}
+            month={month}
+            expenses={filteredExpenses}
+          />
         </div>
       )}
 
       {tab === "bubble" && (
         <div className="min-h-0 flex-1 overflow-y-auto pt-4">
-          <CategoryBubbleChart expenses={expenses} />
+          <CategoryBubbleChart expenses={filteredExpenses} />
         </div>
       )}
     </div>
