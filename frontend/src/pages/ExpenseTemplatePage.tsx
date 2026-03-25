@@ -119,7 +119,7 @@ export const ExpenseTemplatePage = () => {
   }
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-6 px-6">
+    <div className="mx-auto flex h-full max-w-2xl flex-col gap-6 px-6">
       {error && (
         <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
       )}
@@ -127,7 +127,7 @@ export const ExpenseTemplatePage = () => {
       {/* 作成フォーム */}
       <form
         onSubmit={handleCreate}
-        className="flex flex-col gap-3 rounded-2xl bg-white p-4 shadow-sm dark:bg-gray-800"
+        className="flex shrink-0 flex-col gap-3 rounded-2xl bg-white p-4 shadow-sm dark:bg-gray-800"
       >
         <div className="flex items-center gap-2">
           <input
@@ -187,7 +187,7 @@ export const ExpenseTemplatePage = () => {
 
       {/* テンプレート一覧 */}
       {templates.length > 0 ? (
-        <div className="divide-y divide-gray-100 overflow-hidden rounded-2xl bg-white shadow-sm dark:divide-gray-700 dark:bg-gray-800">
+        <div className="min-h-0 flex-1 divide-y divide-gray-100 overflow-y-auto rounded-2xl bg-white shadow-sm dark:divide-gray-700 dark:bg-gray-800">
           {templates.map((t) => (
             <div key={t.uuid} className="flex items-center gap-3 px-5 py-3.5">
               {editing?.uuid === t.uuid ? (

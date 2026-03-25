@@ -97,7 +97,7 @@ export const ExpenseTemplateRecordPage = () => {
   }
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-4 px-6">
+    <div className="mx-auto flex h-full max-w-2xl flex-col gap-4 px-6">
       {error && (
         <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
       )}
@@ -107,17 +107,17 @@ export const ExpenseTemplateRecordPage = () => {
         value={expensedAt}
         onChange={(e) => setExpensedAt(e.target.value)}
         required
-        className="rounded-xl bg-white px-4 py-2.5 text-sm shadow-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-800 dark:text-gray-100"
+        className="shrink-0 rounded-xl bg-white px-4 py-2.5 text-sm shadow-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-800 dark:text-gray-100"
       />
 
-      {rows.length > 0 ? (
-        <div className="flex flex-col gap-2">
-          {rows.map((r, idx) => (
+      <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
+        {rows.length > 0 ? (
+          rows.map((r, idx) => (
             <button
               key={r.template.uuid}
               type="button"
               onClick={() => toggleSelect(idx)}
-              className={`rounded-xl px-4 py-2.5 text-left transition-all ${
+              className={`shrink-0 rounded-xl px-4 py-2.5 text-left transition-all ${
                 r.selected
                   ? "border-l-4 border-primary bg-white shadow-sm dark:bg-gray-800"
                   : "border-l-4 border-transparent bg-gray-100 opacity-40 dark:bg-gray-800/50"
@@ -149,24 +149,22 @@ export const ExpenseTemplateRecordPage = () => {
                 )}
               </div>
             </button>
-          ))}
-        </div>
-      ) : (
-        <p className="py-8 text-center text-sm text-gray-400 dark:text-gray-500">
-          No templates
-        </p>
-      )}
-
-      <div className="sticky bottom-0 pb-2">
-        <button
-          type="button"
-          onClick={handleRecord}
-          disabled={selectedCount === 0 || submitting}
-          className="w-full rounded-xl bg-primary px-5 py-3.5 text-white hover:bg-primary-hover disabled:opacity-50"
-        >
-          {submitting ? "Recording..." : `Record (${String(selectedCount)})`}
-        </button>
+          ))
+        ) : (
+          <p className="py-8 text-center text-sm text-gray-400 dark:text-gray-500">
+            No templates
+          </p>
+        )}
       </div>
+
+      <button
+        type="button"
+        onClick={handleRecord}
+        disabled={selectedCount === 0 || submitting}
+        className="shrink-0 rounded-xl bg-primary px-5 py-3.5 text-white hover:bg-primary-hover disabled:opacity-50"
+      >
+        {submitting ? "Recording..." : `Record (${String(selectedCount)})`}
+      </button>
     </div>
   )
 }
