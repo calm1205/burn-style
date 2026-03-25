@@ -20,9 +20,15 @@ const isRecorded = (
       e.name === t.name && e.categories.some((c) => c.uuid === t.category.uuid),
   )
 
+const toLocalDatetime = (d: Date) => {
+  const pad = (n: number) => String(n).padStart(2, "0")
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
+
 export const ExpenseTemplateRecordPage = () => {
   const navigate = useNavigate()
   const [rows, setRows] = useState<TemplateRow[]>([])
+  const [expensedAt, setExpensedAt] = useState(toLocalDatetime(new Date()))
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState("")
@@ -77,10 +83,6 @@ export const ExpenseTemplateRecordPage = () => {
     setSubmitting(true)
     try {
       const targets = rows.filter((r) => r.selected)
-      const now = new Date()
-      const pad = (n: number) => String(n).padStart(2, "0")
-      const expensedAt = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`
-
       await Promise.all(
         targets.map((r) =>
           api.createExpense({
@@ -117,6 +119,23 @@ export const ExpenseTemplateRecordPage = () => {
       {error && (
         <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
       )}
+
+      <div className="flex flex-col gap-1.5 rounded-2xl bg-white p-5 shadow-sm dark:bg-gray-800">
+        <label
+          htmlFor="record-date"
+          className="text-xs text-gray-500 dark:text-gray-400"
+        >
+          Date
+        </label>
+        <input
+          id="record-date"
+          type="datetime-local"
+          value={expensedAt}
+          onChange={(e) => setExpensedAt(e.target.value)}
+          required
+          className="rounded-xl bg-gray-50 px-4 py-3 text-base outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+        />
+      </div>
 
       {rows.length > 0 ? (
         <div className="flex flex-col gap-3">
