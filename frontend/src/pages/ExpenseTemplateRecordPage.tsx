@@ -85,11 +85,11 @@ export const ExpenseTemplateRecordPage = () => {
 
   if (loading) {
     return (
-      <div className="mx-auto flex max-w-2xl flex-col gap-3 px-6">
+      <div className="mx-auto flex max-w-2xl flex-col gap-2 px-6">
         {Array.from({ length: 3 }, (_, i) => (
           <div
             key={`skeleton-${String(i)}`}
-            className="h-16 animate-pulse rounded-2xl bg-gray-100 dark:bg-gray-700"
+            className="h-12 animate-pulse rounded-xl bg-gray-100 dark:bg-gray-700"
           />
         ))}
       </div>
@@ -97,39 +97,30 @@ export const ExpenseTemplateRecordPage = () => {
   }
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-6 px-6">
+    <div className="mx-auto flex max-w-2xl flex-col gap-4 px-6">
       {error && (
         <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
       )}
 
-      <div className="flex flex-col gap-1.5 rounded-2xl bg-white p-5 shadow-sm dark:bg-gray-800">
-        <label
-          htmlFor="record-date"
-          className="text-xs text-gray-500 dark:text-gray-400"
-        >
-          Date
-        </label>
-        <input
-          id="record-date"
-          type="datetime-local"
-          value={expensedAt}
-          onChange={(e) => setExpensedAt(e.target.value)}
-          required
-          className="rounded-xl bg-gray-50 px-4 py-3 text-base outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
-        />
-      </div>
+      <input
+        type="datetime-local"
+        value={expensedAt}
+        onChange={(e) => setExpensedAt(e.target.value)}
+        required
+        className="rounded-xl bg-white px-4 py-2.5 text-sm shadow-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-800 dark:text-gray-100"
+      />
 
       {rows.length > 0 ? (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2">
           {rows.map((r, idx) => (
             <button
               key={r.template.uuid}
               type="button"
               onClick={() => toggleSelect(idx)}
-              className={`rounded-2xl px-5 py-3.5 text-left shadow-sm transition-all ${
+              className={`rounded-xl px-4 py-2.5 text-left transition-all ${
                 r.selected
-                  ? "ring-2 ring-primary bg-white dark:bg-gray-800"
-                  : "bg-gray-100 opacity-50 dark:bg-gray-800/50"
+                  ? "border-l-4 border-primary bg-white shadow-sm dark:bg-gray-800"
+                  : "border-l-4 border-transparent bg-gray-100 opacity-40 dark:bg-gray-800/50"
               }`}
             >
               <div className="flex items-center gap-3">
@@ -148,7 +139,7 @@ export const ExpenseTemplateRecordPage = () => {
                       value={r.amount}
                       onClick={(e) => e.stopPropagation()}
                       onChange={(e) => updateAmount(idx, e.target.value)}
-                      className="w-24 rounded-lg bg-gray-50 px-3 py-1.5 text-right text-sm tabular-nums outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+                      className="w-24 rounded-lg bg-gray-50 px-3 py-1 text-right text-sm tabular-nums outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
                     />
                   </div>
                 ) : (
@@ -166,14 +157,16 @@ export const ExpenseTemplateRecordPage = () => {
         </p>
       )}
 
-      <button
-        type="button"
-        onClick={handleRecord}
-        disabled={selectedCount === 0 || submitting}
-        className="rounded-xl bg-primary px-5 py-4 text-white hover:bg-primary-hover disabled:opacity-50"
-      >
-        {submitting ? "記帳中..." : `記帳 (${String(selectedCount)})`}
-      </button>
+      <div className="sticky bottom-0 pb-2">
+        <button
+          type="button"
+          onClick={handleRecord}
+          disabled={selectedCount === 0 || submitting}
+          className="w-full rounded-xl bg-primary px-5 py-3.5 text-white hover:bg-primary-hover disabled:opacity-50"
+        >
+          {submitting ? "Recording..." : `Record (${String(selectedCount)})`}
+        </button>
+      </div>
     </div>
   )
 }
