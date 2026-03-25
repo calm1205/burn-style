@@ -161,7 +161,7 @@ export const ExpenseTemplatePage = () => {
               setForm((prev) => ({ ...prev, categoryUuid: e.target.value }))
             }
             required
-            className="flex-1 rounded-xl bg-gray-50 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+            className="flex-1 rounded-xl bg-gray-50 py-2.5 pr-2 pl-4 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
           >
             <option value="" disabled>
               Category
@@ -227,7 +227,7 @@ export const ExpenseTemplatePage = () => {
                             : null,
                         )
                       }
-                      className="flex-1 rounded-lg bg-gray-50 px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+                      className="flex-1 rounded-lg bg-gray-50 py-1.5 pr-2 pl-3 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
                     >
                       {categories.map((c) => (
                         <option key={c.uuid} value={c.uuid}>
