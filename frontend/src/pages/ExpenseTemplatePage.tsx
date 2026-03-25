@@ -1,0 +1,297 @@
+import {
+  CheckIcon,
+  Pencil1Icon,
+  PlusIcon,
+  ResetIcon,
+  TrashIcon,
+} from "@radix-ui/react-icons"
+import {
+  type SubmitEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react"
+import { ConfirmDialog, useConfirmDialog } from "../components/ConfirmDialog"
+import { api } from "../lib/api"
+import { getErrorMessage } from "../lib/client"
+import type { CategoryResponse, ExpenseTemplateResponse } from "../lib/types"
+
+export const ExpenseTemplatePage = () => {
+  const [templates, setTemplates] = useState<ExpenseTemplateResponse[]>([])
+  const [categories, setCategories] = useState<CategoryResponse[]>([])
+  const [error, setError] = useState("")
+
+  const [form, setForm] = useState({
+    name: "",
+    amount: "",
+    categoryUuid: "",
+  })
+
+  const [editing, setEditing] = useState<{
+    uuid: string
+    name: string
+    amount: string
+    categoryUuid: string
+  } | null>(null)
+  const editNameRef = useRef<HTMLInputElement>(null)
+
+  const fetchData = useCallback(async () => {
+    try {
+      const [t, c] = await Promise.all([
+        api.getExpenseTemplates(),
+        api.getCategories(),
+      ])
+      setTemplates(t)
+      setCategories(c)
+    } catch (err) {
+      setError(getErrorMessage(err, "データ取得に失敗"))
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
+
+  const handleCreate = async (e: SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setError("")
+    try {
+      await api.createExpenseTemplate({
+        name: form.name,
+        amount: Number(form.amount.replace(/,/g, "")),
+        category_uuid: form.categoryUuid,
+      })
+      setForm({ name: "", amount: "", categoryUuid: "" })
+      await fetchData()
+    } catch (err) {
+      setError(getErrorMessage(err, "作成に失敗"))
+    }
+  }
+
+  const [deleteTarget, setDeleteTarget] =
+    useState<ExpenseTemplateResponse | null>(null)
+  const { dialogRef, open: openDialog } = useConfirmDialog()
+
+  const confirmDelete = (t: ExpenseTemplateResponse) => {
+    setDeleteTarget(t)
+    openDialog()
+  }
+
+  const handleDelete = async () => {
+    if (!deleteTarget) return
+    setError("")
+    try {
+      await api.deleteExpenseTemplate(deleteTarget.uuid)
+      setDeleteTarget(null)
+      dialogRef.current?.close()
+      await fetchData()
+    } catch (err) {
+      setError(getErrorMessage(err, "削除に失敗"))
+    }
+  }
+
+  const startEdit = (t: ExpenseTemplateResponse) => {
+    setEditing({
+      uuid: t.uuid,
+      name: t.name,
+      amount: t.amount.toLocaleString(),
+      categoryUuid: t.category.uuid,
+    })
+    requestAnimationFrame(() => editNameRef.current?.focus())
+  }
+
+  const handleUpdate = async () => {
+    if (!editing) return
+    setError("")
+    try {
+      await api.updateExpenseTemplate(editing.uuid, {
+        name: editing.name,
+        amount: Number(editing.amount.replace(/,/g, "")),
+        category_uuid: editing.categoryUuid,
+      })
+      setEditing(null)
+      await fetchData()
+    } catch (err) {
+      setError(getErrorMessage(err, "更新に失敗"))
+    }
+  }
+
+  return (
+    <div className="mx-auto flex max-w-2xl flex-col gap-6 px-6">
+      {error && (
+        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+      )}
+
+      {/* 作成フォーム */}
+      <form
+        onSubmit={handleCreate}
+        className="flex flex-col gap-3 rounded-2xl bg-white p-4 shadow-sm dark:bg-gray-800"
+      >
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            placeholder="Netflix"
+            value={form.name}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, name: e.target.value }))
+            }
+            required
+            maxLength={100}
+            className="flex-1 rounded-xl bg-gray-50 px-4 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+          />
+          <input
+            type="text"
+            inputMode="numeric"
+            placeholder="1,490"
+            value={form.amount}
+            onChange={(e) => {
+              const raw = e.target.value.replace(/[^0-9]/g, "")
+              const formatted = raw ? Number(raw).toLocaleString() : ""
+              setForm((prev) => ({ ...prev, amount: formatted }))
+            }}
+            required
+            className="w-28 rounded-xl bg-gray-50 px-4 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+          />
+        </div>
+        <div className="flex items-center gap-2">
+          <select
+            value={form.categoryUuid}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, categoryUuid: e.target.value }))
+            }
+            required
+            className="flex-1 rounded-xl bg-gray-50 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+          >
+            <option value="" disabled>
+              Category
+            </option>
+            {categories.map((c) => (
+              <option key={c.uuid} value={c.uuid}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+          <button
+            type="submit"
+            className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary text-white hover:bg-primary-hover"
+          >
+            <PlusIcon className="size-4" />
+          </button>
+        </div>
+      </form>
+
+      {/* テンプレート一覧 */}
+      {templates.length > 0 ? (
+        <div className="divide-y divide-gray-100 overflow-hidden rounded-2xl bg-white shadow-sm dark:divide-gray-700 dark:bg-gray-800">
+          {templates.map((t) => (
+            <div key={t.uuid} className="flex items-center gap-3 px-5 py-3.5">
+              {editing?.uuid === t.uuid ? (
+                <div className="flex flex-1 flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <input
+                      ref={editNameRef}
+                      type="text"
+                      value={editing.name}
+                      onChange={(e) =>
+                        setEditing((prev) =>
+                          prev ? { ...prev, name: e.target.value } : null,
+                        )
+                      }
+                      maxLength={100}
+                      className="flex-1 rounded-lg bg-gray-50 px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+                    />
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={editing.amount}
+                      onChange={(e) => {
+                        const raw = e.target.value.replace(/[^0-9]/g, "")
+                        const formatted = raw
+                          ? Number(raw).toLocaleString()
+                          : ""
+                        setEditing((prev) =>
+                          prev ? { ...prev, amount: formatted } : null,
+                        )
+                      }}
+                      className="w-24 rounded-lg bg-gray-50 px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <select
+                      value={editing.categoryUuid}
+                      onChange={(e) =>
+                        setEditing((prev) =>
+                          prev
+                            ? { ...prev, categoryUuid: e.target.value }
+                            : null,
+                        )
+                      }
+                      className="flex-1 rounded-lg bg-gray-50 px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+                    >
+                      {categories.map((c) => (
+                        <option key={c.uuid} value={c.uuid}>
+                          {c.name}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      onClick={handleUpdate}
+                      className="text-primary hover:text-primary-hover"
+                    >
+                      <CheckIcon className="size-4" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditing(null)}
+                      className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+                    >
+                      <ResetIcon className="size-4" />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="flex flex-1 flex-col">
+                    <span className="text-sm">{t.name}</span>
+                    <span className="text-xs text-gray-400 dark:text-gray-500">
+                      {t.category.name}
+                    </span>
+                  </div>
+                  <span className="text-sm tabular-nums">
+                    ¥{t.amount.toLocaleString()}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => startEdit(t)}
+                    className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+                  >
+                    <Pencil1Icon className="size-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => confirmDelete(t)}
+                    className="text-red-400 hover:text-red-600"
+                  >
+                    <TrashIcon className="size-3.5" />
+                  </button>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="py-8 text-center text-sm text-gray-400 dark:text-gray-500">
+          No templates
+        </p>
+      )}
+
+      <ConfirmDialog
+        message={`Delete "${deleteTarget?.name}"?`}
+        onConfirm={handleDelete}
+        dialogRef={dialogRef}
+      />
+    </div>
+  )
+}
