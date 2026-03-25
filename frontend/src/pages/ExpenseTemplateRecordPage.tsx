@@ -163,7 +163,7 @@ export const ExpenseTemplateRecordPage = () => {
         disabled={selectedCount === 0 || submitting}
         className="shrink-0 rounded-xl bg-primary px-5 py-3.5 text-white hover:bg-primary-hover disabled:opacity-50"
       >
-        {submitting ? "Recording..." : `Record (${String(selectedCount)})`}
+        {submitting ? "Adding..." : "Add"}
       </button>
     </div>
   )
