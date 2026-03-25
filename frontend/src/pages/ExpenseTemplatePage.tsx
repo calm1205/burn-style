@@ -17,6 +17,14 @@ import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
 import type { CategoryResponse, ExpenseTemplateResponse } from "../lib/types"
 
+const CARET_SVG = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 15 15'%3E%3Cpath d='M3.13 6.16a.5.5 0 0 1 .7 0L7.5 9.82l3.67-3.66a.5.5 0 0 1 .7.7l-4.01 4.02a.5.5 0 0 1-.71 0L3.13 6.87a.5.5 0 0 1 0-.7Z' fill='%239ca3af'/%3E%3C/svg%3E")`
+const selectStyle = {
+  appearance: "none" as const,
+  backgroundImage: CARET_SVG,
+  backgroundRepeat: "no-repeat",
+  backgroundPosition: "right 10px center",
+}
+
 export const ExpenseTemplatePage = () => {
   const [templates, setTemplates] = useState<ExpenseTemplateResponse[]>([])
   const [categories, setCategories] = useState<CategoryResponse[]>([])
@@ -161,7 +169,8 @@ export const ExpenseTemplatePage = () => {
               setForm((prev) => ({ ...prev, categoryUuid: e.target.value }))
             }
             required
-            className="flex-1 rounded-xl bg-gray-50 py-2.5 pr-2 pl-4 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+            style={selectStyle}
+            className="flex-1 rounded-xl bg-gray-50 py-2.5 pr-8 pl-4 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
           >
             <option value="" disabled>
               Category
@@ -227,7 +236,8 @@ export const ExpenseTemplatePage = () => {
                             : null,
                         )
                       }
-                      className="flex-1 rounded-lg bg-gray-50 py-1.5 pr-2 pl-3 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+                      style={selectStyle}
+                      className="flex-1 rounded-lg bg-gray-50 py-1.5 pr-8 pl-3 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
                     >
                       {categories.map((c) => (
                         <option key={c.uuid} value={c.uuid}>
