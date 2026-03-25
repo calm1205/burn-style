@@ -97,7 +97,7 @@ export const ExpenseTemplateRecordPage = () => {
   }
 
   return (
-    <div className="mx-auto flex h-full max-w-2xl flex-col gap-4 px-6">
+    <div className="mx-auto flex h-full max-w-2xl flex-col gap-4 px-6 pb-4">
       {error && (
         <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
       )}
