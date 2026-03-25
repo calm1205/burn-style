@@ -57,3 +57,24 @@ export interface UserResponse {
   uuid: string
   name: string
 }
+
+export interface ExpenseTemplateResponse {
+  uuid: string
+  name: string
+  amount: number
+  category: CategoryResponse
+  created_at: string
+  updated_at: string
+}
+
+export interface ExpenseTemplateCreate {
+  name: string
+  amount: number
+  category_uuid: string
+}
+
+export interface ExpenseTemplateUpdate {
+  name?: string
+  amount?: number
+  category_uuid?: string
+}
