@@ -12,6 +12,7 @@ import { CategoryBubbleChart } from "../components/CategoryBubbleChart"
 import { CategoryPieChart } from "../components/CategoryPieChart"
 import { ExpenseHeatmap } from "../components/ExpenseHeatmap"
 import { ExpenseList } from "../components/ExpenseList"
+import { useSwipe } from "../hooks/useSwipe"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
 import type { ExpenseResponse } from "../lib/types"
@@ -113,6 +114,11 @@ export const ExpenseMonthlyPage = () => {
     [filteredExpenses],
   )
 
+  const { ref: swipeRef } = useSwipe<HTMLDivElement>({
+    onSwipeLeft: goNext,
+    onSwipeRight: goPrev,
+  })
+
   return (
     <div className="mx-auto flex h-full max-w-2xl flex-col px-6">
       {error && (
@@ -185,29 +191,31 @@ export const ExpenseMonthlyPage = () => {
         ))}
       </div>
 
-      {tab === "list" && <ExpenseList expenses={filteredExpenses} />}
+      <div ref={swipeRef} className="min-h-0 flex-1">
+        {tab === "list" && <ExpenseList expenses={filteredExpenses} />}
 
-      {tab === "pie" && (
-        <div className="min-h-0 flex-1 overflow-y-auto pt-4">
-          <CategoryPieChart expenses={filteredExpenses} />
-        </div>
-      )}
+        {tab === "pie" && (
+          <div className="min-h-0 flex-1 overflow-y-auto pt-4">
+            <CategoryPieChart expenses={filteredExpenses} />
+          </div>
+        )}
 
-      {tab === "heatmap" && (
-        <div className="min-h-0 flex-1 overflow-y-auto pt-4">
-          <ExpenseHeatmap
-            year={year}
-            month={month}
-            expenses={filteredExpenses}
-          />
-        </div>
-      )}
+        {tab === "heatmap" && (
+          <div className="min-h-0 flex-1 overflow-y-auto pt-4">
+            <ExpenseHeatmap
+              year={year}
+              month={month}
+              expenses={filteredExpenses}
+            />
+          </div>
+        )}
 
-      {tab === "bubble" && (
-        <div className="min-h-0 flex-1 overflow-y-auto pt-4">
-          <CategoryBubbleChart expenses={filteredExpenses} />
-        </div>
-      )}
+        {tab === "bubble" && (
+          <div className="min-h-0 flex-1 overflow-y-auto pt-4">
+            <CategoryBubbleChart expenses={filteredExpenses} />
+          </div>
+        )}
+      </div>
     </div>
   )
 }
