@@ -1,5 +1,6 @@
 import {
   CheckIcon,
+  ChevronDownIcon,
   Pencil1Icon,
   PlusIcon,
   ResetIcon,
@@ -16,14 +17,6 @@ import { ConfirmDialog, useConfirmDialog } from "../components/ConfirmDialog"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
 import type { CategoryResponse, ExpenseTemplateResponse } from "../lib/types"
-
-const CARET_SVG = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 15 15'%3E%3Cpath d='M3.13 6.16a.5.5 0 0 1 .7 0L7.5 9.82l3.67-3.66a.5.5 0 0 1 .7.7l-4.01 4.02a.5.5 0 0 1-.71 0L3.13 6.87a.5.5 0 0 1 0-.7Z' fill='%239ca3af'/%3E%3C/svg%3E")`
-const selectStyle = {
-  appearance: "none" as const,
-  backgroundImage: CARET_SVG,
-  backgroundRepeat: "no-repeat",
-  backgroundPosition: "right 10px center",
-}
 
 export const ExpenseTemplatePage = () => {
   const [templates, setTemplates] = useState<ExpenseTemplateResponse[]>([])
@@ -163,24 +156,26 @@ export const ExpenseTemplatePage = () => {
           />
         </div>
         <div className="flex items-center gap-2">
-          <select
-            value={form.categoryUuid}
-            onChange={(e) =>
-              setForm((prev) => ({ ...prev, categoryUuid: e.target.value }))
-            }
-            required
-            style={selectStyle}
-            className="flex-1 rounded-xl bg-gray-50 py-2.5 pr-8 pl-4 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
-          >
-            <option value="" disabled>
-              Category
-            </option>
-            {categories.map((c) => (
-              <option key={c.uuid} value={c.uuid}>
-                {c.name}
+          <div className="relative flex-1">
+            <select
+              value={form.categoryUuid}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, categoryUuid: e.target.value }))
+              }
+              required
+              className="w-full appearance-none rounded-xl bg-gray-50 py-2.5 pr-8 pl-4 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+            >
+              <option value="" disabled>
+                Category
               </option>
-            ))}
-          </select>
+              {categories.map((c) => (
+                <option key={c.uuid} value={c.uuid}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+            <ChevronDownIcon className="pointer-events-none absolute top-1/2 right-2.5 size-4 -translate-y-1/2 text-gray-400" />
+          </div>
           <button
             type="submit"
             className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary text-white hover:bg-primary-hover"
@@ -227,24 +222,26 @@ export const ExpenseTemplatePage = () => {
                     />
                   </div>
                   <div className="flex items-center gap-2">
-                    <select
-                      value={editing.categoryUuid}
-                      onChange={(e) =>
-                        setEditing((prev) =>
-                          prev
-                            ? { ...prev, categoryUuid: e.target.value }
-                            : null,
-                        )
-                      }
-                      style={selectStyle}
-                      className="flex-1 rounded-lg bg-gray-50 py-1.5 pr-8 pl-3 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
-                    >
-                      {categories.map((c) => (
-                        <option key={c.uuid} value={c.uuid}>
-                          {c.name}
-                        </option>
-                      ))}
-                    </select>
+                    <div className="relative flex-1">
+                      <select
+                        value={editing.categoryUuid}
+                        onChange={(e) =>
+                          setEditing((prev) =>
+                            prev
+                              ? { ...prev, categoryUuid: e.target.value }
+                              : null,
+                          )
+                        }
+                        className="w-full appearance-none rounded-lg bg-gray-50 py-1.5 pr-8 pl-3 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+                      >
+                        {categories.map((c) => (
+                          <option key={c.uuid} value={c.uuid}>
+                            {c.name}
+                          </option>
+                        ))}
+                      </select>
+                      <ChevronDownIcon className="pointer-events-none absolute top-1/2 right-2.5 size-4 -translate-y-1/2 text-gray-400" />
+                    </div>
                     <button
                       type="button"
                       onClick={handleUpdate}
