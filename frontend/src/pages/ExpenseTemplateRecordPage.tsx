@@ -2,23 +2,13 @@ import { useCallback, useEffect, useState } from "react"
 import { useNavigate } from "react-router"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
-import type { ExpenseResponse, ExpenseTemplateResponse } from "../lib/types"
+import type { ExpenseTemplateResponse } from "../lib/types"
 
 interface TemplateRow {
   template: ExpenseTemplateResponse
   selected: boolean
   amount: string
-  recorded: boolean
 }
-
-const isRecorded = (
-  t: ExpenseTemplateResponse,
-  expenses: ExpenseResponse[],
-): boolean =>
-  expenses.some(
-    (e) =>
-      e.name === t.name && e.categories.some((c) => c.uuid === t.category.uuid),
-  )
 
 const toLocalDatetime = (d: Date) => {
   const pad = (n: number) => String(n).padStart(2, "0")
@@ -35,21 +25,13 @@ export const ExpenseTemplateRecordPage = () => {
 
   const fetchData = useCallback(async () => {
     try {
-      const now = new Date()
-      const [templates, expenses] = await Promise.all([
-        api.getExpenseTemplates(),
-        api.getExpenses(now.getFullYear(), now.getMonth() + 1),
-      ])
+      const templates = await api.getExpenseTemplates()
       setRows(
-        templates.map((t) => {
-          const alreadyRecorded = isRecorded(t, expenses)
-          return {
-            template: t,
-            selected: !alreadyRecorded,
-            amount: t.amount.toLocaleString(),
-            recorded: alreadyRecorded,
-          }
-        }),
+        templates.map((t) => ({
+          template: t,
+          selected: true,
+          amount: t.amount.toLocaleString(),
+        })),
       )
     } catch (err) {
       setError(getErrorMessage(err, "データ取得に失敗"))
@@ -152,14 +134,7 @@ export const ExpenseTemplateRecordPage = () => {
             >
               <div className="flex items-center gap-3">
                 <div className="flex flex-1 flex-col">
-                  <span className="text-sm">
-                    {r.template.name}
-                    {r.recorded && (
-                      <span className="ml-2 text-xs text-green-500">
-                        記帳済み
-                      </span>
-                    )}
-                  </span>
+                  <span className="text-sm">{r.template.name}</span>
                   <span className="text-xs text-gray-400 dark:text-gray-500">
                     {r.template.category.name}
                   </span>
