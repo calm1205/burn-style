@@ -139,7 +139,7 @@ export const ExpenseTemplatePage = () => {
             }
             required
             maxLength={100}
-            className="flex-1 rounded-xl bg-gray-50 px-4 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+            className="flex-1 rounded-xl bg-gray-50 px-4 py-2.5 text-base outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
           />
           <input
             type="text"
@@ -152,7 +152,7 @@ export const ExpenseTemplatePage = () => {
               setForm((prev) => ({ ...prev, amount: formatted }))
             }}
             required
-            className="w-28 rounded-xl bg-gray-50 px-4 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+            className="w-28 rounded-xl bg-gray-50 px-4 py-2.5 text-base outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
           />
         </div>
         <div className="flex items-center gap-2">
@@ -163,7 +163,7 @@ export const ExpenseTemplatePage = () => {
                 setForm((prev) => ({ ...prev, categoryUuid: e.target.value }))
               }
               required
-              className="w-full appearance-none rounded-xl bg-gray-50 py-2.5 pr-8 pl-4 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+              className="w-full appearance-none rounded-xl bg-gray-50 py-2.5 pr-8 pl-4 text-base outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
             >
               <option value="" disabled>
                 Category
@@ -203,7 +203,7 @@ export const ExpenseTemplatePage = () => {
                         )
                       }
                       maxLength={100}
-                      className="flex-1 rounded-lg bg-gray-50 px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+                      className="flex-1 rounded-lg bg-gray-50 px-3 py-1.5 text-base outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
                     />
                     <input
                       type="text"
@@ -218,7 +218,7 @@ export const ExpenseTemplatePage = () => {
                           prev ? { ...prev, amount: formatted } : null,
                         )
                       }}
-                      className="w-24 rounded-lg bg-gray-50 px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+                      className="w-24 rounded-lg bg-gray-50 px-3 py-1.5 text-base outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
                     />
                   </div>
                   <div className="flex items-center gap-2">
@@ -232,7 +232,7 @@ export const ExpenseTemplatePage = () => {
                               : null,
                           )
                         }
-                        className="w-full appearance-none rounded-lg bg-gray-50 py-1.5 pr-8 pl-3 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+                        className="w-full appearance-none rounded-lg bg-gray-50 py-1.5 pr-8 pl-3 text-base outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
                       >
                         {categories.map((c) => (
                           <option key={c.uuid} value={c.uuid}>
