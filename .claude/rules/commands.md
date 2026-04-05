@@ -30,4 +30,3 @@
 |---------|------|
 | `make prod-upgrade` | 本番DBにマイグレーション実行 |
 | `make prod-seed` | 本番DBにseedデータ投入（`SEED_USER="名前"` でユーザー指定可） |
-| `make prod-db-reset` | 本番DBリセット + seed |
