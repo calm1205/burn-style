@@ -1,13 +1,7 @@
-.PHONY: init help lint test-backend migrate upgrade seed db-clear db-reset db-connect prod-upgrade prod-seed prod-db-reset
+.PHONY: help lint test-backend migrate upgrade seed db-clear db-reset db-connect prod-upgrade prod-seed prod-db-reset
 
 BACKEND_DIR = backend
 FRONTEND_DIR = frontend
-
-init: ## プロジェクトの初期セットアップ
-	cp .env.template .env
-	uv venv --python 3.14.0
-	uv sync --all-groups
-	docker compose watch
 
 help: ## このヘルプメッセージを表示
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
