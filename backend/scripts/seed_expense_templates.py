@@ -19,27 +19,14 @@ TEMPLATE_DATA = [
 
 
 def seed_expense_templates(db: Session, user: User) -> None:
-    """ExpenseTemplate テーブルに seed データを投入(既存テンプレートはスキップ)"""
-    existing = {
-        str(t.name)
-        for t in db.query(ExpenseTemplate).filter(
-            ExpenseTemplate.user_uuid == user.uuid,
-            ExpenseTemplate.deleted_at.is_(None),
-        ).all()
-    }
-
+    """ExpenseTemplate テーブルに seed データを投入"""
     categories = {
         str(c.name): c
         for c in db.query(Category).filter(Category.user_uuid == user.uuid).all()
     }
 
-    new_templates = [d for d in TEMPLATE_DATA if d["name"] not in existing]
-    if not new_templates:
-        print("すべてのテンプレートが既に存在します。スキップ。")
-        return
-
     templates = []
-    for data in new_templates:
+    for data in TEMPLATE_DATA:
         category_name = str(data["category"])
         category = categories.get(category_name)
         if not category:

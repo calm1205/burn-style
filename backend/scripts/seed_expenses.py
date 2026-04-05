@@ -123,12 +123,7 @@ def _generate_expenses(rng: random.Random) -> list[ExpenseRecord]:
 
 
 def seed_expenses(db: Session, user: User) -> None:
-    """Expense テーブルに3年分の seed データを投入(既存データがあればスキップ)"""
-    existing_count = db.query(Expense).filter(Expense.user_uuid == user.uuid).count()
-    if existing_count > 0:
-        print(f"既に {existing_count} 件の支出が存在します。スキップ。")
-        return
-
+    """Expense テーブルに3年分の seed データを投入"""
     categories = db.query(Category).filter(Category.user_uuid == user.uuid).all()
     categories_dict: dict[str, Category] = {str(c.name): c for c in categories}
 
