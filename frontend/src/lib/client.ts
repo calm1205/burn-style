@@ -47,8 +47,8 @@ const request = async <T>(method: string, path: string, body?: unknown): Promise
   }
 
   if (!response.ok) {
-    const body = await response.json().catch(() => null)
-    const detail = body?.detail
+    const errorBody = await response.json().catch(() => null)
+    const detail = errorBody?.detail
     const message =
       typeof detail === "string"
         ? detail

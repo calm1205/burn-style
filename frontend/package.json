@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "oxlint src/ && oxfmt --check src/",
-    "fix": "oxlint --fix src/ && oxfmt src/",
+    "lint": "oxlint --deny-warnings src/ ; oxfmt --check src/",
+    "fix": "oxlint --fix src/ ; oxfmt src/",
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit"
   },

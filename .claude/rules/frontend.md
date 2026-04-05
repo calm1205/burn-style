@@ -10,12 +10,13 @@
 - **フォーマッター**: oxfmt
 
 ## oxlint 設定
-- import sortルール有効
+- correctness + suspicious カテゴリ有効
 
 ## oxfmt 設定
 - インデント: スペース
 - クォート: ダブルクォート (`"`)
 - セミコロン: なし（ASI保護時のみ自動付与）
+- import自動整理: 有効
 
 ## Tailwind CSS v4
 - Viteプラグイン (`@tailwindcss/vite`) で統合

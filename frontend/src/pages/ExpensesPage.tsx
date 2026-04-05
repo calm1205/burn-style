@@ -5,6 +5,12 @@ import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
 import type { CategoryResponse } from "../lib/types"
 
+const pad = (n: number) => String(n).padStart(2, "0")
+
+const toLocalDatetime = (d: Date) => {
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
+
 export const ExpensesPage = () => {
   const navigate = useNavigate()
   const nameRef = useRef<HTMLInputElement>(null)
@@ -13,10 +19,6 @@ export const ExpensesPage = () => {
 
   // 作成フォーム
   const now = new Date()
-  const toLocalDatetime = (d: Date) => {
-    const pad = (n: number) => String(n).padStart(2, "0")
-    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
-  }
   const today = toLocalDatetime(now)
   const [form, setForm] = useState({
     name: "",

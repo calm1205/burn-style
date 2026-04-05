@@ -75,7 +75,7 @@ export const ExpenseMonthlyPage = () => {
         }
       }
     }
-    return [...map.entries()].sort((a, b) => b[1] - a[1]).map(([name]) => name)
+    return [...map.entries()].toSorted((a, b) => b[1] - a[1]).map(([name]) => name)
   }, [expenses])
 
   useEffect(() => {

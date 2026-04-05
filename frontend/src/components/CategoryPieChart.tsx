@@ -30,7 +30,7 @@ export const CategoryPieChart = ({ expenses }: CategoryPieChartProps) => {
     }
     const sorted = [...map.entries()]
       .map(([name, amount]) => ({ name, amount }))
-      .sort((a, b) => b.amount - a.amount)
+      .toSorted((a, b) => b.amount - a.amount)
     return {
       allCategories: sorted.map((s) => s.name),
       colorMap: assignChartColors(sorted),
@@ -60,7 +60,7 @@ export const CategoryPieChart = ({ expenses }: CategoryPieChartProps) => {
           fill: colorMap.get(name) ?? CHART_COLORS[0],
         }),
       )
-      .sort((a, b) => b.amount - a.amount)
+      .toSorted((a, b) => b.amount - a.amount)
   }, [expenses, hidden, colorMap])
 
   const total = categoryData.reduce((sum, c) => sum + c.amount, 0)

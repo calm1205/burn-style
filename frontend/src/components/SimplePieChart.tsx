@@ -20,7 +20,7 @@ export const SimplePieChart = ({ expenses }: SimplePieChartProps) => {
   }
   const sorted = [...map.entries()]
     .map(([name, amount]) => ({ name, amount }))
-    .sort((a, b) => b.amount - a.amount)
+    .toSorted((a, b) => b.amount - a.amount)
   const colorMap = assignChartColors(sorted)
   const data = sorted.map((item) => ({
     ...item,

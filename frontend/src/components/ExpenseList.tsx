@@ -3,9 +3,10 @@ import { useNavigate } from "react-router"
 
 import type { ExpenseResponse } from "../lib/types"
 
+const pad = (n: number) => String(n).padStart(2, "0")
+
 const formatDateTime = (dateStr: string) => {
   const d = new Date(dateStr)
-  const pad = (n: number) => String(n).padStart(2, "0")
   return `${pad(d.getMonth() + 1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
 
@@ -17,7 +18,7 @@ export const ExpenseList = ({ expenses }: ExpenseListProps) => {
   const navigate = useNavigate()
   const sorted = useMemo(
     () =>
-      [...expenses].sort(
+      [...expenses].toSorted(
         (a, b) => new Date(b.expensed_at).getTime() - new Date(a.expensed_at).getTime(),
       ),
     [expenses],
