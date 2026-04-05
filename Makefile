@@ -1,4 +1,4 @@
-.PHONY: help lint test-backend migrate upgrade seed db-clear db-reset db-connect prod-upgrade prod-seed
+.PHONY: help lint test-backend migrate upgrade seed db-clear db-connect prod-upgrade prod-seed
 
 BACKEND_DIR = backend
 FRONTEND_DIR = frontend
@@ -26,11 +26,6 @@ seed: ## seedデータを投入（使用例: make seed SEED_USER="username"）
 db-clear: ## データベースの全テーブルを削除
 	@echo "全テーブルを削除します。よろしいですか? [y/N]" && read ans && [ "$$ans" = "y" ] || (echo "中止" && exit 1)
 	docker compose exec db sh -c 'psql -U $$POSTGRES_USER $$POSTGRES_DB -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"'
-
-db-reset: ## データベースをリセットしてseedデータを投入
-	make db-clear
-	make upgrade
-	make seed
 
 db-connect: ## PostgreSQL CLIに接続
 	docker compose exec db sh -c 'psql -U $$POSTGRES_USER $$POSTGRES_DB'

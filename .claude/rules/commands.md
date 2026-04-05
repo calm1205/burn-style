@@ -22,7 +22,6 @@
 | `make downgrade` | 1つ前にダウングレード |
 | `make seed` | seedデータ投入（`SEED_USER="名前"` でユーザー指定可） |
 | `make db-clear` | DB完全クリア（volumes削除） |
-| `make db-reset` | DB完全リセット + seed |
 | `make db-connect` | PostgreSQL CLIに接続 |
 
 ## データベース（本番 Neon）
