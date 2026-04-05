@@ -1,11 +1,7 @@
-.PHONY: help lint test-backend migrate upgrade seed db-clear db-connect prod-upgrade prod-seed
+.PHONY: lint test-backend migrate upgrade seed db-clear db-connect prod-upgrade prod-seed
 
 BACKEND_DIR = backend
 FRONTEND_DIR = frontend
-
-help: ## このヘルプメッセージを表示
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
-
 
 lint: ## backend(mypy & ruff) + frontend(typecheck & biome)
 	cd $(BACKEND_DIR) && uv run mypy .
