@@ -18,6 +18,7 @@ load_dotenv()
 from sqlalchemy.orm import Session  # noqa: E402
 
 from scripts.seed_categories import seed_categories  # noqa: E402
+from scripts.seed_expense_templates import seed_expense_templates  # noqa: E402
 from scripts.seed_expenses import seed_expenses  # noqa: E402
 from src.model.user import User  # noqa: E402
 from src.repository.database import get_session_local  # noqa: E402
@@ -48,15 +49,21 @@ def seed_all(user_name: str | None = None) -> None:
         print()
 
         # 1. カテゴリを投入
-        print("[1/2] カテゴリの投入を開始します...")
+        print("[1/3] カテゴリの投入を開始します...")
         print("-" * 60)
         seed_categories(db, user)
         print()
 
         # 2. エクスペンスを投入
-        print("[2/2] エクスペンスの投入を開始します...")
+        print("[2/3] エクスペンスの投入を開始します...")
         print("-" * 60)
         seed_expenses(db, user)
+        print()
+
+        # 3. テンプレートを投入
+        print("[3/3] テンプレートの投入を開始します...")
+        print("-" * 60)
+        seed_expense_templates(db, user)
         print()
 
         print("=" * 60)
