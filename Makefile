@@ -1,17 +1,7 @@
-.PHONY: init help lint test-backend migrate upgrade revision seed db-clear db-reset db-connect upgrade-local downgrade-local revision-local prod-upgrade prod-seed prod-db-clear prod-db-reset
+.PHONY: lint test-backend migrate upgrade seed db-clear db-connect prod-upgrade
 
 BACKEND_DIR = backend
 FRONTEND_DIR = frontend
-
-init: ## プロジェクトの初期セットアップ
-	cp .env.template .env
-	uv venv --python 3.14.0
-	uv sync --all-groups
-	docker compose watch
-
-help: ## このヘルプメッセージを表示
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
-
 
 lint: ## backend(mypy & ruff) + frontend(typecheck & biome)
 	cd $(BACKEND_DIR) && uv run mypy .
@@ -25,10 +15,6 @@ test-backend: ## backendのテストを実行
 upgrade: ## データベースを最新バージョンにアップグレード
 	cd $(BACKEND_DIR) && uv run alembic upgrade head
 
-MESSAGE ?= "auto migration"
-revision: ## 新しいマイグレーションファイルを作成（使用例: make revision MESSAGE="create table"）
-	cd $(BACKEND_DIR) && uv run alembic revision --autogenerate -m "$(MESSAGE)"
-
 SEED_USER ?=
 seed: ## seedデータを投入（使用例: make seed SEED_USER="username"）
 	cd $(BACKEND_DIR) && uv run python scripts/seed_all.py $(SEED_USER)
@@ -37,25 +23,8 @@ db-clear: ## データベースの全テーブルを削除
 	@echo "全テーブルを削除します。よろしいですか? [y/N]" && read ans && [ "$$ans" = "y" ] || (echo "中止" && exit 1)
 	docker compose exec db sh -c 'psql -U $$POSTGRES_USER $$POSTGRES_DB -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"'
 
-db-reset: ## データベースをリセットしてseedデータを投入
-	make db-clear
-	make upgrade
-	make seed
-
 db-connect: ## PostgreSQL CLIに接続
 	docker compose exec db sh -c 'psql -U $$POSTGRES_USER $$POSTGRES_DB'
 
 prod-upgrade: ## Neon本番DBにマイグレーション実行
 	cd $(BACKEND_DIR) && VERCEL_ENV=production uv run alembic upgrade head
-
-prod-seed: ## Neon本番DBにseedデータを投入（使用例: make prod-seed SEED_USER="username"）
-	cd $(BACKEND_DIR) && VERCEL_ENV=production uv run python scripts/seed_all.py $(SEED_USER)
-
-prod-db-clear: ## Neon本番DBの全テーブルを削除
-	@echo "本番DBの全テーブルを削除します。よろしいですか? [y/N]" && read ans && [ "$$ans" = "y" ] || (echo "中止" && exit 1)
-	cd $(BACKEND_DIR) && VERCEL_ENV=production uv run python -c "from src.repository.database import get_engine; from sqlalchemy import text; c=get_engine().connect(); c.execute(text('DROP SCHEMA public CASCADE')); c.execute(text('CREATE SCHEMA public')); c.commit(); c.close()"
-
-prod-db-reset: ## Neon本番DBをリセットしてseedデータを投入
-	make prod-db-clear
-	make prod-upgrade
-	make prod-seed
