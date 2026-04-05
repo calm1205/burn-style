@@ -54,6 +54,6 @@ jobs:
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
       - name: Create GitHub Release
-        run: gh release create "v${{ inputs.version }}" --notes "${{ steps.notes.outputs.body }}" --target main
+        run: gh release create "v${{ inputs.version }}" --title "v${{ inputs.version }}" --notes "${{ steps.notes.outputs.body }}" --target main
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
