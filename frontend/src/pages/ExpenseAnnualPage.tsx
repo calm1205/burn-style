@@ -9,6 +9,7 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { useSearchParams } from "react-router"
 import { AnnualAreaChart } from "../components/AnnualAreaChart"
 import { AnnualLineChart } from "../components/AnnualLineChart"
+import { useSwipe } from "../hooks/useSwipe"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
 import type { ExpenseResponse } from "../lib/types"
@@ -42,6 +43,11 @@ export const ExpenseAnnualPage = () => {
     setSearchParams(next, { replace: true })
   }
 
+  const { ref: swipeRef } = useSwipe<HTMLDivElement>({
+    onSwipeLeft: () => setYear(year + 1),
+    onSwipeRight: () => setYear(year - 1),
+  })
+
   const [expenses, setExpenses] = useState<ExpenseResponse[]>([])
   const [error, setError] = useState("")
 
@@ -74,7 +80,7 @@ export const ExpenseAnnualPage = () => {
   }, [expenses])
 
   return (
-    <div className="mx-auto flex h-full max-w-2xl flex-col px-6">
+    <div ref={swipeRef} className="mx-auto flex h-full max-w-2xl flex-col px-6">
       {error && (
         <p className="mt-6 text-sm text-red-600 dark:text-red-400">{error}</p>
       )}
