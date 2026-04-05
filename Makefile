@@ -1,4 +1,4 @@
-.PHONY: lint test-backend migrate upgrade seed db-clear db-connect prod-upgrade prod-seed
+.PHONY: lint test-backend migrate upgrade seed db-clear db-connect prod-upgrade
 
 BACKEND_DIR = backend
 FRONTEND_DIR = frontend
@@ -28,6 +28,3 @@ db-connect: ## PostgreSQL CLIに接続
 
 prod-upgrade: ## Neon本番DBにマイグレーション実行
 	cd $(BACKEND_DIR) && VERCEL_ENV=production uv run alembic upgrade head
-
-prod-seed: ## Neon本番DBにseedデータを投入（使用例: make prod-seed SEED_USER="username"）
-	cd $(BACKEND_DIR) && VERCEL_ENV=production uv run python scripts/seed_all.py $(SEED_USER)
