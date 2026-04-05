@@ -18,7 +18,6 @@
 ## データベース（ローカル）
 | コマンド | 説明 |
 |---------|------|
-| `make revision MESSAGE="説明"` | マイグレーション作成 |
 | `make upgrade` | マイグレーション適用 |
 | `make downgrade` | 1つ前にダウングレード |
 | `make seed` | seedデータ投入（`SEED_USER="名前"` でユーザー指定可） |
@@ -31,5 +30,4 @@
 |---------|------|
 | `make prod-upgrade` | 本番DBにマイグレーション実行 |
 | `make prod-seed` | 本番DBにseedデータ投入（`SEED_USER="名前"` でユーザー指定可） |
-| `make prod-db-clear` | 本番DBの全テーブル削除 |
 | `make prod-db-reset` | 本番DBリセット + seed |

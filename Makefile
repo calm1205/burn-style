@@ -1,4 +1,4 @@
-.PHONY: init help lint test-backend migrate upgrade revision seed db-clear db-reset db-connect upgrade-local downgrade-local revision-local prod-upgrade prod-seed prod-db-clear prod-db-reset
+.PHONY: init help lint test-backend migrate upgrade seed db-clear db-reset db-connect prod-upgrade prod-seed prod-db-reset
 
 BACKEND_DIR = backend
 FRONTEND_DIR = frontend
@@ -25,10 +25,6 @@ test-backend: ## backendのテストを実行
 upgrade: ## データベースを最新バージョンにアップグレード
 	cd $(BACKEND_DIR) && uv run alembic upgrade head
 
-MESSAGE ?= "auto migration"
-revision: ## 新しいマイグレーションファイルを作成（使用例: make revision MESSAGE="create table"）
-	cd $(BACKEND_DIR) && uv run alembic revision --autogenerate -m "$(MESSAGE)"
-
 SEED_USER ?=
 seed: ## seedデータを投入（使用例: make seed SEED_USER="username"）
 	cd $(BACKEND_DIR) && uv run python scripts/seed_all.py $(SEED_USER)
@@ -51,11 +47,8 @@ prod-upgrade: ## Neon本番DBにマイグレーション実行
 prod-seed: ## Neon本番DBにseedデータを投入（使用例: make prod-seed SEED_USER="username"）
 	cd $(BACKEND_DIR) && VERCEL_ENV=production uv run python scripts/seed_all.py $(SEED_USER)
 
-prod-db-clear: ## Neon本番DBの全テーブルを削除
-	@echo "本番DBの全テーブルを削除します。よろしいですか? [y/N]" && read ans && [ "$$ans" = "y" ] || (echo "中止" && exit 1)
-	cd $(BACKEND_DIR) && VERCEL_ENV=production uv run python -c "from src.repository.database import get_engine; from sqlalchemy import text; c=get_engine().connect(); c.execute(text('DROP SCHEMA public CASCADE')); c.execute(text('CREATE SCHEMA public')); c.commit(); c.close()"
-
 prod-db-reset: ## Neon本番DBをリセットしてseedデータを投入
-	make prod-db-clear
+	@echo "本番DBの全テーブルを削除してリセットします。よろしいですか? [y/N]" && read ans && [ "$$ans" = "y" ] || (echo "中止" && exit 1)
+	cd $(BACKEND_DIR) && VERCEL_ENV=production uv run python -c "from src.repository.database import get_engine; from sqlalchemy import text; c=get_engine().connect(); c.execute(text('DROP SCHEMA public CASCADE')); c.execute(text('CREATE SCHEMA public')); c.commit(); c.close()"
 	make prod-upgrade
 	make prod-seed
