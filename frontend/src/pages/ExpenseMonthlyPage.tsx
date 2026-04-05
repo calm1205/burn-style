@@ -120,7 +120,7 @@ export const ExpenseMonthlyPage = () => {
   })
 
   return (
-    <div className="mx-auto flex h-full max-w-2xl flex-col px-6">
+    <div className="mx-auto flex h-full max-w-2xl flex-col overflow-hidden px-6">
       {error && (
         <p className="mt-6 text-sm text-red-600 dark:text-red-400">{error}</p>
       )}
@@ -191,7 +191,7 @@ export const ExpenseMonthlyPage = () => {
         ))}
       </div>
 
-      <div ref={swipeRef} className="min-h-0 flex-1">
+      <div ref={swipeRef} className="flex min-h-0 flex-1 flex-col">
         {tab === "list" && <ExpenseList expenses={filteredExpenses} />}
 
         {tab === "pie" && (
