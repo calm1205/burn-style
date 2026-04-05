@@ -1,11 +1,6 @@
-import {
-  type SubmitEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react"
+import { type SubmitEvent, useCallback, useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router"
+
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
 import type { CategoryResponse } from "../lib/types"
@@ -68,9 +63,7 @@ export const ExpensesPage = () => {
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-6 px-6">
-      {error && (
-        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-      )}
+      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
 
       <form
         id="expense-form"
@@ -78,10 +71,7 @@ export const ExpensesPage = () => {
         className="flex flex-col gap-4 rounded-2xl bg-white p-5 shadow-sm dark:bg-gray-800"
       >
         <div className="flex flex-col gap-1.5">
-          <label
-            htmlFor="expense-name"
-            className="text-xs text-gray-500 dark:text-gray-400"
-          >
+          <label htmlFor="expense-name" className="text-xs text-gray-500 dark:text-gray-400">
             Name
           </label>
           <input
@@ -90,19 +80,14 @@ export const ExpensesPage = () => {
             type="text"
             placeholder="Lunch"
             value={form.name}
-            onChange={(e) =>
-              setForm((prev) => ({ ...prev, name: e.target.value }))
-            }
+            onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
             required
             maxLength={100}
             className="rounded-xl bg-gray-50 px-4 py-3 text-base outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
           />
         </div>
         <div className="flex flex-col gap-1.5">
-          <label
-            htmlFor="expense-amount"
-            className="text-xs text-gray-500 dark:text-gray-400"
-          >
+          <label htmlFor="expense-amount" className="text-xs text-gray-500 dark:text-gray-400">
             Amount
           </label>
           <input
@@ -121,28 +106,21 @@ export const ExpensesPage = () => {
           />
         </div>
         <div className="flex flex-col gap-1.5">
-          <label
-            htmlFor="expense-date"
-            className="text-xs text-gray-500 dark:text-gray-400"
-          >
+          <label htmlFor="expense-date" className="text-xs text-gray-500 dark:text-gray-400">
             Date
           </label>
           <input
             id="expense-date"
             type="datetime-local"
             value={form.expensedAt}
-            onChange={(e) =>
-              setForm((prev) => ({ ...prev, expensedAt: e.target.value }))
-            }
+            onChange={(e) => setForm((prev) => ({ ...prev, expensedAt: e.target.value }))}
             required
             className="rounded-xl bg-gray-50 px-4 py-3 text-base outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
           />
         </div>
         {categories.length > 0 && (
           <div className="flex flex-col gap-1.5">
-            <span className="text-xs text-gray-500 dark:text-gray-400">
-              Category
-            </span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">Category</span>
             <div className="flex flex-wrap gap-2">
               {categories.map((c) => (
                 <button

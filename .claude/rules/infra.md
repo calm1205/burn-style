@@ -8,7 +8,7 @@
 | バックエンド | FastAPI + SQLAlchemy 2.x + Python 3.14 |
 | データベース | PostgreSQL 18 |
 | パッケージ管理 | npm (frontend) / uv (backend) |
-| リンター | Biome 2.x (frontend) / ruff + mypy strict (backend) |
+| リンター | oxlint + oxfmt (frontend) / ruff + mypy strict (backend) |
 | 認証 | WebAuthn + JWT |
 | デプロイ | Vercel |
 | CI/CD | GitHub Actions |
@@ -52,7 +52,7 @@ deploy.yml (統合)
   │     ├─ lint-and-test (mypy + ruff + pytest)
   │     └─ deploy (Vercel CLI)
   └─ deploy_frontend.yml
-        ├─ lint (Biome)
+        ├─ lint (oxlint + oxfmt)
         └─ deploy (Vercel CLI)
 ```
 

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react"
 import { Navigate } from "react-router"
+
 import { api } from "../lib/api"
 import { STORAGE_KEYS } from "../lib/constants"
 
@@ -51,8 +52,7 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
       }
     }
     document.addEventListener("visibilitychange", onVisibilityChange)
-    return () =>
-      document.removeEventListener("visibilitychange", onVisibilityChange)
+    return () => document.removeEventListener("visibilitychange", onVisibilityChange)
   }, [verify])
 
   if (!token) {

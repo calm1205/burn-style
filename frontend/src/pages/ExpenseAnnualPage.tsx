@@ -7,6 +7,7 @@ import {
 } from "@radix-ui/react-icons"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useSearchParams } from "react-router"
+
 import { AnnualAreaChart } from "../components/AnnualAreaChart"
 import { AnnualLineChart } from "../components/AnnualLineChart"
 import { useSwipe } from "../hooks/useSwipe"
@@ -23,9 +24,7 @@ export const ExpenseAnnualPage = () => {
 
   const year = Number(searchParams.get("year")) || now.getFullYear()
   const tabParam = searchParams.get("tab")
-  const tab: Tab = VALID_TABS.includes(tabParam as Tab)
-    ? (tabParam as Tab)
-    : "list"
+  const tab: Tab = VALID_TABS.includes(tabParam as Tab) ? (tabParam as Tab) : "list"
 
   const setTab = (t: Tab) => {
     const next = new URLSearchParams(searchParams)
@@ -65,10 +64,7 @@ export const ExpenseAnnualPage = () => {
     fetchData()
   }, [fetchData])
 
-  const total = useMemo(
-    () => expenses.reduce((sum, e) => sum + e.amount, 0),
-    [expenses],
-  )
+  const total = useMemo(() => expenses.reduce((sum, e) => sum + e.amount, 0), [expenses])
 
   const monthlyTotals = useMemo(() => {
     const totals = Array.from({ length: 12 }, () => 0)
@@ -81,9 +77,7 @@ export const ExpenseAnnualPage = () => {
 
   return (
     <div ref={swipeRef} className="mx-auto flex h-full max-w-2xl flex-col px-6">
-      {error && (
-        <p className="mt-6 text-sm text-red-600 dark:text-red-400">{error}</p>
-      )}
+      {error && <p className="mt-6 text-sm text-red-600 dark:text-red-400">{error}</p>}
       <div className="flex shrink-0 items-center justify-between py-8">
         <button
           type="button"
@@ -93,9 +87,7 @@ export const ExpenseAnnualPage = () => {
           <DoubleArrowLeftIcon className="size-4" />
         </button>
         <div className="text-center">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            {year}年の支出
-          </p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{year}年の支出</p>
           <p className="text-4xl font-extrabold">¥{total.toLocaleString()}</p>
         </div>
         <button
@@ -141,9 +133,7 @@ export const ExpenseAnnualPage = () => {
               className="flex items-center justify-between rounded-xl bg-white px-4 py-3 shadow-sm dark:bg-gray-800"
             >
               <span className="text-sm">{i + 1}月</span>
-              <span className="text-sm font-mono">
-                ¥{amount.toLocaleString()}
-              </span>
+              <span className="text-sm font-mono">¥{amount.toLocaleString()}</span>
             </div>
           ))}
         </div>

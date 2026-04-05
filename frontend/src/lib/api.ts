@@ -19,10 +19,9 @@ import type {
 // --- 認証 ---
 
 const register = async (username: string): Promise<RegisterVerifyResponse> => {
-  const { options } = await client.post<RegisterOptionsResponse>(
-    "/auth/register/options",
-    { name: username },
-  )
+  const { options } = await client.post<RegisterOptionsResponse>("/auth/register/options", {
+    name: username,
+  })
 
   const credential = await navigator.credentials.create({
     publicKey: PublicKeyCredential.parseCreationOptionsFromJSON(options),
@@ -40,10 +39,9 @@ const register = async (username: string): Promise<RegisterVerifyResponse> => {
 }
 
 const signIn = async (username: string): Promise<SignInVerifyResponse> => {
-  const { options } = await client.post<SignInOptionsResponse>(
-    "/auth/signin/options",
-    { name: username },
-  )
+  const { options } = await client.post<SignInOptionsResponse>("/auth/signin/options", {
+    name: username,
+  })
 
   const credential = await navigator.credentials.get({
     publicKey: PublicKeyCredential.parseRequestOptionsFromJSON(options),
@@ -79,24 +77,17 @@ const getCategories = (): Promise<CategoryResponse[]> =>
 const createCategory = (data: CategoryCreate): Promise<CategoryResponse> =>
   client.post<CategoryResponse>("/categories", data)
 
-const updateCategory = (
-  uuid: string,
-  data: CategoryUpdate,
-): Promise<CategoryResponse> =>
+const updateCategory = (uuid: string, data: CategoryUpdate): Promise<CategoryResponse> =>
   client.patch<CategoryResponse>(`/categories/${uuid}`, data)
 
-const deleteCategory = (uuid: string): Promise<void> =>
-  client.delete<void>(`/categories/${uuid}`)
+const deleteCategory = (uuid: string): Promise<void> => client.delete<void>(`/categories/${uuid}`)
 
 // --- 支出 ---
 
 const getExpense = (uuid: string): Promise<ExpenseResponse> =>
   client.get<ExpenseResponse>(`/expenses/${uuid}`)
 
-const getExpenses = (
-  year?: number,
-  month?: number,
-): Promise<ExpenseResponse[]> => {
+const getExpenses = (year?: number, month?: number): Promise<ExpenseResponse[]> => {
   const params = new URLSearchParams()
   if (year !== undefined) params.set("year", String(year))
   if (month !== undefined) params.set("month", String(month))
@@ -107,23 +98,17 @@ const getExpenses = (
 const createExpense = (data: ExpenseCreate): Promise<ExpenseResponse> =>
   client.post<ExpenseResponse>("/expenses", data)
 
-const updateExpense = (
-  uuid: string,
-  data: ExpenseUpdate,
-): Promise<ExpenseResponse> =>
+const updateExpense = (uuid: string, data: ExpenseUpdate): Promise<ExpenseResponse> =>
   client.patch<ExpenseResponse>(`/expenses/${uuid}`, data)
 
-const deleteExpense = (uuid: string): Promise<void> =>
-  client.delete<void>(`/expenses/${uuid}`)
+const deleteExpense = (uuid: string): Promise<void> => client.delete<void>(`/expenses/${uuid}`)
 
 // --- 支出テンプレート ---
 
 const getExpenseTemplates = (): Promise<ExpenseTemplateResponse[]> =>
   client.get<ExpenseTemplateResponse[]>("/expense-templates")
 
-const createExpenseTemplate = (
-  data: ExpenseTemplateCreate,
-): Promise<ExpenseTemplateResponse> =>
+const createExpenseTemplate = (data: ExpenseTemplateCreate): Promise<ExpenseTemplateResponse> =>
   client.post<ExpenseTemplateResponse>("/expense-templates", data)
 
 const updateExpenseTemplate = (

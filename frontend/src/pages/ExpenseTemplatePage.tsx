@@ -6,14 +6,8 @@ import {
   ResetIcon,
   TrashIcon,
 } from "@radix-ui/react-icons"
-import {
-  type SubmitEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react"
+import { type SubmitEvent, useCallback, useEffect, useMemo, useRef, useState } from "react"
+
 import { ConfirmDialog, useConfirmDialog } from "../components/ConfirmDialog"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
@@ -30,10 +24,7 @@ export const ExpenseTemplatePage = () => {
     categoryUuid: "",
   })
 
-  const totalAmount = useMemo(
-    () => templates.reduce((sum, t) => sum + t.amount, 0),
-    [templates],
-  )
+  const totalAmount = useMemo(() => templates.reduce((sum, t) => sum + t.amount, 0), [templates])
 
   const [editing, setEditing] = useState<{
     uuid: string
@@ -45,10 +36,7 @@ export const ExpenseTemplatePage = () => {
 
   const fetchData = useCallback(async () => {
     try {
-      const [t, c] = await Promise.all([
-        api.getExpenseTemplates(),
-        api.getCategories(),
-      ])
+      const [t, c] = await Promise.all([api.getExpenseTemplates(), api.getCategories()])
       setTemplates(t)
       setCategories(c)
     } catch (err) {
@@ -76,8 +64,7 @@ export const ExpenseTemplatePage = () => {
     }
   }
 
-  const [deleteTarget, setDeleteTarget] =
-    useState<ExpenseTemplateResponse | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<ExpenseTemplateResponse | null>(null)
   const { dialogRef, open: openDialog } = useConfirmDialog()
 
   const confirmDelete = (t: ExpenseTemplateResponse) => {
@@ -126,9 +113,7 @@ export const ExpenseTemplatePage = () => {
 
   return (
     <div className="mx-auto flex h-full max-w-2xl flex-col gap-6 px-6 pb-4">
-      {error && (
-        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-      )}
+      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
 
       {/* 作成フォーム */}
       <form
@@ -140,9 +125,7 @@ export const ExpenseTemplatePage = () => {
             type="text"
             placeholder="Netflix"
             value={form.name}
-            onChange={(e) =>
-              setForm((prev) => ({ ...prev, name: e.target.value }))
-            }
+            onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
             required
             maxLength={100}
             className="flex-1 rounded-xl bg-gray-50 px-4 py-2.5 text-base outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
@@ -165,9 +148,7 @@ export const ExpenseTemplatePage = () => {
           <div className="relative flex-1">
             <select
               value={form.categoryUuid}
-              onChange={(e) =>
-                setForm((prev) => ({ ...prev, categoryUuid: e.target.value }))
-              }
+              onChange={(e) => setForm((prev) => ({ ...prev, categoryUuid: e.target.value }))}
               required
               className="w-full appearance-none rounded-xl bg-gray-50 py-2.5 pr-8 pl-4 text-base outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
             >
@@ -214,9 +195,7 @@ export const ExpenseTemplatePage = () => {
                       type="text"
                       value={editing.name}
                       onChange={(e) =>
-                        setEditing((prev) =>
-                          prev ? { ...prev, name: e.target.value } : null,
-                        )
+                        setEditing((prev) => (prev ? { ...prev, name: e.target.value } : null))
                       }
                       maxLength={100}
                       className="flex-1 rounded-lg bg-gray-50 px-3 py-1.5 text-base outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
@@ -227,12 +206,8 @@ export const ExpenseTemplatePage = () => {
                       value={editing.amount}
                       onChange={(e) => {
                         const raw = e.target.value.replace(/[^0-9]/g, "")
-                        const formatted = raw
-                          ? Number(raw).toLocaleString()
-                          : ""
-                        setEditing((prev) =>
-                          prev ? { ...prev, amount: formatted } : null,
-                        )
+                        const formatted = raw ? Number(raw).toLocaleString() : ""
+                        setEditing((prev) => (prev ? { ...prev, amount: formatted } : null))
                       }}
                       className="w-24 rounded-lg bg-gray-50 px-3 py-1.5 text-base outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
                     />
@@ -243,9 +218,7 @@ export const ExpenseTemplatePage = () => {
                         value={editing.categoryUuid}
                         onChange={(e) =>
                           setEditing((prev) =>
-                            prev
-                              ? { ...prev, categoryUuid: e.target.value }
-                              : null,
+                            prev ? { ...prev, categoryUuid: e.target.value } : null,
                           )
                         }
                         className="w-full appearance-none rounded-lg bg-gray-50 py-1.5 pr-8 pl-3 text-base outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
@@ -282,9 +255,7 @@ export const ExpenseTemplatePage = () => {
                       {t.category.name}
                     </span>
                   </div>
-                  <span className="text-sm tabular-nums">
-                    ¥{t.amount.toLocaleString()}
-                  </span>
+                  <span className="text-sm tabular-nums">¥{t.amount.toLocaleString()}</span>
                   <button
                     type="button"
                     onClick={() => startEdit(t)}
@@ -305,9 +276,7 @@ export const ExpenseTemplatePage = () => {
           ))}
         </div>
       ) : (
-        <p className="py-8 text-center text-sm text-gray-400 dark:text-gray-500">
-          No templates
-        </p>
+        <p className="py-8 text-center text-sm text-gray-400 dark:text-gray-500">No templates</p>
       )}
 
       <ConfirmDialog

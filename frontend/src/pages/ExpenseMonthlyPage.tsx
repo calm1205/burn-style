@@ -8,6 +8,7 @@ import {
 } from "@radix-ui/react-icons"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useSearchParams } from "react-router"
+
 import { CategoryBubbleChart } from "../components/CategoryBubbleChart"
 import { CategoryPieChart } from "../components/CategoryPieChart"
 import { ExpenseHeatmap } from "../components/ExpenseHeatmap"
@@ -27,9 +28,7 @@ export const ExpenseMonthlyPage = () => {
   const year = Number(searchParams.get("year")) || now.getFullYear()
   const month = Number(searchParams.get("month")) || now.getMonth() + 1
   const tabParam = searchParams.get("tab")
-  const tab: Tab = VALID_TABS.includes(tabParam as Tab)
-    ? (tabParam as Tab)
-    : "list"
+  const tab: Tab = VALID_TABS.includes(tabParam as Tab) ? (tabParam as Tab) : "list"
 
   const updateParams = (params: Record<string, string>) => {
     const next = new URLSearchParams(searchParams)
@@ -121,9 +120,7 @@ export const ExpenseMonthlyPage = () => {
 
   return (
     <div className="mx-auto flex h-full max-w-2xl flex-col overflow-hidden px-6">
-      {error && (
-        <p className="mt-6 text-sm text-red-600 dark:text-red-400">{error}</p>
-      )}
+      {error && <p className="mt-6 text-sm text-red-600 dark:text-red-400">{error}</p>}
       <div className="flex shrink-0 items-center justify-between py-8">
         <button
           type="button"
@@ -153,9 +150,7 @@ export const ExpenseMonthlyPage = () => {
             <button
               key={cat}
               type="button"
-              onClick={() =>
-                setSelectedCategory(selectedCategory === cat ? null : cat)
-              }
+              onClick={() => setSelectedCategory(selectedCategory === cat ? null : cat)}
               className={`shrink-0 rounded-full border px-3 py-1 text-xs transition-colors ${
                 selectedCategory === cat
                   ? "border-primary bg-primary text-white"
@@ -202,11 +197,7 @@ export const ExpenseMonthlyPage = () => {
 
         {tab === "heatmap" && (
           <div className="min-h-0 flex-1 overflow-y-auto pt-4">
-            <ExpenseHeatmap
-              year={year}
-              month={month}
-              expenses={filteredExpenses}
-            />
+            <ExpenseHeatmap year={year} month={month} expenses={filteredExpenses} />
           </div>
         )}
 

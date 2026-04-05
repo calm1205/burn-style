@@ -1,5 +1,6 @@
 import type { ComponentType } from "react"
 import { NavLink } from "react-router"
+
 import { UserMenu } from "./UserMenu"
 
 interface NavItem {
@@ -14,11 +15,7 @@ interface LayoutLaptopProps {
   onLogout: () => void
 }
 
-export const LayoutLaptop = ({
-  navItems,
-  userName,
-  onLogout,
-}: LayoutLaptopProps) => {
+export const LayoutLaptop = ({ navItems, userName, onLogout }: LayoutLaptopProps) => {
   return (
     <aside className="hidden md:flex md:flex-col w-56 border-r border-gray-100 bg-white dark:border-gray-700 dark:bg-gray-800">
       <div className="p-4 font-bold text-lg border-b border-gray-100 dark:border-gray-700">

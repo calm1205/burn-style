@@ -1,4 +1,5 @@
-import { createBrowserRouter, Navigate } from "react-router"
+import { Navigate, createBrowserRouter } from "react-router"
+
 import { AppLayout } from "./components/AppLayout"
 import { ProtectedRoute } from "./components/ProtectedRoute"
 import { CategoriesPage } from "./pages/CategoriesPage"

@@ -1,17 +1,6 @@
-import {
-  CheckIcon,
-  Pencil1Icon,
-  PlusIcon,
-  ResetIcon,
-  TrashIcon,
-} from "@radix-ui/react-icons"
-import {
-  type SubmitEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react"
+import { CheckIcon, Pencil1Icon, PlusIcon, ResetIcon, TrashIcon } from "@radix-ui/react-icons"
+import { type SubmitEvent, useCallback, useEffect, useRef, useState } from "react"
+
 import { ConfirmDialog, useConfirmDialog } from "../components/ConfirmDialog"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
@@ -55,9 +44,7 @@ export const CategoriesPage = () => {
     }
   }
 
-  const [deleteTarget, setDeleteTarget] = useState<CategoryResponse | null>(
-    null,
-  )
+  const [deleteTarget, setDeleteTarget] = useState<CategoryResponse | null>(null)
   const { dialogRef, open: openDialog } = useConfirmDialog()
 
   const confirmDelete = (c: CategoryResponse) => {
@@ -97,9 +84,7 @@ export const CategoriesPage = () => {
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-6 px-6">
-      {error && (
-        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-      )}
+      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
 
       {/* 作成フォーム */}
       <form
@@ -136,9 +121,7 @@ export const CategoriesPage = () => {
                     type="text"
                     value={editing?.name ?? ""}
                     onChange={(e) =>
-                      setEditing((prev) =>
-                        prev ? { ...prev, name: e.target.value } : null,
-                      )
+                      setEditing((prev) => (prev ? { ...prev, name: e.target.value } : null))
                     }
                     maxLength={50}
                     className="flex-1 rounded-lg bg-gray-50 px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
@@ -181,9 +164,7 @@ export const CategoriesPage = () => {
           ))}
         </div>
       ) : (
-        <p className="py-8 text-center text-sm text-gray-400 dark:text-gray-500">
-          No categories
-        </p>
+        <p className="py-8 text-center text-sm text-gray-400 dark:text-gray-500">No categories</p>
       )}
 
       <ConfirmDialog

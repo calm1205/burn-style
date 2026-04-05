@@ -21,8 +21,11 @@ jobs:
       - name: Install dependencies
         run: cd frontend && npm ci
 
-      - name: Biome check
-        run: cd frontend && npx biome check .
+      - name: oxlint
+        run: cd frontend && npx oxlint src/
+
+      - name: oxfmt check
+        run: cd frontend && npx oxfmt --check src/
 
   deploy:
     needs: lint

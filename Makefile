@@ -3,11 +3,12 @@
 BACKEND_DIR = backend
 FRONTEND_DIR = frontend
 
-lint: ## backend(mypy & ruff) + frontend(typecheck & biome)
+lint: ## backend(mypy & ruff) + frontend(typecheck & oxlint & oxfmt)
 	cd $(BACKEND_DIR) && uv run mypy .
 	cd $(BACKEND_DIR) && uv run ruff check --fix .
 	cd $(FRONTEND_DIR) && npm run typecheck
-	cd $(FRONTEND_DIR) && npx biome check .
+	cd $(FRONTEND_DIR) && npx oxlint src/
+	cd $(FRONTEND_DIR) && npx oxfmt --check src/
 
 test-backend: ## backendのテストを実行
 	cd $(BACKEND_DIR) && uv run pytest -v

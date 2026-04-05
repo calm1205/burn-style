@@ -8,7 +8,7 @@
 ## Lint
 | コマンド | 説明 |
 |---------|------|
-| `make lint` | backend (mypy + ruff) + frontend (biome) 実行 |
+| `make lint` | backend (mypy + ruff) + frontend (oxlint + oxfmt) 実行 |
 
 ## テスト
 | コマンド | 説明 |

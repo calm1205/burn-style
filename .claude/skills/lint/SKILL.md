@@ -1,5 +1,5 @@
 ---
-description: backend(mypy+ruff) + frontend(biome)のlint実行・自動修正
+description: backend(mypy+ruff) + frontend(oxlint+oxfmt)のlint実行・自動修正
 ---
 
 # 役割
@@ -15,7 +15,7 @@ lint実行と問題の自動修正
 - エラーあり → 次のステップへ
 
 ## 3. 自動修正
-- ruff / biome の自動修正可能なエラー → 修正を適用
+- ruff / oxlint の自動修正可能なエラー → 修正を適用
 - mypy の型エラー → 該当ファイルを読み、修正を適用
 - 修正後、再度 `make lint` で確認
 

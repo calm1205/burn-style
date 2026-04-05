@@ -1,6 +1,7 @@
 import { ChevronRightIcon } from "@radix-ui/react-icons"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router"
+
 import { MonthlyTrendChart } from "../components/MonthlyTrendChart"
 import { SimplePieChart } from "../components/SimplePieChart"
 import { api } from "../lib/api"
@@ -53,16 +54,11 @@ export const TopPage = () => {
     fetchData()
   }, [fetchData])
 
-  const total = useMemo(
-    () => expenses.reduce((sum, e) => sum + e.amount, 0),
-    [expenses],
-  )
+  const total = useMemo(() => expenses.reduce((sum, e) => sum + e.amount, 0), [expenses])
 
   return (
     <div className="flex h-full flex-col px-6">
-      {error && (
-        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-      )}
+      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
       <div className="flex flex-1 flex-col items-center justify-center">
         <button
           type="button"
@@ -77,18 +73,12 @@ export const TopPage = () => {
               {loading ? (
                 <div className="my-1 h-8 w-40 animate-pulse rounded-lg bg-gray-100 dark:bg-gray-700" />
               ) : (
-                <span className="text-3xl font-extrabold">
-                  ¥{total.toLocaleString()}
-                </span>
+                <span className="text-3xl font-extrabold">¥{total.toLocaleString()}</span>
               )}
             </div>
             <ChevronRightIcon className="size-5 text-gray-400 dark:text-gray-500" />
           </div>
-          {loading ? (
-            <SkeletonPieChart />
-          ) : (
-            <SimplePieChart expenses={expenses} />
-          )}
+          {loading ? <SkeletonPieChart /> : <SimplePieChart expenses={expenses} />}
         </button>
 
         <button
@@ -99,11 +89,7 @@ export const TopPage = () => {
           <p className="mb-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
             Annual
           </p>
-          {loading ? (
-            <SkeletonBarChart />
-          ) : (
-            <MonthlyTrendChart year={year} month={month} />
-          )}
+          {loading ? <SkeletonBarChart /> : <MonthlyTrendChart year={year} month={month} />}
         </button>
       </div>
     </div>

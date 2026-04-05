@@ -1,5 +1,6 @@
 import { useMemo } from "react"
 import { useNavigate } from "react-router"
+
 import type { ExpenseResponse } from "../lib/types"
 
 const formatDateTime = (dateStr: string) => {
@@ -17,8 +18,7 @@ export const ExpenseList = ({ expenses }: ExpenseListProps) => {
   const sorted = useMemo(
     () =>
       [...expenses].sort(
-        (a, b) =>
-          new Date(b.expensed_at).getTime() - new Date(a.expensed_at).getTime(),
+        (a, b) => new Date(b.expensed_at).getTime() - new Date(a.expensed_at).getTime(),
       ),
     [expenses],
   )
@@ -37,10 +37,7 @@ export const ExpenseList = ({ expenses }: ExpenseListProps) => {
             {e.categories.length > 0 && (
               <div className="flex gap-2">
                 {e.categories.map((c) => (
-                  <span
-                    key={c.uuid}
-                    className="text-xs text-gray-400 dark:text-gray-500"
-                  >
+                  <span key={c.uuid} className="text-xs text-gray-400 dark:text-gray-500">
                     {c.name}
                   </span>
                 ))}
@@ -48,9 +45,7 @@ export const ExpenseList = ({ expenses }: ExpenseListProps) => {
             )}
           </div>
           <div className="flex shrink-0 flex-col items-end gap-1">
-            <span className="text-sm font-mono">
-              ¥{e.amount.toLocaleString()}
-            </span>
+            <span className="text-sm font-mono">¥{e.amount.toLocaleString()}</span>
             <span className="text-xs text-gray-400 dark:text-gray-500">
               {formatDateTime(e.expensed_at)}
             </span>
