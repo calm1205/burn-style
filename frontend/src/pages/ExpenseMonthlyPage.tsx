@@ -191,7 +191,7 @@ export const ExpenseMonthlyPage = () => {
         ))}
       </div>
 
-      <div ref={swipeRef} className="min-h-0 flex-1">
+      <div ref={swipeRef} className="flex min-h-0 flex-1 flex-col">
         {tab === "list" && <ExpenseList expenses={filteredExpenses} />}
 
         {tab === "pie" && (
