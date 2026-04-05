@@ -1,4 +1,6 @@
 """ExpenseTemplate テーブルに seed データを投入するスクリプト"""
+from __future__ import annotations
+
 from sqlalchemy.orm import Session
 
 from src.model import Category
