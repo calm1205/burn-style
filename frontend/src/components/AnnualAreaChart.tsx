@@ -8,6 +8,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
+
 import { CHART_COLORS } from "../lib/colors"
 import type { ExpenseResponse } from "../lib/types"
 
@@ -71,11 +72,7 @@ export const AnnualAreaChart = ({ expenses }: AnnualAreaChartProps) => {
     <div className="flex flex-col gap-3">
       <ResponsiveContainer width="100%" height={300}>
         <AreaChart data={data}>
-          <CartesianGrid
-            strokeDasharray="3 3"
-            vertical={false}
-            stroke="var(--chart-grid)"
-          />
+          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--chart-grid)" />
           <XAxis
             dataKey="label"
             tick={{ fontSize: 11, fill: "var(--chart-label)" }}
@@ -105,9 +102,7 @@ export const AnnualAreaChart = ({ expenses }: AnnualAreaChartProps) => {
               dataKey={cat}
               stackId="1"
               fill={CHART_COLORS[categories.indexOf(cat) % CHART_COLORS.length]}
-              stroke={
-                CHART_COLORS[categories.indexOf(cat) % CHART_COLORS.length]
-              }
+              stroke={CHART_COLORS[categories.indexOf(cat) % CHART_COLORS.length]}
               isAnimationActive={false}
             />
           ))}

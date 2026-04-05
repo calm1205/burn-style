@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react"
 import { Pie, PieChart, Tooltip } from "recharts"
-import { assignChartColors, CHART_COLORS } from "../lib/colors"
+
+import { CHART_COLORS, assignChartColors } from "../lib/colors"
 import type { ExpenseResponse } from "../lib/types"
 
 interface CategoryTotal {
@@ -29,7 +30,7 @@ export const CategoryPieChart = ({ expenses }: CategoryPieChartProps) => {
     }
     const sorted = [...map.entries()]
       .map(([name, amount]) => ({ name, amount }))
-      .sort((a, b) => b.amount - a.amount)
+      .toSorted((a, b) => b.amount - a.amount)
     return {
       allCategories: sorted.map((s) => s.name),
       colorMap: assignChartColors(sorted),
@@ -59,7 +60,7 @@ export const CategoryPieChart = ({ expenses }: CategoryPieChartProps) => {
           fill: colorMap.get(name) ?? CHART_COLORS[0],
         }),
       )
-      .sort((a, b) => b.amount - a.amount)
+      .toSorted((a, b) => b.amount - a.amount)
   }, [expenses, hidden, colorMap])
 
   const total = categoryData.reduce((sum, c) => sum + c.amount, 0)
@@ -148,9 +149,7 @@ export const CategoryPieChart = ({ expenses }: CategoryPieChartProps) => {
                     <span className="text-xs text-gray-400 dark:text-gray-500">
                       {Math.round((matched.amount / total) * 100)}%
                     </span>
-                    <span className="font-mono text-sm">
-                      ¥{matched.amount.toLocaleString()}
-                    </span>
+                    <span className="font-mono text-sm">¥{matched.amount.toLocaleString()}</span>
                   </div>
                 )}
               </button>

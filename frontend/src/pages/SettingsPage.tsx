@@ -10,11 +10,12 @@ import {
 } from "@radix-ui/react-icons"
 import { useState } from "react"
 import { useNavigate, useOutletContext } from "react-router"
+
 import { ConfirmDialog, useConfirmDialog } from "../components/ConfirmDialog"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
 import { STORAGE_KEYS } from "../lib/constants"
-import { applyTheme, getStoredTheme, type ThemeMode } from "../lib/theme"
+import { type ThemeMode, applyTheme, getStoredTheme } from "../lib/theme"
 import type { UserResponse } from "../lib/types"
 
 interface OutletContext {
@@ -83,15 +84,11 @@ export const SettingsPage = () => {
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-6 px-6">
-      {error && (
-        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-      )}
+      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
 
       {/* Profile */}
       <div className="rounded-2xl bg-white p-5 shadow-sm dark:bg-gray-800">
-        <p className="mb-1 text-xs text-gray-500 dark:text-gray-400">
-          Username
-        </p>
+        <p className="mb-1 text-xs text-gray-500 dark:text-gray-400">Username</p>
         {editing ? (
           <div className="flex items-center gap-2">
             <input
@@ -143,11 +140,7 @@ export const SettingsPage = () => {
                   : "bg-gray-50 text-gray-500 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600"
               }`}
             >
-              {mode === "system"
-                ? "System"
-                : mode === "light"
-                  ? "Light"
-                  : "Dark"}
+              {mode === "system" ? "System" : mode === "light" ? "Light" : "Dark"}
             </button>
           ))}
         </div>

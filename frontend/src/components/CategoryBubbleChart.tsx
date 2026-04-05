@@ -9,6 +9,7 @@ import {
   YAxis,
   ZAxis,
 } from "recharts"
+
 import { CHART_COLORS, RANGE_COLORS } from "../lib/colors"
 import type { ExpenseResponse } from "../lib/types"
 

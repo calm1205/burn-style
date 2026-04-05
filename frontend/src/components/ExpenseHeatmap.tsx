@@ -1,23 +1,18 @@
 import { useMemo, useState } from "react"
+
 import { CHART_COLORS } from "../lib/colors"
 import type { ExpenseResponse } from "../lib/types"
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 const getColor = (amount: number, mean: number, sd: number) => {
-  if (amount === 0)
-    return { bg: "var(--color-gray-100)", text: "var(--color-gray-700)" }
-  if (sd === 0)
-    return { bg: "var(--color-chart-scale-3)", text: "var(--color-gray-700)" }
+  if (amount === 0) return { bg: "var(--color-gray-100)", text: "var(--color-gray-700)" }
+  if (sd === 0) return { bg: "var(--color-chart-scale-3)", text: "var(--color-gray-700)" }
   const z = (amount - mean) / sd
-  if (z > 0.75)
-    return { bg: "var(--color-chart-scale-5)", text: "var(--color-gray-50)" }
-  if (z > 0.25)
-    return { bg: "var(--color-chart-scale-4)", text: "var(--color-gray-50)" }
-  if (z > -0.25)
-    return { bg: "var(--color-chart-scale-3)", text: "var(--color-gray-700)" }
-  if (z > -0.75)
-    return { bg: "var(--color-chart-scale-2)", text: "var(--color-gray-700)" }
+  if (z > 0.75) return { bg: "var(--color-chart-scale-5)", text: "var(--color-gray-50)" }
+  if (z > 0.25) return { bg: "var(--color-chart-scale-4)", text: "var(--color-gray-50)" }
+  if (z > -0.25) return { bg: "var(--color-chart-scale-3)", text: "var(--color-gray-700)" }
+  if (z > -0.75) return { bg: "var(--color-chart-scale-2)", text: "var(--color-gray-700)" }
   return { bg: "var(--color-chart-scale-1)", text: "var(--color-gray-700)" }
 }
 
@@ -27,11 +22,7 @@ interface ExpenseHeatmapProps {
   expenses: ExpenseResponse[]
 }
 
-export const ExpenseHeatmap = ({
-  year,
-  month,
-  expenses,
-}: ExpenseHeatmapProps) => {
+export const ExpenseHeatmap = ({ year, month, expenses }: ExpenseHeatmapProps) => {
   const [hidden, setHidden] = useState<Set<string>>(new Set())
 
   const allCategories = useMemo(() => {
@@ -67,14 +58,9 @@ export const ExpenseHeatmap = ({
     const offset = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1
 
     const amounts = [...totals.values()]
-    const avg =
-      amounts.length > 0
-        ? amounts.reduce((s, v) => s + v, 0) / amounts.length
-        : 0
+    const avg = amounts.length > 0 ? amounts.reduce((s, v) => s + v, 0) / amounts.length : 0
     const variance =
-      amounts.length > 0
-        ? amounts.reduce((s, v) => s + (v - avg) ** 2, 0) / amounts.length
-        : 0
+      amounts.length > 0 ? amounts.reduce((s, v) => s + (v - avg) ** 2, 0) / amounts.length : 0
 
     return {
       dailyTotals: totals,
@@ -124,14 +110,8 @@ export const ExpenseHeatmap = ({
             <div
               key={`${day ?? "empty"}-${String(i)}`}
               className="flex aspect-square items-center justify-center rounded text-xs"
-              style={
-                color
-                  ? { backgroundColor: color.bg, color: color.text }
-                  : undefined
-              }
-              title={
-                day ? `${month}/${day}: ¥${amount.toLocaleString()}` : undefined
-              }
+              style={color ? { backgroundColor: color.bg, color: color.text } : undefined}
+              title={day ? `${month}/${day}: ¥${amount.toLocaleString()}` : undefined}
             >
               {day}
             </div>

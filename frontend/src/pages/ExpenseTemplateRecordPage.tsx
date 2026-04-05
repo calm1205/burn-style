@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react"
 import { useNavigate } from "react-router"
+
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
 import type { ExpenseTemplateResponse } from "../lib/types"
@@ -10,8 +11,9 @@ interface TemplateRow {
   amount: string
 }
 
+const pad = (n: number) => String(n).padStart(2, "0")
+
 const toLocalDatetime = (d: Date) => {
-  const pad = (n: number) => String(n).padStart(2, "0")
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
 
@@ -45,17 +47,13 @@ export const ExpenseTemplateRecordPage = () => {
   }, [fetchData])
 
   const toggleSelect = (idx: number) => {
-    setRows((prev) =>
-      prev.map((r, i) => (i === idx ? { ...r, selected: !r.selected } : r)),
-    )
+    setRows((prev) => prev.map((r, i) => (i === idx ? { ...r, selected: !r.selected } : r)))
   }
 
   const updateAmount = (idx: number, value: string) => {
     const raw = value.replace(/[^0-9]/g, "")
     const formatted = raw ? Number(raw).toLocaleString() : ""
-    setRows((prev) =>
-      prev.map((r, i) => (i === idx ? { ...r, amount: formatted } : r)),
-    )
+    setRows((prev) => prev.map((r, i) => (i === idx ? { ...r, amount: formatted } : r)))
   }
 
   const selectedCount = rows.filter((r) => r.selected).length
@@ -98,9 +96,7 @@ export const ExpenseTemplateRecordPage = () => {
 
   return (
     <div className="mx-auto flex h-full max-w-2xl flex-col gap-4 px-6 pb-4">
-      {error && (
-        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-      )}
+      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
 
       <input
         type="datetime-local"
@@ -143,17 +139,13 @@ export const ExpenseTemplateRecordPage = () => {
                     />
                   </div>
                 ) : (
-                  <span className="text-sm tabular-nums text-gray-400">
-                    ¥{r.amount}
-                  </span>
+                  <span className="text-sm tabular-nums text-gray-400">¥{r.amount}</span>
                 )}
               </div>
             </button>
           ))
         ) : (
-          <p className="py-8 text-center text-sm text-gray-400 dark:text-gray-500">
-            No templates
-          </p>
+          <p className="py-8 text-center text-sm text-gray-400 dark:text-gray-500">No templates</p>
         )}
       </div>
 

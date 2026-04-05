@@ -1,12 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
-import {
-  Bar,
-  BarChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts"
+import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+
 import { api } from "../lib/api"
 import type { ExpenseResponse } from "../lib/types"
 
@@ -30,12 +24,8 @@ interface MonthlyTrendChartProps {
 }
 
 export const MonthlyTrendChart = ({ year, month }: MonthlyTrendChartProps) => {
-  const [thisYearExpenses, setThisYearExpenses] = useState<ExpenseResponse[]>(
-    [],
-  )
-  const [lastYearExpenses, setLastYearExpenses] = useState<ExpenseResponse[]>(
-    [],
-  )
+  const [thisYearExpenses, setThisYearExpenses] = useState<ExpenseResponse[]>([])
+  const [lastYearExpenses, setLastYearExpenses] = useState<ExpenseResponse[]>([])
 
   const fetchData = useCallback(async () => {
     try {

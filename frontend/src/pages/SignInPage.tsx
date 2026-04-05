@@ -1,6 +1,7 @@
 import { Cross2Icon } from "@radix-ui/react-icons"
 import { type SubmitEvent, useState } from "react"
 import { Link, useNavigate } from "react-router"
+
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
 import { STORAGE_KEYS } from "../lib/constants"
@@ -37,20 +38,12 @@ export const SignInPage = () => {
 
   return (
     <div className="flex min-h-dvh items-center justify-center bg-gray-50 px-4 dark:bg-gray-900 dark:text-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="flex w-full max-w-sm flex-col gap-8"
-      >
-        <h1 className="text-center text-3xl font-light tracking-tight">
-          Sign In
-        </h1>
+      <form onSubmit={handleSubmit} className="flex w-full max-w-sm flex-col gap-8">
+        <h1 className="text-center text-3xl font-light tracking-tight">Sign In</h1>
 
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-1">
-            <label
-              htmlFor="username"
-              className="text-xs text-gray-500 dark:text-gray-400"
-            >
+            <label htmlFor="username" className="text-xs text-gray-500 dark:text-gray-400">
               Username
             </label>
             <div className="relative">
@@ -86,18 +79,11 @@ export const SignInPage = () => {
           </button>
         </div>
 
-        {error && (
-          <p className="text-center text-sm text-red-600 dark:text-red-400">
-            {error}
-          </p>
-        )}
+        {error && <p className="text-center text-sm text-red-600 dark:text-red-400">{error}</p>}
 
         <p className="text-center text-sm text-gray-500 dark:text-gray-400">
           {"Don't have an account? "}
-          <Link
-            to="/signup"
-            className="text-primary underline underline-offset-4 hover:opacity-70"
-          >
+          <Link to="/signup" className="text-primary underline underline-offset-4 hover:opacity-70">
             Sign Up
           </Link>
         </p>

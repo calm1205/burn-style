@@ -27,11 +27,7 @@ const getHeaders = (): HeadersInit => {
   return headers
 }
 
-const request = async <T>(
-  method: string,
-  path: string,
-  body?: unknown,
-): Promise<T> => {
+const request = async <T>(method: string, path: string, body?: unknown): Promise<T> => {
   const response = await fetch(`${baseUrl}${path}`, {
     method,
     headers: getHeaders(),
@@ -51,8 +47,8 @@ const request = async <T>(
   }
 
   if (!response.ok) {
-    const body = await response.json().catch(() => null)
-    const detail = body?.detail
+    const errorBody = await response.json().catch(() => null)
+    const detail = errorBody?.detail
     const message =
       typeof detail === "string"
         ? detail

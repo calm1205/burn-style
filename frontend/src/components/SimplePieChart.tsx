@@ -1,5 +1,6 @@
 import { Pie, PieChart } from "recharts"
-import { assignChartColors, CHART_COLORS } from "../lib/colors"
+
+import { CHART_COLORS, assignChartColors } from "../lib/colors"
 import type { ExpenseResponse } from "../lib/types"
 
 interface SimplePieChartProps {
@@ -19,7 +20,7 @@ export const SimplePieChart = ({ expenses }: SimplePieChartProps) => {
   }
   const sorted = [...map.entries()]
     .map(([name, amount]) => ({ name, amount }))
-    .sort((a, b) => b.amount - a.amount)
+    .toSorted((a, b) => b.amount - a.amount)
   const colorMap = assignChartColors(sorted)
   const data = sorted.map((item) => ({
     ...item,
@@ -53,9 +54,7 @@ export const SimplePieChart = ({ expenses }: SimplePieChartProps) => {
               className="inline-block size-2 shrink-0 rounded-full"
               style={{ backgroundColor: c.fill }}
             />
-            <span className="truncate text-xs text-gray-500 dark:text-gray-400">
-              {c.name}
-            </span>
+            <span className="truncate text-xs text-gray-500 dark:text-gray-400">{c.name}</span>
           </li>
         ))}
       </ul>

@@ -1,14 +1,16 @@
 import { ArrowLeftIcon, TrashIcon } from "@radix-ui/react-icons"
 import { type SubmitEvent, useCallback, useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router"
+
 import { ConfirmDialog, useConfirmDialog } from "../components/ConfirmDialog"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
 import type { CategoryResponse, ExpenseResponse } from "../lib/types"
 
+const pad = (n: number) => String(n).padStart(2, "0")
+
 const toLocalDatetime = (isoStr: string) => {
   const d = new Date(isoStr)
-  const pad = (n: number) => String(n).padStart(2, "0")
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
 
@@ -30,10 +32,7 @@ export const ExpenseDetailPage = () => {
   const fetchData = useCallback(async () => {
     if (!uuid) return
     try {
-      const [exp, cats] = await Promise.all([
-        api.getExpense(uuid),
-        api.getCategories(),
-      ])
+      const [exp, cats] = await Promise.all([api.getExpense(uuid), api.getCategories()])
       setExpense(exp)
       setCategories(cats)
       setForm({
@@ -102,9 +101,7 @@ export const ExpenseDetailPage = () => {
         <ArrowLeftIcon className="size-4 text-gray-600 dark:text-gray-400" />
       </button>
 
-      {error && (
-        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-      )}
+      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
 
       <form
         id="expense-detail-form"
@@ -112,29 +109,21 @@ export const ExpenseDetailPage = () => {
         className="flex flex-col gap-4 rounded-2xl bg-white p-5 shadow-sm dark:bg-gray-800"
       >
         <div className="flex flex-col gap-1.5">
-          <label
-            htmlFor="detail-name"
-            className="text-xs text-gray-500 dark:text-gray-400"
-          >
+          <label htmlFor="detail-name" className="text-xs text-gray-500 dark:text-gray-400">
             Name
           </label>
           <input
             id="detail-name"
             type="text"
             value={form.name}
-            onChange={(e) =>
-              setForm((prev) => ({ ...prev, name: e.target.value }))
-            }
+            onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
             required
             maxLength={100}
             className="rounded-xl bg-gray-50 px-4 py-3 text-base outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
           />
         </div>
         <div className="flex flex-col gap-1.5">
-          <label
-            htmlFor="detail-amount"
-            className="text-xs text-gray-500 dark:text-gray-400"
-          >
+          <label htmlFor="detail-amount" className="text-xs text-gray-500 dark:text-gray-400">
             Amount
           </label>
           <input
@@ -152,28 +141,21 @@ export const ExpenseDetailPage = () => {
           />
         </div>
         <div className="flex flex-col gap-1.5">
-          <label
-            htmlFor="detail-date"
-            className="text-xs text-gray-500 dark:text-gray-400"
-          >
+          <label htmlFor="detail-date" className="text-xs text-gray-500 dark:text-gray-400">
             Date
           </label>
           <input
             id="detail-date"
             type="datetime-local"
             value={form.expensedAt}
-            onChange={(e) =>
-              setForm((prev) => ({ ...prev, expensedAt: e.target.value }))
-            }
+            onChange={(e) => setForm((prev) => ({ ...prev, expensedAt: e.target.value }))}
             required
             className="rounded-xl bg-gray-50 px-4 py-3 text-base outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
           />
         </div>
         {categories.length > 0 && (
           <div className="flex flex-col gap-1.5">
-            <span className="text-xs text-gray-500 dark:text-gray-400">
-              Category
-            </span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">Category</span>
             <div className="flex flex-wrap gap-2">
               {categories.map((c) => (
                 <button

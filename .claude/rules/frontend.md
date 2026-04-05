@@ -6,13 +6,17 @@
 - **ビルドツール**: Vite 8
 - **CSS**: Tailwind CSS v4
 - **UIコンポーネント**: Radix UI Themes
-- **リンター/フォーマッター**: Biome 2.x
+- **リンター**: oxlint
+- **フォーマッター**: oxfmt
 
-## Biome 設定
+## oxlint 設定
+- correctness + suspicious カテゴリ有効
+
+## oxfmt 設定
 - インデント: スペース
 - クォート: ダブルクォート (`"`)
+- セミコロン: なし（ASI保護時のみ自動付与）
 - import自動整理: 有効
-- recommended ルール適用
 
 ## Tailwind CSS v4
 - Viteプラグイン (`@tailwindcss/vite`) で統合
