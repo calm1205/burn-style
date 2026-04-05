@@ -1,5 +1,7 @@
 """Category、Expense テーブルに順番に seed データを投入するスクリプト
 
+既存データ(users, webauthn_credentials以外)を削除してからクリーンに再投入する。
+
 Usage:
     uv run python scripts/seed_all.py              # 1件目のユーザーを使用
     uv run python scripts/seed_all.py <user_name>  # 指定ユーザーを使用
@@ -20,6 +22,9 @@ from sqlalchemy.orm import Session  # noqa: E402
 from scripts.seed_categories import seed_categories  # noqa: E402
 from scripts.seed_expense_templates import seed_expense_templates  # noqa: E402
 from scripts.seed_expenses import seed_expenses  # noqa: E402
+from src.model import Category, Expense  # noqa: E402
+from src.model.expense_category_association import ExpenseCategoryAssociation  # noqa: E402
+from src.model.expense_template import ExpenseTemplate  # noqa: E402
 from src.model.user import User  # noqa: E402
 from src.repository.database import get_session_local  # noqa: E402
 
@@ -38,14 +43,46 @@ def resolve_user(db: Session, user_name: str | None) -> User:
     return user
 
 
+def delete_existing_data(db: Session, user: User) -> None:
+    """対象ユーザーのseedデータを全削除(FK制約を考慮した順序)"""
+    # 1. 中間テーブル(expense_category_association)
+    assoc_count = db.query(ExpenseCategoryAssociation).filter(
+        ExpenseCategoryAssociation.expense_uuid.in_(
+            db.query(Expense.uuid).filter(Expense.user_uuid == user.uuid),
+        ),
+    ).delete(synchronize_session=False)
+
+    # 2. expenses
+    expense_count = db.query(Expense).filter(Expense.user_uuid == user.uuid).delete(synchronize_session=False)
+
+    # 3. expense_templates
+    template_count = db.query(ExpenseTemplate).filter(
+        ExpenseTemplate.user_uuid == user.uuid,
+    ).delete(synchronize_session=False)
+
+    # 4. categories
+    category_count = db.query(Category).filter(Category.user_uuid == user.uuid).delete(synchronize_session=False)
+
+    db.commit()
+
+    print(f"既存データを削除: カテゴリ {category_count}件, 支出 {expense_count}件, "
+          f"関連付け {assoc_count}件, テンプレート {template_count}件")
+
+
 def seed_all(user_name: str | None = None) -> None:
-    """Category、Expense テーブルに順番に seed データを投入"""
+    """既存データを削除し、Category、Expense テーブルにクリーンに seed データを投入"""
     db: Session = get_session_local()()
     try:
         user = resolve_user(db, user_name)
         print("=" * 60)
         print(f"対象ユーザー: {user.name} (UUID: {user.uuid})")
         print("=" * 60)
+        print()
+
+        # 0. 既存データの削除
+        print("[0/3] 既存データの削除...")
+        print("-" * 60)
+        delete_existing_data(db, user)
         print()
 
         # 1. カテゴリを投入
