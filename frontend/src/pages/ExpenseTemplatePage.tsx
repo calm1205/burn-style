@@ -10,6 +10,7 @@ import {
   type SubmitEvent,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react"
@@ -28,6 +29,11 @@ export const ExpenseTemplatePage = () => {
     amount: "",
     categoryUuid: "",
   })
+
+  const totalAmount = useMemo(
+    () => templates.reduce((sum, t) => sum + t.amount, 0),
+    [templates],
+  )
 
   const [editing, setEditing] = useState<{
     uuid: string
@@ -184,6 +190,16 @@ export const ExpenseTemplatePage = () => {
           </button>
         </div>
       </form>
+
+      {/* 合計金額 */}
+      {templates.length > 0 && (
+        <div className="flex items-center justify-between rounded-2xl bg-white px-5 py-3.5 shadow-sm dark:bg-gray-800">
+          <span className="text-sm text-gray-500 dark:text-gray-400">合計</span>
+          <span className="text-sm font-semibold tabular-nums">
+            ¥{totalAmount.toLocaleString()}
+          </span>
+        </div>
+      )}
 
       {/* テンプレート一覧 */}
       {templates.length > 0 ? (
