@@ -3,6 +3,7 @@ import {
   ChevronRightIcon,
   DownloadIcon,
   ExitIcon,
+  BookmarkIcon,
   FileTextIcon,
   Pencil1Icon,
   ResetIcon,
@@ -11,7 +12,6 @@ import {
 import { useState } from "react"
 import { useNavigate, useOutletContext } from "react-router"
 
-import { CategorySection } from "../components/CategorySection"
 import { ConfirmDialog, useConfirmDialog } from "../components/ConfirmDialog"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
@@ -147,11 +147,17 @@ export const SettingsPage = () => {
         </div>
       </div>
 
-      {/* Category */}
-      <CategorySection />
-
       {/* Actions */}
       <div className="divide-y divide-gray-100 overflow-hidden rounded-2xl bg-white shadow-sm dark:divide-gray-700 dark:bg-gray-800">
+        <button
+          type="button"
+          onClick={() => navigate("/category")}
+          className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
+        >
+          <BookmarkIcon className="size-4 text-gray-400 dark:text-gray-500" />
+          <span className="flex-1">Category</span>
+          <ChevronRightIcon className="size-4 text-gray-300 dark:text-gray-600" />
+        </button>
         <button
           type="button"
           onClick={() => navigate("/expense/template")}
