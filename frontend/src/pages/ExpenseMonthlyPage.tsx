@@ -144,25 +144,6 @@ export const ExpenseMonthlyPage = () => {
         </button>
       </div>
 
-      {categories.length > 1 && (
-        <div className="flex shrink-0 gap-2 overflow-x-auto pb-2">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              onClick={() => setSelectedCategory(selectedCategory === cat ? null : cat)}
-              className={`shrink-0 rounded-full border px-3 py-1 text-xs transition-colors ${
-                selectedCategory === cat
-                  ? "border-primary bg-primary text-white"
-                  : "border-gray-200 text-gray-500 hover:border-gray-300 dark:border-gray-700 dark:text-gray-400 dark:hover:border-gray-600"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-      )}
-
       <div className="flex shrink-0 gap-4 border-b border-gray-100 dark:border-gray-700">
         {[
           { key: "list" as const, label: "list", icon: ListBulletIcon },
@@ -185,6 +166,25 @@ export const ExpenseMonthlyPage = () => {
           </button>
         ))}
       </div>
+
+      {tab === "list" && categories.length > 1 && (
+        <div className="flex shrink-0 gap-2 overflow-x-auto pt-2 pb-1">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              onClick={() => setSelectedCategory(selectedCategory === cat ? null : cat)}
+              className={`shrink-0 rounded-full border px-3 py-1 text-xs transition-colors ${
+                selectedCategory === cat
+                  ? "border-primary bg-primary text-white"
+                  : "border-gray-200 text-gray-500 hover:border-gray-300 dark:border-gray-700 dark:text-gray-400 dark:hover:border-gray-600"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      )}
 
       <div ref={swipeRef} className="flex min-h-0 flex-1 flex-col">
         {tab === "list" && <ExpenseList expenses={filteredExpenses} />}
