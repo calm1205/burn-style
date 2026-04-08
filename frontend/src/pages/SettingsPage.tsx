@@ -11,6 +11,7 @@ import {
 import { useState } from "react"
 import { useNavigate, useOutletContext } from "react-router"
 
+import { CategorySection } from "../components/CategorySection"
 import { ConfirmDialog, useConfirmDialog } from "../components/ConfirmDialog"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
@@ -145,6 +146,9 @@ export const SettingsPage = () => {
           ))}
         </div>
       </div>
+
+      {/* Category */}
+      <CategorySection />
 
       {/* Actions */}
       <div className="divide-y divide-gray-100 overflow-hidden rounded-2xl bg-white shadow-sm dark:divide-gray-700 dark:bg-gray-800">
