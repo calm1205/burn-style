@@ -176,7 +176,7 @@ export const ExpenseTemplatePage = () => {
       {templates.length > 0 && (
         <div className="flex items-center justify-between rounded-2xl bg-white px-5 py-3.5 shadow-sm dark:bg-gray-800">
           <span className="text-sm text-gray-500 dark:text-gray-400">合計</span>
-          <span className="text-sm font-semibold tabular-nums">
+          <span className="min-w-0 truncate text-sm font-semibold tabular-nums">
             ¥{totalAmount.toLocaleString()}
           </span>
         </div>
@@ -249,13 +249,15 @@ export const ExpenseTemplatePage = () => {
                 </div>
               ) : (
                 <>
-                  <div className="flex flex-1 flex-col">
-                    <span className="text-sm">{t.name}</span>
-                    <span className="text-xs text-gray-400 dark:text-gray-500">
+                  <div className="flex min-w-0 flex-1 flex-col">
+                    <span className="truncate text-sm">{t.name}</span>
+                    <span className="truncate text-xs text-gray-400 dark:text-gray-500">
                       {t.category.name}
                     </span>
                   </div>
-                  <span className="text-sm tabular-nums">¥{t.amount.toLocaleString()}</span>
+                  <span className="min-w-0 shrink-0 truncate text-sm tabular-nums">
+                    ¥{t.amount.toLocaleString()}
+                  </span>
                   <button
                     type="button"
                     onClick={() => startEdit(t)}
