@@ -1,7 +1,8 @@
 import { Pie, PieChart } from "recharts"
 
-import { CHART_COLORS, assignChartColors } from "../lib/colors"
 import type { ExpenseResponse } from "../lib/types"
+
+const PIE_FILL = "var(--color-primary)"
 
 interface SimplePieChartProps {
   expenses: ExpenseResponse[]
@@ -18,14 +19,9 @@ export const SimplePieChart = ({ expenses }: SimplePieChartProps) => {
       }
     }
   }
-  const sorted = [...map.entries()]
-    .map(([name, amount]) => ({ name, amount }))
+  const data = [...map.entries()]
+    .map(([name, amount]) => ({ name, amount, fill: PIE_FILL }))
     .toSorted((a, b) => b.amount - a.amount)
-  const colorMap = assignChartColors(sorted)
-  const data = sorted.map((item) => ({
-    ...item,
-    fill: colorMap.get(item.name) ?? CHART_COLORS[0],
-  }))
 
   if (data.length === 0) return null
 
@@ -48,12 +44,9 @@ export const SimplePieChart = ({ expenses }: SimplePieChartProps) => {
         />
       </PieChart>
       <ul className="flex flex-1 flex-col gap-1.5">
-        {data.map((c) => (
-          <li key={c.name} className="flex items-center gap-2">
-            <span
-              className="inline-block size-2 shrink-0 rounded-full"
-              style={{ backgroundColor: c.fill }}
-            />
+        {data.map((c, i) => (
+          <li key={c.name} className="flex items-center gap-1.5">
+            <span className="text-[10px] text-gray-400 dark:text-gray-500">{i + 1}</span>
             <span className="truncate text-xs text-gray-500 dark:text-gray-400">{c.name}</span>
           </li>
         ))}

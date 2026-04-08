@@ -10,9 +10,9 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { useSearchParams } from "react-router"
 
 import { CategoryBubbleChart } from "../components/CategoryBubbleChart"
-import { CategoryPieChart } from "../components/CategoryPieChart"
 import { ExpenseHeatmap } from "../components/ExpenseHeatmap"
 import { ExpenseList } from "../components/ExpenseList"
+import { PieWithStep } from "../components/PieWithStep"
 import { useSwipe } from "../hooks/useSwipe"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
@@ -191,7 +191,7 @@ export const ExpenseMonthlyPage = () => {
 
         {tab === "pie" && (
           <div className="min-h-0 flex-1 overflow-y-auto pt-4">
-            <CategoryPieChart expenses={filteredExpenses} />
+            <PieWithStep expenses={filteredExpenses} />
           </div>
         )}
 
