@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react"
 
-import { CHART_COLORS } from "../lib/colors"
 import type { ExpenseResponse } from "../lib/types"
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
@@ -119,26 +118,19 @@ export const ExpenseHeatmap = ({ year, month, expenses }: ExpenseHeatmapProps) =
         })}
       </div>
       <ul className="flex flex-wrap gap-x-3 gap-y-1.5 px-1">
-        {allCategories.map((cat, i) => {
+        {allCategories.map((cat) => {
           const isHidden = hidden.has(cat)
           return (
             <li key={cat}>
               <button
                 type="button"
                 onClick={() => toggle(cat)}
-                className={`flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] transition-opacity ${
+                className={`rounded-full border px-2.5 py-0.5 text-[11px] transition-opacity ${
                   isHidden
                     ? "border-gray-200 text-gray-300 dark:border-gray-700 dark:text-gray-600"
                     : "border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-300"
                 }`}
               >
-                <span
-                  className="inline-block size-2 rounded-full"
-                  style={{
-                    backgroundColor: CHART_COLORS[i % CHART_COLORS.length],
-                    opacity: isHidden ? 0.2 : 1,
-                  }}
-                />
                 {cat}
               </button>
             </li>
