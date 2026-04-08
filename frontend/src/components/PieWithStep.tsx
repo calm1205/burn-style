@@ -96,8 +96,8 @@ export const PieWithStep = ({ expenses }: PieWithStepProps) => {
             endAngle={-270}
             innerRadius={0}
             outerRadius={MAX_OUTER}
-            stroke="none"
-            paddingAngle={1}
+            stroke="var(--chart-pie-stroke)"
+            strokeWidth={2}
             isAnimationActive={false}
             shape={renderStepSector}
           />
