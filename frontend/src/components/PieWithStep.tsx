@@ -1,9 +1,12 @@
 import { useMemo, useState } from "react"
-import { Pie, PieChart } from "recharts"
+import type { PieSectorShapeProps } from "recharts"
+import { Pie, PieChart, Sector } from "recharts"
 
 import type { ExpenseResponse } from "../lib/types"
 
 const PIE_FILL = "var(--color-primary)"
+const MIN_OUTER = 55
+const MAX_OUTER = 100
 
 interface CategoryTotal {
   name: string
@@ -54,6 +57,14 @@ export const PieWithStep = ({ expenses }: PieWithStepProps) => {
   }, [expenses, hidden])
 
   const total = visibleData.reduce((sum, c) => sum + c.amount, 0)
+  const maxAmount = visibleData.length > 0 ? visibleData[0].amount : 0
+
+  const renderStepSector = (props: PieSectorShapeProps) => {
+    const amount = (props as PieSectorShapeProps & { payload: { amount: number } }).payload.amount
+    const ratio = maxAmount > 0 ? amount / maxAmount : 1
+    const outerRadius = MIN_OUTER + (MAX_OUTER - MIN_OUTER) * ratio
+    return <Sector {...props} outerRadius={outerRadius} />
+  }
 
   const toggle = (cat: string) => {
     setHidden((prev) => {
@@ -74,7 +85,7 @@ export const PieWithStep = ({ expenses }: PieWithStepProps) => {
   return (
     <div className="mt-6">
       <div className="flex justify-center">
-        <PieChart width={220} height={220}>
+        <PieChart width={260} height={260}>
           <Pie
             data={pieData}
             dataKey="amount"
@@ -83,11 +94,12 @@ export const PieWithStep = ({ expenses }: PieWithStepProps) => {
             cy="50%"
             startAngle={90}
             endAngle={-270}
-            innerRadius={55}
-            outerRadius={85}
+            innerRadius={0}
+            outerRadius={MAX_OUTER}
             stroke="var(--chart-pie-stroke)"
             strokeWidth={2}
             isAnimationActive={false}
+            shape={renderStepSector}
           />
         </PieChart>
       </div>

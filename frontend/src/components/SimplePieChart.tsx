@@ -1,8 +1,11 @@
-import { Pie, PieChart } from "recharts"
+import type { PieSectorShapeProps } from "recharts"
+import { Pie, PieChart, Sector } from "recharts"
 
 import type { ExpenseResponse } from "../lib/types"
 
 const PIE_FILL = "var(--color-primary)"
+const MIN_OUTER = 32
+const MAX_OUTER = 55
 
 interface SimplePieChartProps {
   expenses: ExpenseResponse[]
@@ -25,6 +28,15 @@ export const SimplePieChart = ({ expenses }: SimplePieChartProps) => {
 
   if (data.length === 0) return null
 
+  const maxAmount = data[0].amount
+
+  const renderStepSector = (props: PieSectorShapeProps) => {
+    const amount = (props as PieSectorShapeProps & { payload: { amount: number } }).payload.amount
+    const ratio = maxAmount > 0 ? amount / maxAmount : 1
+    const outerRadius = MIN_OUTER + (MAX_OUTER - MIN_OUTER) * ratio
+    return <Sector {...props} outerRadius={outerRadius} />
+  }
+
   return (
     <div className="mt-3 flex items-center gap-5">
       <PieChart width={120} height={120}>
@@ -36,11 +48,12 @@ export const SimplePieChart = ({ expenses }: SimplePieChartProps) => {
           cy="50%"
           startAngle={90}
           endAngle={-270}
-          innerRadius={32}
-          outerRadius={52}
+          innerRadius={0}
+          outerRadius={MAX_OUTER}
           stroke="var(--chart-pie-stroke)"
-          strokeWidth={3}
+          strokeWidth={2}
           isAnimationActive={false}
+          shape={renderStepSector}
         />
       </PieChart>
       <ul className="flex flex-1 flex-col gap-1.5">
