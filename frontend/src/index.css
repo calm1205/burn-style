@@ -21,23 +21,23 @@
   --color-gray-800: #2d3748;
   --color-gray-900: #1a1a1a;
 
-  /* Chart - Category */
-  --color-chart-1: #3b82f6;
-  --color-chart-2: #0ea5e9;
-  --color-chart-3: #06b6d4;
-  --color-chart-4: #2dd4bf;
-  --color-chart-5: #10b981;
-  --color-chart-6: #f59e0b;
-  --color-chart-7: #38bdf8;
-  --color-chart-8: #f97316;
-  --color-chart-gray: #94a3b8;
+  /* Chart - Category (blue gradient: dark → light) */
+  --color-chart-1: #1e40af;
+  --color-chart-2: #1d4ed8;
+  --color-chart-3: #2563eb;
+  --color-chart-4: #3b82f6;
+  --color-chart-5: #60a5fa;
+  --color-chart-6: #93c5fd;
+  --color-chart-7: #bfdbfe;
+  --color-chart-8: #dbeafe;
 
-  /* Chart - Scale */
-  --color-chart-scale-1: #e6f0ff;
-  --color-chart-scale-2: #b3d1ff;
-  --color-chart-scale-3: #80b3ff;
-  --color-chart-scale-4: #4d94ff;
-  --color-chart-scale-5: #1a75ff;
+  /* Chart - Scale (blue gradient: light → dark) */
+  --color-chart-scale-1: #dbeafe;
+  --color-chart-scale-2: #bfdbfe;
+  --color-chart-scale-3: #93c5fd;
+  --color-chart-scale-4: #60a5fa;
+  --color-chart-scale-5: #3b82f6;
+  --color-chart-scale-6: #1e40af;
 }
 
 /* Chart semantic colors (dark mode switchable) */
@@ -46,7 +46,8 @@
   --chart-label: #4a5568;
   --chart-bar: #3b82f6;
   --chart-cursor: rgba(59, 130, 246, 0.06);
-  --chart-pie-stroke: #ffffff;
+  --chart-pie-stroke: #f7fafc;
+  --chart-pie-stroke-card: #ffffff;
   --chart-tooltip-bg: #ffffff;
   --chart-tooltip-text: #1a1a1a;
 }
@@ -56,7 +57,8 @@
   --chart-label: #94a3b8;
   --chart-bar: #60a5fa;
   --chart-cursor: rgba(96, 165, 250, 0.1);
-  --chart-pie-stroke: transparent;
+  --chart-pie-stroke: #1a1a1a;
+  --chart-pie-stroke-card: #2d3748;
   --chart-tooltip-bg: #1e293b;
   --chart-tooltip-text: #f1f5f9;
 }

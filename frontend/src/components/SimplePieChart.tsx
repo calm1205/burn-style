@@ -1,7 +1,11 @@
-import { Pie, PieChart } from "recharts"
+import type { PieSectorShapeProps } from "recharts"
+import { Pie, PieChart, Sector } from "recharts"
 
-import { CHART_COLORS, assignChartColors } from "../lib/colors"
 import type { ExpenseResponse } from "../lib/types"
+
+const PIE_FILL = "var(--chart-bar)"
+const MIN_OUTER = 32
+const MAX_OUTER = 55
 
 interface SimplePieChartProps {
   expenses: ExpenseResponse[]
@@ -18,16 +22,20 @@ export const SimplePieChart = ({ expenses }: SimplePieChartProps) => {
       }
     }
   }
-  const sorted = [...map.entries()]
-    .map(([name, amount]) => ({ name, amount }))
+  const data = [...map.entries()]
+    .map(([name, amount]) => ({ name, amount, fill: PIE_FILL }))
     .toSorted((a, b) => b.amount - a.amount)
-  const colorMap = assignChartColors(sorted)
-  const data = sorted.map((item) => ({
-    ...item,
-    fill: colorMap.get(item.name) ?? CHART_COLORS[0],
-  }))
 
   if (data.length === 0) return null
+
+  const maxAmount = data[0].amount
+
+  const renderStepSector = (props: PieSectorShapeProps) => {
+    const amount = (props as PieSectorShapeProps & { payload: { amount: number } }).payload.amount
+    const ratio = maxAmount > 0 ? amount / maxAmount : 1
+    const outerRadius = MIN_OUTER + (MAX_OUTER - MIN_OUTER) * ratio
+    return <Sector {...props} outerRadius={outerRadius} />
+  }
 
   return (
     <div className="mt-3 flex items-center gap-5">
@@ -40,20 +48,18 @@ export const SimplePieChart = ({ expenses }: SimplePieChartProps) => {
           cy="50%"
           startAngle={90}
           endAngle={-270}
-          innerRadius={32}
-          outerRadius={52}
-          stroke="var(--chart-pie-stroke)"
-          strokeWidth={3}
+          innerRadius={0}
+          outerRadius={MAX_OUTER}
+          stroke="var(--chart-pie-stroke-card)"
+          strokeWidth={2}
           isAnimationActive={false}
+          shape={renderStepSector}
         />
       </PieChart>
       <ul className="flex flex-1 flex-col gap-1.5">
-        {data.map((c) => (
-          <li key={c.name} className="flex items-center gap-2">
-            <span
-              className="inline-block size-2 shrink-0 rounded-full"
-              style={{ backgroundColor: c.fill }}
-            />
+        {data.map((c, i) => (
+          <li key={c.name} className="flex items-center gap-1.5">
+            <span className="text-[10px] text-gray-400 dark:text-gray-500">{i + 1}</span>
             <span className="truncate text-xs text-gray-500 dark:text-gray-400">{c.name}</span>
           </li>
         ))}
