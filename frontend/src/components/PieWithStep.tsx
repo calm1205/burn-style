@@ -4,7 +4,7 @@ import { Pie, PieChart, Sector } from "recharts"
 
 import type { ExpenseResponse } from "../lib/types"
 
-const PIE_FILL = "var(--color-primary)"
+const PIE_FILL = "var(--chart-bar)"
 const MIN_OUTER = 55
 const MAX_OUTER = 100
 

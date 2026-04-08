@@ -3,7 +3,7 @@ import { Pie, PieChart, Sector } from "recharts"
 
 import type { ExpenseResponse } from "../lib/types"
 
-const PIE_FILL = "var(--color-primary)"
+const PIE_FILL = "var(--chart-bar)"
 const MIN_OUTER = 32
 const MAX_OUTER = 55
 
@@ -50,7 +50,7 @@ export const SimplePieChart = ({ expenses }: SimplePieChartProps) => {
           endAngle={-270}
           innerRadius={0}
           outerRadius={MAX_OUTER}
-          stroke="var(--chart-pie-stroke)"
+          stroke="var(--chart-pie-stroke-card)"
           strokeWidth={2}
           isAnimationActive={false}
           shape={renderStepSector}
