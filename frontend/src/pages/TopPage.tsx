@@ -1,4 +1,3 @@
-import { ChevronRightIcon } from "@radix-ui/react-icons"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router"
 
@@ -60,24 +59,22 @@ export const TopPage = () => {
     <div className="flex h-full flex-col px-6">
       {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
       <div className="flex flex-1 flex-col items-center justify-center">
+        <div className="mb-6 flex w-full max-w-sm flex-col items-center gap-1">
+          <span className="text-sm text-gray-500 dark:text-gray-400">
+            {year}/{String(month).padStart(2, "0")}
+          </span>
+          {loading ? (
+            <div className="my-1 h-8 w-40 animate-pulse rounded-lg bg-gray-100 dark:bg-gray-700" />
+          ) : (
+            <span className="text-3xl font-extrabold">¥{total.toLocaleString()}</span>
+          )}
+        </div>
+
         <button
           type="button"
           className="w-full max-w-sm rounded-2xl bg-white px-5 py-4 shadow-sm transition-shadow hover:shadow-md dark:bg-gray-800"
           onClick={() => navigate("/expense/monthly")}
         >
-          <div className="flex items-center justify-between">
-            <div className="flex flex-col items-start gap-1">
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                {year}/{String(month).padStart(2, "0")}
-              </span>
-              {loading ? (
-                <div className="my-1 h-8 w-40 animate-pulse rounded-lg bg-gray-100 dark:bg-gray-700" />
-              ) : (
-                <span className="text-3xl font-extrabold">¥{total.toLocaleString()}</span>
-              )}
-            </div>
-            <ChevronRightIcon className="size-5 text-gray-400 dark:text-gray-500" />
-          </div>
           {loading ? <SkeletonPieChart /> : <SimplePieChart expenses={expenses} />}
         </button>
 
