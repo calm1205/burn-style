@@ -17,6 +17,7 @@ export const RANGE_COLORS = [
   "var(--color-chart-scale-3)",
   "var(--color-chart-scale-4)",
   "var(--color-chart-scale-5)",
+  "var(--color-chart-scale-6)",
 ]
 
 const LOW_RATIO_THRESHOLD = 0.05
