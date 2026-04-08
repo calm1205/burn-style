@@ -2,7 +2,6 @@ import { Navigate, createBrowserRouter } from "react-router"
 
 import { AppLayout } from "./components/AppLayout"
 import { ProtectedRoute } from "./components/ProtectedRoute"
-import { CategoriesPage } from "./pages/CategoriesPage"
 import { ExpenseAnnualPage } from "./pages/ExpenseAnnualPage"
 import { ExpenseDetailPage } from "./pages/ExpenseDetailPage"
 import { ExpenseMonthlyPage } from "./pages/ExpenseMonthlyPage"
@@ -36,7 +35,6 @@ export const router = createBrowserRouter([
           { path: ":uuid", element: <ExpenseDetailPage /> },
         ],
       },
-      { path: "/category", element: <CategoriesPage /> },
       { path: "/setting", element: <SettingsPage /> },
     ],
   },

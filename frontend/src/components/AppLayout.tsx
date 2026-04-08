@@ -1,4 +1,4 @@
-import { BookmarkIcon, GearIcon, HomeIcon, PlusIcon } from "@radix-ui/react-icons"
+import { GearIcon, HomeIcon, PlusIcon } from "@radix-ui/react-icons"
 import { useCallback, useEffect, useState } from "react"
 import { Outlet, useLocation, useNavigate } from "react-router"
 
@@ -10,9 +10,8 @@ import { LayoutPhone } from "./LayoutPhone"
 
 const navItems = [
   { label: "Dashboard", to: "/", icon: HomeIcon },
-  { label: "Category", to: "/category", icon: BookmarkIcon },
-  { label: "Setting", to: "/setting", icon: GearIcon },
   { label: "Expense", to: "/expense/new", icon: PlusIcon },
+  { label: "Setting", to: "/setting", icon: GearIcon },
 ]
 
 const PAGE_TITLES: Record<string, string> = {
@@ -22,7 +21,6 @@ const PAGE_TITLES: Record<string, string> = {
   "/expense/annual": "Annual",
   "/expense/template": "Template",
   "/expense/template/new": "Record",
-  "/category": "Category",
   "/setting": "Setting",
 }
 
