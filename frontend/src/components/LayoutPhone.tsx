@@ -19,10 +19,17 @@ export const LayoutPhone = ({ navItems }: LayoutPhoneProps) => {
           key={item.to}
           to={item.to}
           className={({ isActive }) =>
-            `flex flex-1 items-center justify-center py-3 text-xs font-medium ${isActive ? "text-gray-900 dark:text-gray-100" : "text-gray-500 dark:text-gray-400"}`
+            `flex flex-1 flex-col items-center justify-center gap-1 py-3 text-xs font-medium ${isActive ? "text-primary" : "text-gray-400 dark:text-gray-500"}`
           }
         >
-          {item.icon ? <item.icon className="size-5" /> : item.label}
+          {({ isActive }) => (
+            <>
+              {item.icon ? <item.icon className="size-5" /> : item.label}
+              <span
+                className={`size-1 rounded-full ${isActive ? "bg-primary" : "bg-transparent"}`}
+              />
+            </>
+          )}
         </NavLink>
       ))}
     </nav>
