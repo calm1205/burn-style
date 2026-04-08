@@ -50,8 +50,8 @@ export const SimplePieChart = ({ expenses }: SimplePieChartProps) => {
           endAngle={-270}
           innerRadius={0}
           outerRadius={MAX_OUTER}
-          stroke="none"
-          paddingAngle={2}
+          stroke="var(--chart-pie-stroke)"
+          strokeWidth={2}
           isAnimationActive={false}
           shape={renderStepSector}
         />
