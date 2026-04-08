@@ -5,7 +5,7 @@
     <link rel="icon" href="/apple-touch-icon.png" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.json" />
-    <meta name="theme-color" content="#1E3A5F" />
+    <meta name="theme-color" content="#f7fafc" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BurnStyle</title>
   </head>
@@ -16,6 +16,7 @@
         var t = localStorage.getItem("theme")
         var d = t === "dark" || (t !== "light" && matchMedia("(prefers-color-scheme: dark)").matches)
         if (d) document.documentElement.classList.add("dark")
+        document.querySelector('meta[name="theme-color"]').content = d ? "#1a1a1a" : "#f7fafc"
       })()
     </script>
     <script type="module" src="/src/main.tsx"></script>
