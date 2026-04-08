@@ -59,7 +59,7 @@ export const TopPage = () => {
     <div className="flex h-full flex-col px-6">
       {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
       <div className="flex flex-1 flex-col items-center justify-center">
-        <div className="mb-6 flex w-full max-w-sm flex-col items-center gap-1">
+        <div className="mb-10 flex w-full max-w-sm flex-col items-start gap-1">
           <span className="text-sm text-gray-500 dark:text-gray-400">
             {year}/{String(month).padStart(2, "0")}
           </span>
