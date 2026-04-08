@@ -75,6 +75,9 @@ export const TopPage = () => {
           className="w-full max-w-sm rounded-2xl bg-white px-5 py-4 shadow-sm transition-shadow hover:shadow-md dark:bg-gray-800"
           onClick={() => navigate("/expense/monthly")}
         >
+          <p className="mb-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
+            Monthly
+          </p>
           {loading ? <SkeletonPieChart /> : <SimplePieChart expenses={expenses} />}
         </button>
 
