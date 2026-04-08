@@ -120,30 +120,28 @@ export const ExpenseTemplatePage = () => {
         onSubmit={handleCreate}
         className="flex shrink-0 flex-col gap-3 rounded-2xl bg-white p-4 shadow-sm dark:bg-gray-800"
       >
-        <div className="flex items-center gap-2">
-          <input
-            type="text"
-            placeholder="Netflix"
-            value={form.name}
-            onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
-            required
-            maxLength={100}
-            className="flex-1 rounded-xl bg-gray-50 px-4 py-2.5 text-base outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
-          />
-          <input
-            type="text"
-            inputMode="numeric"
-            placeholder="1,490"
-            value={form.amount}
-            onChange={(e) => {
-              const raw = e.target.value.replace(/[^0-9]/g, "")
-              const formatted = raw ? Number(raw).toLocaleString() : ""
-              setForm((prev) => ({ ...prev, amount: formatted }))
-            }}
-            required
-            className="w-28 rounded-xl bg-gray-50 px-4 py-2.5 text-base outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
-          />
-        </div>
+        <input
+          type="text"
+          placeholder="Netflix"
+          value={form.name}
+          onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
+          required
+          maxLength={100}
+          className="w-full rounded-xl bg-gray-50 px-4 py-2.5 text-base outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+        />
+        <input
+          type="text"
+          inputMode="numeric"
+          placeholder="1,490"
+          value={form.amount}
+          onChange={(e) => {
+            const raw = e.target.value.replace(/[^0-9]/g, "")
+            const formatted = raw ? Number(raw).toLocaleString() : ""
+            setForm((prev) => ({ ...prev, amount: formatted }))
+          }}
+          required
+          className="w-full rounded-xl bg-gray-50 px-4 py-2.5 text-base outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+        />
         <div className="flex items-center gap-2">
           <div className="relative flex-1">
             <select
@@ -176,7 +174,7 @@ export const ExpenseTemplatePage = () => {
       {templates.length > 0 && (
         <div className="flex items-center justify-between rounded-2xl bg-white px-5 py-3.5 shadow-sm dark:bg-gray-800">
           <span className="text-sm text-gray-500 dark:text-gray-400">合計</span>
-          <span className="text-sm font-semibold tabular-nums">
+          <span className="min-w-0 truncate text-sm font-semibold tabular-nums">
             ¥{totalAmount.toLocaleString()}
           </span>
         </div>
@@ -249,13 +247,15 @@ export const ExpenseTemplatePage = () => {
                 </div>
               ) : (
                 <>
-                  <div className="flex flex-1 flex-col">
-                    <span className="text-sm">{t.name}</span>
-                    <span className="text-xs text-gray-400 dark:text-gray-500">
+                  <div className="flex min-w-0 flex-1 flex-col">
+                    <span className="truncate text-sm">{t.name}</span>
+                    <span className="truncate text-xs text-gray-400 dark:text-gray-500">
                       {t.category.name}
                     </span>
                   </div>
-                  <span className="text-sm tabular-nums">¥{t.amount.toLocaleString()}</span>
+                  <span className="min-w-0 shrink-0 truncate text-sm tabular-nums">
+                    ¥{t.amount.toLocaleString()}
+                  </span>
                   <button
                     type="button"
                     onClick={() => startEdit(t)}

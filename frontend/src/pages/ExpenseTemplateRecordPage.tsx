@@ -135,11 +135,13 @@ export const ExpenseTemplateRecordPage = () => {
                       value={r.amount}
                       onClick={(e) => e.stopPropagation()}
                       onChange={(e) => updateAmount(idx, e.target.value)}
-                      className="w-24 rounded-lg bg-gray-50 px-3 py-1 text-right text-base tabular-nums outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+                      className="w-28 rounded-lg bg-gray-50 px-3 py-1 text-right text-base tabular-nums outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
                     />
                   </div>
                 ) : (
-                  <span className="text-sm tabular-nums text-gray-400">¥{r.amount}</span>
+                  <span className="min-w-0 truncate text-sm tabular-nums text-gray-400">
+                    ¥{r.amount}
+                  </span>
                 )}
               </div>
             </button>
