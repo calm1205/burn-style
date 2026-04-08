@@ -13,6 +13,8 @@ const isDarkPreferred = () => window.matchMedia("(prefers-color-scheme: dark)").
 
 const applyClass = (dark: boolean) => {
   document.documentElement.classList.toggle("dark", dark)
+  const meta = document.querySelector('meta[name="theme-color"]')
+  if (meta) meta.setAttribute("content", dark ? "#1a1a1a" : "#f7fafc")
 }
 
 export const applyTheme = (mode: ThemeMode) => {
