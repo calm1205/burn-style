@@ -92,7 +92,7 @@ export const ExpenseDetailPage = () => {
   }
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-6 px-6">
+    <div className="mx-auto flex max-w-2xl flex-col gap-6 px-6 pb-6">
       <button
         type="button"
         onClick={() => navigate(-1)}
