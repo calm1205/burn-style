@@ -13,6 +13,7 @@ import { AnnualLineChart } from "../components/AnnualLineChart"
 import { useSwipe } from "../hooks/useSwipe"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
+import { MONTH_LABELS } from "../lib/constants"
 import type { ExpenseResponse } from "../lib/types"
 
 type Tab = "list" | "area" | "line"
@@ -56,7 +57,7 @@ export const ExpenseAnnualPage = () => {
       setExpenses(await api.getExpenses(year))
     } catch (err) {
       setExpenses([])
-      setError(getErrorMessage(err, "データ取得に失敗"))
+      setError(getErrorMessage(err, "Failed to fetch data"))
     }
   }, [year])
 
@@ -87,7 +88,7 @@ export const ExpenseAnnualPage = () => {
           <DoubleArrowLeftIcon className="size-4" />
         </button>
         <div className="text-center">
-          <p className="text-sm text-gray-500 dark:text-gray-400">{year}年の支出</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{year} Expenses</p>
           <p className="text-4xl font-extrabold">¥{total.toLocaleString()}</p>
         </div>
         <button
@@ -132,7 +133,7 @@ export const ExpenseAnnualPage = () => {
               key={`month-${String(i)}`}
               className="flex items-center justify-between rounded-xl bg-white px-4 py-3 shadow-sm dark:bg-gray-800"
             >
-              <span className="text-sm">{i + 1}月</span>
+              <span className="text-sm">{MONTH_LABELS[i]}</span>
               <span className="text-sm font-mono">¥{amount.toLocaleString()}</span>
             </div>
           ))}

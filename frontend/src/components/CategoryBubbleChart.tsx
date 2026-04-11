@@ -41,7 +41,7 @@ export const CategoryBubbleChart = ({ expenses }: CategoryBubbleChartProps) => {
     const catSet = new Set<string>()
     for (const e of expenses) {
       if (e.categories.length === 0) {
-        catSet.add("未分類")
+        catSet.add("Uncategorized")
       } else {
         for (const c of e.categories) catSet.add(c.name)
       }
@@ -52,7 +52,7 @@ export const CategoryBubbleChart = ({ expenses }: CategoryBubbleChartProps) => {
   const filteredExpenses = useMemo(() => {
     if (hidden.size === 0) return expenses
     return expenses.filter((e) => {
-      if (e.categories.length === 0) return !hidden.has("未分類")
+      if (e.categories.length === 0) return !hidden.has("Uncategorized")
       return e.categories.some((c) => !hidden.has(c.name))
     })
   }, [expenses, hidden])
@@ -107,12 +107,12 @@ export const CategoryBubbleChart = ({ expenses }: CategoryBubbleChartProps) => {
           <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
           <XAxis
             dataKey="frequency"
-            name="頻度"
+            name="Frequency"
             type="number"
             tick={{ fontSize: 11, fill: "var(--chart-label)" }}
             stroke="var(--chart-grid)"
             label={{
-              value: "頻度（回）",
+              value: "Frequency",
               position: "bottom",
               fontSize: 11,
               fill: "var(--chart-label)",
@@ -121,7 +121,7 @@ export const CategoryBubbleChart = ({ expenses }: CategoryBubbleChartProps) => {
           />
           <YAxis
             dataKey="rangeIndex"
-            name="金額帯"
+            name="Amount range"
             type="number"
             domain={[-0.5, AMOUNT_RANGES.length - 0.5]}
             ticks={AMOUNT_RANGES.map((_, i) => i)}
@@ -130,7 +130,7 @@ export const CategoryBubbleChart = ({ expenses }: CategoryBubbleChartProps) => {
             stroke="var(--chart-grid)"
             width={80}
           />
-          <ZAxis dataKey="total" range={[60, 500]} name="合計" type="number" />
+          <ZAxis dataKey="total" range={[60, 500]} name="Total" type="number" />
           <Tooltip
             content={({ payload }) => {
               if (!payload?.[0]) return null
@@ -144,8 +144,8 @@ export const CategoryBubbleChart = ({ expenses }: CategoryBubbleChartProps) => {
                   }}
                 >
                   <p className="font-medium">{d.label}</p>
-                  <p>回数: {d.frequency}</p>
-                  <p>合計: ¥{d.total.toLocaleString()}</p>
+                  <p>Count: {d.frequency}</p>
+                  <p>Total: ¥{d.total.toLocaleString()}</p>
                 </div>
               )
             }}

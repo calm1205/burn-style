@@ -17,7 +17,7 @@ export const ExpensesPage = () => {
   const [categories, setCategories] = useState<CategoryResponse[]>([])
   const [error, setError] = useState("")
 
-  // 作成フォーム
+  // Create form
   const now = new Date()
   const today = toLocalDatetime(now)
   const [form, setForm] = useState({
@@ -31,7 +31,7 @@ export const ExpensesPage = () => {
     try {
       setCategories(await api.getCategories())
     } catch (err) {
-      setError(getErrorMessage(err, "データ取得に失敗"))
+      setError(getErrorMessage(err, "Failed to fetch data"))
     }
   }, [])
 
@@ -59,7 +59,7 @@ export const ExpensesPage = () => {
       })
       navigate("/expense/monthly")
     } catch (err) {
-      setError(getErrorMessage(err, "作成に失敗"))
+      setError(getErrorMessage(err, "Failed to create"))
     }
   }
 

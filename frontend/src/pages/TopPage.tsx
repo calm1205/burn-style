@@ -43,7 +43,7 @@ export const TopPage = () => {
     try {
       setExpenses(await api.getExpenses(year, month))
     } catch (err) {
-      setError(getErrorMessage(err, "データ取得に失敗"))
+      setError(getErrorMessage(err, "Failed to fetch data"))
     } finally {
       setLoading(false)
     }

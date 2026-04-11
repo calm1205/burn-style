@@ -36,7 +36,7 @@ export const ExpenseTemplateRecordPage = () => {
         })),
       )
     } catch (err) {
-      setError(getErrorMessage(err, "データ取得に失敗"))
+      setError(getErrorMessage(err, "Failed to fetch data"))
     } finally {
       setLoading(false)
     }
@@ -75,7 +75,7 @@ export const ExpenseTemplateRecordPage = () => {
       )
       navigate("/expense/monthly")
     } catch (err) {
-      setError(getErrorMessage(err, "記帳に失敗"))
+      setError(getErrorMessage(err, "Failed to record"))
     } finally {
       setSubmitting(false)
     }

@@ -28,7 +28,7 @@ export const ExpenseHeatmap = ({ year, month, expenses }: ExpenseHeatmapProps) =
     const catSet = new Set<string>()
     for (const e of expenses) {
       if (e.categories.length === 0) {
-        catSet.add("未分類")
+        catSet.add("Uncategorized")
       } else {
         for (const c of e.categories) catSet.add(c.name)
       }
@@ -39,7 +39,7 @@ export const ExpenseHeatmap = ({ year, month, expenses }: ExpenseHeatmapProps) =
   const filteredExpenses = useMemo(() => {
     if (hidden.size === 0) return expenses
     return expenses.filter((e) => {
-      if (e.categories.length === 0) return !hidden.has("未分類")
+      if (e.categories.length === 0) return !hidden.has("Uncategorized")
       return e.categories.some((c) => !hidden.has(c.name))
     })
   }, [expenses, hidden])

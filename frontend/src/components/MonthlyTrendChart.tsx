@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 
 import { api } from "../lib/api"
+import { MONTH_LABELS } from "../lib/constants"
 import type { ExpenseResponse } from "../lib/types"
 
 const getLast12Months = (year: number, month: number) => {
@@ -13,7 +14,7 @@ const getLast12Months = (year: number, month: number) => {
       m += 12
       y -= 1
     }
-    months.push({ year: y, month: m, label: `${m}月` })
+    months.push({ year: y, month: m, label: MONTH_LABELS[m - 1] })
   }
   return months
 }
@@ -36,7 +37,7 @@ export const MonthlyTrendChart = ({ year, month }: MonthlyTrendChartProps) => {
       setThisYearExpenses(results[0])
       setLastYearExpenses(results[1])
     } catch {
-      // エラーは親で表示済み
+      // Error already displayed by parent
     }
   }, [year, month])
 
@@ -76,8 +77,7 @@ export const MonthlyTrendChart = ({ year, month }: MonthlyTrendChartProps) => {
           axisLine={false}
           tickLine={false}
           tick={{ fontSize: 10, fill: "var(--chart-label)" }}
-          tickFormatter={(v: number) => `${(v / 10000).toFixed(0)}`}
-          unit="万"
+          tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`}
           width={40}
         />
         <Tooltip

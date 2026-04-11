@@ -10,6 +10,7 @@ import {
 } from "recharts"
 
 import { CHART_COLORS } from "../lib/colors"
+import { MONTH_LABELS } from "../lib/constants"
 import type { ExpenseResponse } from "../lib/types"
 
 interface AnnualLineChartProps {
@@ -23,7 +24,7 @@ export const AnnualLineChart = ({ expenses }: AnnualLineChartProps) => {
     const catSet = new Set<string>()
     for (const e of expenses) {
       if (e.categories.length === 0) {
-        catSet.add("未分類")
+        catSet.add("Uncategorized")
       } else {
         for (const c of e.categories) {
           catSet.add(c.name)
@@ -33,7 +34,7 @@ export const AnnualLineChart = ({ expenses }: AnnualLineChartProps) => {
     const cats = [...catSet]
 
     const months = Array.from({ length: 12 }, (_, i) => {
-      const row: Record<string, string | number> = { label: `${i + 1}月` }
+      const row: Record<string, string | number> = { label: MONTH_LABELS[i] }
       for (const cat of cats) {
         row[cat] = 0
       }
@@ -43,7 +44,7 @@ export const AnnualLineChart = ({ expenses }: AnnualLineChartProps) => {
     for (const e of expenses) {
       const m = new Date(e.expensed_at).getMonth()
       if (e.categories.length === 0) {
-        ;(months[m].未分類 as number) += e.amount
+        ;(months[m].Uncategorized as number) += e.amount
       } else {
         for (const c of e.categories) {
           ;(months[m][c.name] as number) += e.amount
