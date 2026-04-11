@@ -107,7 +107,7 @@ def import_me(
     return UserImportResponse(
         categories_count=len(body.categories),
         expenses_count=len(body.expenses),
-        message=f"カテゴリ{len(body.categories)}件、支出{len(body.expenses)}件をインポートしました",
+        message=f"Imported {len(body.categories)} categories and {len(body.expenses)} expenses",
     )
 
 

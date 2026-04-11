@@ -99,7 +99,7 @@ export const SettingsPage = () => {
         importDataRef.current = JSON.parse(event.target?.result as string)
         openImportDialog()
       } catch {
-        setError("無効なJSONファイルです")
+        setError("Invalid JSON file")
       }
     })
     reader.readAsText(file)
@@ -258,7 +258,7 @@ export const SettingsPage = () => {
         dialogRef={dialogRef}
       />
       <ConfirmDialog
-        message="既存のカテゴリ・支出・テンプレートデータが全て削除され、JSONファイルのデータに置き換わります。続行しますか？"
+        message="All existing categories, expenses, and templates will be deleted and replaced with the imported data. Continue?"
         onConfirm={handleImport}
         confirmText="Import"
         dialogRef={importDialogRef}
