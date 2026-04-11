@@ -19,13 +19,13 @@ class ExpenseTemplateResponse(BaseModel):
 
 class ExpenseTemplateCreate(BaseModel):
     name: str
-    amount: int = Field(gt=0, description="正の整数のみ許可")
+    amount: int = Field(gt=0, description="Must be a positive integer")
     category_uuid: str
 
 
 class ExpenseTemplateUpdate(BaseModel):
     name: str | None = None
-    amount: int | None = Field(default=None, gt=0, description="正の整数のみ許可")
+    amount: int | None = Field(default=None, gt=0, description="Must be a positive integer")
     category_uuid: str | None = None
 
 

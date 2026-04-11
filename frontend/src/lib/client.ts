@@ -6,12 +6,12 @@ export interface ApiError {
 }
 
 const STATUS_MESSAGES: Record<number, string> = {
-  400: "リクエストが不正です",
-  403: "アクセス権限がありません",
-  404: "リソースが見つかりません",
-  409: "データが競合しています",
-  422: "入力内容に誤りがあります",
-  500: "サーバーエラーが発生しました",
+  400: "Bad request",
+  403: "Access denied",
+  404: "Resource not found",
+  409: "Data conflict",
+  422: "Invalid input",
+  500: "Server error",
 }
 
 const baseUrl = import.meta.env.VITE_API_URL ?? "http://localhost:9999"
@@ -42,7 +42,7 @@ const request = async <T>(method: string, path: string, body?: unknown): Promise
   if (response.status === 401) {
     localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN)
     window.location.href = "/signin"
-    const apiError: ApiError = { status: 401, message: "認証が切れました" }
+    const apiError: ApiError = { status: 401, message: "Session expired" }
     throw apiError
   }
 

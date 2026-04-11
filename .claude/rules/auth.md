@@ -1,70 +1,70 @@
-# 認証
+# Authentication
 
-## 概要
+## Overview
 
-パスワードレス認証を採用。WebAuthn/パスキーでユーザー認証し、JWTでセッション管理。
+Passwordless authentication. User authentication via WebAuthn/passkeys, session management via JWT.
 
-## 認証フロー
+## Authentication Flow
 
-### 1. パスキー登録
+### 1. Passkey Registration
 
 ```
 Client                        Server
   │                              │
-  ├─ POST /auth/register/options ─→│ (username送信)
-  │                              ├─ WebAuthn options生成
-  │                              ├─ Challenge保存 (TTL 5分)
+  ├─ POST /auth/register/options ─→│ (send username)
+  │                              ├─ Generate WebAuthn options
+  │                              ├─ Store challenge (TTL 5 min)
   │←─────── options ─────────────┤
-  ├─ パスキー生成 (ブラウザ)       │
-  ├─ POST /auth/register/verify ──→│ (credential送信)
-  │                              ├─ Challenge検証
-  │                              ├─ User + Credential作成
+  ├─ Generate passkey (browser)    │
+  ├─ POST /auth/register/verify ──→│ (send credential)
+  │                              ├─ Verify challenge
+  │                              ├─ Create User + Credential
   │←─────── { message } ─────────┤
 ```
 
-### 2. パスキー認証
+### 2. Passkey Authentication
 
 ```
 Client                        Server
   │                              │
-  ├─ POST /auth/signin/options ──→│ (username送信)
-  │                              ├─ WebAuthn options生成
-  │                              ├─ Challenge保存 (TTL 5分)
+  ├─ POST /auth/signin/options ──→│ (send username)
+  │                              ├─ Generate WebAuthn options
+  │                              ├─ Store challenge (TTL 5 min)
   │←─────── options ─────────────┤
-  ├─ パスキー認証 (ブラウザ)       │
-  ├─ POST /auth/signin/verify ───→│ (credential送信)
-  │                              ├─ Challenge検証
-  │                              ├─ sign_count更新
-  │                              ├─ JWT生成
+  ├─ Authenticate passkey (browser)│
+  ├─ POST /auth/signin/verify ───→│ (send credential)
+  │                              ├─ Verify challenge
+  │                              ├─ Update sign_count
+  │                              ├─ Generate JWT
   │←─── { access_token } ────────┤
 ```
 
-### 3. 認証済みリクエスト
+### 3. Authenticated Request
 
 ```
 Client                        Server
   │                              │
   ├─ GET /expenses ──────────────→│ (Authorization: Bearer <JWT>)
-  │                              ├─ JWT検証
-  │                              ├─ ユーザー取得
-  │                              ├─ 新JWT生成
+  │                              ├─ Verify JWT
+  │                              ├─ Get user
+  │                              ├─ Generate new JWT
   │←─── data + X-New-Token ──────┤
-  ├─ トークン更新 (localStorage)   │
+  ├─ Update token (localStorage)   │
 ```
 
-## JWT仕様
+## JWT Specification
 
-| 項目 | 値 |
-|------|-----|
-| アルゴリズム | HS256 |
-| 有効期限 | 15分 |
-| ペイロード | `{ sub: user_uuid, exp }` |
-| リフレッシュ | リクエスト毎に`X-New-Token`ヘッダーで自動再発行 |
+| Item | Value |
+|------|-------|
+| Algorithm | HS256 |
+| Expiration | 15 minutes |
+| Payload | `{ sub: user_uuid, exp }` |
+| Refresh | Auto-reissued via `X-New-Token` header on every request |
 
-## セキュリティ
+## Security
 
 - **SecurityHeadersMiddleware**: `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`
-- **CORS**: フロントエンドオリジンのみ許可
-- **JWT秘密鍵**: 本番環境では32文字以上必須
-- **Challenge TTL**: 5分で自動失効
-- **401時**: クライアント側で自動的に`/signin`へリダイレクト
+- **CORS**: Only frontend origin allowed
+- **JWT Secret Key**: Must be 32+ characters in production
+- **Challenge TTL**: Auto-expires after 5 minutes
+- **On 401**: Client automatically redirects to `/signin`

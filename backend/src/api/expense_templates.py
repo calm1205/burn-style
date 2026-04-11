@@ -145,4 +145,4 @@ def bulk_record(
 
     db.commit()
 
-    return BulkRecordResponse(created_count=len(templates), message=f"{len(templates)}件の支出を記帳しました")
+    return BulkRecordResponse(created_count=len(templates), message=f"Recorded {len(templates)} expenses")

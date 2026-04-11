@@ -8,7 +8,7 @@ from src.service.jwt_service import create_access_token, decode_access_token
 
 
 class TokenRefreshMiddleware(BaseHTTPMiddleware):
-    """認証済みリクエスト毎にJWTを再発行してレスポンスヘッダーに付与"""
+    """Reissue JWT on each authenticated request and set it in the response header."""
 
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         response = await call_next(request)

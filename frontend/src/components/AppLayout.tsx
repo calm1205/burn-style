@@ -37,7 +37,7 @@ export const AppLayout = () => {
     try {
       setUser(await api.getMe())
     } catch {
-      // 認証切れ時はclient.tsでリダイレクト済み
+      // Redirect handled by client.ts on auth expiry
     }
   }, [])
 

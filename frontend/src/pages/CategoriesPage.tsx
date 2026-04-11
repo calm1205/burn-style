@@ -19,7 +19,7 @@ export const CategoriesPage = () => {
     try {
       setCategories(await api.getCategories())
     } catch (err) {
-      setError(getErrorMessage(err, "データ取得に失敗"))
+      setError(getErrorMessage(err, "Failed to fetch data"))
     }
   }, [])
 
@@ -35,7 +35,7 @@ export const CategoriesPage = () => {
       setName("")
       await fetchData()
     } catch (err) {
-      setError(getErrorMessage(err, "作成に失敗"))
+      setError(getErrorMessage(err, "Failed to create"))
     }
   }
 
@@ -70,7 +70,7 @@ export const CategoriesPage = () => {
       setEditing(null)
       await fetchData()
     } catch (err) {
-      setError(getErrorMessage(err, "更新に失敗"))
+      setError(getErrorMessage(err, "Failed to update"))
     }
   }
 
@@ -78,7 +78,7 @@ export const CategoriesPage = () => {
     <div className="mx-auto flex max-w-2xl flex-col gap-6 px-6 pb-6">
       {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
 
-      {/* 作成フォーム */}
+      {/* Create form */}
       <form
         onSubmit={handleCreate}
         className="flex items-center gap-2 rounded-2xl bg-white p-4 shadow-sm dark:bg-gray-800"
@@ -101,7 +101,7 @@ export const CategoriesPage = () => {
         </button>
       </form>
 
-      {/* カテゴリ一覧 */}
+      {/* Category list */}
       {categories.length > 0 ? (
         <div className="divide-y divide-gray-100 overflow-hidden rounded-2xl bg-white shadow-sm dark:divide-gray-700 dark:bg-gray-800">
           {categories.map((c) => (

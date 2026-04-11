@@ -40,7 +40,7 @@ export const ExpenseTemplatePage = () => {
       setTemplates(t)
       setCategories(c)
     } catch (err) {
-      setError(getErrorMessage(err, "データ取得に失敗"))
+      setError(getErrorMessage(err, "Failed to fetch data"))
     }
   }, [])
 
@@ -60,7 +60,7 @@ export const ExpenseTemplatePage = () => {
       setForm({ name: "", amount: "", categoryUuid: "" })
       await fetchData()
     } catch (err) {
-      setError(getErrorMessage(err, "作成に失敗"))
+      setError(getErrorMessage(err, "Failed to create"))
     }
   }
 
@@ -81,7 +81,7 @@ export const ExpenseTemplatePage = () => {
       dialogRef.current?.close()
       await fetchData()
     } catch (err) {
-      setError(getErrorMessage(err, "削除に失敗"))
+      setError(getErrorMessage(err, "Failed to delete"))
     }
   }
 
@@ -107,7 +107,7 @@ export const ExpenseTemplatePage = () => {
       setEditing(null)
       await fetchData()
     } catch (err) {
-      setError(getErrorMessage(err, "更新に失敗"))
+      setError(getErrorMessage(err, "Failed to update"))
     }
   }
 
@@ -115,7 +115,7 @@ export const ExpenseTemplatePage = () => {
     <div className="mx-auto flex h-full max-w-2xl flex-col gap-6 px-6 pb-6">
       {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
 
-      {/* 作成フォーム */}
+      {/* Create form */}
       <form
         onSubmit={handleCreate}
         className="flex shrink-0 flex-col gap-3 rounded-2xl bg-white p-4 shadow-sm dark:bg-gray-800"
@@ -170,17 +170,17 @@ export const ExpenseTemplatePage = () => {
         </div>
       </form>
 
-      {/* 合計金額 */}
+      {/* Total amount */}
       {templates.length > 0 && (
         <div className="flex items-center justify-between rounded-2xl bg-white px-5 py-3.5 shadow-sm dark:bg-gray-800">
-          <span className="text-sm text-gray-500 dark:text-gray-400">合計</span>
+          <span className="text-sm text-gray-500 dark:text-gray-400">Total</span>
           <span className="min-w-0 truncate text-sm font-semibold tabular-nums">
             ¥{totalAmount.toLocaleString()}
           </span>
         </div>
       )}
 
-      {/* テンプレート一覧 */}
+      {/* Template list */}
       {templates.length > 0 ? (
         <div className="min-h-0 flex-1 divide-y divide-gray-100 overflow-y-auto rounded-2xl bg-white shadow-sm dark:divide-gray-700 dark:bg-gray-800">
           {templates.map((t) => (

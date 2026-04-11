@@ -17,7 +17,7 @@ from src.middleware import TokenRefreshMiddleware
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
-    """セキュリティヘッダーを付与するミドルウェア"""
+    """Middleware that adds security headers."""
 
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         response = await call_next(request)
@@ -28,8 +28,8 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
 app = FastAPI(title="BurnStyle API", version="1.0.0")
 
-# ミドルウェア(後から追加したものが外側になる)
-# リクエスト順: CORS → SecurityHeaders → TokenRefresh → ルーター
+# Middleware (later additions wrap outer layers)
+# Request order: CORS -> SecurityHeaders -> TokenRefresh -> Router
 app.add_middleware(TokenRefreshMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(
@@ -41,7 +41,7 @@ app.add_middleware(
     expose_headers=["X-New-Token"],
 )
 
-# ルーターを登録
+# Register routers
 app.include_router(health_router)
 app.include_router(auth_router)
 app.include_router(category_router)

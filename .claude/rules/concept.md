@@ -1,37 +1,37 @@
-# プロダクトコンセプト
+# Product Concept
 
-## ビジョン
+## Vision
 
-**支出のみを管理して、ユーザーの個性を可視化する手助けをする**
+**Track only expenses to help users visualize their individuality**
 
-収入や資産管理は扱わず、「何にお金を使っているか」に特化。
-支出パターンから自分自身の価値観や生活スタイルを客観的に把握できる。
+No income or asset management — focused solely on "what you spend money on."
+Understand your own values and lifestyle objectively through spending patterns.
 
-## ターゲットユーザー
+## Target Users
 
-- 個人利用（組織・チーム向けではない）
-- 自分の消費傾向を知りたい人
-- 複雑な家計簿が続かなかった人
+- Personal use (not for organizations or teams)
+- People who want to understand their spending habits
+- People who couldn't keep up with complex budgeting apps
 
-## 設計思想
+## Design Philosophy
 
-### シンプルなUIで直感的な操作
+### Simple UI with Intuitive Interaction
 
-- 最小限の入力項目（名前・金額・日時・カテゴリ）
-- ワンタップで支出を記録
-- パスワードレス認証（パスキー）でログインの手間を排除
+- Minimal input fields (name, amount, date, category)
+- Record an expense with a single tap
+- Passwordless authentication (passkeys) to eliminate login friction
 
-### 可視化による気づき
+### Insights Through Visualization
 
-- 月別・年別の推移トレンド
-- カテゴリ別の支出割合
-- ヒートマップで日別の消費パターン
-- バブルチャートで金額帯の分布
+- Monthly and annual trend charts
+- Category-based spending breakdown
+- Heatmap for daily spending patterns
+- Bubble chart for amount range distribution
 
-### やらないこと
+### Out of Scope
 
-- 収入管理
-- 資産管理・口座連携
-- 予算設定・アラート
-- チーム・家族での共有機能
-- 広告表示
+- Income management
+- Asset management / bank account linking
+- Budget setting / alerts
+- Team or family sharing
+- Advertisements

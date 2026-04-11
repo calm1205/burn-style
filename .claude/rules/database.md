@@ -1,20 +1,20 @@
-# データベース規約
+# Database Conventions
 
-## 技術スタック
+## Tech Stack
 - **DB**: PostgreSQL
 - **ORM**: SQLAlchemy 2.x
-- **マイグレーション**: Alembic (autogenerate)
+- **Migration**: Alembic (autogenerate)
 
-## 接続先切替
-- `VERCEL_ENV=production` → Neon（本番）
-- それ以外 → ローカルDocker
+## Connection Switching
+- `VERCEL_ENV=production` → Neon (production)
+- Otherwise → Local Docker
 
-## ローカル開発
-- `docker compose up -d db` でPostgreSQL起動
-- `docker compose watch` で全サービス起動（ホットリロード対応）
-- `docker compose exec db sh -c 'psql -U $POSTGRES_USER $POSTGRES_DB'` でCLI接続
+## Local Development
+- Start PostgreSQL with `docker compose up -d db`
+- Start all services with hot reload via `docker compose watch`
+- Connect to CLI with `docker compose exec db sh -c 'psql -U $POSTGRES_USER $POSTGRES_DB'`
 
 ## Alembic
-- `--autogenerate` でモデルからマイグレーション自動生成
-- マイグレーションファイル: `backend/alembic/versions/`
-- `db-reset` 時はversionsディレクトリをクリアして再生成
+- Auto-generate migrations from models with `--autogenerate`
+- Migration files: `backend/alembic/versions/`
+- On `db-reset`, clear the versions directory and regenerate

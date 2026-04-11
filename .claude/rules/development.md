@@ -1,6 +1,6 @@
-# 開発フロー
+# Development Flow
 
-## 必須プロセス
-- コード修正後は必ず `make lint` と `make test-backend` を実行
-- エラーがあれば全て修正してから完了とする
-- ファイル変更後は commit & push まで実行する
+## Required Process
+- Always run `make lint` and `make test-backend` after code changes
+- Fix all errors before considering the task complete
+- Commit and push after file changes

@@ -17,7 +17,7 @@ import type {
   UserResponse,
 } from "./types"
 
-// --- 認証 ---
+// --- Auth ---
 
 const register = async (username: string): Promise<RegisterVerifyResponse> => {
   const { options } = await client.post<RegisterOptionsResponse>("/auth/register/options", {
@@ -28,7 +28,7 @@ const register = async (username: string): Promise<RegisterVerifyResponse> => {
     publicKey: PublicKeyCredential.parseCreationOptionsFromJSON(options),
   })
   if (!credential) {
-    throw new Error("パスキーの登録がキャンセルされました")
+    throw new Error("Passkey registration was cancelled")
   }
 
   const credentialJson = (credential as PublicKeyCredential).toJSON()
@@ -48,7 +48,7 @@ const signIn = async (username: string): Promise<SignInVerifyResponse> => {
     publicKey: PublicKeyCredential.parseRequestOptionsFromJSON(options),
   })
   if (!credential) {
-    throw new Error("認証がキャンセルされました")
+    throw new Error("Authentication was cancelled")
   }
 
   const credentialJson = (credential as PublicKeyCredential).toJSON()
@@ -59,7 +59,7 @@ const signIn = async (username: string): Promise<SignInVerifyResponse> => {
   })
 }
 
-// --- ユーザー ---
+// --- User ---
 
 const getMe = (): Promise<UserResponse> => client.get<UserResponse>("/me")
 
@@ -73,7 +73,7 @@ const exportMe = (): Promise<unknown> => client.get<unknown>("/me/export")
 const importMe = (data: unknown): Promise<ImportResponse> =>
   client.post<ImportResponse>("/me/import", data)
 
-// --- カテゴリ ---
+// --- Category ---
 
 const getCategories = (): Promise<CategoryResponse[]> =>
   client.get<CategoryResponse[]>("/categories")
@@ -86,7 +86,7 @@ const updateCategory = (uuid: string, data: CategoryUpdate): Promise<CategoryRes
 
 const deleteCategory = (uuid: string): Promise<void> => client.delete<void>(`/categories/${uuid}`)
 
-// --- 支出 ---
+// --- Expense ---
 
 const getExpense = (uuid: string): Promise<ExpenseResponse> =>
   client.get<ExpenseResponse>(`/expenses/${uuid}`)
@@ -107,7 +107,7 @@ const updateExpense = (uuid: string, data: ExpenseUpdate): Promise<ExpenseRespon
 
 const deleteExpense = (uuid: string): Promise<void> => client.delete<void>(`/expenses/${uuid}`)
 
-// --- 支出テンプレート ---
+// --- Expense Template ---
 
 const getExpenseTemplates = (): Promise<ExpenseTemplateResponse[]> =>
   client.get<ExpenseTemplateResponse[]>("/expense-templates")

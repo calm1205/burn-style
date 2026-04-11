@@ -56,7 +56,7 @@ export const ExpenseMonthlyPage = () => {
     try {
       setExpenses(await api.getExpenses(year, month))
     } catch (err) {
-      setError(getErrorMessage(err, "データ取得に失敗"))
+      setError(getErrorMessage(err, "Failed to fetch data"))
     }
   }, [year, month])
 
@@ -68,7 +68,7 @@ export const ExpenseMonthlyPage = () => {
     const map = new Map<string, number>()
     for (const e of expenses) {
       if (e.categories.length === 0) {
-        map.set("未分類", (map.get("未分類") ?? 0) + e.amount)
+        map.set("Uncategorized", (map.get("Uncategorized") ?? 0) + e.amount)
       } else {
         for (const c of e.categories) {
           map.set(c.name, (map.get(c.name) ?? 0) + e.amount)
@@ -87,7 +87,7 @@ export const ExpenseMonthlyPage = () => {
   const filteredExpenses = useMemo(() => {
     if (!selectedCategory) return expenses
     return expenses.filter((e) => {
-      if (selectedCategory === "未分類") return e.categories.length === 0
+      if (selectedCategory === "Uncategorized") return e.categories.length === 0
       return e.categories.some((c) => c.name === selectedCategory)
     })
   }, [expenses, selectedCategory])
@@ -131,7 +131,7 @@ export const ExpenseMonthlyPage = () => {
         </button>
         <div className="text-center">
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            {year}/{month}の支出
+            {year}/{month} Expenses
           </p>
           <p className="text-4xl font-extrabold">¥{total.toLocaleString()}</p>
         </div>

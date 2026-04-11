@@ -1,57 +1,57 @@
-# 画面構成
+# Screen Structure
 
-## 画面遷移フロー
+## Screen Transition Flow
 
 ```
-/signup (パスキー登録)
-    ↓ 登録成功
-/signin (パスキー認証)
-    ↓ 認証成功
-/ (ダッシュボード)
-    ├─ /expense/monthly (月別分析)
-    │     └─ /expense/:uuid (支出編集)
-    ├─ /expense/annual (年別分析)
-    ├─ /expense/new (支出作成)
-    ├─ /category (カテゴリ管理)
-    └─ /setting (ユーザー設定)
+/signup (Passkey Registration)
+    ↓ Registration success
+/signin (Passkey Authentication)
+    ↓ Authentication success
+/ (Dashboard)
+    ├─ /expense/monthly (Monthly Analysis)
+    │     └─ /expense/:uuid (Expense Edit)
+    ├─ /expense/annual (Annual Analysis)
+    ├─ /expense/new (New Expense)
+    ├─ /category (Category Management)
+    └─ /setting (User Settings)
 ```
 
-## レイアウト
+## Layout
 
-| 画面幅 | ナビゲーション |
-|--------|---------------|
-| デスクトップ (768px以上) | 左サイドバー（w-56） |
-| モバイル (768px未満) | 下部フッター（h-20） |
+| Screen Width | Navigation |
+|-------------|------------|
+| Desktop (768px+) | Left sidebar (w-56) |
+| Mobile (< 768px) | Bottom footer (h-20) |
 
-## 画面一覧
+## Screen List
 
-### 認証
+### Authentication
 
-| 画面 | パス | 機能 |
-|------|------|------|
-| サインアップ | `/signup` | パスキー登録 → /signin へ遷移 |
-| サインイン | `/signin` | パスキー認証 → JWT取得 → / へ遷移 |
+| Screen | Path | Function |
+|--------|------|----------|
+| Sign Up | `/signup` | Passkey registration → navigate to /signin |
+| Sign In | `/signin` | Passkey authentication → get JWT → navigate to / |
 
-### メイン（認証必須）
+### Main (Authentication Required)
 
-| 画面 | パス | 機能 |
-|------|------|------|
-| ダッシュボード | `/` | 当月の支出合計・カテゴリ別円グラフ・年間棒グラフ |
-| 支出作成 | `/expense/new` | 名前・金額・日時・カテゴリを入力して支出を登録 |
-| 支出詳細 | `/expense/:uuid` | 支出の編集・削除 |
-| 月別分析 | `/expense/monthly` | 4つのタブ（リスト / 円グラフ / ヒートマップ / バブルチャート） |
-| 年別分析 | `/expense/annual` | 3つのタブ（リスト / エリアチャート / ラインチャート） |
-| カテゴリ管理 | `/category` | カテゴリの作成・編集・削除 |
-| 設定 | `/setting` | ユーザー名編集・データエクスポート・ログアウト・アカウント削除 |
+| Screen | Path | Function |
+|--------|------|----------|
+| Dashboard | `/` | Current month total, category pie chart, annual bar chart |
+| New Expense | `/expense/new` | Register expense with name, amount, date, category |
+| Expense Detail | `/expense/:uuid` | Edit / delete expense |
+| Monthly Analysis | `/expense/monthly` | 4 tabs (List / Pie Chart / Heatmap / Bubble Chart) |
+| Annual Analysis | `/expense/annual` | 3 tabs (List / Area Chart / Line Chart) |
+| Category Management | `/category` | Create / edit / delete categories |
+| Settings | `/setting` | Edit username, data export, logout, delete account |
 
-## データ可視化
+## Data Visualization
 
-| チャート | 画面 | 用途 |
-|---------|------|------|
-| 円グラフ（小） | ダッシュボード | 当月カテゴリ別割合 |
-| 棒グラフ | ダッシュボード | 直近12ヶ月の推移 |
-| 円グラフ（大） | 月別分析 | カテゴリ別支出額・割合 |
-| ヒートマップ | 月別分析 | 日別の支出強度 |
-| バブルチャート | 月別分析 | 金額帯ごとの頻度・合計 |
-| エリアチャート | 年別分析 | カテゴリ別月次推移（積み上げ） |
-| ラインチャート | 年別分析 | カテゴリ別月次推移（個別） |
+| Chart | Screen | Purpose |
+|-------|--------|---------|
+| Pie Chart (small) | Dashboard | Current month category breakdown |
+| Bar Chart | Dashboard | Last 12 months trend |
+| Pie Chart (large) | Monthly Analysis | Category-based amount and ratio |
+| Heatmap | Monthly Analysis | Daily spending intensity |
+| Bubble Chart | Monthly Analysis | Frequency and total by amount range |
+| Area Chart | Annual Analysis | Stacked category monthly trend |
+| Line Chart | Annual Analysis | Individual category monthly trend |

@@ -16,7 +16,7 @@ class Category(Base):
 
     user = relationship("User")
 
-    # 多対多の関係
+    # Many-to-many relationship
     expenses = relationship(
         "Expense",
         secondary="expense_category_association",

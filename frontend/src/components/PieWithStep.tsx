@@ -24,7 +24,7 @@ export const PieWithStep = ({ expenses }: PieWithStepProps) => {
     const map = new Map<string, number>()
     for (const e of expenses) {
       if (e.categories.length === 0) {
-        map.set("未分類", (map.get("未分類") ?? 0) + e.amount)
+        map.set("Uncategorized", (map.get("Uncategorized") ?? 0) + e.amount)
       } else {
         for (const c of e.categories) {
           map.set(c.name, (map.get(c.name) ?? 0) + e.amount)
@@ -40,8 +40,8 @@ export const PieWithStep = ({ expenses }: PieWithStepProps) => {
     const map = new Map<string, number>()
     for (const e of expenses) {
       if (e.categories.length === 0) {
-        if (!hidden.has("未分類")) {
-          map.set("未分類", (map.get("未分類") ?? 0) + e.amount)
+        if (!hidden.has("Uncategorized")) {
+          map.set("Uncategorized", (map.get("Uncategorized") ?? 0) + e.amount)
         }
       } else {
         for (const c of e.categories) {

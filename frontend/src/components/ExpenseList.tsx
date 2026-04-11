@@ -56,7 +56,7 @@ export const ExpenseList = ({ expenses }: ExpenseListProps) => {
 
       {expenses.length === 0 && (
         <p className="text-center text-sm text-gray-400 dark:text-gray-500">
-          この月の支出はありません
+          No expenses this month
         </p>
       )}
     </div>

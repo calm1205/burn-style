@@ -35,16 +35,16 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
       .getMe()
       .then(() => setVerified(true))
       .catch(() => {
-        // 401 → client.ts が /signin にリダイレクト
+        // 401 -> client.ts redirects to /signin
       })
   }, [])
 
-  // 初回マウント時
+  // On initial mount
   useEffect(() => {
     verify()
   }, [verify])
 
-  // バックグラウンド復帰時
+  // On returning from background
   useEffect(() => {
     const onVisibilityChange = () => {
       if (document.visibilityState === "visible") {
