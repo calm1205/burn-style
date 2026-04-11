@@ -3,6 +3,7 @@ import { useRef } from "react"
 interface ConfirmDialogProps {
   message: string
   onConfirm: () => void
+  confirmText?: string
 }
 
 export const useConfirmDialog = () => {
@@ -14,6 +15,7 @@ export const useConfirmDialog = () => {
 export const ConfirmDialog = ({
   message,
   onConfirm,
+  confirmText = "Delete",
   dialogRef,
 }: ConfirmDialogProps & {
   dialogRef: React.RefObject<HTMLDialogElement | null>
@@ -37,7 +39,7 @@ export const ConfirmDialog = ({
           onClick={onConfirm}
           className="rounded-full bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600"
         >
-          Delete
+          {confirmText}
         </button>
       </div>
     </dialog>

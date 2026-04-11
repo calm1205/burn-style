@@ -9,6 +9,7 @@ import type {
   ExpenseTemplateResponse,
   ExpenseTemplateUpdate,
   ExpenseUpdate,
+  ImportResponse,
   RegisterOptionsResponse,
   RegisterVerifyResponse,
   SignInOptionsResponse,
@@ -69,6 +70,9 @@ const deleteMe = (): Promise<void> => client.delete<void>("/me")
 
 const exportMe = (): Promise<unknown> => client.get<unknown>("/me/export")
 
+const importMe = (data: unknown): Promise<ImportResponse> =>
+  client.post<ImportResponse>("/me/import", data)
+
 // --- カテゴリ ---
 
 const getCategories = (): Promise<CategoryResponse[]> =>
@@ -127,6 +131,7 @@ export const api = {
   updateMe,
   deleteMe,
   exportMe,
+  importMe,
   getCategories,
   createCategory,
   updateCategory,
