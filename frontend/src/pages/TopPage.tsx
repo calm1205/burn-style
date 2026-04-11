@@ -56,7 +56,7 @@ export const TopPage = () => {
   const total = useMemo(() => expenses.reduce((sum, e) => sum + e.amount, 0), [expenses])
 
   return (
-    <div className="flex h-full flex-col px-6">
+    <div className="flex h-full flex-col px-6 pb-6">
       {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
       <div className="flex flex-1 flex-col items-center justify-center">
         <div className="mb-10 flex w-full max-w-sm flex-col items-start gap-1">
