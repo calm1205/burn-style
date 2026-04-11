@@ -2,22 +2,19 @@
 
 > **Burn** your money, show your **Style**.
 
-お金の使い方には、その人の個性が宿る。
+How you spend money reveals who you are.
 
-収入は環境が決める。だが支出は自分が決める。
+Income is shaped by circumstance. But spending is shaped by choice.
 
-同じ収入でも何に使うかは人によってまるで違う。
-コーヒーに月1万円使う人と、本に月1万円使う人は、同じ金額でもまったく別の人生を歩いている。
+Two people with the same income can live entirely different lives — one spends ¥10,000 a month on coffee, another on books. Same amount, different stories.
 
-支出とは、日々繰り返される小さな意思決定の集積。
-何を買い、何を買わないか。その選択の連なりが、言語化されない価値観を映す。
+Spending is the accumulation of small, daily decisions. What you buy and what you don't — that chain of choices reflects values you may never put into words.
 
-「節約」ではなく「発見」。
-BurnStyleは支出を減らすためのツールではない。
-自分が何に価値を感じているのかを知るためのツール。
-削るべき無駄を見つけるのではなく、自分だけの消費の輪郭を眺める。
+Not "saving." Discovery.
+BurnStyle is not a tool for cutting expenses. It's a tool for understanding what you truly value.
+Not finding waste to eliminate, but observing the contours of your own consumption.
 
-自分のことは自分が一番よく知っている？
-あなたの支出が語る物語を、あなたはまだ読んでいない。
+You think you know yourself best?
+The story your spending tells — you haven't read it yet.
 
-お金の燃やし方に、あなたのスタイルが宿る。
+Your style lives in the way you burn.
