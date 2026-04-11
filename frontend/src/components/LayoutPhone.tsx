@@ -5,6 +5,7 @@ interface NavItem {
   label: string
   to: string
   icon?: ComponentType<{ className?: string }>
+  accent?: boolean
 }
 
 interface LayoutPhoneProps {
@@ -22,7 +23,17 @@ export const LayoutPhone = ({ navItems }: LayoutPhoneProps) => {
             `flex flex-1 items-center justify-center py-3 text-xs font-medium ${isActive ? "text-primary" : "text-gray-400 dark:text-gray-500"}`
           }
         >
-          {item.icon ? <item.icon className="size-5" /> : item.label}
+          {item.icon ? (
+            item.accent ? (
+              <span className="flex size-10 items-center justify-center rounded-full bg-primary text-white">
+                <item.icon className="size-5" />
+              </span>
+            ) : (
+              <item.icon className="size-5" />
+            )
+          ) : (
+            item.label
+          )}
         </NavLink>
       ))}
     </nav>
