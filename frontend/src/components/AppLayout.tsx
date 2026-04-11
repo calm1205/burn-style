@@ -10,7 +10,7 @@ import { LayoutPhone } from "./LayoutPhone"
 
 const navItems = [
   { label: "Dashboard", to: "/", icon: HomeIcon },
-  { label: "Expense", to: "/expense/new", icon: PlusIcon },
+  { label: "Expense", to: "/expense/new", icon: PlusIcon, accent: true },
   { label: "Setting", to: "/setting", icon: GearIcon },
 ]
 
