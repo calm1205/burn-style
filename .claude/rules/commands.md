@@ -1,30 +1,30 @@
-# 開発コマンド
+# Development Commands
 
-## 起動
-| コマンド | 説明 |
-|---------|------|
-| `docker compose watch` | ローカル開発起動（ホットリロード） |
+## Startup
+| Command | Description |
+|---------|-------------|
+| `docker compose watch` | Start local development (hot reload) |
 
 ## Lint
-| コマンド | 説明 |
-|---------|------|
-| `make lint` | backend (mypy + ruff) + frontend (oxlint + oxfmt) 実行 |
+| Command | Description |
+|---------|-------------|
+| `make lint` | Run backend (mypy + ruff) + frontend (oxlint + oxfmt) |
 
-## テスト
-| コマンド | 説明 |
-|---------|------|
-| `make test-backend` | backendのテスト実行 |
+## Test
+| Command | Description |
+|---------|-------------|
+| `make test-backend` | Run backend tests |
 
-## データベース（ローカル）
-| コマンド | 説明 |
-|---------|------|
-| `make upgrade` | マイグレーション適用 |
-| `make downgrade` | 1つ前にダウングレード |
-| `make seed` | seedデータ投入（`SEED_USER="名前"` でユーザー指定可） |
-| `make db-clear` | DB完全クリア（volumes削除） |
-| `make db-connect` | PostgreSQL CLIに接続 |
+## Database (Local)
+| Command | Description |
+|---------|-------------|
+| `make upgrade` | Apply migrations |
+| `make downgrade` | Downgrade by one revision |
+| `make seed` | Insert seed data (specify user with `SEED_USER="name"`) |
+| `make db-clear` | Clear DB completely (delete volumes) |
+| `make db-connect` | Connect to PostgreSQL CLI |
 
-## データベース（本番 Neon）
-| コマンド | 説明 |
-|---------|------|
-| `make prod-upgrade` | 本番DBにマイグレーション実行 |
+## Database (Production - Neon)
+| Command | Description |
+|---------|-------------|
+| `make prod-upgrade` | Run migrations on production DB |

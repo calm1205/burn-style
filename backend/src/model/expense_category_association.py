@@ -7,7 +7,7 @@ from sqlalchemy import Column, DateTime, ForeignKey, String
 from src.repository.database import Base
 
 
-# 多対多の関係を表す中間テーブル
+# Association table for many-to-many relationship
 class ExpenseCategoryAssociation(Base):
     __tablename__ = "expense_category_association"
 

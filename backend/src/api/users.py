@@ -25,7 +25,7 @@ user_router = APIRouter(tags=["users"])
 
 @user_router.get("/me")
 def me(current_user: Annotated[User, Depends(get_current_user)]) -> UserResponse:
-    """現在のユーザー情報を返す"""
+    """Return current user info."""
     return UserResponse.model_validate(current_user)
 
 
@@ -35,7 +35,7 @@ def update_me(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> UserResponse:
-    """現在のユーザー情報を更新"""
+    """Update current user info."""
     updated = update_user(db, current_user, body.name)
     return UserResponse.model_validate(updated)
 
@@ -45,7 +45,7 @@ def export_me(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> UserExportResponse:
-    """現在のユーザーの全データをエクスポート"""
+    """Export all data of the current user."""
     user_uuid = str(current_user.uuid)
     categories = get_all_categories(db, user_uuid)
     expenses = get_all_expenses(db, user_uuid, include_deleted=True)
@@ -62,10 +62,10 @@ def import_me(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> UserImportResponse:
-    """エクスポートしたJSONデータをインポート"""
+    """Import exported JSON data."""
     user_uuid = str(current_user.uuid)
 
-    # 既存データを削除(FK制約を考慮した順序)
+    # Delete existing data (ordered by FK constraints)
     db.query(ExpenseCategoryAssociation).filter(
         ExpenseCategoryAssociation.expense_uuid.in_(
             db.query(Expense.uuid).filter(Expense.user_uuid == user_uuid),
@@ -75,7 +75,7 @@ def import_me(
     db.query(Expense).filter(Expense.user_uuid == user_uuid).delete(synchronize_session=False)
     db.query(Category).filter(Category.user_uuid == user_uuid).delete(synchronize_session=False)
 
-    # カテゴリをインポート(旧UUID -> 新UUIDのマッピング)
+    # Import categories (old UUID -> new UUID mapping)
     category_uuid_map: dict[str, str] = {}
     for cat in body.categories:
         new_category = Category(user_uuid=user_uuid, name=cat.name)
@@ -83,7 +83,7 @@ def import_me(
         db.flush()
         category_uuid_map[cat.uuid] = str(new_category.uuid)
 
-    # 支出をインポート
+    # Import expenses
     for exp in body.expenses:
         expense = Expense(
             user_uuid=user_uuid,
@@ -116,5 +116,5 @@ def delete_me(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> None:
-    """現在のユーザーを削除"""
+    """Delete the current user."""
     delete_user(db, current_user)

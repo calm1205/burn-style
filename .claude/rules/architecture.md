@@ -1,33 +1,33 @@
-# アーキテクチャ
+# Architecture
 
-## レイヤド設計
+## Layered Design
 - `backend/src/api/` → `backend/src/service/` → `backend/src/repository/` → `backend/src/model/`
-- Pydanticスキーマ: `backend/src/schema/`
-- エントリーポイント: `backend/src/main.py`
-- 設定: `backend/src/config.py`
+- Pydantic schemas: `backend/src/schema/`
+- Entry point: `backend/src/main.py`
+- Configuration: `backend/src/config.py`
 
-## ディレクトリ構造
+## Directory Structure
 ```
 burn-style/
 ├── backend/
 │   ├── src/
-│   │   ├── api/          # ルーター・エンドポイント定義
-│   │   ├── service/      # ビジネスロジック
-│   │   ├── repository/   # DB操作
-│   │   ├── model/        # SQLAlchemyモデル
-│   │   ├── schema/       # Pydanticスキーマ
-│   │   ├── config.py     # 環境設定
-│   │   └── main.py       # FastAPIアプリ初期化
-│   ├── alembic/          # マイグレーション
-│   └── scripts/          # seedスクリプト等
+│   │   ├── api/          # Router & endpoint definitions
+│   │   ├── service/      # Business logic
+│   │   ├── repository/   # DB operations
+│   │   ├── model/        # SQLAlchemy models
+│   │   ├── schema/       # Pydantic schemas
+│   │   ├── config.py     # Environment settings
+│   │   └── main.py       # FastAPI app initialization
+│   ├── alembic/          # Migrations
+│   └── scripts/          # Seed scripts, etc.
 ├── frontend/
-│   └── src/              # Reactアプリ
+│   └── src/              # React app
 ├── .github/workflows/    # GitHub Actions
-├── Makefile              # 開発コマンド
-└── docker-compose.yml    # ローカル開発環境
+├── Makefile              # Development commands
+└── docker-compose.yml    # Local development environment
 ```
 
-## 認証
-- WebAuthn/パスキーによるパスワードレス認証
-- JWT (JSON Web Token) によるセッション管理
-- 関連モデル: `User`, `WebAuthnCredential`
+## Authentication
+- Passwordless authentication via WebAuthn/Passkey
+- Session management via JWT (JSON Web Token)
+- Related models: `User`, `WebAuthnCredential`

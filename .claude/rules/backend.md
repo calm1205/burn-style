@@ -1,25 +1,25 @@
-# バックエンド規約
+# Backend Conventions
 
-## 技術スタック
-- **言語**: Python 3.14
-- **パッケージ管理**: uv
-- **フレームワーク**: FastAPI
+## Tech Stack
+- **Language**: Python 3.14
+- **Package Manager**: uv
+- **Framework**: FastAPI
 - **ORM**: SQLAlchemy 2.x
-- **バリデーション**: Pydantic
-- **型チェック**: mypy (strict モード)
-- **リンター/フォーマッター**: ruff (行長120文字)
+- **Validation**: Pydantic
+- **Type Checker**: mypy (strict mode)
+- **Linter/Formatter**: ruff (line length 120)
 
-## コーディング規約
-- `from __future__ import annotations` を各ファイル先頭に追加
-- **UUID**: uuid6 (v7) を使用、32文字ハイフンなし
-- **削除**: 論理削除 (`deleted_at` カラム)
-- `scripts/` 配下のみ `print()` 使用可
-- `.env` はコミット禁止（`.env.template` を使用）
+## Coding Conventions
+- Add `from __future__ import annotations` at the top of each file
+- **UUID**: Use uuid6 (v7), 32 characters without hyphens
+- **Deletion**: Soft delete (`deleted_at` column)
+- `print()` is only allowed in `scripts/` directory
+- `.env` must not be committed (use `.env.template` instead)
 
 ## mypy
-- strict モード必須
-- 型アノテーションを全関数・変数に付与
+- Strict mode required
+- Type annotations on all functions and variables
 
 ## ruff
-- 行長: 120文字
-- `ruff check --fix .` で自動修正
+- Line length: 120
+- Auto-fix with `ruff check --fix .`

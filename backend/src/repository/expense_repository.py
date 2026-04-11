@@ -18,7 +18,7 @@ def get_all_expenses(
     month: int | None = None,
     include_deleted: bool = False,
 ) -> list[Expense]:
-    """すべての支出を取得する(削除されていないもののみ)"""
+    """Get all expenses (non-deleted only by default)."""
     query = db.query(Expense).options(selectinload(Expense.categories)).filter(Expense.user_uuid == user_uuid)
     if not include_deleted:
         query = query.filter(Expense.deleted_at.is_(None))
@@ -39,7 +39,7 @@ def get_all_expenses(
 
 
 def get_expense_by_uuid(db: Session, uuid: str, user_uuid: str) -> Expense | None:
-    """UUIDで支出を取得する"""
+    """Get an expense by UUID."""
     return db.query(Expense).options(selectinload(Expense.categories)).filter(
         Expense.uuid == uuid,
         Expense.user_uuid == user_uuid,
@@ -56,7 +56,7 @@ def create_expense(  # noqa: PLR0913
     *,
     category_uuids: list[str] | None = None,
 ) -> Expense:
-    """新しい支出を作成する"""
+    """Create a new expense."""
     expense = Expense(user_uuid=user_uuid, name=name, amount=amount, expensed_at=expensed_at)
 
     if category_uuids:
@@ -73,7 +73,7 @@ def create_expense(  # noqa: PLR0913
 
 
 def update_expense_categories(db: Session, expense: Expense, user_uuid: str, category_uuids: list[str]) -> None:
-    """支出のカテゴリを更新する"""
+    """Update categories of an expense."""
     categories = db.query(Category).filter(
         Category.uuid.in_(category_uuids),
         Category.user_uuid == user_uuid,
@@ -82,6 +82,6 @@ def update_expense_categories(db: Session, expense: Expense, user_uuid: str, cat
 
 
 def soft_delete_expense(db: Session, expense: Expense) -> None:
-    """支出を論理削除する"""
+    """Soft-delete an expense."""
     expense.deleted_at = dt.datetime.now(dt.UTC)  # type: ignore[assignment]
     db.commit()

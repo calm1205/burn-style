@@ -7,17 +7,17 @@ from src.model.expense_category_association import ExpenseCategoryAssociation
 
 
 def get_all_categories(db: Session, user_uuid: str) -> list[Category]:
-    """すべてのカテゴリを取得する"""
+    """Get all categories."""
     return db.query(Category).filter(Category.user_uuid == user_uuid).all()
 
 
 def get_category_by_uuid(db: Session, uuid: str, user_uuid: str) -> Category | None:
-    """UUIDでカテゴリを取得する"""
+    """Get a category by UUID."""
     return db.query(Category).filter(Category.uuid == uuid, Category.user_uuid == user_uuid).first()
 
 
 def create_category(db: Session, user_uuid: str, name: str) -> Category:
-    """新しいカテゴリを作成する"""
+    """Create a new category."""
     category = Category(user_uuid=user_uuid, name=name)
     db.add(category)
     db.commit()
@@ -26,13 +26,13 @@ def create_category(db: Session, user_uuid: str, name: str) -> Category:
 
 
 def delete_all_categories(db: Session) -> None:
-    """すべてのカテゴリを削除する(関連する中間テーブルも削除)"""
+    """Delete all categories (including association table records)."""
     db.query(ExpenseCategoryAssociation).delete()
     db.query(Category).delete()
 
 
 def bulk_create_categories(db: Session, user_uuid: str, names: list[str]) -> list[Category]:
-    """カテゴリを一括作成する"""
+    """Bulk-create categories."""
     categories = [Category(user_uuid=user_uuid, name=name) for name in names]
     db.add_all(categories)
     db.commit()
@@ -42,7 +42,7 @@ def bulk_create_categories(db: Session, user_uuid: str, names: list[str]) -> lis
 
 
 def update_category(db: Session, category: Category, name: str) -> Category:
-    """カテゴリ名を更新する"""
+    """Update a category name."""
     category.name = name  # type: ignore[assignment]
     db.commit()
     db.refresh(category)
@@ -50,6 +50,6 @@ def update_category(db: Session, category: Category, name: str) -> Category:
 
 
 def delete_category(db: Session, category: Category) -> None:
-    """カテゴリを物理削除する"""
+    """Hard-delete a category."""
     db.delete(category)
     db.commit()

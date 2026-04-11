@@ -1,32 +1,32 @@
-# フロントエンド規約
+# Frontend Conventions
 
-## 技術スタック
-- **言語**: TypeScript 5.9
-- **UIライブラリ**: React 19
-- **ビルドツール**: Vite 8
+## Tech Stack
+- **Language**: TypeScript 5.9
+- **UI Library**: React 19
+- **Build Tool**: Vite 8
 - **CSS**: Tailwind CSS v4
-- **UIコンポーネント**: Radix UI Themes
-- **リンター**: oxlint
-- **フォーマッター**: oxfmt
+- **UI Components**: Radix UI Themes
+- **Linter**: oxlint
+- **Formatter**: oxfmt
 
-## oxlint 設定
-- correctness + suspicious カテゴリ有効
+## oxlint Configuration
+- correctness + suspicious categories enabled
 
-## oxfmt 設定
-- インデント: スペース
-- クォート: ダブルクォート (`"`)
-- セミコロン: なし（ASI保護時のみ自動付与）
-- import自動整理: 有効
+## oxfmt Configuration
+- Indent: spaces
+- Quotes: double quotes (`"`)
+- Semicolons: none (auto-inserted only for ASI protection)
+- Auto import sorting: enabled
 
 ## Tailwind CSS v4
-- Viteプラグイン (`@tailwindcss/vite`) で統合
-- CSS-firstの設定（`tailwind.config.js` 不要）
+- Integrated via Vite plugin (`@tailwindcss/vite`)
+- CSS-first configuration (`tailwind.config.js` not required)
 
-## コーディング規約
-- 関数定義はアロー関数 (`const fn = () => {}`) を使用（`function` 宣言は不可）
-- 型定義は可能な限り `interface` を使用（`type` は union型等 `interface` で表現できない場合のみ）
-- named export に統一（`export default` は使用しない）
+## Coding Conventions
+- Use arrow functions for function definitions (`const fn = () => {}`) — `function` declarations are not allowed
+- Prefer `interface` for type definitions — use `type` only when `interface` cannot express it (e.g., union types)
+- Use named exports only — `export default` is not allowed
 
-## ビルド
-- `tsc -b && vite build` でビルド
-- `vite` で開発サーバー起動
+## Build
+- Build with `tsc -b && vite build`
+- Start dev server with `vite`

@@ -4,19 +4,19 @@ import time
 
 
 class ChallengeStore:
-    """WebAuthnチャレンジの一時保存(インメモリ, TTL 5分)"""
+    """In-memory store for WebAuthn challenges (TTL 5 min)."""
 
     def __init__(self, ttl_seconds: int = 300) -> None:
         self._store: dict[str, tuple[bytes, float]] = {}
         self._ttl = ttl_seconds
 
     def save(self, name: str, challenge: bytes) -> None:
-        """チャレンジを保存"""
+        """Save a challenge."""
         self._cleanup()
         self._store[name] = (challenge, time.monotonic())
 
     def get(self, name: str) -> bytes | None:
-        """チャレンジを取得して削除"""
+        """Retrieve and remove a challenge."""
         self._cleanup()
         entry = self._store.pop(name, None)
         if entry is None:
@@ -25,7 +25,7 @@ class ChallengeStore:
         return challenge
 
     def _cleanup(self) -> None:
-        """期限切れエントリを削除"""
+        """Remove expired entries."""
         now = time.monotonic()
         expired = [k for k, (_, ts) in self._store.items() if now - ts > self._ttl]
         for k in expired:

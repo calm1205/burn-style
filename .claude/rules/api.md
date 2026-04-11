@@ -1,49 +1,49 @@
-# API仕様
+# API Specification
 
-ベースURL: `/` (バックエンドサーバー)
+Base URL: `/` (backend server)
 
-認証: `Authorization: Bearer <JWT>` ヘッダー（認証必須エンドポイント）
+Authentication: `Authorization: Bearer <JWT>` header (for authenticated endpoints)
 
-## ヘルスチェック
+## Health Check
 
-| メソッド | パス | レスポンス |
-|---------|------|-----------|
+| Method | Path | Response |
+|--------|------|----------|
 | GET | `/` | `{ message: "BurnStyle API is running" }` |
 | GET | `/health` | `{ status: "healthy" }` |
 
-## 認証 `/auth`
+## Authentication `/auth`
 
-### パスキー登録
+### Passkey Registration
 
-| メソッド | パス | リクエスト | レスポンス |
-|---------|------|-----------|-----------|
+| Method | Path | Request | Response |
+|--------|------|---------|----------|
 | POST | `/auth/register/options` | `{ name }` | `{ options }` |
 | POST | `/auth/register/verify` | `{ name, credential }` | `{ message }` |
 
-### パスキー認証
+### Passkey Authentication
 
-| メソッド | パス | リクエスト | レスポンス |
-|---------|------|-----------|-----------|
+| Method | Path | Request | Response |
+|--------|------|---------|----------|
 | POST | `/auth/signin/options` | `{ name }` | `{ options }` |
 | POST | `/auth/signin/verify` | `{ name, credential }` | `{ access_token, token_type }` |
 
-## ユーザー `/me`
+## User `/me`
 
-全エンドポイント認証必須。
+All endpoints require authentication.
 
-| メソッド | パス | リクエスト | レスポンス | ステータス |
-|---------|------|-----------|-----------|-----------|
+| Method | Path | Request | Response | Status |
+|--------|------|---------|----------|--------|
 | GET | `/me` | - | `{ uuid, name }` | 200 |
 | PATCH | `/me` | `{ name }` | `{ uuid, name }` | 200 |
 | DELETE | `/me` | - | - | 204 |
 | GET | `/me/export` | - | `{ name, categories, expenses }` | 200 |
 
-## カテゴリ `/categories`
+## Categories `/categories`
 
-全エンドポイント認証必須。
+All endpoints require authentication.
 
-| メソッド | パス | リクエスト | レスポンス | ステータス |
-|---------|------|-----------|-----------|-----------|
+| Method | Path | Request | Response | Status |
+|--------|------|---------|----------|--------|
 | GET | `/categories` | - | `CategoryResponse[]` | 200 |
 | POST | `/categories` | `{ name }` | `CategoryResponse` | 201 |
 | PATCH | `/categories/{uuid}` | `{ name? }` | `CategoryResponse` | 200 |
@@ -51,12 +51,12 @@
 
 **CategoryResponse**: `{ uuid, name }`
 
-## 支出 `/expenses`
+## Expenses `/expenses`
 
-全エンドポイント認証必須。
+All endpoints require authentication.
 
-| メソッド | パス | パラメータ | リクエスト | レスポンス | ステータス |
-|---------|------|-----------|-----------|-----------|-----------|
+| Method | Path | Params | Request | Response | Status |
+|--------|------|--------|---------|----------|--------|
 | GET | `/expenses` | `?year=&month=` | - | `ExpenseResponse[]` | 200 |
 | GET | `/expenses/{uuid}` | - | - | `ExpenseResponse` | 200 |
 | POST | `/expenses` | - | `ExpenseCreate` | `ExpenseResponse` | 201 |
@@ -81,22 +81,22 @@
 }
 ```
 
-## 支出テンプレート `/expense-templates`
+## Expense Templates `/expense-templates`
 
-全エンドポイント認証必須。
+All endpoints require authentication.
 
-| メソッド | パス | リクエスト | レスポンス | ステータス |
-|---------|------|-----------|-----------|-----------|
+| Method | Path | Request | Response | Status |
+|--------|------|---------|----------|--------|
 | GET | `/expense-templates` | - | `ExpenseTemplateResponse[]` | 200 |
 | POST | `/expense-templates` | `{ name, amount, category_uuid }` | `ExpenseTemplateResponse` | 201 |
 | PATCH | `/expense-templates/{uuid}` | `{ name?, amount?, category_uuid? }` | `ExpenseTemplateResponse` | 200 |
 | DELETE | `/expense-templates/{uuid}` | - | - | 204 |
 | POST | `/expense-templates/bulk-record` | `{ template_uuids }` | `{ created_count, message }` | 200 |
 
-## 共通仕様
+## Common Specifications
 
-- **タイムゾーン**: DB保存はUTC、APIレスポンスはJST変換
-- **UUID**: v7、32文字ハイフンなし
-- **論理削除**: `deleted_at`カラム（GET時は削除済み除外、exportは全件）
-- **金額**: 正の整数のみ（`amount > 0`）
-- **トークンリフレッシュ**: 認証リクエスト毎にレスポンスヘッダー`X-New-Token`で新JWTを返却
+- **Timezone**: Stored in UTC, API responses converted to JST
+- **UUID**: v7, 32 characters without hyphens
+- **Soft Delete**: `deleted_at` column (excluded from GET, included in export)
+- **Amount**: Positive integers only (`amount > 0`)
+- **Token Refresh**: New JWT returned via `X-New-Token` response header on every authenticated request

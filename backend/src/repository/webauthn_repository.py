@@ -6,12 +6,12 @@ from src.model.webauthn_credential import WebAuthnCredential
 
 
 def get_credentials_by_user_uuid(db: Session, user_uuid: str) -> list[WebAuthnCredential]:
-    """ユーザーUUIDで全WebAuthnクレデンシャルを取得"""
+    """Get all WebAuthn credentials by user UUID."""
     return db.query(WebAuthnCredential).filter(WebAuthnCredential.user_uuid == user_uuid).all()
 
 
 def get_credential_by_credential_id(db: Session, credential_id: bytes) -> WebAuthnCredential | None:
-    """クレデンシャルIDでWebAuthnクレデンシャルを取得"""
+    """Get a WebAuthn credential by credential ID."""
     return db.query(WebAuthnCredential).filter(WebAuthnCredential.credential_id == credential_id).first()
 
 
@@ -24,7 +24,7 @@ def create_credential(  # noqa: PLR0913
     sign_count: int,
     transports: str | None,
 ) -> WebAuthnCredential:
-    """新しいWebAuthnクレデンシャルを作成"""
+    """Create a new WebAuthn credential."""
     credential = WebAuthnCredential(
         user_uuid=user_uuid,
         credential_id=credential_id,
@@ -39,6 +39,6 @@ def create_credential(  # noqa: PLR0913
 
 
 def update_sign_count(db: Session, credential: WebAuthnCredential, new_sign_count: int) -> None:
-    """クレデンシャルの署名カウントを更新"""
+    """Update the sign count of a credential."""
     credential.sign_count = new_sign_count  # type: ignore[assignment]
     db.commit()

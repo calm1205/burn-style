@@ -18,7 +18,7 @@ def get_current_user(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],
     db: Annotated[Session, Depends(get_db)],
 ) -> User:
-    """JWTトークンからユーザーを取得"""
+    """Retrieve the current user from the JWT token."""
     try:
         payload = decode_access_token(credentials.credentials)
     except Exception:

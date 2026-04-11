@@ -21,14 +21,14 @@ class ExpenseResponse(BaseModel):
 
 class ExpenseCreate(BaseModel):
     name: str
-    amount: int = Field(gt=0, description="正の整数のみ許可")
+    amount: int = Field(gt=0, description="Must be a positive integer")
     expensed_at: JstInputDatetime
     category_uuid: str | None = None
 
 
 class ExpenseUpdate(BaseModel):
     name: str | None = None
-    amount: int | None = Field(default=None, gt=0, description="正の整数のみ許可")
+    amount: int | None = Field(default=None, gt=0, description="Must be a positive integer")
     expensed_at: JstInputDatetime | None = None
     category_uuid: str | None = None
 

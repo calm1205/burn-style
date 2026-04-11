@@ -1,21 +1,21 @@
-# Git・デプロイ規約
+# Git & Deploy Guidelines
 
-## コミットメッセージ
-- Conventional Commits形式: `feat:`, `fix:`, `chore:`, `refactor:`, `docs:` 等
-- 日本語で記述
+## Commit Messages
+- Conventional Commits format: `feat:`, `fix:`, `chore:`, `refactor:`, `docs:`, etc.
+- Written in English
 
-## デプロイ
-- **プラットフォーム**: Vercel
-- **トリガー**: GitHub Actions `workflow_dispatch`（手動実行）
-- **環境**: production / preview を選択可能
+## Deploy
+- **Platform**: Vercel
+- **Trigger**: GitHub Actions `workflow_dispatch` (manual execution)
+- **Environments**: production / preview selectable
 
-## GitHub Actions ワークフロー
-| ファイル | 対象 |
-|---------|------|
-| `deploy_backend.yml` | バックエンドデプロイ |
-| `deploy_frontend.yml` | フロントエンドデプロイ |
+## GitHub Actions Workflows
+| File | Target |
+|------|--------|
+| `deploy_backend.yml` | Backend deploy |
+| `deploy_frontend.yml` | Frontend deploy |
 
-## デプロイフロー
-1. GitHubのActionsタブから手動実行
-2. 環境（production / preview）を選択
-3. Vercel CLIでビルド＆デプロイ
+## Deploy Flow
+1. Manually trigger from GitHub Actions tab
+2. Select environment (production / preview)
+3. Build & deploy via Vercel CLI

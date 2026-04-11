@@ -44,7 +44,7 @@ def register_options(
     body: RegisterOptionsRequest,
     db: Annotated[Session, Depends(get_db)],
 ) -> RegisterOptionsResponse:
-    """登録オプション生成"""
+    """Generate registration options."""
     existing = get_user_by_name(db, body.name)
     if existing is not None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Registration failed")
@@ -66,7 +66,7 @@ def register_verify(
     body: RegisterVerifyRequest,
     db: Annotated[Session, Depends(get_db)],
 ) -> RegisterVerifyResponse:
-    """登録検証 → ユーザー+クレデンシャル作成"""
+    """Verify registration and create user + credential."""
     challenge = challenge_store.get(body.name)
     if challenge is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Challenge not found or expired")
@@ -104,7 +104,7 @@ def sign_in_options(
     body: SignInOptionsRequest,
     db: Annotated[Session, Depends(get_db)],
 ) -> SignInOptionsResponse:
-    """認証オプション生成"""
+    """Generate authentication options."""
     user = get_user_by_name(db, body.name)
     if user is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Authentication failed")
@@ -137,7 +137,7 @@ def sign_in_verify(
     body: SignInVerifyRequest,
     db: Annotated[Session, Depends(get_db)],
 ) -> SignInVerifyResponse:
-    """認証検証 → JWTトークン返却"""
+    """Verify authentication and return JWT token."""
     challenge = challenge_store.get(body.name)
     if challenge is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Challenge not found or expired")

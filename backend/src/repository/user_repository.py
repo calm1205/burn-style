@@ -6,17 +6,17 @@ from src.model.user import User
 
 
 def get_user_by_name(db: Session, name: str) -> User | None:
-    """ユーザー名でユーザーを取得"""
+    """Get a user by name."""
     return db.query(User).filter(User.name == name).first()
 
 
 def get_user_by_uuid(db: Session, uuid: str) -> User | None:
-    """UUIDでユーザーを取得"""
+    """Get a user by UUID."""
     return db.query(User).filter(User.uuid == uuid).first()
 
 
 def create_user(db: Session, name: str) -> User:
-    """新しいユーザーを作成"""
+    """Create a new user."""
     user = User(name=name)
     db.add(user)
     db.commit()
@@ -25,7 +25,7 @@ def create_user(db: Session, name: str) -> User:
 
 
 def update_user(db: Session, user: User, name: str) -> User:
-    """ユーザー名を更新"""
+    """Update a user's name."""
     user.name = name  # type: ignore[assignment]
     db.commit()
     db.refresh(user)
@@ -33,6 +33,6 @@ def update_user(db: Session, user: User, name: str) -> User:
 
 
 def delete_user(db: Session, user: User) -> None:
-    """ユーザーを削除"""
+    """Delete a user."""
     db.delete(user)
     db.commit()
