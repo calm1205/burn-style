@@ -8,8 +8,9 @@ import {
   Pencil1Icon,
   ResetIcon,
   TrashIcon,
+  UploadIcon,
 } from "@radix-ui/react-icons"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { useNavigate, useOutletContext } from "react-router"
 
 import { ConfirmDialog, useConfirmDialog } from "../components/ConfirmDialog"
@@ -32,7 +33,11 @@ export const SettingsPage = () => {
   const [editing, setEditing] = useState(false)
   const [name, setName] = useState("")
   const [theme, setTheme] = useState<ThemeMode>(getStoredTheme)
+  const [success, setSuccess] = useState("")
   const { dialogRef, open: openDialog } = useConfirmDialog()
+  const { dialogRef: importDialogRef, open: openImportDialog } = useConfirmDialog()
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const importDataRef = useRef<unknown>(null)
 
   const changeTheme = (mode: ThemeMode) => {
     setTheme(mode)
@@ -83,9 +88,41 @@ export const SettingsPage = () => {
     }
   }
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    e.target.value = ""
+
+    const reader = new FileReader()
+    reader.addEventListener("load", (event) => {
+      try {
+        importDataRef.current = JSON.parse(event.target?.result as string)
+        openImportDialog()
+      } catch {
+        setError("Invalid JSON file")
+      }
+    })
+    reader.readAsText(file)
+  }
+
+  const handleImport = async () => {
+    setError("")
+    setSuccess("")
+    importDialogRef.current?.close()
+    try {
+      const result = await api.importMe(importDataRef.current)
+      setSuccess(result.message)
+    } catch (err) {
+      setError(getErrorMessage(err, "Import failed"))
+    } finally {
+      importDataRef.current = null
+    }
+  }
+
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-6 px-6">
       {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+      {success && <p className="text-sm text-green-600 dark:text-green-400">{success}</p>}
 
       {/* Profile */}
       <div className="rounded-2xl bg-white p-5 shadow-sm dark:bg-gray-800">
@@ -178,6 +215,22 @@ export const SettingsPage = () => {
         </button>
         <button
           type="button"
+          onClick={() => fileInputRef.current?.click()}
+          className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
+        >
+          <UploadIcon className="size-4 text-gray-400 dark:text-gray-500" />
+          <span className="flex-1">Import Data</span>
+          <ChevronRightIcon className="size-4 text-gray-300 dark:text-gray-600" />
+        </button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".json"
+          onChange={handleFileSelect}
+          className="hidden"
+        />
+        <button
+          type="button"
           onClick={onLogout}
           className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
         >
@@ -203,6 +256,12 @@ export const SettingsPage = () => {
         message="All your expense data will be permanently deleted. Are you sure?"
         onConfirm={handleDelete}
         dialogRef={dialogRef}
+      />
+      <ConfirmDialog
+        message="All existing categories, expenses, and templates will be deleted and replaced with the imported data. Continue?"
+        onConfirm={handleImport}
+        confirmText="Import"
+        dialogRef={importDialogRef}
       />
     </div>
   )

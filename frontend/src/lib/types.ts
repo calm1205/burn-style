@@ -78,3 +78,9 @@ export interface ExpenseTemplateUpdate {
   amount?: number
   category_uuid?: string
 }
+
+export interface ImportResponse {
+  categories_count: number
+  expenses_count: number
+  message: string
+}
