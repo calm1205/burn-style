@@ -1,4 +1,5 @@
 import {
+  BarChartIcon,
   CalendarIcon,
   DoubleArrowLeftIcon,
   DoubleArrowRightIcon,
@@ -9,6 +10,7 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useSearchParams } from "react-router"
 
+import { CategoryBarChart } from "../components/CategoryBarChart"
 import { CategoryBubbleChart } from "../components/CategoryBubbleChart"
 import { ExpenseHeatmap } from "../components/ExpenseHeatmap"
 import { ExpenseList } from "../components/ExpenseList"
@@ -18,8 +20,8 @@ import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
 import type { ExpenseResponse } from "../lib/types"
 
-type Tab = "list" | "pie" | "heatmap" | "bubble"
-const VALID_TABS: Tab[] = ["list", "pie", "heatmap", "bubble"]
+type Tab = "list" | "pie" | "heatmap" | "bubble" | "bar"
+const VALID_TABS: Tab[] = ["list", "pie", "heatmap", "bubble", "bar"]
 
 export const ExpenseMonthlyPage = () => {
   const now = new Date()
@@ -144,9 +146,10 @@ export const ExpenseMonthlyPage = () => {
         </button>
       </div>
 
-      <div className="flex shrink-0 gap-4 border-b border-gray-100 dark:border-gray-700">
+      <div className="flex shrink-0 gap-4 overflow-x-auto border-b border-gray-100 dark:border-gray-700">
         {[
           { key: "list" as const, label: "list", icon: ListBulletIcon },
+          { key: "bar" as const, label: "bar", icon: BarChartIcon },
           { key: "pie" as const, label: "pie", icon: PieChartIcon },
           { key: "heatmap" as const, label: "heat map", icon: CalendarIcon },
           { key: "bubble" as const, label: "bubble", icon: MixIcon },
@@ -155,7 +158,7 @@ export const ExpenseMonthlyPage = () => {
             key={key}
             type="button"
             onClick={() => setTab(key)}
-            className={`flex items-center gap-1.5 border-b-2 px-1 py-2 text-sm ${
+            className={`flex shrink-0 items-center gap-1.5 border-b-2 px-1 py-2 text-sm ${
               tab === key
                 ? "border-primary text-primary"
                 : "border-transparent text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
@@ -204,6 +207,12 @@ export const ExpenseMonthlyPage = () => {
         {tab === "bubble" && (
           <div className="min-h-0 flex-1 overflow-y-auto pt-4">
             <CategoryBubbleChart expenses={filteredExpenses} />
+          </div>
+        )}
+
+        {tab === "bar" && (
+          <div className="min-h-0 flex-1 overflow-y-auto pt-4">
+            <CategoryBarChart expenses={filteredExpenses} />
           </div>
         )}
       </div>
