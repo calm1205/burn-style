@@ -1,4 +1,5 @@
 import {
+  BarChartIcon,
   CalendarIcon,
   DoubleArrowLeftIcon,
   DoubleArrowRightIcon,
@@ -9,6 +10,7 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useSearchParams } from "react-router"
 
+import { CategoryBarChart } from "../components/CategoryBarChart"
 import { CategoryBubbleChart } from "../components/CategoryBubbleChart"
 import { ExpenseHeatmap } from "../components/ExpenseHeatmap"
 import { ExpenseList } from "../components/ExpenseList"
@@ -18,8 +20,8 @@ import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
 import type { ExpenseResponse } from "../lib/types"
 
-type Tab = "list" | "pie" | "heatmap" | "bubble"
-const VALID_TABS: Tab[] = ["list", "pie", "heatmap", "bubble"]
+type Tab = "list" | "pie" | "heatmap" | "bubble" | "bar"
+const VALID_TABS: Tab[] = ["list", "pie", "heatmap", "bubble", "bar"]
 
 export const ExpenseMonthlyPage = () => {
   const now = new Date()
@@ -150,6 +152,7 @@ export const ExpenseMonthlyPage = () => {
           { key: "pie" as const, label: "pie", icon: PieChartIcon },
           { key: "heatmap" as const, label: "heat map", icon: CalendarIcon },
           { key: "bubble" as const, label: "bubble", icon: MixIcon },
+          { key: "bar" as const, label: "bar", icon: BarChartIcon },
         ].map(({ key, label, icon: Icon }) => (
           <button
             key={key}
@@ -204,6 +207,12 @@ export const ExpenseMonthlyPage = () => {
         {tab === "bubble" && (
           <div className="min-h-0 flex-1 overflow-y-auto pt-4">
             <CategoryBubbleChart expenses={filteredExpenses} />
+          </div>
+        )}
+
+        {tab === "bar" && (
+          <div className="min-h-0 flex-1 overflow-y-auto pt-4">
+            <CategoryBarChart expenses={filteredExpenses} />
           </div>
         )}
       </div>
