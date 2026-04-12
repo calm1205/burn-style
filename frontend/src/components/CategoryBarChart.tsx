@@ -30,22 +30,24 @@ export const CategoryBarChart = ({ expenses }: CategoryBarChartProps) => {
   }
 
   return (
-    <ResponsiveContainer width="100%" height={Math.max(200, data.length * 48)}>
-      <BarChart data={data} layout="vertical" barCategoryGap="20%">
+    <ResponsiveContainer width="100%" height={300}>
+      <BarChart data={data} barCategoryGap="20%">
         <XAxis
-          type="number"
+          dataKey="name"
+          axisLine={false}
+          tickLine={false}
+          tick={{ fontSize: 10, fill: "var(--chart-label)" }}
+          interval={0}
+          angle={-30}
+          textAnchor="end"
+          height={60}
+        />
+        <YAxis
           axisLine={false}
           tickLine={false}
           tick={{ fontSize: 10, fill: "var(--chart-label)" }}
           tickFormatter={(v: number) => `¥${(v / 1000).toFixed(0)}k`}
-        />
-        <YAxis
-          type="category"
-          dataKey="name"
-          axisLine={false}
-          tickLine={false}
-          tick={{ fontSize: 12, fill: "var(--chart-label)" }}
-          width={100}
+          width={50}
         />
         <Tooltip
           formatter={(value) => [`¥${Number(value).toLocaleString()}`]}
@@ -59,7 +61,7 @@ export const CategoryBarChart = ({ expenses }: CategoryBarChartProps) => {
           }}
           cursor={{ fill: "var(--chart-cursor)" }}
         />
-        <Bar dataKey="amount" radius={[0, 6, 6, 0]} barSize={24} isAnimationActive={false}>
+        <Bar dataKey="amount" radius={[6, 6, 0, 0]} barSize={32} isAnimationActive={false}>
           {data.map((_, i) => (
             <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
           ))}
