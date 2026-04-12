@@ -149,10 +149,10 @@ export const ExpenseMonthlyPage = () => {
       <div className="flex shrink-0 gap-4 overflow-x-auto border-b border-gray-100 dark:border-gray-700">
         {[
           { key: "list" as const, label: "list", icon: ListBulletIcon },
+          { key: "bar" as const, label: "bar", icon: BarChartIcon },
           { key: "pie" as const, label: "pie", icon: PieChartIcon },
           { key: "heatmap" as const, label: "heat map", icon: CalendarIcon },
           { key: "bubble" as const, label: "bubble", icon: MixIcon },
-          { key: "bar" as const, label: "bar", icon: BarChartIcon },
         ].map(({ key, label, icon: Icon }) => (
           <button
             key={key}
