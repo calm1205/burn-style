@@ -146,7 +146,7 @@ export const ExpenseMonthlyPage = () => {
         </button>
       </div>
 
-      <div className="flex shrink-0 gap-4 border-b border-gray-100 dark:border-gray-700">
+      <div className="flex shrink-0 gap-4 overflow-x-auto border-b border-gray-100 dark:border-gray-700">
         {[
           { key: "list" as const, label: "list", icon: ListBulletIcon },
           { key: "pie" as const, label: "pie", icon: PieChartIcon },
@@ -158,7 +158,7 @@ export const ExpenseMonthlyPage = () => {
             key={key}
             type="button"
             onClick={() => setTab(key)}
-            className={`flex items-center gap-1.5 border-b-2 px-1 py-2 text-sm ${
+            className={`flex shrink-0 items-center gap-1.5 border-b-2 px-1 py-2 text-sm ${
               tab === key
                 ? "border-primary text-primary"
                 : "border-transparent text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
