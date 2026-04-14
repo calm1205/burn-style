@@ -95,7 +95,7 @@ export const MonthlyTrendChart = ({ year, month }: MonthlyTrendChartProps) => {
         <Bar
           dataKey="amount"
           fill="var(--chart-bar)"
-          radius={[6, 6, 6, 6]}
+          radius={[6, 6, 0, 0]}
           barSize={14}
           isAnimationActive={false}
         />
