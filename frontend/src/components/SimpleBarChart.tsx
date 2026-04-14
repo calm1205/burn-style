@@ -31,7 +31,7 @@ export const SimpleBarChart = ({ expenses }: SimpleBarChartProps) => {
 
   return (
     <div className="mt-3 flex flex-col gap-1">
-      <div className="flex h-[100px] items-end justify-center gap-1.5">
+      <div className="flex h-[100px] items-end gap-1.5">
         {data.map((d) => (
           <div
             key={d.name}
@@ -43,7 +43,7 @@ export const SimpleBarChart = ({ expenses }: SimpleBarChartProps) => {
           />
         ))}
       </div>
-      <div className="flex justify-center gap-1.5">
+      <div className="flex gap-1.5">
         {data.map((d) => (
           <span
             key={d.name}
