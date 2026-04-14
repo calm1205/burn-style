@@ -30,12 +30,12 @@ export const SimpleBarChart = ({ expenses }: SimpleBarChartProps) => {
   const maxAmount = data[0].amount
 
   return (
-    <div className="mt-3 flex flex-col gap-1">
+    <div className="mt-3 flex items-end gap-4">
       <div className="flex h-[100px] items-end gap-1.5">
         {data.map((d) => (
           <div
             key={d.name}
-            className="max-w-3.5 flex-1 rounded-t-md"
+            className="w-3.5 rounded-t-md"
             style={{
               height: `${(d.amount / maxAmount) * 100}%`,
               backgroundColor: BAR_COLOR,
@@ -43,16 +43,14 @@ export const SimpleBarChart = ({ expenses }: SimpleBarChartProps) => {
           />
         ))}
       </div>
-      <div className="flex gap-1.5">
-        {data.map((d) => (
-          <span
-            key={d.name}
-            className="max-w-3.5 flex-1 truncate text-center text-[9px] text-gray-400 dark:text-gray-500"
-          >
-            {d.name}
-          </span>
+      <ul className="flex flex-1 flex-col gap-1.5">
+        {data.map((d, i) => (
+          <li key={d.name} className="flex items-center gap-1.5">
+            <span className="text-[10px] text-gray-400 dark:text-gray-500">{i + 1}</span>
+            <span className="truncate text-xs text-gray-500 dark:text-gray-400">{d.name}</span>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   )
 }
