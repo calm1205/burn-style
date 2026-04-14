@@ -1,7 +1,6 @@
 import { useMemo } from "react"
-import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 
-import { CHART_COLORS } from "../lib/colors"
 import type { ExpenseResponse } from "../lib/types"
 
 interface CategoryBarChartProps {
@@ -61,11 +60,13 @@ export const CategoryBarChart = ({ expenses }: CategoryBarChartProps) => {
           }}
           cursor={{ fill: "var(--chart-cursor)" }}
         />
-        <Bar dataKey="amount" radius={[6, 6, 0, 0]} barSize={32} isAnimationActive={false}>
-          {data.map((_, i) => (
-            <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
-          ))}
-        </Bar>
+        <Bar
+          dataKey="amount"
+          fill="var(--chart-bar)"
+          radius={[6, 6, 0, 0]}
+          barSize={32}
+          isAnimationActive={false}
+        />
       </BarChart>
     </ResponsiveContainer>
   )
