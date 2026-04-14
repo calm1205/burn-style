@@ -1,7 +1,8 @@
 import { useMemo } from "react"
 
-import { CHART_COLORS } from "../lib/colors"
 import type { ExpenseResponse } from "../lib/types"
+
+const BAR_COLOR = "var(--chart-bar)"
 
 interface SimpleBarChartProps {
   expenses: ExpenseResponse[]
@@ -29,23 +30,29 @@ export const SimpleBarChart = ({ expenses }: SimpleBarChartProps) => {
   const maxAmount = data[0].amount
 
   return (
-    <div className="mt-3 flex flex-col gap-2">
-      {data.map((d, i) => (
-        <div key={d.name} className="flex items-center gap-2">
-          <span className="w-16 shrink-0 truncate text-xs text-gray-500 dark:text-gray-400">
+    <div className="mt-3 flex flex-col gap-1">
+      <div className="flex h-[100px] items-end gap-1.5">
+        {data.map((d) => (
+          <div
+            key={d.name}
+            className="flex-1 rounded-t-md"
+            style={{
+              height: `${(d.amount / maxAmount) * 100}%`,
+              backgroundColor: BAR_COLOR,
+            }}
+          />
+        ))}
+      </div>
+      <div className="flex gap-1.5">
+        {data.map((d) => (
+          <span
+            key={d.name}
+            className="flex-1 truncate text-center text-[9px] text-gray-400 dark:text-gray-500"
+          >
             {d.name}
           </span>
-          <div className="relative h-4 flex-1 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-700">
-            <div
-              className="h-full rounded-full"
-              style={{
-                width: `${(d.amount / maxAmount) * 100}%`,
-                backgroundColor: CHART_COLORS[i % CHART_COLORS.length],
-              }}
-            />
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   )
 }

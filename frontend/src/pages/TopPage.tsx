@@ -8,15 +8,13 @@ import { getErrorMessage } from "../lib/client"
 import type { ExpenseResponse } from "../lib/types"
 
 const SkeletonBarChart2 = () => (
-  <div className="mt-3 flex flex-col gap-2">
-    {Array.from({ length: 3 }, (_, i) => (
-      <div key={`skel-${String(i)}`} className="flex items-center gap-2">
-        <div className="h-3 w-16 shrink-0 rounded bg-gray-100 dark:bg-gray-700" />
-        <div
-          className="h-4 animate-pulse rounded-full bg-gray-100 dark:bg-gray-700"
-          style={{ width: `${80 - i * 20}%` }}
-        />
-      </div>
+  <div className="mt-3 flex h-[100px] items-end gap-1.5">
+    {Array.from({ length: 5 }, (_, i) => (
+      <div
+        key={`skel-${String(i)}`}
+        className="flex-1 animate-pulse rounded-t-md bg-gray-100 dark:bg-gray-700"
+        style={{ height: `${40 + Math.random() * 50}%` }}
+      />
     ))}
   </div>
 )
