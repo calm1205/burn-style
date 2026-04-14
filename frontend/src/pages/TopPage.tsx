@@ -2,19 +2,22 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router"
 
 import { MonthlyTrendChart } from "../components/MonthlyTrendChart"
-import { SimplePieChart } from "../components/SimplePieChart"
+import { SimpleBarChart } from "../components/SimpleBarChart"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
 import type { ExpenseResponse } from "../lib/types"
 
-const SkeletonPieChart = () => (
-  <div className="mt-3 flex items-center gap-5">
-    <div className="size-[120px] shrink-0 rounded-full bg-gray-100 dark:bg-gray-700" />
-    <div className="flex flex-1 flex-col gap-2">
-      <div className="h-3 w-20 rounded bg-gray-100 dark:bg-gray-700" />
-      <div className="h-3 w-16 rounded bg-gray-100 dark:bg-gray-700" />
-      <div className="h-3 w-24 rounded bg-gray-100 dark:bg-gray-700" />
-    </div>
+const SkeletonBarChart2 = () => (
+  <div className="mt-3 flex flex-col gap-2">
+    {Array.from({ length: 3 }, (_, i) => (
+      <div key={`skel-${String(i)}`} className="flex items-center gap-2">
+        <div className="h-3 w-16 shrink-0 rounded bg-gray-100 dark:bg-gray-700" />
+        <div
+          className="h-4 animate-pulse rounded-full bg-gray-100 dark:bg-gray-700"
+          style={{ width: `${80 - i * 20}%` }}
+        />
+      </div>
+    ))}
   </div>
 )
 
@@ -77,7 +80,7 @@ export const TopPage = () => {
         <p className="mb-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
           Monthly
         </p>
-        {loading ? <SkeletonPieChart /> : <SimplePieChart expenses={expenses} />}
+        {loading ? <SkeletonBarChart2 /> : <SimpleBarChart expenses={expenses} />}
       </button>
 
       <button
