@@ -31,11 +31,11 @@ export const SimpleBarChart = ({ expenses }: SimpleBarChartProps) => {
 
   return (
     <div className="mt-3 flex flex-col gap-1">
-      <div className="flex h-[100px] items-end gap-1.5">
+      <div className="flex h-[100px] items-end justify-center gap-1.5">
         {data.map((d) => (
           <div
             key={d.name}
-            className="flex-1 rounded-t-md"
+            className="max-w-3.5 flex-1 rounded-t-md"
             style={{
               height: `${(d.amount / maxAmount) * 100}%`,
               backgroundColor: BAR_COLOR,
@@ -43,11 +43,11 @@ export const SimpleBarChart = ({ expenses }: SimpleBarChartProps) => {
           />
         ))}
       </div>
-      <div className="flex gap-1.5">
+      <div className="flex justify-center gap-1.5">
         {data.map((d) => (
           <span
             key={d.name}
-            className="flex-1 truncate text-center text-[9px] text-gray-400 dark:text-gray-500"
+            className="max-w-3.5 flex-1 truncate text-center text-[9px] text-gray-400 dark:text-gray-500"
           >
             {d.name}
           </span>
