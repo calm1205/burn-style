@@ -35,8 +35,8 @@ export const CategoryBarChart = ({ expenses }: CategoryBarChartProps) => {
   const total = data.reduce((sum, d) => sum + d.amount, 0)
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-end gap-2">
+    <div className="flex h-full flex-col gap-6">
+      <div className="flex shrink-0 items-end gap-2">
         <div className="flex h-[240px] flex-col justify-between pb-1 text-right">
           <span className="text-xs text-gray-400 dark:text-gray-500">
             ¥{formatAmount(maxAmount)}
@@ -71,7 +71,7 @@ export const CategoryBarChart = ({ expenses }: CategoryBarChartProps) => {
           </div>
         </div>
       </div>
-      <ul className="flex flex-col">
+      <ul className="flex min-h-0 flex-1 flex-col overflow-y-auto">
         {data.map((d, i) => {
           const pct = total > 0 ? Math.round((d.amount / total) * 100) : 0
           return (
