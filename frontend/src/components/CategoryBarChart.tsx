@@ -1,7 +1,9 @@
 import { useMemo } from "react"
-import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 
 import type { ExpenseResponse } from "../lib/types"
+
+const BAR_COLOR = "var(--chart-bar)"
+const formatAmount = (v: number) => (v >= 1000 ? `${(v / 1000).toFixed(0)}k` : `${v}`)
 
 interface CategoryBarChartProps {
   expenses: ExpenseResponse[]
@@ -28,46 +30,64 @@ export const CategoryBarChart = ({ expenses }: CategoryBarChartProps) => {
     return <p className="mt-8 text-center text-sm text-gray-400">No data</p>
   }
 
+  const maxAmount = data[0].amount
+  const midAmount = Math.round(maxAmount / 2)
+  const total = data.reduce((sum, d) => sum + d.amount, 0)
+
   return (
-    <ResponsiveContainer width="100%" height={300}>
-      <BarChart data={data} barCategoryGap="20%">
-        <XAxis
-          dataKey="name"
-          axisLine={false}
-          tickLine={false}
-          tick={{ fontSize: 10, fill: "var(--chart-label)" }}
-          interval={0}
-          angle={-30}
-          textAnchor="end"
-          height={60}
-        />
-        <YAxis
-          axisLine={false}
-          tickLine={false}
-          tick={{ fontSize: 10, fill: "var(--chart-label)" }}
-          tickFormatter={(v: number) => `¥${(v / 1000).toFixed(0)}k`}
-          width={50}
-        />
-        <Tooltip
-          formatter={(value) => [`¥${Number(value).toLocaleString()}`]}
-          contentStyle={{
-            borderRadius: "12px",
-            border: "none",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-            fontSize: "12px",
-            backgroundColor: "var(--chart-tooltip-bg)",
-            color: "var(--chart-tooltip-text)",
-          }}
-          cursor={{ fill: "var(--chart-cursor)" }}
-        />
-        <Bar
-          dataKey="amount"
-          fill="var(--chart-bar)"
-          radius={[6, 6, 0, 0]}
-          barSize={32}
-          isAnimationActive={false}
-        />
-      </BarChart>
-    </ResponsiveContainer>
+    <div className="flex h-full flex-col gap-6">
+      <div className="flex shrink-0 items-end gap-2">
+        <div className="flex h-[240px] flex-col justify-between pb-1 text-right">
+          <span className="text-xs text-gray-400 dark:text-gray-500">
+            ¥{formatAmount(maxAmount)}
+          </span>
+          <span className="text-xs text-gray-400 dark:text-gray-500">
+            ¥{formatAmount(midAmount)}
+          </span>
+          <span className="text-xs text-gray-400 dark:text-gray-500">0</span>
+        </div>
+        <div className="flex flex-1 flex-col gap-1.5">
+          <div className="flex h-[240px] items-end gap-1.5">
+            {data.map((d) => (
+              <div
+                key={d.name}
+                className="flex-1 rounded-t-md"
+                style={{
+                  height: `${(d.amount / maxAmount) * 100}%`,
+                  backgroundColor: BAR_COLOR,
+                }}
+              />
+            ))}
+          </div>
+          <div className="flex gap-1.5">
+            {data.map((d, i) => (
+              <span
+                key={d.name}
+                className="flex-1 text-center text-xs text-gray-400 dark:text-gray-500"
+              >
+                {i + 1}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+      <ul className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+        {data.map((d, i) => {
+          const pct = total > 0 ? Math.round((d.amount / total) * 100) : 0
+          return (
+            <li key={d.name} className="flex items-center gap-3 px-2 py-2.5">
+              <span className="w-5 text-right text-xs text-gray-400 dark:text-gray-500">
+                {i + 1}
+              </span>
+              <span className="flex-1 truncate text-sm">{d.name}</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">{pct}%</span>
+              <span className="w-20 text-right font-mono text-sm">
+                ¥{d.amount.toLocaleString()}
+              </span>
+            </li>
+          )
+        })}
+      </ul>
+    </div>
   )
 }

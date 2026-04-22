@@ -211,7 +211,7 @@ export const ExpenseMonthlyPage = () => {
         )}
 
         {tab === "bar" && (
-          <div className="min-h-0 flex-1 overflow-y-auto pt-4">
+          <div className="flex min-h-0 flex-1 flex-col pt-4">
             <CategoryBarChart expenses={filteredExpenses} />
           </div>
         )}
