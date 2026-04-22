@@ -32,7 +32,7 @@ export const SimpleBarChart = ({ expenses }: SimpleBarChartProps) => {
   const midAmount = Math.round(maxAmount / 2)
 
   return (
-    <div className="mt-3 flex items-end gap-4">
+    <div className="mt-3 flex flex-col gap-3">
       <div className="flex items-end gap-1">
         <div className="flex h-[100px] flex-col justify-between pb-0.5 text-right">
           <span className="text-[10px] text-gray-400 dark:text-gray-500">
@@ -43,20 +43,32 @@ export const SimpleBarChart = ({ expenses }: SimpleBarChartProps) => {
           </span>
           <span className="text-[10px] text-gray-400 dark:text-gray-500">0</span>
         </div>
-        <div className="flex h-[100px] items-end gap-1.5">
-          {data.map((d) => (
-            <div
-              key={d.name}
-              className="w-3.5 rounded-t-md"
-              style={{
-                height: `${(d.amount / maxAmount) * 100}%`,
-                backgroundColor: BAR_COLOR,
-              }}
-            />
-          ))}
+        <div className="flex flex-1 flex-col gap-1">
+          <div className="flex h-[100px] items-end gap-1">
+            {data.map((d) => (
+              <div
+                key={d.name}
+                className="flex-1 rounded-t-md"
+                style={{
+                  height: `${(d.amount / maxAmount) * 100}%`,
+                  backgroundColor: BAR_COLOR,
+                }}
+              />
+            ))}
+          </div>
+          <div className="flex gap-1">
+            {data.map((d, i) => (
+              <span
+                key={d.name}
+                className="flex-1 text-center text-[10px] text-gray-400 dark:text-gray-500"
+              >
+                {i + 1}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
-      <ul className="ml-auto flex flex-col gap-1.5">
+      <ul className="grid grid-cols-2 gap-x-3 gap-y-1">
         {data.map((d, i) => (
           <li key={d.name} className="flex items-center gap-1.5">
             <span className="text-[10px] text-gray-400 dark:text-gray-500">{i + 1}</span>
