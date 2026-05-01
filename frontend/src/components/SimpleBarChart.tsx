@@ -48,7 +48,7 @@ export const SimpleBarChart = ({ expenses }: SimpleBarChartProps) => {
             {data.map((d) => (
               <div
                 key={d.name}
-                className="flex-1 rounded-t-md"
+                className="max-w-8 flex-1 rounded-t-md"
                 style={{
                   height: `${(d.amount / maxAmount) * 100}%`,
                   backgroundColor: BAR_COLOR,
@@ -60,7 +60,7 @@ export const SimpleBarChart = ({ expenses }: SimpleBarChartProps) => {
             {data.map((d, i) => (
               <span
                 key={d.name}
-                className="flex-1 text-center text-[10px] text-gray-400 dark:text-gray-500"
+                className="max-w-8 flex-1 text-center text-[10px] text-gray-400 dark:text-gray-500"
               >
                 {i + 1}
               </span>
