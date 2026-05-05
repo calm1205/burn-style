@@ -7,6 +7,7 @@ import {
   TrashIcon,
 } from "@radix-ui/react-icons"
 import { type SubmitEvent, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { Link } from "react-router"
 
 import { ConfirmDialog, useConfirmDialog } from "../components/ConfirmDialog"
 import { api } from "../lib/api"
@@ -126,60 +127,74 @@ export const ExpenseTemplatePage = () => {
       {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
 
       {/* Create form */}
-      <form
-        onSubmit={handleCreate}
-        className="flex shrink-0 flex-col gap-3 rounded-2xl bg-white p-4 shadow-sm dark:bg-gray-800"
-      >
-        <input
-          type="text"
-          placeholder="Netflix"
-          value={form.name}
-          onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
-          required
-          maxLength={100}
-          className="w-full rounded-xl bg-gray-50 px-4 py-2.5 text-base outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
-        />
-        <input
-          type="text"
-          inputMode="numeric"
-          placeholder="1,490"
-          value={form.amount}
-          onChange={(e) => {
-            const raw = e.target.value.replace(/[^0-9]/g, "")
-            const formatted = raw ? Number(raw).toLocaleString() : ""
-            setForm((prev) => ({ ...prev, amount: formatted }))
-          }}
-          required
-          className="w-full rounded-xl bg-gray-50 px-4 py-2.5 text-base outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
-        />
-        <div className="flex items-center gap-2">
-          <div className="relative flex-1">
-            <select
-              value={form.categoryUuid}
-              onChange={(e) => setForm((prev) => ({ ...prev, categoryUuid: e.target.value }))}
-              required
-              className="w-full appearance-none rounded-xl bg-gray-50 py-2.5 pr-8 pl-4 text-base outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
-            >
-              <option value="" disabled>
-                Category
-              </option>
-              {categories.map((c) => (
-                <option key={c.uuid} value={c.uuid}>
-                  {c.name}
+      {categories.length > 0 ? (
+        <form
+          onSubmit={handleCreate}
+          className="flex shrink-0 flex-col gap-3 rounded-2xl bg-white p-4 shadow-sm dark:bg-gray-800"
+        >
+          <input
+            type="text"
+            placeholder="Netflix"
+            value={form.name}
+            onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
+            required
+            maxLength={100}
+            className="w-full rounded-xl bg-gray-50 px-4 py-2.5 text-base outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+          />
+          <input
+            type="text"
+            inputMode="numeric"
+            placeholder="1,490"
+            value={form.amount}
+            onChange={(e) => {
+              const raw = e.target.value.replace(/[^0-9]/g, "")
+              const formatted = raw ? Number(raw).toLocaleString() : ""
+              setForm((prev) => ({ ...prev, amount: formatted }))
+            }}
+            required
+            className="w-full rounded-xl bg-gray-50 px-4 py-2.5 text-base outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+          />
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1">
+              <select
+                value={form.categoryUuid}
+                onChange={(e) => setForm((prev) => ({ ...prev, categoryUuid: e.target.value }))}
+                required
+                className="w-full appearance-none rounded-xl bg-gray-50 py-2.5 pr-8 pl-4 text-base outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+              >
+                <option value="" disabled>
+                  Category
                 </option>
-              ))}
-            </select>
-            <ChevronDownIcon className="pointer-events-none absolute top-1/2 right-2.5 size-4 -translate-y-1/2 text-gray-400" />
+                {categories.map((c) => (
+                  <option key={c.uuid} value={c.uuid}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+              <ChevronDownIcon className="pointer-events-none absolute top-1/2 right-2.5 size-4 -translate-y-1/2 text-gray-400" />
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary text-white hover:bg-primary-hover disabled:opacity-50"
+            >
+              <PlusIcon className="size-4" />
+            </button>
           </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary text-white hover:bg-primary-hover disabled:opacity-50"
+        </form>
+      ) : (
+        <div className="flex shrink-0 flex-col items-center gap-3 rounded-2xl bg-white p-6 text-center shadow-sm dark:bg-gray-800">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Please register a category first.
+          </p>
+          <Link
+            to="/category"
+            className="rounded-xl bg-primary px-4 py-2 text-sm text-white hover:bg-primary-hover"
           >
-            <PlusIcon className="size-4" />
-          </button>
+            Manage Categories
+          </Link>
         </div>
-      </form>
+      )}
 
       {/* Total amount */}
       {templates.length > 0 && (
