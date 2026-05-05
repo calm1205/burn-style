@@ -13,6 +13,7 @@ export const CategoriesPage = () => {
   const [editing, setEditing] = useState<{ uuid: string; name: string } | null>(null)
   const editInputRef = useRef<HTMLInputElement>(null)
   const [deleteTarget, setDeleteTarget] = useState<CategoryResponse | null>(null)
+  const [loading, setLoading] = useState(false)
   const { dialogRef, open: openDialog } = useConfirmDialog()
 
   const fetchData = useCallback(async () => {
@@ -30,12 +31,15 @@ export const CategoriesPage = () => {
   const handleCreate = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError("")
+    setLoading(true)
     try {
       await api.createCategory({ name })
       setName("")
       await fetchData()
     } catch (err) {
       setError(getErrorMessage(err, "Failed to create"))
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -47,6 +51,7 @@ export const CategoriesPage = () => {
   const handleDelete = async () => {
     if (!deleteTarget) return
     setError("")
+    setLoading(true)
     try {
       await api.deleteCategory(deleteTarget.uuid)
       setDeleteTarget(null)
@@ -54,6 +59,8 @@ export const CategoriesPage = () => {
       await fetchData()
     } catch (err) {
       setError(getErrorMessage(err, "Delete failed"))
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -65,12 +72,15 @@ export const CategoriesPage = () => {
   const handleUpdate = async () => {
     if (!editing) return
     setError("")
+    setLoading(true)
     try {
       await api.updateCategory(editing.uuid, { name: editing.name })
       setEditing(null)
       await fetchData()
     } catch (err) {
       setError(getErrorMessage(err, "Failed to update"))
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -95,7 +105,8 @@ export const CategoriesPage = () => {
         />
         <button
           type="submit"
-          className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary text-white hover:bg-primary-hover"
+          disabled={loading}
+          className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary text-white hover:bg-primary-hover disabled:opacity-50"
         >
           <PlusIcon className="size-4" />
         </button>
@@ -121,14 +132,16 @@ export const CategoriesPage = () => {
                   <button
                     type="button"
                     onClick={handleUpdate}
-                    className="text-primary hover:text-primary-hover"
+                    disabled={loading}
+                    className="text-primary hover:text-primary-hover disabled:opacity-50"
                   >
                     <CheckIcon className="size-4" />
                   </button>
                   <button
                     type="button"
                     onClick={() => setEditing(null)}
-                    className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+                    disabled={loading}
+                    className="text-gray-400 hover:text-gray-600 disabled:opacity-50 dark:text-gray-500 dark:hover:text-gray-300"
                   >
                     <ResetIcon className="size-4" />
                   </button>
@@ -139,14 +152,16 @@ export const CategoriesPage = () => {
                   <button
                     type="button"
                     onClick={() => startEdit(c)}
-                    className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+                    disabled={loading}
+                    className="text-gray-400 hover:text-gray-600 disabled:opacity-50 dark:text-gray-500 dark:hover:text-gray-300"
                   >
                     <Pencil1Icon className="size-3.5" />
                   </button>
                   <button
                     type="button"
                     onClick={() => confirmDelete(c)}
-                    className="text-red-400 hover:text-red-600"
+                    disabled={loading}
+                    className="text-red-400 hover:text-red-600 disabled:opacity-50"
                   >
                     <TrashIcon className="size-3.5" />
                   </button>
@@ -162,6 +177,7 @@ export const CategoriesPage = () => {
       <ConfirmDialog
         message={`Delete "${deleteTarget?.name}"?`}
         onConfirm={handleDelete}
+        loading={loading}
         dialogRef={dialogRef}
       />
     </div>

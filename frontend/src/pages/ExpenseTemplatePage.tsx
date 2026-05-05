@@ -17,6 +17,7 @@ export const ExpenseTemplatePage = () => {
   const [templates, setTemplates] = useState<ExpenseTemplateResponse[]>([])
   const [categories, setCategories] = useState<CategoryResponse[]>([])
   const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const [form, setForm] = useState({
     name: "",
@@ -51,6 +52,7 @@ export const ExpenseTemplatePage = () => {
   const handleCreate = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError("")
+    setLoading(true)
     try {
       await api.createExpenseTemplate({
         name: form.name,
@@ -61,6 +63,8 @@ export const ExpenseTemplatePage = () => {
       await fetchData()
     } catch (err) {
       setError(getErrorMessage(err, "Failed to create"))
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -75,6 +79,7 @@ export const ExpenseTemplatePage = () => {
   const handleDelete = async () => {
     if (!deleteTarget) return
     setError("")
+    setLoading(true)
     try {
       await api.deleteExpenseTemplate(deleteTarget.uuid)
       setDeleteTarget(null)
@@ -82,6 +87,8 @@ export const ExpenseTemplatePage = () => {
       await fetchData()
     } catch (err) {
       setError(getErrorMessage(err, "Failed to delete"))
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -98,6 +105,7 @@ export const ExpenseTemplatePage = () => {
   const handleUpdate = async () => {
     if (!editing) return
     setError("")
+    setLoading(true)
     try {
       await api.updateExpenseTemplate(editing.uuid, {
         name: editing.name,
@@ -108,6 +116,8 @@ export const ExpenseTemplatePage = () => {
       await fetchData()
     } catch (err) {
       setError(getErrorMessage(err, "Failed to update"))
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -163,7 +173,8 @@ export const ExpenseTemplatePage = () => {
           </div>
           <button
             type="submit"
-            className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary text-white hover:bg-primary-hover"
+            disabled={loading}
+            className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary text-white hover:bg-primary-hover disabled:opacity-50"
           >
             <PlusIcon className="size-4" />
           </button>
@@ -232,14 +243,16 @@ export const ExpenseTemplatePage = () => {
                     <button
                       type="button"
                       onClick={handleUpdate}
-                      className="text-primary hover:text-primary-hover"
+                      disabled={loading}
+                      className="text-primary hover:text-primary-hover disabled:opacity-50"
                     >
                       <CheckIcon className="size-4" />
                     </button>
                     <button
                       type="button"
                       onClick={() => setEditing(null)}
-                      className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+                      disabled={loading}
+                      className="text-gray-400 hover:text-gray-600 disabled:opacity-50 dark:text-gray-500 dark:hover:text-gray-300"
                     >
                       <ResetIcon className="size-4" />
                     </button>
@@ -259,14 +272,16 @@ export const ExpenseTemplatePage = () => {
                   <button
                     type="button"
                     onClick={() => startEdit(t)}
-                    className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+                    disabled={loading}
+                    className="text-gray-400 hover:text-gray-600 disabled:opacity-50 dark:text-gray-500 dark:hover:text-gray-300"
                   >
                     <Pencil1Icon className="size-3.5" />
                   </button>
                   <button
                     type="button"
                     onClick={() => confirmDelete(t)}
-                    className="text-red-400 hover:text-red-600"
+                    disabled={loading}
+                    className="text-red-400 hover:text-red-600 disabled:opacity-50"
                   >
                     <TrashIcon className="size-3.5" />
                   </button>
@@ -282,6 +297,7 @@ export const ExpenseTemplatePage = () => {
       <ConfirmDialog
         message={`Delete "${deleteTarget?.name}"?`}
         onConfirm={handleDelete}
+        loading={loading}
         dialogRef={dialogRef}
       />
     </div>

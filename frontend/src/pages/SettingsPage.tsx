@@ -34,6 +34,7 @@ export const SettingsPage = () => {
   const [name, setName] = useState("")
   const [theme, setTheme] = useState<ThemeMode>(getStoredTheme)
   const [success, setSuccess] = useState("")
+  const [loading, setLoading] = useState(false)
   const { dialogRef, open: openDialog } = useConfirmDialog()
   const { dialogRef: importDialogRef, open: openImportDialog } = useConfirmDialog()
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -51,17 +52,21 @@ export const SettingsPage = () => {
 
   const handleUpdate = async () => {
     setError("")
+    setLoading(true)
     try {
       await api.updateMe({ name })
       setEditing(false)
       await refreshUser()
     } catch (err) {
       setError(getErrorMessage(err, "Update failed"))
+    } finally {
+      setLoading(false)
     }
   }
 
   const handleDelete = async () => {
     setError("")
+    setLoading(true)
     try {
       await api.deleteMe()
       localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN)
@@ -69,6 +74,8 @@ export const SettingsPage = () => {
       window.location.href = "/auth"
     } catch (err) {
       setError(getErrorMessage(err, "Delete failed"))
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -108,6 +115,7 @@ export const SettingsPage = () => {
   const handleImport = async () => {
     setError("")
     setSuccess("")
+    setLoading(true)
     importDialogRef.current?.close()
     try {
       const result = await api.importMe(importDataRef.current)
@@ -116,6 +124,7 @@ export const SettingsPage = () => {
       setError(getErrorMessage(err, "Import failed"))
     } finally {
       importDataRef.current = null
+      setLoading(false)
     }
   }
 
@@ -139,14 +148,16 @@ export const SettingsPage = () => {
             <button
               type="button"
               onClick={handleUpdate}
-              className="text-primary hover:text-primary-hover"
+              disabled={loading}
+              className="text-primary hover:text-primary-hover disabled:opacity-50"
             >
               <CheckIcon className="size-4" />
             </button>
             <button
               type="button"
               onClick={() => setEditing(false)}
-              className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+              disabled={loading}
+              className="text-gray-400 hover:text-gray-600 disabled:opacity-50 dark:text-gray-500 dark:hover:text-gray-300"
             >
               <ResetIcon className="size-4" />
             </button>
@@ -216,7 +227,8 @@ export const SettingsPage = () => {
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
+          disabled={loading}
+          className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 dark:text-gray-300 dark:hover:bg-gray-700"
         >
           <UploadIcon className="size-4 text-gray-400 dark:text-gray-500" />
           <span className="flex-1">Import Data</span>
@@ -245,7 +257,8 @@ export const SettingsPage = () => {
         <button
           type="button"
           onClick={openDialog}
-          className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950"
+          disabled={loading}
+          className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm text-red-600 hover:bg-red-50 disabled:opacity-50 dark:text-red-400 dark:hover:bg-red-950"
         >
           <TrashIcon className="size-4" />
           <span className="flex-1">Delete Account</span>
@@ -255,12 +268,14 @@ export const SettingsPage = () => {
       <ConfirmDialog
         message="All your expense data will be permanently deleted. Are you sure?"
         onConfirm={handleDelete}
+        loading={loading}
         dialogRef={dialogRef}
       />
       <ConfirmDialog
         message="All existing categories, expenses, and templates will be deleted and replaced with the imported data. Continue?"
         onConfirm={handleImport}
         confirmText="Import"
+        loading={loading}
         dialogRef={importDialogRef}
       />
     </div>

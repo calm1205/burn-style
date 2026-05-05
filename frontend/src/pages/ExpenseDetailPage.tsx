@@ -21,6 +21,7 @@ export const ExpenseDetailPage = () => {
   const [expense, setExpense] = useState<ExpenseResponse | null>(null)
   const [categories, setCategories] = useState<CategoryResponse[]>([])
   const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const [form, setForm] = useState({
     name: "",
@@ -61,6 +62,7 @@ export const ExpenseDetailPage = () => {
     e.preventDefault()
     if (!uuid) return
     setError("")
+    setLoading(true)
     try {
       await api.updateExpense(uuid, {
         name: form.name,
@@ -71,6 +73,8 @@ export const ExpenseDetailPage = () => {
       navigate(-1)
     } catch (err) {
       setError(getErrorMessage(err, "Update failed"))
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -78,12 +82,15 @@ export const ExpenseDetailPage = () => {
 
   const handleDelete = async () => {
     if (!uuid) return
+    setLoading(true)
     try {
       await api.deleteExpense(uuid)
       dialogRef.current?.close()
       navigate("/expense/monthly")
     } catch (err) {
       setError(getErrorMessage(err, "Delete failed"))
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -179,15 +186,17 @@ export const ExpenseDetailPage = () => {
       <button
         type="submit"
         form="expense-detail-form"
-        className="rounded-xl bg-primary px-5 py-4 text-white hover:bg-primary-hover"
+        disabled={loading}
+        className="rounded-xl bg-primary px-5 py-4 text-white hover:bg-primary-hover disabled:opacity-50"
       >
-        Update
+        {loading ? "Updating..." : "Update"}
       </button>
 
       <button
         type="button"
         onClick={openDeleteDialog}
-        className="flex items-center justify-center gap-2 text-sm text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300"
+        disabled={loading}
+        className="flex items-center justify-center gap-2 text-sm text-red-500 hover:text-red-600 disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
       >
         <TrashIcon className="size-3.5" />
         Delete
@@ -196,6 +205,7 @@ export const ExpenseDetailPage = () => {
       <ConfirmDialog
         message="Delete this expense?"
         onConfirm={handleDelete}
+        loading={loading}
         dialogRef={dialogRef}
       />
     </div>
