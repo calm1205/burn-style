@@ -4,6 +4,7 @@ interface ConfirmDialogProps {
   message: string
   onConfirm: () => void
   confirmText?: string
+  loading?: boolean
 }
 
 export const useConfirmDialog = () => {
@@ -16,6 +17,7 @@ export const ConfirmDialog = ({
   message,
   onConfirm,
   confirmText = "Delete",
+  loading = false,
   dialogRef,
 }: ConfirmDialogProps & {
   dialogRef: React.RefObject<HTMLDialogElement | null>
@@ -30,14 +32,16 @@ export const ConfirmDialog = ({
         <button
           type="button"
           onClick={() => dialogRef.current?.close()}
-          className="rounded-full px-4 py-2 text-sm text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
+          disabled={loading}
+          className="rounded-full px-4 py-2 text-sm text-gray-500 hover:bg-gray-100 disabled:opacity-50 dark:text-gray-400 dark:hover:bg-gray-700"
         >
           Cancel
         </button>
         <button
           type="button"
           onClick={onConfirm}
-          className="rounded-full bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600"
+          disabled={loading}
+          className="rounded-full bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700 disabled:opacity-50 dark:bg-red-700 dark:hover:bg-red-600"
         >
           {confirmText}
         </button>
