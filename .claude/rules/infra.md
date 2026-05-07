@@ -20,7 +20,7 @@
 | Service | Image | Port |
 |---------|-------|------|
 | backend | Python 3.14-slim + uvicorn | 13000 |
-| frontend | Node 22-slim + Vite | 15173 |
+| frontend | Node 24-slim + Vite | 15173 |
 | db | PostgreSQL 18 | 15432 |
 
 ### Hot Reload
