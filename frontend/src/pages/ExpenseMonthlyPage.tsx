@@ -12,6 +12,7 @@ import { useSearchParams } from "react-router"
 
 import { CategoryBarChart } from "../components/CategoryBarChart"
 import { CategoryBubbleChart } from "../components/CategoryBubbleChart"
+import { ExpenseEmptyState } from "../components/ExpenseEmptyState"
 import { ExpenseHeatmap } from "../components/ExpenseHeatmap"
 import { ExpenseList } from "../components/ExpenseList"
 import { PieWithStep } from "../components/PieWithStep"
@@ -190,30 +191,36 @@ export const ExpenseMonthlyPage = () => {
       )}
 
       <div ref={swipeRef} className="flex min-h-0 flex-1 flex-col">
-        {tab === "list" && <ExpenseList expenses={filteredExpenses} />}
+        {expenses.length === 0 ? (
+          <ExpenseEmptyState period={`${year}/${month}`} />
+        ) : (
+          <>
+            {tab === "list" && <ExpenseList expenses={filteredExpenses} />}
 
-        {tab === "pie" && (
-          <div className="min-h-0 flex-1 overflow-y-auto pt-4">
-            <PieWithStep expenses={filteredExpenses} />
-          </div>
-        )}
+            {tab === "pie" && (
+              <div className="min-h-0 flex-1 overflow-y-auto pt-4">
+                <PieWithStep expenses={filteredExpenses} />
+              </div>
+            )}
 
-        {tab === "heatmap" && (
-          <div className="min-h-0 flex-1 overflow-y-auto pt-4">
-            <ExpenseHeatmap year={year} month={month} expenses={filteredExpenses} />
-          </div>
-        )}
+            {tab === "heatmap" && (
+              <div className="min-h-0 flex-1 overflow-y-auto pt-4">
+                <ExpenseHeatmap year={year} month={month} expenses={filteredExpenses} />
+              </div>
+            )}
 
-        {tab === "bubble" && (
-          <div className="min-h-0 flex-1 overflow-y-auto pt-4">
-            <CategoryBubbleChart expenses={filteredExpenses} />
-          </div>
-        )}
+            {tab === "bubble" && (
+              <div className="min-h-0 flex-1 overflow-y-auto pt-4">
+                <CategoryBubbleChart expenses={filteredExpenses} />
+              </div>
+            )}
 
-        {tab === "bar" && (
-          <div className="flex min-h-0 flex-1 flex-col pt-4">
-            <CategoryBarChart expenses={filteredExpenses} />
-          </div>
+            {tab === "bar" && (
+              <div className="flex min-h-0 flex-1 flex-col pt-4">
+                <CategoryBarChart expenses={filteredExpenses} />
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

@@ -10,6 +10,7 @@ import { useSearchParams } from "react-router"
 
 import { AnnualAreaChart } from "../components/AnnualAreaChart"
 import { AnnualLineChart } from "../components/AnnualLineChart"
+import { ExpenseEmptyState } from "../components/ExpenseEmptyState"
 import { useSwipe } from "../hooks/useSwipe"
 import { api } from "../lib/api"
 import { getErrorMessage } from "../lib/client"
@@ -126,30 +127,36 @@ export const ExpenseAnnualPage = () => {
         ))}
       </div>
 
-      {tab === "list" && (
-        <div className="min-h-0 flex-1 overflow-y-auto flex flex-col gap-2 pt-4">
-          {monthlyTotals.map((amount, i) => (
-            <div
-              key={`month-${String(i)}`}
-              className="flex items-center justify-between rounded-xl bg-white px-4 py-3 shadow-sm dark:bg-gray-800"
-            >
-              <span className="text-sm">{MONTH_LABELS[i]}</span>
-              <span className="text-sm font-mono">¥{amount.toLocaleString()}</span>
+      {expenses.length === 0 ? (
+        <ExpenseEmptyState period={String(year)} />
+      ) : (
+        <>
+          {tab === "list" && (
+            <div className="min-h-0 flex-1 overflow-y-auto flex flex-col gap-2 pt-4">
+              {monthlyTotals.map((amount, i) => (
+                <div
+                  key={`month-${String(i)}`}
+                  className="flex items-center justify-between rounded-xl bg-white px-4 py-3 shadow-sm dark:bg-gray-800"
+                >
+                  <span className="text-sm">{MONTH_LABELS[i]}</span>
+                  <span className="text-sm font-mono">¥{amount.toLocaleString()}</span>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      )}
+          )}
 
-      {tab === "area" && (
-        <div className="min-h-0 flex-1 overflow-y-auto pt-4">
-          <AnnualAreaChart expenses={expenses} />
-        </div>
-      )}
+          {tab === "area" && (
+            <div className="min-h-0 flex-1 overflow-y-auto pt-4">
+              <AnnualAreaChart expenses={expenses} />
+            </div>
+          )}
 
-      {tab === "line" && (
-        <div className="min-h-0 flex-1 overflow-y-auto pt-4">
-          <AnnualLineChart expenses={expenses} />
-        </div>
+          {tab === "line" && (
+            <div className="min-h-0 flex-1 overflow-y-auto pt-4">
+              <AnnualLineChart expenses={expenses} />
+            </div>
+          )}
+        </>
       )}
     </div>
   )
