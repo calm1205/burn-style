@@ -39,6 +39,7 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["Content-Type", "Authorization"],
     expose_headers=["X-New-Token"],
+    max_age=0,
 )
 
 # Register routers
