@@ -28,4 +28,4 @@ def get_webauthn_rp_name() -> str:
 
 def get_frontend_origin() -> str:
     """Get the frontend origin URL."""
-    return os.getenv("FRONTEND_ORIGIN", "http://localhost:5173")
+    return os.getenv("FRONTEND_ORIGIN", "http://localhost:15173")
