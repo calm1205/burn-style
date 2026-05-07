@@ -78,7 +78,15 @@ export const TopPage = () => {
         <p className="mb-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
           Monthly
         </p>
-        {loading ? <SkeletonBarChart2 /> : <SimpleBarChart expenses={expenses} />}
+        {loading ? (
+          <SkeletonBarChart2 />
+        ) : expenses.length === 0 ? (
+          <div className="flex h-[100px] items-center justify-center text-xs text-gray-400 dark:text-gray-500">
+            No expenses this month
+          </div>
+        ) : (
+          <SimpleBarChart expenses={expenses} />
+        )}
       </button>
 
       <button
