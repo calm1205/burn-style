@@ -19,9 +19,9 @@
 
 | Service | Image | Port |
 |---------|-------|------|
-| backend | Python 3.14-slim + uvicorn | 9999 |
-| frontend | Node 22-slim + Vite | 5173 |
-| db | PostgreSQL 18 | 5432 |
+| backend | Python 3.14-slim + uvicorn | 13000 |
+| frontend | Node 22-slim + Vite | 15173 |
+| db | PostgreSQL 18 | 15432 |
 
 ### Hot Reload
 
@@ -69,11 +69,11 @@ deploy.yml (unified)
 
 | Variable | Purpose |
 |----------|---------|
-| `API_PORT` | Backend port (9999) |
+| `API_PORT` | Backend port (13000) |
 | `POSTGRES_USER` / `PASSWORD` / `DB` | DB connection info |
-| `POSTGRES_PORT` | DB port (5432) |
+| `POSTGRES_PORT` | DB port (15432) |
 | `DATABASE_URL` | DB connection URL |
-| `FRONTEND_PORT` | Frontend port (5173) |
+| `FRONTEND_PORT` | Frontend port (15173) |
 
 ### Local + Production
 

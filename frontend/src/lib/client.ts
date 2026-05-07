@@ -14,7 +14,7 @@ const STATUS_MESSAGES: Record<number, string> = {
   500: "Server error",
 }
 
-const baseUrl = import.meta.env.VITE_API_URL ?? "http://localhost:9999"
+const baseUrl = import.meta.env.VITE_API_URL ?? "http://localhost:13000"
 
 const getHeaders = (): HeadersInit => {
   const headers: Record<string, string> = {
