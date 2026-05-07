@@ -134,7 +134,7 @@ export const ExpenseMonthlyPage = () => {
         </button>
         <div className="text-center">
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            {year}/{month} Expenses
+            {year}/{month}
           </p>
           <p className="text-4xl font-extrabold">¥{total.toLocaleString()}</p>
         </div>
