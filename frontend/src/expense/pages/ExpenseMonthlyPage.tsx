@@ -1,228 +1,31 @@
-import {
-  BarChartIcon,
-  CalendarIcon,
-  DoubleArrowLeftIcon,
-  DoubleArrowRightIcon,
-  ListBulletIcon,
-  MixIcon,
-  PieChartIcon,
-} from "@radix-ui/react-icons"
-import { useCallback, useEffect, useMemo, useState } from "react"
-import { useSearchParams } from "react-router"
+import { useCallback, useEffect, useState } from "react"
 
-import { useSwipe } from "../../common/hooks/useSwipe"
 import { api } from "../../common/libs/api"
 import { getErrorMessage } from "../../common/libs/client"
 import type { ExpenseResponse } from "../../common/libs/types"
-import { CategoryBarChart } from "../components/CategoryBarChart"
-import { CategoryBubbleChart } from "../components/CategoryBubbleChart"
-import { ExpenseEmptyState } from "../components/ExpenseEmptyState"
-import { ExpenseHeatmap } from "../components/ExpenseHeatmap"
 import { ExpenseList } from "../components/ExpenseList"
-import { PieWithStep } from "../components/PieWithStep"
-
-type Tab = "list" | "pie" | "heatmap" | "bubble" | "bar"
-const VALID_TABS: Tab[] = ["list", "pie", "heatmap", "bubble", "bar"]
 
 export const ExpenseMonthlyPage = () => {
-  const now = new Date()
-  const [searchParams, setSearchParams] = useSearchParams()
-
-  const year = Number(searchParams.get("year")) || now.getFullYear()
-  const month = Number(searchParams.get("month")) || now.getMonth() + 1
-  const tabParam = searchParams.get("tab")
-  const tab: Tab = VALID_TABS.includes(tabParam as Tab) ? (tabParam as Tab) : "list"
-
-  const updateParams = (params: Record<string, string>) => {
-    const next = new URLSearchParams(searchParams)
-    for (const [k, v] of Object.entries(params)) {
-      next.set(k, v)
-    }
-    setSearchParams(next, { replace: true })
-  }
-
-  const setTab = (t: Tab) => {
-    const next = new URLSearchParams(searchParams)
-    if (t === "list") {
-      next.delete("tab")
-    } else {
-      next.set("tab", t)
-    }
-    setSearchParams(next, { replace: true })
-  }
-
   const [expenses, setExpenses] = useState<ExpenseResponse[]>([])
   const [error, setError] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 
   const fetchData = useCallback(async () => {
     try {
-      setExpenses(await api.getExpenses(year, month))
+      setExpenses(await api.getExpenses())
     } catch (err) {
       setError(getErrorMessage(err, "Failed to fetch data"))
     }
-  }, [year, month])
+  }, [])
 
   useEffect(() => {
     fetchData()
   }, [fetchData])
 
-  const categories = useMemo(() => {
-    const map = new Map<string, number>()
-    for (const e of expenses) {
-      if (e.categories.length === 0) {
-        map.set("Uncategorized", (map.get("Uncategorized") ?? 0) + e.amount)
-      } else {
-        for (const c of e.categories) {
-          map.set(c.name, (map.get(c.name) ?? 0) + e.amount)
-        }
-      }
-    }
-    return [...map.entries()].toSorted((a, b) => b[1] - a[1]).map(([name]) => name)
-  }, [expenses])
-
-  useEffect(() => {
-    if (selectedCategory && !categories.includes(selectedCategory)) {
-      setSelectedCategory(null)
-    }
-  }, [categories, selectedCategory])
-
-  const filteredExpenses = useMemo(() => {
-    if (!selectedCategory) return expenses
-    return expenses.filter((e) => {
-      if (selectedCategory === "Uncategorized") return e.categories.length === 0
-      return e.categories.some((c) => c.name === selectedCategory)
-    })
-  }, [expenses, selectedCategory])
-
-  const goPrev = () => {
-    if (month === 1) {
-      updateParams({ year: String(year - 1), month: "12" })
-    } else {
-      updateParams({ year: String(year), month: String(month - 1) })
-    }
-  }
-
-  const goNext = () => {
-    if (month === 12) {
-      updateParams({ year: String(year + 1), month: "1" })
-    } else {
-      updateParams({ year: String(year), month: String(month + 1) })
-    }
-  }
-
-  const total = useMemo(
-    () => filteredExpenses.reduce((sum, e) => sum + e.amount, 0),
-    [filteredExpenses],
-  )
-
-  const { ref: swipeRef } = useSwipe<HTMLDivElement>({
-    onSwipeLeft: goNext,
-    onSwipeRight: goPrev,
-  })
-
   return (
-    <div className="mx-auto flex h-full max-w-2xl flex-col overflow-hidden px-6">
-      {error && <p className="mt-6 text-sm text-red-600 dark:text-red-400">{error}</p>}
-      <div className="flex shrink-0 items-center justify-between py-8">
-        <button
-          type="button"
-          className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
-          onClick={goPrev}
-        >
-          <DoubleArrowLeftIcon className="size-4" />
-        </button>
-        <div className="text-center">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            {year}/{month}
-          </p>
-          <p className="text-4xl font-extrabold">¥{total.toLocaleString()}</p>
-        </div>
-        <button
-          type="button"
-          className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
-          onClick={goNext}
-        >
-          <DoubleArrowRightIcon className="size-4" />
-        </button>
-      </div>
-
-      <div className="flex shrink-0 gap-4 overflow-x-auto border-b border-gray-100 dark:border-gray-700">
-        {[
-          { key: "list" as const, label: "list", icon: ListBulletIcon },
-          { key: "bar" as const, label: "bar", icon: BarChartIcon },
-          { key: "pie" as const, label: "pie", icon: PieChartIcon },
-          { key: "heatmap" as const, label: "heat map", icon: CalendarIcon },
-          { key: "bubble" as const, label: "bubble", icon: MixIcon },
-        ].map(({ key, label, icon: Icon }) => (
-          <button
-            key={key}
-            type="button"
-            onClick={() => setTab(key)}
-            className={`flex shrink-0 items-center gap-1.5 border-b-2 px-1 py-2 text-sm ${
-              tab === key
-                ? "border-primary text-primary"
-                : "border-transparent text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
-            }`}
-          >
-            <Icon />
-            {label}
-          </button>
-        ))}
-      </div>
-
-      {tab === "list" && categories.length > 1 && (
-        <div className="flex shrink-0 gap-2 overflow-x-auto pt-2 pb-1">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              onClick={() => setSelectedCategory(selectedCategory === cat ? null : cat)}
-              className={`shrink-0 rounded-full border px-3 py-1 text-xs transition-colors ${
-                selectedCategory === cat
-                  ? "border-primary bg-primary text-white"
-                  : "border-gray-200 text-gray-500 hover:border-gray-300 dark:border-gray-700 dark:text-gray-400 dark:hover:border-gray-600"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-      )}
-
-      <div ref={swipeRef} className="flex min-h-0 flex-1 flex-col">
-        {expenses.length === 0 ? (
-          <ExpenseEmptyState period={`${year}/${month}`} />
-        ) : (
-          <>
-            {tab === "list" && <ExpenseList expenses={filteredExpenses} />}
-
-            {tab === "pie" && (
-              <div className="min-h-0 flex-1 overflow-y-auto pt-4">
-                <PieWithStep expenses={filteredExpenses} />
-              </div>
-            )}
-
-            {tab === "heatmap" && (
-              <div className="min-h-0 flex-1 overflow-y-auto pt-4">
-                <ExpenseHeatmap year={year} month={month} expenses={filteredExpenses} />
-              </div>
-            )}
-
-            {tab === "bubble" && (
-              <div className="min-h-0 flex-1 overflow-y-auto pt-4">
-                <CategoryBubbleChart expenses={filteredExpenses} />
-              </div>
-            )}
-
-            {tab === "bar" && (
-              <div className="flex min-h-0 flex-1 flex-col pt-4">
-                <CategoryBarChart expenses={filteredExpenses} />
-              </div>
-            )}
-          </>
-        )}
-      </div>
+    <div className="mx-auto flex h-full max-w-2xl flex-col overflow-hidden px-5">
+      {error && <p className="mt-4 text-sm text-red-600 dark:text-red-400">{error}</p>}
+      <h1 className="shrink-0 pt-2 pb-2 text-3xl font-bold tracking-tight">Expense</h1>
+      <ExpenseList expenses={expenses} />
     </div>
   )
 }
