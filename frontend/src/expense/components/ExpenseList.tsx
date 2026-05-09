@@ -1,4 +1,4 @@
-import { MixerHorizontalIcon } from "@radix-ui/react-icons"
+import { MagnifyingGlassIcon, MixerHorizontalIcon } from "@radix-ui/react-icons"
 import { useMemo, useState } from "react"
 import { useNavigate } from "react-router"
 
@@ -82,18 +82,20 @@ export const ExpenseList = ({ expenses }: ExpenseListProps) => {
 
   return (
     <>
-      <div className="flex shrink-0 items-center justify-between pt-2">
-        <ExpenseFilterChips
-          filter={filter}
-          categories={usedCategories}
-          onOpen={() => setSheetOpen(true)}
-          onClear={() => setFilter(defaultFilter())}
-        />
+      <div className="flex shrink-0 items-center gap-2 pt-2">
+        <button
+          type="button"
+          onClick={() => setSheetOpen(true)}
+          className="flex flex-1 items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-left text-sm text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500"
+        >
+          <MagnifyingGlassIcon className="size-4" />
+          <span className="flex-1 truncate">{filter.q || "Search expenses…"}</span>
+        </button>
         <button
           type="button"
           onClick={() => setSheetOpen(true)}
           aria-label="Filter"
-          className={`relative flex size-8 shrink-0 items-center justify-center rounded-full border ${
+          className={`relative flex size-10 shrink-0 items-center justify-center rounded-xl border ${
             fcount > 0
               ? "border-primary bg-primary text-white"
               : "border-gray-200 bg-white text-gray-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
@@ -101,12 +103,19 @@ export const ExpenseList = ({ expenses }: ExpenseListProps) => {
         >
           <MixerHorizontalIcon className="size-4" />
           {fcount > 0 && (
-            <span className="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white ring-2 ring-gray-50 dark:ring-gray-900">
+            <span className="absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white ring-2 ring-gray-50 dark:ring-gray-900">
               {fcount}
             </span>
           )}
         </button>
       </div>
+
+      <ExpenseFilterChips
+        filter={filter}
+        categories={usedCategories}
+        onOpen={() => setSheetOpen(true)}
+        onClear={() => setFilter(defaultFilter())}
+      />
 
       {filtered.length === 0 ? (
         <p className="py-8 text-center text-sm text-gray-400 dark:text-gray-500">

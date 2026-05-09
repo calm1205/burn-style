@@ -270,7 +270,7 @@ export const ExpenseFilterChips = ({
           key={i}
           type="button"
           onClick={onOpen}
-          className="rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold text-primary"
+          className="rounded-xl bg-primary/10 px-2.5 py-1 text-[11px] font-semibold text-primary"
         >
           {l}
         </button>
