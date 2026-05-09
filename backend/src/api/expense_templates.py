@@ -1,17 +1,14 @@
 from __future__ import annotations
 
-from datetime import UTC, datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session
 
 from src.api.deps import get_current_user
-from src.model.category import Category
-from src.model.expense import Expense
-from src.model.expense_category_association import ExpenseCategoryAssociation
-from src.model.expense_template import ExpenseTemplate
 from src.model.user import User
+from src.repository import expense_template_repository
+from src.repository.category_repository import get_category_by_uuid
 from src.repository.database import get_db
 from src.schema.expense_template import (
     BulkRecordRequest,
@@ -20,8 +17,14 @@ from src.schema.expense_template import (
     ExpenseTemplateResponse,
     ExpenseTemplateUpdate,
 )
+from src.service import expense_template_service
 
 expense_template_router = APIRouter(prefix="/expense-templates", tags=["expense-templates"])
+
+
+def _verify_category(db: Session, category_uuid: str, user_uuid: str) -> None:
+    if not get_category_by_uuid(db, category_uuid, user_uuid):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Category not found")
 
 
 @expense_template_router.get("")
@@ -29,15 +32,7 @@ def list_templates(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> list[ExpenseTemplateResponse]:
-    templates = (
-        db.query(ExpenseTemplate)
-        .options(joinedload(ExpenseTemplate.category))
-        .filter(
-            ExpenseTemplate.user_uuid == user.uuid,
-            ExpenseTemplate.deleted_at.is_(None),
-        )
-        .all()
-    )
+    templates = expense_template_repository.get_all_active(db, str(user.uuid))
     return [ExpenseTemplateResponse.model_validate(t) for t in templates]
 
 
@@ -47,22 +42,14 @@ def create_template(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> ExpenseTemplateResponse:
-    category = db.query(Category).filter(
-        Category.uuid == body.category_uuid,
-        Category.user_uuid == user.uuid,
-    ).first()
-    if not category:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Category not found")
-
-    template = ExpenseTemplate(
-        user_uuid=user.uuid,
+    _verify_category(db, body.category_uuid, str(user.uuid))
+    template = expense_template_repository.create(
+        db,
+        user_uuid=str(user.uuid),
         name=body.name,
         amount=body.amount,
         category_uuid=body.category_uuid,
     )
-    db.add(template)
-    db.commit()
-    db.refresh(template)
     return ExpenseTemplateResponse.model_validate(template)
 
 
@@ -73,28 +60,15 @@ def update_template(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> ExpenseTemplateResponse:
-    template = db.query(ExpenseTemplate).options(joinedload(ExpenseTemplate.category)).filter(
-        ExpenseTemplate.uuid == uuid,
-        ExpenseTemplate.user_uuid == user.uuid,
-        ExpenseTemplate.deleted_at.is_(None),
-    ).first()
+    template = expense_template_repository.get_by_uuid(db, uuid, str(user.uuid))
     if not template:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Template not found")
 
     update_data = body.model_dump(exclude_unset=True)
     if "category_uuid" in update_data:
-        category = db.query(Category).filter(
-            Category.uuid == update_data["category_uuid"],
-            Category.user_uuid == user.uuid,
-        ).first()
-        if not category:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Category not found")
+        _verify_category(db, update_data["category_uuid"], str(user.uuid))
 
-    for key, value in update_data.items():
-        setattr(template, key, value)
-
-    db.commit()
-    db.refresh(template)
+    template = expense_template_repository.update(db, template, update_data)
     return ExpenseTemplateResponse.model_validate(template)
 
 
@@ -104,16 +78,10 @@ def delete_template(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> Response:
-    template = db.query(ExpenseTemplate).filter(
-        ExpenseTemplate.uuid == uuid,
-        ExpenseTemplate.user_uuid == user.uuid,
-        ExpenseTemplate.deleted_at.is_(None),
-    ).first()
+    template = expense_template_repository.get_by_uuid(db, uuid, str(user.uuid))
     if not template:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Template not found")
-
-    template.deleted_at = datetime.now(UTC)  # type: ignore[assignment]
-    db.commit()
+    expense_template_repository.soft_delete(db, template)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
@@ -123,26 +91,9 @@ def bulk_record(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> BulkRecordResponse:
-    templates = (
-        db.query(ExpenseTemplate)
-        .filter(
-            ExpenseTemplate.uuid.in_(body.template_uuids),
-            ExpenseTemplate.user_uuid == user.uuid,
-            ExpenseTemplate.deleted_at.is_(None),
-        )
-        .all()
-    )
-
+    templates = expense_template_service.bulk_record(db, body.template_uuids, str(user.uuid))
     if not templates:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No valid templates found")
-
-    for t in templates:
-        expense = Expense(user_uuid=user.uuid, name=t.name, amount=t.amount)
-        db.add(expense)
-        db.flush()
-        association = ExpenseCategoryAssociation(expense_uuid=expense.uuid, category_uuid=t.category_uuid)
-        db.add(association)
-
-    db.commit()
-
-    return BulkRecordResponse(created_count=len(templates), message=f"Recorded {len(templates)} expenses")
+    return BulkRecordResponse(
+        created_count=len(templates), message=f"Recorded {len(templates)} expenses",
+    )
