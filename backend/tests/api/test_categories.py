@@ -38,7 +38,19 @@ class TestPostCategory:
         assert res.status_code == 201
         data = res.json()
         assert data["name"] == "交通費"
+        assert data["symbol"] is None
         assert "uuid" in data
+
+    def test_creates_with_symbol(self, auth_client: TestClient) -> None:
+        res = auth_client.post("/categories", json={"name": "食費", "symbol": "🍎"})
+        assert res.status_code == 201
+        assert res.json()["symbol"] == "🍎"
+
+    def test_rejects_too_long_symbol(self, auth_client: TestClient) -> None:
+        res = auth_client.post(
+            "/categories", json={"name": "x", "symbol": "abcdefghi"},
+        )
+        assert res.status_code == 422
 
     def test_rejects_empty_body(self, auth_client: TestClient) -> None:
         res = auth_client.post("/categories", json={})
@@ -56,6 +68,19 @@ class TestPatchCategory:
         assert res.status_code == 200
         assert res.json()["name"] == "外食費"
         assert res.json()["uuid"] == cat.uuid
+
+    def test_updates_symbol(
+        self, auth_client: TestClient, test_user: User, db: Session,
+    ) -> None:
+        cat = Category(user_uuid=str(test_user.uuid), name="食費")
+        db.add(cat)
+        db.commit()
+        db.refresh(cat)
+
+        res = auth_client.patch(f"/categories/{cat.uuid}", json={"symbol": "🍱"})
+        assert res.status_code == 200
+        assert res.json()["symbol"] == "🍱"
+        assert res.json()["name"] == "食費"
 
     def test_returns_404_for_nonexistent(self, auth_client: TestClient) -> None:
         res = auth_client.patch("/categories/nonexistent", json={"name": "test"})

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class CategoryResponse(BaseModel):
@@ -8,15 +8,18 @@ class CategoryResponse(BaseModel):
 
     uuid: str
     name: str
+    symbol: str | None
     position: int
 
 
 class CategoryCreate(BaseModel):
     name: str
+    symbol: str | None = Field(default=None, max_length=8)
 
 
 class CategoryUpdate(BaseModel):
     name: str | None = None
+    symbol: str | None = Field(default=None, max_length=8)
 
 
 class CategoryMergeRequest(BaseModel):

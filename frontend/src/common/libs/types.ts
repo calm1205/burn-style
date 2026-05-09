@@ -18,15 +18,18 @@ export interface SignInVerifyResponse {
 export interface CategoryResponse {
   uuid: string
   name: string
+  symbol: string | null
   position: number
 }
 
 export interface CategoryCreate {
   name: string
+  symbol?: string | null
 }
 
 export interface CategoryUpdate {
   name?: string
+  symbol?: string | null
 }
 
 export interface CategoryMergeRequest {
