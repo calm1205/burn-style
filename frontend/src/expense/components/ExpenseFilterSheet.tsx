@@ -4,15 +4,25 @@ import { useEffect, useRef, useState } from "react"
 import { categoryGlyph } from "../../common/libs/category"
 import type { CategoryResponse, ExpenseResponse } from "../../common/libs/types"
 
+export type FilterScope = "week" | "month" | "all"
+
 export interface ExpenseFilter {
   q: string
+  scope: FilterScope
   categoryUuids: string[]
   min: number
   max: number
 }
 
+const SCOPE_OPTIONS: { k: FilterScope; label: string }[] = [
+  { k: "week", label: "This week" },
+  { k: "month", label: "This month" },
+  { k: "all", label: "All time" },
+]
+
 export const defaultFilter = (): ExpenseFilter => ({
   q: "",
+  scope: "month",
   categoryUuids: [],
   min: 0,
   max: 0,
@@ -21,13 +31,33 @@ export const defaultFilter = (): ExpenseFilter => ({
 export const filterCount = (f: ExpenseFilter): number => {
   let n = 0
   if (f.q) n++
+  if (f.scope !== "month") n++
   if (f.categoryUuids.length > 0) n++
   if (f.min > 0 || f.max > 0) n++
   return n
 }
 
-export const applyFilter = (expenses: ExpenseResponse[], f: ExpenseFilter): ExpenseResponse[] =>
-  expenses.filter((e) => {
+const sameLocalDay = (a: Date, b: Date): boolean =>
+  a.getFullYear() === b.getFullYear() &&
+  a.getMonth() === b.getMonth() &&
+  a.getDate() === b.getDate()
+
+export const applyFilter = (expenses: ExpenseResponse[], f: ExpenseFilter): ExpenseResponse[] => {
+  const now = new Date()
+  const weekStart = new Date(now)
+  weekStart.setDate(weekStart.getDate() - 6)
+  weekStart.setHours(0, 0, 0, 0)
+
+  return expenses.filter((e) => {
+    const d = new Date(e.expensed_at)
+
+    if (f.scope === "week") {
+      if (d < weekStart) return false
+      if (d > now && !sameLocalDay(d, now)) return false
+    } else if (f.scope === "month") {
+      if (d.getFullYear() !== now.getFullYear() || d.getMonth() !== now.getMonth()) return false
+    }
+
     if (f.q && !e.name.toLowerCase().includes(f.q.toLowerCase())) return false
     if (f.categoryUuids.length > 0) {
       const hit = e.categories.some((c) => f.categoryUuids.includes(c.uuid))
@@ -37,6 +67,7 @@ export const applyFilter = (expenses: ExpenseResponse[], f: ExpenseFilter): Expe
     if (f.max > 0 && e.amount > f.max) return false
     return true
   })
+}
 
 interface ExpenseFilterSheetProps {
   open: boolean
@@ -90,7 +121,6 @@ export const ExpenseFilterSheet = ({
       className="m-0 h-full max-h-none w-full max-w-none bg-gray-50 text-gray-900 backdrop:bg-black/30 dark:bg-gray-900 dark:text-gray-100"
     >
       <div className="flex h-full flex-col">
-        {/* Header */}
         <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-4 py-3 dark:border-gray-700">
           <button type="button" onClick={onClose} className="text-sm font-medium text-primary">
             Cancel
@@ -102,7 +132,6 @@ export const ExpenseFilterSheet = ({
         </div>
 
         <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-5 py-5 pb-24">
-          {/* Search */}
           <section>
             <h3 className="mb-2 text-[11px] font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
               Search
@@ -128,7 +157,29 @@ export const ExpenseFilterSheet = ({
             </div>
           </section>
 
-          {/* Categories */}
+          <section>
+            <h3 className="mb-2 text-[11px] font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
+              Range
+            </h3>
+            <div className="flex gap-1.5 rounded-xl border border-gray-200 bg-white p-1 dark:border-gray-700 dark:bg-gray-800">
+              {SCOPE_OPTIONS.map((s) => {
+                const on = draft.scope === s.k
+                return (
+                  <button
+                    key={s.k}
+                    type="button"
+                    onClick={() => setDraft({ ...draft, scope: s.k })}
+                    className={`flex-1 rounded-lg px-2 py-2 text-xs font-semibold ${
+                      on ? "bg-primary text-white" : "text-gray-600 dark:text-gray-300"
+                    }`}
+                  >
+                    {s.label}
+                  </button>
+                )
+              })}
+            </div>
+          </section>
+
           {categories.length > 0 && (
             <section>
               <div className="mb-2 flex items-center justify-between">
@@ -168,7 +219,6 @@ export const ExpenseFilterSheet = ({
             </section>
           )}
 
-          {/* Amount */}
           <section>
             <h3 className="mb-2 text-[11px] font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
               Amount
@@ -249,6 +299,10 @@ export const ExpenseFilterChips = ({
 }: ExpenseFilterChipsProps) => {
   const labels: string[] = []
   if (filter.q) labels.push(`"${filter.q}"`)
+  if (filter.scope !== "month") {
+    const s = SCOPE_OPTIONS.find((x) => x.k === filter.scope)
+    if (s) labels.push(s.label)
+  }
   for (const uuid of filter.categoryUuids) {
     const c = categories.find((x) => x.uuid === uuid)
     if (c) labels.push(c.name)
@@ -264,7 +318,7 @@ export const ExpenseFilterChips = ({
   if (labels.length === 0) return null
 
   return (
-    <div className="flex flex-wrap items-center gap-1.5 py-1">
+    <div className="flex flex-wrap items-center gap-1.5 py-2">
       {labels.map((l, i) => (
         <button
           key={i}

@@ -19,8 +19,8 @@ const navItems = [
 const PAGE_TITLES: Record<string, string> = {
   "/": "BurnStyle",
   "/expense/new": "Expense",
-  "/expense/monthly": "Monthly",
-  "/expense/annual": "Annual",
+  "/expense/monthly": "Expense",
+  "/expense/annual": "Insights",
   "/expense/template": "Template",
   "/expense/template/new": "Record",
   "/expense/recurring": "Recurring",

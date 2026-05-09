@@ -119,7 +119,7 @@ export const ExpenseList = ({ expenses }: ExpenseListProps) => {
 
       {filtered.length === 0 ? (
         <p className="py-8 text-center text-sm text-gray-400 dark:text-gray-500">
-          {expenses.length === 0 ? "No expenses this month" : "No matches for this filter"}
+          {expenses.length === 0 ? "No expenses yet" : "No matches for this filter"}
         </p>
       ) : (
         <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto pt-2">
