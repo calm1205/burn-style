@@ -63,6 +63,12 @@
   --chart-tooltip-text: #f1f5f9;
 }
 
+input,
+select,
+textarea {
+  font-size: 16px;
+}
+
 input::placeholder {
   color: var(--color-gray-300);
 }
