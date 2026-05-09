@@ -3,14 +3,13 @@ from __future__ import annotations
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Response, status
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session
 
 from src.api.deps import get_current_user
 from src.config import get_cron_secret
-from src.model.category import Category
-from src.model.recurring_expense import RecurringExpense
 from src.model.user import User
 from src.repository import recurring_expense_repository
+from src.repository.category_repository import get_category_by_uuid
 from src.repository.database import get_db
 from src.schema.recurring_expense import (
     CronRecordResponse,
@@ -26,12 +25,7 @@ recurring_expense_router = APIRouter(prefix="/recurring-expenses", tags=["recurr
 
 
 def _verify_user_category(db: Session, category_uuid: str, user_uuid: str) -> None:
-    category = (
-        db.query(Category)
-        .filter(Category.uuid == category_uuid, Category.user_uuid == user_uuid)
-        .first()
-    )
-    if not category:
+    if not get_category_by_uuid(db, category_uuid, user_uuid):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Category not found")
 
 
@@ -84,27 +78,20 @@ def create_recurring(
             detail="end_date must be on or after start_date",
         )
 
-    recurring = RecurringExpense(
-        user_uuid=user.uuid,
-        name=body.name,
-        amount=body.amount,
-        category_uuid=body.category_uuid,
-        interval_unit=body.interval_unit,
-        interval_count=body.interval_count,
-        start_date=body.start_date,
-        end_date=body.end_date,
+    recurring = recurring_expense_repository.create(
+        db,
+        user_uuid=str(user.uuid),
+        fields={
+            "name": body.name,
+            "amount": body.amount,
+            "category_uuid": body.category_uuid,
+            "interval_unit": body.interval_unit,
+            "interval_count": body.interval_count,
+            "start_date": body.start_date,
+            "end_date": body.end_date,
+        },
     )
-    db.add(recurring)
-    db.commit()
-    db.refresh(recurring)
-    # Re-load with category eagerly
-    loaded = (
-        db.query(RecurringExpense)
-        .options(joinedload(RecurringExpense.category))
-        .filter(RecurringExpense.uuid == recurring.uuid)
-        .one()
-    )
-    return RecurringExpenseResponse.model_validate(loaded)
+    return RecurringExpenseResponse.model_validate(recurring)
 
 
 @recurring_expense_router.get("/{uuid}")
@@ -142,10 +129,7 @@ def update_recurring(
             detail="end_date must be on or after start_date",
         )
 
-    for key, value in update_data.items():
-        setattr(recurring, key, value)
-    db.commit()
-    db.refresh(recurring)
+    recurring = recurring_expense_repository.update(db, recurring, update_data)
     return RecurringExpenseResponse.model_validate(recurring)
 
 
