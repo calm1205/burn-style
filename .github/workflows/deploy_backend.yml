@@ -59,6 +59,22 @@ jobs:
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=${{ inputs.environment }} --token=${{ secrets.VERCEL_TOKEN }}
 
+      - name: Install dependencies
+        if: inputs.environment == 'production'
+        run: cd backend && uv sync --all-groups
+
+      - name: Run database migrations
+        if: inputs.environment == 'production'
+        env:
+          VERCEL_ENV: production
+        run: |
+          cd backend
+          vercel env pull .env.production --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+          set -a
+          . .env.production
+          set +a
+          uv run alembic upgrade head
+
       - name: Build
         run: vercel build ${{ inputs.environment == 'production' && '--prod' || '' }} --token=${{ secrets.VERCEL_TOKEN }}
 
