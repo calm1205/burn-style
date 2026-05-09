@@ -14,26 +14,29 @@ interface LayoutPhoneProps {
 
 export const LayoutPhone = ({ navItems }: LayoutPhoneProps) => {
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-50 flex h-20 border-t border-gray-100 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.04)] dark:border-gray-700 dark:bg-gray-800 dark:shadow-[0_-2px_10px_rgba(0,0,0,0.2)] md:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-50 flex justify-around border-t border-gray-200/60 bg-white/85 pt-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] backdrop-blur-xl backdrop-saturate-150 dark:border-gray-700/60 dark:bg-gray-900/85 md:hidden">
       {navItems.map((item) => (
         <NavLink
           key={item.to}
           to={item.to}
+          end={item.to === "/"}
           className={({ isActive }) =>
-            `flex flex-1 items-center justify-center py-3 text-xs font-medium ${isActive ? "text-primary" : "text-gray-400 dark:text-gray-500"}`
+            `flex flex-1 flex-col items-center gap-1 px-3 py-1 text-[10px] font-semibold tracking-wide ${
+              isActive && !item.accent ? "text-primary" : "text-gray-400 dark:text-gray-500"
+            }`
           }
         >
-          {item.icon ? (
-            item.accent ? (
-              <span className="flex size-10 items-center justify-center rounded-full bg-primary text-white">
-                <item.icon className="size-5" />
+          {item.icon &&
+            (item.accent ? (
+              <span className="flex size-8 items-center justify-center rounded-full bg-primary text-white">
+                <item.icon className="size-4" />
               </span>
             ) : (
-              <item.icon className="size-5" />
-            )
-          ) : (
-            item.label
-          )}
+              <span className="flex h-7 items-center justify-center">
+                <item.icon className="size-5" />
+              </span>
+            ))}
+          <span>{item.label}</span>
         </NavLink>
       ))}
     </nav>
