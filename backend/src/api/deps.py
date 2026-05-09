@@ -6,6 +6,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
+from src.logger import user_uuid_var
 from src.model.user import User
 from src.repository.database import get_db
 from src.repository.user_repository import get_user_by_uuid
@@ -32,4 +33,5 @@ def get_current_user(
     if user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
 
+    user_uuid_var.set(user_uuid)
     return user
