@@ -18,30 +18,26 @@ if TYPE_CHECKING:
 
 
 def jst_today() -> date:
-    """Return today's date in JST. Avoid date.today() (OS-tz dependent)."""
+    """JSTの今日の日付を返す (date.today()はOS-tz依存のため不可)。"""
     return datetime.now(JST).date()
 
 
 def offset_from_start(unit: IntervalUnit, count: int, n: int) -> relativedelta | timedelta:
-    """Compute the offset to add to start_date for the n-th occurrence (0-indexed)."""
+    """n回目 (0-indexed) の発生日 = start_date + 本オフセット を算出。"""
     if unit is IntervalUnit.WEEK:
         return timedelta(weeks=count * n)
     return relativedelta(months=count * n)
 
 
 def occurrence_date(start: date, unit: IntervalUnit, count: int, n: int) -> date:
-    """Return the date of the n-th occurrence (0-indexed) starting from start_date."""
+    """start_date起点でのn回目 (0-indexed) の発生日を返す。"""
     return start + offset_from_start(unit, count, n)
 
 
 def missed_dates(
     recurring: RecurringExpense, recorded_count: int, today: date,
 ) -> list[date]:
-    """Return dates that are due but not yet recorded.
-
-    Iterates from the (recorded_count)-th occurrence forward, collecting dates
-    that are <= today and (if end_date is set) <= end_date.
-    """
+    """期日到来で未記録の発生日リストを返す (today・end_dateで打ち切り)。"""
     result: list[date] = []
     n = recorded_count
     while True:
@@ -66,11 +62,7 @@ def record_occurrences(
     count: int,
     expensed_at_override: date | None = None,
 ) -> int:
-    """Create `count` Expense rows linked to this recurring expense.
-
-    Uses computed occurrence dates as `expensed_at` unless overridden.
-    Returns the number of records created.
-    """
+    """定期支払に紐づくExpenseをcount件生成 (expensed_atは算出日付か上書き値)。作成件数を返す。"""
     recorded = recurring_expense_repository.count_recorded(db, str(recurring.uuid))
     created = 0
     for i in range(count):
@@ -107,10 +99,7 @@ def record_occurrences(
 
 
 def record_all_due_for_cron(db: Session) -> tuple[int, int]:
-    """Process all active recurring expenses across users.
-
-    Returns (recorded_count, processed_recurring_count).
-    """
+    """全ユーザーの未削除定期支払を処理。返り値は (recorded_count, processed_recurring_count)。"""
     today = jst_today()
     recurrings = recurring_expense_repository.get_all_active_for_cron(db)
     total_recorded = 0

@@ -14,7 +14,7 @@ load_dotenv()
 
 
 def get_database_url() -> str:
-    """Get DATABASE_URL from environment variables and resolve the hostname."""
+    """環境変数からDATABASE_URLを取得しホスト名を解決。"""
     # Use POSTGRES_URL in Vercel production environment
     vercel_env = os.getenv("VERCEL_ENV")
     if vercel_env == "production":
@@ -52,18 +52,18 @@ class Base(DeclarativeBase):
 
 @lru_cache(maxsize=1)
 def get_engine() -> Engine:
-    """Lazily create the database engine."""
+    """DBエンジンを遅延生成。"""
     return create_engine(get_database_url())
 
 
 @lru_cache(maxsize=1)
 def get_session_local() -> sessionmaker[Session]:
-    """Lazily create the session factory."""
+    """セッションファクトリを遅延生成。"""
     return sessionmaker(autocommit=False, autoflush=False, bind=get_engine())
 
 
 def get_db() -> Generator[Session]:
-    """Dependency injection function that yields a database session."""
+    """DBセッションをyieldするDI関数。"""
     db = get_session_local()()
     try:
         yield db

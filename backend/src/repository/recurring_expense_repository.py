@@ -11,7 +11,7 @@ from src.model.recurring_expense import RecurringExpense
 
 
 def get_all_active(db: Session, user_uuid: str) -> list[RecurringExpense]:
-    """List all active recurring expenses for the user."""
+    """ユーザーの未削除定期支払一覧を取得 (categoryをeager load)。"""
     return (
         db.query(RecurringExpense)
         .options(joinedload(RecurringExpense.category))
@@ -24,7 +24,7 @@ def get_all_active(db: Session, user_uuid: str) -> list[RecurringExpense]:
 
 
 def get_all_active_for_cron(db: Session) -> list[RecurringExpense]:
-    """List all active recurring expenses across users (for cron)."""
+    """全ユーザーの未削除定期支払を取得 (cron用)。"""
     return (
         db.query(RecurringExpense)
         .options(joinedload(RecurringExpense.category))
@@ -34,7 +34,7 @@ def get_all_active_for_cron(db: Session) -> list[RecurringExpense]:
 
 
 def get_by_uuid(db: Session, uuid: str, user_uuid: str) -> RecurringExpense | None:
-    """Fetch a single recurring expense for the user."""
+    """UUIDで定期支払を単体取得 (未削除のみ)。"""
     return (
         db.query(RecurringExpense)
         .options(joinedload(RecurringExpense.category))
@@ -48,7 +48,7 @@ def get_by_uuid(db: Session, uuid: str, user_uuid: str) -> RecurringExpense | No
 
 
 def count_recorded(db: Session, recurring_uuid: str) -> int:
-    """Count expenses linked to this recurring expense (excluding soft-deleted)."""
+    """定期支払に紐づくExpense件数を取得 (soft-delete除外)。"""
     result = (
         db.query(func.count(Expense.uuid))
         .filter(
@@ -84,6 +84,6 @@ def update(db: Session, recurring: RecurringExpense, fields: dict[str, Any]) -> 
 
 
 def soft_delete(db: Session, recurring: RecurringExpense) -> None:
-    """Soft-delete a recurring expense."""
+    """定期支払を論理削除。"""
     recurring.deleted_at = datetime.now(UTC)  # type: ignore[assignment]
     db.commit()

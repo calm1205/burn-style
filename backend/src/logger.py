@@ -12,7 +12,7 @@ user_uuid_var: ContextVar[str | None] = ContextVar("user_uuid", default=None)
 
 
 class JsonFormatter(logging.Formatter):
-    """JSON formatter that auto-includes request_id and user_uuid from contextvars."""
+    """contextvarsのrequest_id/user_uuidを自動付与するJSONフォーマッタ。"""
 
     def format(self, record: logging.LogRecord) -> str:
         payload: dict[str, Any] = {
@@ -42,7 +42,7 @@ _RESERVED_KEYS = {
 
 
 def configure_logging() -> None:
-    """Install JsonFormatter on the root logger. Idempotent."""
+    """ルートロガーにJsonFormatterをインストール。冪等。"""
     root = logging.getLogger()
     if any(isinstance(h.formatter, JsonFormatter) for h in root.handlers):
         return
@@ -54,6 +54,6 @@ def configure_logging() -> None:
 
 
 def get_logger(name: str) -> logging.Logger:
-    """Return a configured logger under the burnstyle namespace."""
+    """burnstyle名前空間のロガーを取得。"""
     configure_logging()
     return logging.getLogger(f"burnstyle.{name}")

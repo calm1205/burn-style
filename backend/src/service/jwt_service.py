@@ -11,13 +11,13 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 15
 
 
 def create_access_token(user_uuid: str) -> str:
-    """Generate a JWT access token."""
+    """JWTアクセストークンを生成。"""
     expire = datetime.now(UTC) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     payload = {"sub": user_uuid, "exp": expire}
     return jwt.encode(payload, get_jwt_secret_key(), algorithm=ALGORITHM)
 
 
 def decode_access_token(token: str) -> dict[str, object]:
-    """Verify and decode a JWT access token."""
+    """JWTアクセストークンを検証してデコード。"""
     result: dict[str, object] = jwt.decode(token, get_jwt_secret_key(), algorithms=[ALGORITHM])
     return result
