@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react"
 import { useNavigate } from "react-router"
 
-import { api } from "../lib/api"
-import { getErrorMessage } from "../lib/client"
-import type { ExpenseTemplateResponse } from "../lib/types"
+import { api } from "../../common/libs/api"
+import { getErrorMessage } from "../../common/libs/client"
+import type { ExpenseTemplateResponse } from "../../common/libs/types"
 
 interface TemplateRow {
   template: ExpenseTemplateResponse

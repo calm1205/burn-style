@@ -8,14 +8,14 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useSearchParams } from "react-router"
 
+import { useSwipe } from "../../common/hooks/useSwipe"
+import { api } from "../../common/libs/api"
+import { getErrorMessage } from "../../common/libs/client"
+import { MONTH_LABELS } from "../../common/libs/constants"
+import type { ExpenseResponse } from "../../common/libs/types"
 import { AnnualAreaChart } from "../components/AnnualAreaChart"
 import { AnnualLineChart } from "../components/AnnualLineChart"
 import { ExpenseEmptyState } from "../components/ExpenseEmptyState"
-import { useSwipe } from "../hooks/useSwipe"
-import { api } from "../lib/api"
-import { getErrorMessage } from "../lib/client"
-import { MONTH_LABELS } from "../lib/constants"
-import type { ExpenseResponse } from "../lib/types"
 
 type Tab = "list" | "area" | "line"
 const VALID_TABS: Tab[] = ["list", "area", "line"]

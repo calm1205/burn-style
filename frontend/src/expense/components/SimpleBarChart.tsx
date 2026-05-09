@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 
-import type { ExpenseResponse } from "../lib/types"
+import type { ExpenseResponse } from "../../common/libs/types"
 
 const BAR_COLOR = "var(--chart-bar)"
 const formatAmount = (v: number) => (v >= 1000 ? `${(v / 1000).toFixed(0)}k` : `${v}`)

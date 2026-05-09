@@ -2,9 +2,9 @@ import { Cross2Icon } from "@radix-ui/react-icons"
 import { type SubmitEvent, useState } from "react"
 import { Link, useNavigate } from "react-router"
 
-import { api } from "../lib/api"
-import { getErrorMessage } from "../lib/client"
-import { STORAGE_KEYS } from "../lib/constants"
+import { api } from "../../common/libs/api"
+import { getErrorMessage } from "../../common/libs/client"
+import { STORAGE_KEYS } from "../../common/libs/constants"
 
 export const SignInPage = () => {
   const navigate = useNavigate()

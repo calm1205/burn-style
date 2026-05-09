@@ -1,9 +1,9 @@
 import { type SubmitEvent, useCallback, useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router"
 
-import { api } from "../lib/api"
-import { getErrorMessage } from "../lib/client"
-import type { CategoryResponse } from "../lib/types"
+import { api } from "../../common/libs/api"
+import { getErrorMessage } from "../../common/libs/client"
+import type { CategoryResponse } from "../../common/libs/types"
 
 const pad = (n: number) => String(n).padStart(2, "0")
 

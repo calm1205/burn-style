@@ -2,7 +2,7 @@ import { useMemo, useState } from "react"
 import type { PieSectorShapeProps } from "recharts"
 import { Pie, PieChart, Sector } from "recharts"
 
-import type { ExpenseResponse } from "../lib/types"
+import type { ExpenseResponse } from "../../common/libs/types"
 
 const PIE_FILL = "var(--chart-bar)"
 const MIN_OUTER = 55

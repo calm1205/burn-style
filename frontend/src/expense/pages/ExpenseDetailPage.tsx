@@ -2,10 +2,10 @@ import { ArrowLeftIcon, TrashIcon } from "@radix-ui/react-icons"
 import { type SubmitEvent, useCallback, useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router"
 
-import { ConfirmDialog, useConfirmDialog } from "../components/ConfirmDialog"
-import { api } from "../lib/api"
-import { getErrorMessage } from "../lib/client"
-import type { CategoryResponse, ExpenseResponse } from "../lib/types"
+import { ConfirmDialog, useConfirmDialog } from "../../common/components/ConfirmDialog"
+import { api } from "../../common/libs/api"
+import { getErrorMessage } from "../../common/libs/client"
+import type { CategoryResponse, ExpenseResponse } from "../../common/libs/types"
 
 const pad = (n: number) => String(n).padStart(2, "0")
 

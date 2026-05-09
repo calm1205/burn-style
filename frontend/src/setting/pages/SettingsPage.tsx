@@ -13,12 +13,12 @@ import {
 import { useRef, useState } from "react"
 import { useNavigate, useOutletContext } from "react-router"
 
-import { ConfirmDialog, useConfirmDialog } from "../components/ConfirmDialog"
-import { api } from "../lib/api"
-import { getErrorMessage } from "../lib/client"
-import { STORAGE_KEYS } from "../lib/constants"
-import { type ThemeMode, applyTheme, getStoredTheme } from "../lib/theme"
-import type { UserResponse } from "../lib/types"
+import { ConfirmDialog, useConfirmDialog } from "../../common/components/ConfirmDialog"
+import { api } from "../../common/libs/api"
+import { getErrorMessage } from "../../common/libs/client"
+import { STORAGE_KEYS } from "../../common/libs/constants"
+import { type ThemeMode, applyTheme, getStoredTheme } from "../../common/libs/theme"
+import type { UserResponse } from "../../common/libs/types"
 
 interface OutletContext {
   user: UserResponse | null

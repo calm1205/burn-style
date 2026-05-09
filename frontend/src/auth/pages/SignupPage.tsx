@@ -1,8 +1,8 @@
 import { type SubmitEvent, useState } from "react"
 import { Link, useNavigate } from "react-router"
 
-import { api } from "../lib/api"
-import { getErrorMessage } from "../lib/client"
+import { api } from "../../common/libs/api"
+import { getErrorMessage } from "../../common/libs/client"
 
 export const SignupPage = () => {
   const [username, setUsername] = useState("")
