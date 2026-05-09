@@ -22,7 +22,7 @@ configure_logging()
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
-    """Middleware that adds security headers."""
+    """セキュリティヘッダを付与するミドルウェア。"""
 
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         response = await call_next(request)

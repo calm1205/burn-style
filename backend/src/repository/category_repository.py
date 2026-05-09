@@ -8,17 +8,17 @@ from src.model.expense_template import ExpenseTemplate
 
 
 def get_all_categories(db: Session, user_uuid: str) -> list[Category]:
-    """Get all categories."""
+    """カテゴリ一覧を取得。"""
     return db.query(Category).filter(Category.user_uuid == user_uuid).all()
 
 
 def get_category_by_uuid(db: Session, uuid: str, user_uuid: str) -> Category | None:
-    """Get a category by UUID."""
+    """UUIDでカテゴリを取得。"""
     return db.query(Category).filter(Category.uuid == uuid, Category.user_uuid == user_uuid).first()
 
 
 def create_category(db: Session, user_uuid: str, name: str) -> Category:
-    """Create a new category."""
+    """カテゴリを新規作成。"""
     category = Category(user_uuid=user_uuid, name=name)
     db.add(category)
     db.commit()
@@ -27,7 +27,7 @@ def create_category(db: Session, user_uuid: str, name: str) -> Category:
 
 
 def delete_all_categories(db: Session) -> None:
-    """Delete all categories (including association table records)."""
+    """全カテゴリを削除 (association表のレコードも含む)。"""
     db.query(ExpenseCategoryAssociation).delete()
     db.query(Category).delete()
 
@@ -38,7 +38,7 @@ def delete_all_for_user(db: Session, user_uuid: str) -> None:
 
 
 def bulk_create_categories(db: Session, user_uuid: str, names: list[str]) -> list[Category]:
-    """Bulk-create categories."""
+    """カテゴリを一括作成。"""
     categories = [Category(user_uuid=user_uuid, name=name) for name in names]
     db.add_all(categories)
     db.commit()
@@ -48,7 +48,7 @@ def bulk_create_categories(db: Session, user_uuid: str, names: list[str]) -> lis
 
 
 def update_category(db: Session, category: Category, name: str) -> Category:
-    """Update a category name."""
+    """カテゴリ名を更新。"""
     category.name = name  # type: ignore[assignment]
     db.commit()
     db.refresh(category)
@@ -56,17 +56,13 @@ def update_category(db: Session, category: Category, name: str) -> Category:
 
 
 def delete_category(db: Session, category: Category) -> None:
-    """Hard-delete a category."""
+    """カテゴリを物理削除。"""
     db.delete(category)
     db.commit()
 
 
 def merge_categories(db: Session, source: Category, target: Category) -> Category:
-    """Merge the source category into the target.
-
-    Re-link expense associations and templates from source to target,
-    then delete source. Duplicate expense links are deduplicated.
-    """
+    """sourceカテゴリをtargetに統合。expense関連付けとtemplateを付け替えてsourceを削除。重複は排除。"""
     target_expense_uuids = {
         row[0]
         for row in db.query(ExpenseCategoryAssociation.expense_uuid)

@@ -10,12 +10,12 @@ JST = timezone(timedelta(hours=9))
 
 
 def _to_jst(v: datetime) -> datetime:
-    """Convert naive datetime (assumed UTC) to JST."""
+    """naive datetime (UTC想定) をJSTに変換。"""
     return v.replace(tzinfo=UTC).astimezone(JST)
 
 
 def _jst_to_utc(v: datetime) -> datetime:
-    """Convert JST input to naive UTC (naive->JST->UTC->naive)."""
+    """JST入力をnaive UTCに変換 (naive→JST→UTC→naive)。"""
     if v.tzinfo is None:
         v = v.replace(tzinfo=JST)
     return v.astimezone(UTC).replace(tzinfo=None)

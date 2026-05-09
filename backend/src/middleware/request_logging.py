@@ -13,7 +13,7 @@ logger = get_logger("request")
 
 
 class RequestLoggingMiddleware(BaseHTTPMiddleware):
-    """Assign request_id, emit start/end access logs with duration."""
+    """request_idを採番し、開始/終了アクセスログを出力。"""
 
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         request_id = request.headers.get("x-vercel-id") or str(uuid.uuid4())
