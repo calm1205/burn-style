@@ -80,10 +80,18 @@ export const ExpenseList = ({ expenses }: ExpenseListProps) => {
   }, [filtered])
 
   const fcount = filterCount(filter)
+  const total = useMemo(() => filtered.reduce((sum, e) => sum + e.amount, 0), [filtered])
 
   return (
     <>
-      <div className="flex shrink-0 items-center gap-2 pt-2">
+      <div className="flex shrink-0 items-baseline justify-between pt-2">
+        <span className="text-[10px] font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
+          Total
+        </span>
+        <span className="text-2xl font-bold tabular-nums">¥{total.toLocaleString()}</span>
+      </div>
+
+      <div className="flex shrink-0 items-center gap-2 pt-3">
         <div className="flex flex-1 items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 dark:border-gray-700 dark:bg-gray-800">
           <MagnifyingGlassIcon className="size-4 shrink-0 text-gray-400" />
           <input
