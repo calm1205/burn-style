@@ -1,111 +1,104 @@
-import { ArrowDownIcon, ArrowUpIcon } from "@radix-ui/react-icons"
-import { useMemo, useState } from "react"
+import { useMemo } from "react"
 import { useNavigate } from "react-router"
 
 import { categoryGlyph } from "../../common/libs/category"
 import type { ExpenseResponse } from "../../common/libs/types"
 
-type SortKey = "date" | "amount"
-type SortOrder = "desc" | "asc"
-
 const pad = (n: number) => String(n).padStart(2, "0")
 
-const formatDateTime = (dateStr: string) => {
-  const d = new Date(dateStr)
-  return `${pad(d.getMonth() + 1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`
+const dateKey = (iso: string): string => {
+  const d = new Date(iso)
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+}
+
+const dateLabel = (key: string): string => {
+  const [y, m, day] = key.split("-").map(Number)
+  return new Date(y, m - 1, day).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+}
+
+const timeLabel = (iso: string): string => {
+  const d = new Date(iso)
+  return `${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
 
 interface ExpenseListProps {
   expenses: ExpenseResponse[]
 }
 
+interface DayGroup {
+  key: string
+  label: string
+  items: ExpenseResponse[]
+}
+
 export const ExpenseList = ({ expenses }: ExpenseListProps) => {
   const navigate = useNavigate()
-  const [sortKey, setSortKey] = useState<SortKey>("date")
-  const [sortOrder, setSortOrder] = useState<SortOrder>("desc")
 
-  const toggleSort = (key: SortKey) => {
-    if (key === sortKey) {
-      setSortOrder(sortOrder === "desc" ? "asc" : "desc")
-    } else {
-      setSortKey(key)
-      setSortOrder("desc")
+  const groups = useMemo<DayGroup[]>(() => {
+    const sorted = [...expenses].toSorted(
+      (a, b) => new Date(b.expensed_at).getTime() - new Date(a.expensed_at).getTime(),
+    )
+    const map = new Map<string, ExpenseResponse[]>()
+    for (const e of sorted) {
+      const k = dateKey(e.expensed_at)
+      const list = map.get(k)
+      if (list) {
+        list.push(e)
+      } else {
+        map.set(k, [e])
+      }
     }
+    return [...map.entries()].map(([key, items]) => ({
+      key,
+      label: dateLabel(key),
+      items,
+    }))
+  }, [expenses])
+
+  if (expenses.length === 0) {
+    return (
+      <p className="py-8 text-center text-sm text-gray-400 dark:text-gray-500">
+        No expenses this month
+      </p>
+    )
   }
 
-  const sorted = useMemo(() => {
-    const factor = sortOrder === "desc" ? -1 : 1
-    return [...expenses].toSorted((a, b) => {
-      if (sortKey === "amount") {
-        return (a.amount - b.amount) * factor
-      }
-      return (new Date(a.expensed_at).getTime() - new Date(b.expensed_at).getTime()) * factor
-    })
-  }, [expenses, sortKey, sortOrder])
-
   return (
-    <>
-      <div className="flex shrink-0 gap-2 pt-2 pb-1">
-        {(["date", "amount"] as const).map((k) => (
-          <button
-            key={k}
-            type="button"
-            onClick={() => toggleSort(k)}
-            className={`flex shrink-0 items-center gap-1 rounded-full border px-3 py-1 text-xs transition-colors ${
-              sortKey === k
-                ? "border-primary bg-primary text-white"
-                : "border-gray-200 text-gray-500 hover:border-gray-300 dark:border-gray-700 dark:text-gray-400 dark:hover:border-gray-600"
-            }`}
-          >
-            <span>{k === "date" ? "Date" : "Amount"}</span>
-            {sortKey === k &&
-              (sortOrder === "desc" ? (
-                <ArrowDownIcon className="size-3" />
-              ) : (
-                <ArrowUpIcon className="size-3" />
-              ))}
-          </button>
-        ))}
-      </div>
-      <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto pt-2">
-        {sorted.map((e) => (
-          <button
-            key={e.uuid}
-            type="button"
-            className="flex items-center justify-between rounded-xl bg-white px-4 py-3 text-left shadow-sm transition-shadow hover:shadow-md dark:bg-gray-800"
-            onClick={() => navigate(`/expense/${e.uuid}`)}
-          >
-            <div className="flex min-w-0 flex-1 flex-col gap-1">
-              <span className="truncate text-sm">{e.name}</span>
-              {e.categories.length > 0 && (
-                <div className="flex gap-2">
-                  {e.categories.map((c) => (
-                    <span
-                      key={c.uuid}
-                      className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500"
-                    >
-                      <span>{categoryGlyph(c)}</span>
-                      <span>{c.name}</span>
+    <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto pt-2">
+      {groups.map((g) => (
+        <section key={g.key}>
+          <h2 className="mb-1.5 px-1 text-[11px] font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
+            {g.label}
+          </h2>
+          <ul className="divide-y divide-gray-100 overflow-hidden rounded-2xl border border-gray-100 bg-white dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800">
+            {g.items.map((e) => {
+              const c = e.categories[0]
+              return (
+                <li key={e.uuid}>
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/expense/${e.uuid}`)}
+                    className="flex w-full items-center gap-3 px-3.5 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                  >
+                    <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-gray-100 text-base dark:bg-gray-700">
+                      {c ? categoryGlyph(c) : "·"}
                     </span>
-                  ))}
-                </div>
-              )}
-            </div>
-            <div className="flex shrink-0 flex-col items-end gap-1">
-              <span className="font-mono text-sm">¥{e.amount.toLocaleString()}</span>
-              <span className="text-xs text-gray-400 dark:text-gray-500">
-                {formatDateTime(e.expensed_at)}
-              </span>
-            </div>
-          </button>
-        ))}
-
-        {expenses.length === 0 && (
-          <p className="text-center text-sm text-gray-400 dark:text-gray-500">
-            No expenses this month
-          </p>
-        )}
-      </div>
-    </>
+                    <div className="flex min-w-0 flex-1 flex-col">
+                      <span className="truncate text-sm font-medium">{e.name}</span>
+                      <span className="truncate text-[11px] text-gray-400 dark:text-gray-500">
+                        {c ? c.name : "Uncategorized"} · {timeLabel(e.expensed_at)}
+                      </span>
+                    </div>
+                    <span className="shrink-0 text-sm font-semibold tabular-nums">
+                      ¥{e.amount.toLocaleString()}
+                    </span>
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+        </section>
+      ))}
+    </div>
   )
 }
