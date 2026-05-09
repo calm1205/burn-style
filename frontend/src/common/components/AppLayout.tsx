@@ -21,6 +21,8 @@ const PAGE_TITLES: Record<string, string> = {
   "/expense/annual": "Annual",
   "/expense/template": "Template",
   "/expense/template/new": "Record",
+  "/expense/recurring": "Recurring",
+  "/expense/recurring/new": "New ritual",
   "/category": "Category",
   "/setting": "Setting",
 }

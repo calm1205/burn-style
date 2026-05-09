@@ -1,9 +1,10 @@
 import {
+  BookmarkIcon,
   CheckIcon,
   ChevronRightIcon,
+  CounterClockwiseClockIcon,
   DownloadIcon,
   ExitIcon,
-  BookmarkIcon,
   FileTextIcon,
   Pencil1Icon,
   ResetIcon,
@@ -213,6 +214,15 @@ export const SettingsPage = () => {
         >
           <FileTextIcon className="size-4 text-gray-400 dark:text-gray-500" />
           <span className="flex-1">Template</span>
+          <ChevronRightIcon className="size-4 text-gray-300 dark:text-gray-600" />
+        </button>
+        <button
+          type="button"
+          onClick={() => navigate("/expense/recurring")}
+          className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
+        >
+          <CounterClockwiseClockIcon className="size-4 text-gray-400 dark:text-gray-500" />
+          <span className="flex-1">Recurring</span>
           <ChevronRightIcon className="size-4 text-gray-300 dark:text-gray-600" />
         </button>
         <button

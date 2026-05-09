@@ -88,3 +88,52 @@ export interface ImportResponse {
   expenses_count: number
   message: string
 }
+
+export type IntervalUnit = "WEEK" | "MONTH"
+
+export interface RecurringExpenseResponse {
+  uuid: string
+  name: string
+  amount: number
+  category: CategoryResponse
+  interval_unit: IntervalUnit
+  interval_count: number
+  start_date: string
+  end_date: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface RecurringExpenseCreate {
+  name: string
+  amount: number
+  category_uuid: string
+  interval_unit: IntervalUnit
+  interval_count: number
+  start_date: string
+  end_date?: string | null
+}
+
+export interface RecurringExpenseUpdate {
+  name?: string
+  amount?: number
+  category_uuid?: string
+  interval_unit?: IntervalUnit
+  interval_count?: number
+  start_date?: string
+  end_date?: string | null
+}
+
+export interface RecurringExpenseDueResponse {
+  uuid: string
+  name: string
+  amount: number
+  category: CategoryResponse
+  missed_count: number
+  missed_dates: string[]
+}
+
+export interface RecurringExpenseRecordRequest {
+  count?: number
+  expensed_at?: string
+}

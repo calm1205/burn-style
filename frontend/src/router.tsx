@@ -5,6 +5,8 @@ import { SignupPage } from "./auth/pages/SignupPage"
 import { CategoriesPage } from "./category/pages/CategoriesPage"
 import { AppLayout } from "./common/components/AppLayout"
 import { ProtectedRoute } from "./common/components/ProtectedRoute"
+import { RecurringExpenseEditPage } from "./expense-recurring/pages/RecurringExpenseEditPage"
+import { RecurringExpenseListPage } from "./expense-recurring/pages/RecurringExpenseListPage"
 import { ExpenseTemplatePage } from "./expense-template/pages/ExpenseTemplatePage"
 import { ExpenseTemplateRecordPage } from "./expense-template/pages/ExpenseTemplateRecordPage"
 import { ExpenseAnnualPage } from "./expense/pages/ExpenseAnnualPage"
@@ -33,6 +35,9 @@ export const router = createBrowserRouter([
           { path: "new", element: <ExpensesPage /> },
           { path: "template", element: <ExpenseTemplatePage /> },
           { path: "template/new", element: <ExpenseTemplateRecordPage /> },
+          { path: "recurring", element: <RecurringExpenseListPage /> },
+          { path: "recurring/new", element: <RecurringExpenseEditPage /> },
+          { path: "recurring/:uuid", element: <RecurringExpenseEditPage /> },
           { path: ":uuid", element: <ExpenseDetailPage /> },
         ],
       },

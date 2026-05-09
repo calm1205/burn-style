@@ -11,6 +11,11 @@ import type {
   ExpenseTemplateUpdate,
   ExpenseUpdate,
   ImportResponse,
+  RecurringExpenseCreate,
+  RecurringExpenseDueResponse,
+  RecurringExpenseRecordRequest,
+  RecurringExpenseResponse,
+  RecurringExpenseUpdate,
   RegisterOptionsResponse,
   RegisterVerifyResponse,
   SignInOptionsResponse,
@@ -128,6 +133,35 @@ const updateExpenseTemplate = (
 const deleteExpenseTemplate = (uuid: string): Promise<void> =>
   client.delete<void>(`/expense-templates/${uuid}`)
 
+// --- Recurring Expense ---
+
+const getRecurringExpenses = (): Promise<RecurringExpenseResponse[]> =>
+  client.get<RecurringExpenseResponse[]>("/recurring-expenses")
+
+const getRecurringExpenseDue = (): Promise<RecurringExpenseDueResponse[]> =>
+  client.get<RecurringExpenseDueResponse[]>("/recurring-expenses/due")
+
+const getRecurringExpense = (uuid: string): Promise<RecurringExpenseResponse> =>
+  client.get<RecurringExpenseResponse>(`/recurring-expenses/${uuid}`)
+
+const createRecurringExpense = (data: RecurringExpenseCreate): Promise<RecurringExpenseResponse> =>
+  client.post<RecurringExpenseResponse>("/recurring-expenses", data)
+
+const updateRecurringExpense = (
+  uuid: string,
+  data: RecurringExpenseUpdate,
+): Promise<RecurringExpenseResponse> =>
+  client.patch<RecurringExpenseResponse>(`/recurring-expenses/${uuid}`, data)
+
+const deleteRecurringExpense = (uuid: string): Promise<void> =>
+  client.delete<void>(`/recurring-expenses/${uuid}`)
+
+const recordRecurringExpense = (
+  uuid: string,
+  data: RecurringExpenseRecordRequest = {},
+): Promise<{ recorded_count: number }> =>
+  client.post<{ recorded_count: number }>(`/recurring-expenses/${uuid}/record`, data)
+
 export const api = {
   register,
   signIn,
@@ -150,4 +184,11 @@ export const api = {
   createExpenseTemplate,
   updateExpenseTemplate,
   deleteExpenseTemplate,
+  getRecurringExpenses,
+  getRecurringExpenseDue,
+  getRecurringExpense,
+  createRecurringExpense,
+  updateRecurringExpense,
+  deleteRecurringExpense,
+  recordRecurringExpense,
 }
