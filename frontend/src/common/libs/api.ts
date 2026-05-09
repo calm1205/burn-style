@@ -1,6 +1,7 @@
 import { client } from "./client"
 import type {
   CategoryCreate,
+  CategoryMergeRequest,
   CategoryResponse,
   CategoryUpdate,
   ExpenseCreate,
@@ -86,6 +87,9 @@ const updateCategory = (uuid: string, data: CategoryUpdate): Promise<CategoryRes
 
 const deleteCategory = (uuid: string): Promise<void> => client.delete<void>(`/categories/${uuid}`)
 
+const mergeCategory = (uuid: string, data: CategoryMergeRequest): Promise<CategoryResponse> =>
+  client.post<CategoryResponse>(`/categories/${uuid}/merge`, data)
+
 // --- Expense ---
 
 const getExpense = (uuid: string): Promise<ExpenseResponse> =>
@@ -136,6 +140,7 @@ export const api = {
   createCategory,
   updateCategory,
   deleteCategory,
+  mergeCategory,
   getExpense,
   getExpenses,
   createExpense,
