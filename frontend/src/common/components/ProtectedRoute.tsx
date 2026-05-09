@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react"
 import { Navigate } from "react-router"
 
-import { api } from "../lib/api"
-import { STORAGE_KEYS } from "../lib/constants"
+import { api } from "../libs/api"
+import { STORAGE_KEYS } from "../libs/constants"
 
 const isTokenExpired = (token: string): boolean => {
   try {

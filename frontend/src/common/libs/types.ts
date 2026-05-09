@@ -28,6 +28,10 @@ export interface CategoryUpdate {
   name?: string
 }
 
+export interface CategoryMergeRequest {
+  target_uuid: string
+}
+
 export interface ExpenseResponse {
   uuid: string
   name: string

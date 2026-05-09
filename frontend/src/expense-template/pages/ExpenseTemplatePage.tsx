@@ -9,10 +9,10 @@ import {
 import { type SubmitEvent, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Link } from "react-router"
 
-import { ConfirmDialog, useConfirmDialog } from "../components/ConfirmDialog"
-import { api } from "../lib/api"
-import { getErrorMessage } from "../lib/client"
-import type { CategoryResponse, ExpenseTemplateResponse } from "../lib/types"
+import { ConfirmDialog, useConfirmDialog } from "../../common/components/ConfirmDialog"
+import { api } from "../../common/libs/api"
+import { getErrorMessage } from "../../common/libs/client"
+import type { CategoryResponse, ExpenseTemplateResponse } from "../../common/libs/types"
 
 export const ExpenseTemplatePage = () => {
   const [templates, setTemplates] = useState<ExpenseTemplateResponse[]>([])

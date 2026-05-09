@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router"
 
+import { api } from "../../common/libs/api"
+import { getErrorMessage } from "../../common/libs/client"
+import type { ExpenseResponse } from "../../common/libs/types"
 import { MonthlyTrendChart } from "../components/MonthlyTrendChart"
 import { SimpleBarChart } from "../components/SimpleBarChart"
-import { api } from "../lib/api"
-import { getErrorMessage } from "../lib/client"
-import type { ExpenseResponse } from "../lib/types"
 
 const SkeletonBarChart2 = () => (
   <div className="mt-3 flex h-[100px] items-end gap-1.5">

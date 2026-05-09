@@ -10,16 +10,16 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useSearchParams } from "react-router"
 
+import { useSwipe } from "../../common/hooks/useSwipe"
+import { api } from "../../common/libs/api"
+import { getErrorMessage } from "../../common/libs/client"
+import type { ExpenseResponse } from "../../common/libs/types"
 import { CategoryBarChart } from "../components/CategoryBarChart"
 import { CategoryBubbleChart } from "../components/CategoryBubbleChart"
 import { ExpenseEmptyState } from "../components/ExpenseEmptyState"
 import { ExpenseHeatmap } from "../components/ExpenseHeatmap"
 import { ExpenseList } from "../components/ExpenseList"
 import { PieWithStep } from "../components/PieWithStep"
-import { useSwipe } from "../hooks/useSwipe"
-import { api } from "../lib/api"
-import { getErrorMessage } from "../lib/client"
-import type { ExpenseResponse } from "../lib/types"
 
 type Tab = "list" | "pie" | "heatmap" | "bubble" | "bar"
 const VALID_TABS: Tab[] = ["list", "pie", "heatmap", "bubble", "bar"]

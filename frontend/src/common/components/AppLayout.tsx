@@ -2,9 +2,9 @@ import { GearIcon, HomeIcon, PlusIcon } from "@radix-ui/react-icons"
 import { useCallback, useEffect, useState } from "react"
 import { Outlet, useLocation, useNavigate } from "react-router"
 
-import { api } from "../lib/api"
-import { STORAGE_KEYS } from "../lib/constants"
-import type { UserResponse } from "../lib/types"
+import { api } from "../libs/api"
+import { STORAGE_KEYS } from "../libs/constants"
+import type { UserResponse } from "../libs/types"
 import { LayoutLaptop } from "./LayoutLaptop"
 import { LayoutPhone } from "./LayoutPhone"
 

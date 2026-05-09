@@ -2,7 +2,7 @@ import { ArrowDownIcon, ArrowUpIcon } from "@radix-ui/react-icons"
 import { useMemo, useState } from "react"
 import { useNavigate } from "react-router"
 
-import type { ExpenseResponse } from "../lib/types"
+import type { ExpenseResponse } from "../../common/libs/types"
 
 type SortKey = "date" | "amount"
 type SortOrder = "desc" | "asc"

@@ -10,8 +10,8 @@ import {
   ZAxis,
 } from "recharts"
 
-import { RANGE_COLORS } from "../lib/colors"
-import type { ExpenseResponse } from "../lib/types"
+import type { ExpenseResponse } from "../../common/libs/types"
+import { RANGE_COLORS } from "../libs/colors"
 
 const AMOUNT_RANGES = [
   { label: "~¥500", min: 1, max: 500 },

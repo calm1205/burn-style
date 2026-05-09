@@ -1,10 +1,17 @@
-import { CheckIcon, Pencil1Icon, PlusIcon, ResetIcon, TrashIcon } from "@radix-ui/react-icons"
+import {
+  ArrowRightIcon,
+  CheckIcon,
+  Pencil1Icon,
+  PlusIcon,
+  ResetIcon,
+  TrashIcon,
+} from "@radix-ui/react-icons"
 import { type SubmitEvent, useCallback, useEffect, useRef, useState } from "react"
 
-import { ConfirmDialog, useConfirmDialog } from "../components/ConfirmDialog"
-import { api } from "../lib/api"
-import { getErrorMessage } from "../lib/client"
-import type { CategoryResponse } from "../lib/types"
+import { ConfirmDialog, useConfirmDialog } from "../../common/components/ConfirmDialog"
+import { api } from "../../common/libs/api"
+import { getErrorMessage } from "../../common/libs/client"
+import type { CategoryResponse } from "../../common/libs/types"
 
 export const CategoriesPage = () => {
   const [categories, setCategories] = useState<CategoryResponse[]>([])
@@ -13,8 +20,12 @@ export const CategoriesPage = () => {
   const [editing, setEditing] = useState<{ uuid: string; name: string } | null>(null)
   const editInputRef = useRef<HTMLInputElement>(null)
   const [deleteTarget, setDeleteTarget] = useState<CategoryResponse | null>(null)
+  const [merging, setMerging] = useState<{ source: CategoryResponse; targetUuid: string } | null>(
+    null,
+  )
   const [loading, setLoading] = useState(false)
   const { dialogRef, open: openDialog } = useConfirmDialog()
+  const { dialogRef: mergeDialogRef, open: openMergeDialog } = useConfirmDialog()
 
   const fetchData = useCallback(async () => {
     try {
@@ -84,6 +95,41 @@ export const CategoriesPage = () => {
     }
   }
 
+  const startMerge = (c: CategoryResponse) => {
+    const others = categories.filter((x) => x.uuid !== c.uuid)
+    if (others.length === 0) {
+      setError("Need at least one other category to merge into")
+      return
+    }
+    setError("")
+    setMerging({ source: c, targetUuid: others[0].uuid })
+  }
+
+  const confirmMerge = () => {
+    if (!merging) return
+    openMergeDialog()
+  }
+
+  const handleMerge = async () => {
+    if (!merging) return
+    setError("")
+    setLoading(true)
+    try {
+      await api.mergeCategory(merging.source.uuid, { target_uuid: merging.targetUuid })
+      mergeDialogRef.current?.close()
+      setMerging(null)
+      await fetchData()
+    } catch (err) {
+      setError(getErrorMessage(err, "Merge failed"))
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const mergeTarget = merging
+    ? (categories.find((c) => c.uuid === merging.targetUuid) ?? null)
+    : null
+
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-6 px-6 pb-6">
       {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
@@ -146,6 +192,42 @@ export const CategoriesPage = () => {
                     <ResetIcon className="size-4" />
                   </button>
                 </div>
+              ) : merging?.source.uuid === c.uuid ? (
+                <div className="flex flex-1 items-center gap-2">
+                  <span className="text-sm text-gray-500 dark:text-gray-400">{c.name}</span>
+                  <ArrowRightIcon className="size-3.5 text-gray-400" />
+                  <select
+                    value={merging.targetUuid}
+                    onChange={(e) =>
+                      setMerging((prev) => (prev ? { ...prev, targetUuid: e.target.value } : null))
+                    }
+                    className="flex-1 rounded-lg bg-gray-50 px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+                  >
+                    {categories
+                      .filter((x) => x.uuid !== c.uuid)
+                      .map((x) => (
+                        <option key={x.uuid} value={x.uuid}>
+                          {x.name}
+                        </option>
+                      ))}
+                  </select>
+                  <button
+                    type="button"
+                    onClick={confirmMerge}
+                    disabled={loading}
+                    className="text-primary hover:text-primary-hover disabled:opacity-50"
+                  >
+                    <CheckIcon className="size-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMerging(null)}
+                    disabled={loading}
+                    className="text-gray-400 hover:text-gray-600 disabled:opacity-50 dark:text-gray-500 dark:hover:text-gray-300"
+                  >
+                    <ResetIcon className="size-4" />
+                  </button>
+                </div>
               ) : (
                 <>
                   <span className="flex-1 text-sm">{c.name}</span>
@@ -156,6 +238,14 @@ export const CategoriesPage = () => {
                     className="text-gray-400 hover:text-gray-600 disabled:opacity-50 dark:text-gray-500 dark:hover:text-gray-300"
                   >
                     <Pencil1Icon className="size-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => startMerge(c)}
+                    disabled={loading || categories.length < 2}
+                    className="text-gray-400 hover:text-gray-600 disabled:opacity-50 dark:text-gray-500 dark:hover:text-gray-300"
+                  >
+                    <ArrowRightIcon className="size-3.5" />
                   </button>
                   <button
                     type="button"
@@ -179,6 +269,14 @@ export const CategoriesPage = () => {
         onConfirm={handleDelete}
         loading={loading}
         dialogRef={dialogRef}
+      />
+
+      <ConfirmDialog
+        message={`Merge "${merging?.source.name}" into "${mergeTarget?.name}"? "${merging?.source.name}" will be deleted.`}
+        onConfirm={handleMerge}
+        confirmText="Merge"
+        loading={loading}
+        dialogRef={mergeDialogRef}
       />
     </div>
   )

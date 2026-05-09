@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 
-import type { ExpenseResponse } from "../lib/types"
+import type { ExpenseResponse } from "../../common/libs/types"
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 

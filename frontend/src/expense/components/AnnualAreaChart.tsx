@@ -9,9 +9,9 @@ import {
   YAxis,
 } from "recharts"
 
-import { CHART_COLORS } from "../lib/colors"
-import { MONTH_LABELS } from "../lib/constants"
-import type { ExpenseResponse } from "../lib/types"
+import { MONTH_LABELS } from "../../common/libs/constants"
+import type { ExpenseResponse } from "../../common/libs/types"
+import { CHART_COLORS } from "../libs/colors"
 
 interface AnnualAreaChartProps {
   expenses: ExpenseResponse[]

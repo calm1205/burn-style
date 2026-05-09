@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 
-import { api } from "../lib/api"
-import { MONTH_LABELS } from "../lib/constants"
-import type { ExpenseResponse } from "../lib/types"
+import { api } from "../../common/libs/api"
+import { MONTH_LABELS } from "../../common/libs/constants"
+import type { ExpenseResponse } from "../../common/libs/types"
 
 const getLast12Months = (year: number, month: number) => {
   const months: { year: number; month: number; label: string }[] = []
