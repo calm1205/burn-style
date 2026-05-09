@@ -48,8 +48,11 @@ All endpoints require authentication.
 | POST | `/categories` | `{ name }` | `CategoryResponse` | 201 |
 | PATCH | `/categories/{uuid}` | `{ name? }` | `CategoryResponse` | 200 |
 | DELETE | `/categories/{uuid}` | - | - | 204 |
+| POST | `/categories/{uuid}/merge` | `{ target_uuid }` | `CategoryResponse` | 200 |
 
 **CategoryResponse**: `{ uuid, name }`
+
+Merge re-links expenses and templates from `{uuid}` to `target_uuid`, deduplicating overlap, then deletes the source. Returns the target. 400 if `uuid == target_uuid`, 404 if either is missing or owned by another user.
 
 ## Expenses `/expenses`
 
