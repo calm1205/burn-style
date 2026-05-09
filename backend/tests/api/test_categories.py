@@ -90,6 +90,63 @@ class TestDeleteCategory:
         assert res.status_code == 404
 
 
+class TestReorderCategories:
+    def _create_three(self, db: Session, user: User) -> list[Category]:
+        cats = [
+            Category(user_uuid=str(user.uuid), name=f"cat{i}", position=i)
+            for i in range(3)
+        ]
+        db.add_all(cats)
+        db.commit()
+        for c in cats:
+            db.refresh(c)
+        return cats
+
+    def test_reorders_categories(
+        self, auth_client: TestClient, test_user: User, db: Session,
+    ) -> None:
+        cats = self._create_three(db, test_user)
+        new_order = [cats[2].uuid, cats[0].uuid, cats[1].uuid]
+
+        res = auth_client.put("/categories/order", json={"uuids": new_order})
+        assert res.status_code == 200
+
+        listed = auth_client.get("/categories").json()
+        assert [c["uuid"] for c in listed] == new_order
+        assert [c["position"] for c in listed] == [0, 1, 2]
+
+    def test_rejects_partial_uuids(
+        self, auth_client: TestClient, test_user: User, db: Session,
+    ) -> None:
+        cats = self._create_three(db, test_user)
+        res = auth_client.put("/categories/order", json={"uuids": [cats[0].uuid]})
+        assert res.status_code == 400
+
+    def test_rejects_unknown_uuid(
+        self, auth_client: TestClient, test_user: User, db: Session,
+    ) -> None:
+        cats = self._create_three(db, test_user)
+        res = auth_client.put(
+            "/categories/order",
+            json={"uuids": [cats[0].uuid, cats[1].uuid, "nonexistent"]},
+        )
+        assert res.status_code == 400
+
+
+class TestCategoryListOrder:
+    def test_returns_in_position_order(
+        self, auth_client: TestClient, test_user: User, db: Session,
+    ) -> None:
+        c1 = Category(user_uuid=str(test_user.uuid), name="a", position=2)
+        c2 = Category(user_uuid=str(test_user.uuid), name="b", position=0)
+        c3 = Category(user_uuid=str(test_user.uuid), name="c", position=1)
+        db.add_all([c1, c2, c3])
+        db.commit()
+
+        listed = auth_client.get("/categories").json()
+        assert [c["name"] for c in listed] == ["b", "c", "a"]
+
+
 class TestMergeCategory:
     def _create_pair(self, db: Session, user: User) -> tuple[Category, Category]:
         source = Category(user_uuid=str(user.uuid), name="外食")
@@ -119,7 +176,9 @@ class TestMergeCategory:
 
         res = auth_client.post(f"/categories/{source.uuid}/merge", json={"target_uuid": target.uuid})
         assert res.status_code == 200
-        assert res.json() == {"uuid": target.uuid, "name": target.name}
+        body = res.json()
+        assert body["uuid"] == target.uuid
+        assert body["name"] == target.name
 
         remaining = auth_client.get("/categories").json()
         assert {c["uuid"] for c in remaining} == {target.uuid}
@@ -223,3 +282,22 @@ class TestMergeCategory:
 
         res = auth_client.post(f"/categories/{source.uuid}/merge", json={"target_uuid": target.uuid})
         assert res.status_code == 404
+
+    def test_compacts_positions_after_merge(
+        self, auth_client: TestClient, test_user: User, db: Session,
+    ) -> None:
+        a = Category(user_uuid=str(test_user.uuid), name="a", position=0)
+        b = Category(user_uuid=str(test_user.uuid), name="b", position=1)
+        c = Category(user_uuid=str(test_user.uuid), name="c", position=2)
+        db.add_all([a, b, c])
+        db.commit()
+        db.refresh(a)
+        db.refresh(b)
+        db.refresh(c)
+
+        # 真ん中の b を a に統合 → b の隙間 (position=1) を c が埋める
+        res = auth_client.post(f"/categories/{b.uuid}/merge", json={"target_uuid": a.uuid})
+        assert res.status_code == 200
+
+        listed = auth_client.get("/categories").json()
+        assert [(c["name"], c["position"]) for c in listed] == [("a", 0), ("c", 1)]

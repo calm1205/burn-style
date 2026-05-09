@@ -13,12 +13,14 @@ from src.repository.category_repository import (
     get_all_categories,
     get_category_by_uuid,
     merge_categories,
+    reorder_categories,
     update_category,
 )
 from src.repository.database import get_db
 from src.schema.category import (
     CategoryCreate,
     CategoryMergeRequest,
+    CategoryReorderRequest,
     CategoryResponse,
     CategoryUpdate,
 )
@@ -75,6 +77,21 @@ def delete_category_endpoint(
 
     delete_category(db, category)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@category_router.put("/order")
+def put_category_order(
+    body: CategoryReorderRequest,
+    user: Annotated[User, Depends(get_current_user)],
+    db: Annotated[Session, Depends(get_db)],
+) -> list[CategoryResponse]:
+    try:
+        categories = reorder_categories(db, str(user.uuid), body.uuids)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e),
+        ) from None
+    return [CategoryResponse.model_validate(c) for c in categories]
 
 
 @category_router.post("/{uuid}/merge")

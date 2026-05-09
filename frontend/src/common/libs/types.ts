@@ -18,6 +18,7 @@ export interface SignInVerifyResponse {
 export interface CategoryResponse {
   uuid: string
   name: string
+  position: number
 }
 
 export interface CategoryCreate {
@@ -30,6 +31,10 @@ export interface CategoryUpdate {
 
 export interface CategoryMergeRequest {
   target_uuid: string
+}
+
+export interface CategoryReorderRequest {
+  uuids: string[]
 }
 
 export interface ExpenseResponse {
