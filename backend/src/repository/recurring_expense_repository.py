@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
+from typing import Any
 
 from sqlalchemy import func
 from sqlalchemy.orm import Session, joinedload
@@ -57,6 +58,29 @@ def count_recorded(db: Session, recurring_uuid: str) -> int:
         .scalar()
     )
     return int(result or 0)
+
+
+def create(db: Session, user_uuid: str, fields: dict[str, Any]) -> RecurringExpense:
+    """新規作成。category eager loadした状態で返す。"""
+    recurring = RecurringExpense(user_uuid=user_uuid, **fields)
+    db.add(recurring)
+    db.commit()
+    db.refresh(recurring)
+    return (
+        db.query(RecurringExpense)
+        .options(joinedload(RecurringExpense.category))
+        .filter(RecurringExpense.uuid == recurring.uuid)
+        .one()
+    )
+
+
+def update(db: Session, recurring: RecurringExpense, fields: dict[str, Any]) -> RecurringExpense:
+    """指定フィールドを更新。"""
+    for key, value in fields.items():
+        setattr(recurring, key, value)
+    db.commit()
+    db.refresh(recurring)
+    return recurring
 
 
 def soft_delete(db: Session, recurring: RecurringExpense) -> None:
