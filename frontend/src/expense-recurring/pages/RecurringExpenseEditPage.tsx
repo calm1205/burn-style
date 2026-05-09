@@ -49,7 +49,6 @@ export const RecurringExpenseEditPage = () => {
   const [amount, setAmount] = useState("")
   const [frequencyKey, setFrequencyKey] = useState("monthly")
   const [startDate, setStartDate] = useState(todayJst)
-  const [endDate, setEndDate] = useState("")
   const [categoryUuid, setCategoryUuid] = useState("")
 
   const fetchData = useCallback(async () => {
@@ -62,7 +61,6 @@ export const RecurringExpenseEditPage = () => {
         setAmount(r.amount.toLocaleString())
         setFrequencyKey(matchFrequency(r.interval_unit, r.interval_count))
         setStartDate(r.start_date)
-        setEndDate(r.end_date ?? "")
         setCategoryUuid(r.category.uuid)
       } else if (cats.length > 0) {
         setCategoryUuid(cats[0].uuid)
@@ -94,7 +92,6 @@ export const RecurringExpenseEditPage = () => {
           interval_unit: freq.unit,
           interval_count: freq.count,
           start_date: startDate,
-          end_date: endDate || null,
           category_uuid: categoryUuid,
         }
         await api.updateRecurringExpense(uuid, data)
@@ -105,7 +102,6 @@ export const RecurringExpenseEditPage = () => {
           interval_unit: freq.unit,
           interval_count: freq.count,
           start_date: startDate,
-          end_date: endDate || null,
           category_uuid: categoryUuid,
         }
         await api.createRecurringExpense(data)
@@ -140,7 +136,7 @@ export const RecurringExpenseEditPage = () => {
       {/* Name + amount card */}
       <div className="rounded-2xl bg-white p-5 shadow-sm dark:bg-gray-800">
         <label className="text-xs text-gray-500 dark:text-gray-400" htmlFor="recurring-name">
-          Name this ritual
+          Name this recurring
         </label>
         <input
           id="recurring-name"
@@ -191,7 +187,7 @@ export const RecurringExpenseEditPage = () => {
         </div>
       </div>
 
-      {/* Dates */}
+      {/* Start date */}
       <div className="rounded-2xl bg-white p-5 shadow-sm dark:bg-gray-800">
         <label className="text-xs text-gray-500 dark:text-gray-400" htmlFor="recurring-start">
           Start date
@@ -202,20 +198,6 @@ export const RecurringExpenseEditPage = () => {
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
           required
-          className="mt-1 w-full border-x-0 border-t-0 border-b border-gray-200 bg-transparent py-2 outline-none focus:border-primary dark:border-gray-700 dark:text-gray-100"
-        />
-
-        <label
-          className="mt-4 block text-xs text-gray-500 dark:text-gray-400"
-          htmlFor="recurring-end"
-        >
-          End date (optional)
-        </label>
-        <input
-          id="recurring-end"
-          type="date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
           className="mt-1 w-full border-x-0 border-t-0 border-b border-gray-200 bg-transparent py-2 outline-none focus:border-primary dark:border-gray-700 dark:text-gray-100"
         />
       </div>
@@ -270,7 +252,7 @@ export const RecurringExpenseEditPage = () => {
             disabled={loading}
             className="mt-4 rounded-2xl py-3 text-sm text-red-600 hover:bg-red-50 disabled:opacity-50 dark:text-red-400 dark:hover:bg-red-900/20"
           >
-            Stop this ritual
+            Stop this recurring
           </button>
         )}
       </div>

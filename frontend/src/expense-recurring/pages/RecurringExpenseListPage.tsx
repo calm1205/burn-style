@@ -128,7 +128,7 @@ export const RecurringExpenseListPage = () => {
         <div className="text-xs text-gray-500 dark:text-gray-400">Every month</div>
         <div className="mt-1 text-3xl font-light tracking-tight">¥{formatAmount(totalMonthly)}</div>
         <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-          {items.length} {items.length === 1 ? "ritual" : "rituals"}
+          {items.length} {items.length === 1 ? "recurring" : "recurrings"}
         </div>
       </div>
 
@@ -171,7 +171,7 @@ export const RecurringExpenseListPage = () => {
         className="flex items-center justify-center gap-2 rounded-2xl bg-primary py-3 text-sm font-medium text-white hover:bg-primary-hover"
       >
         <PlusIcon className="size-4" />
-        Add ritual
+        Add recurring
       </Link>
 
       {/* Grouped list */}
@@ -228,7 +228,9 @@ export const RecurringExpenseListPage = () => {
       })}
 
       {items.length === 0 && (
-        <p className="py-8 text-center text-sm text-gray-400 dark:text-gray-500">No rituals yet</p>
+        <p className="py-8 text-center text-sm text-gray-400 dark:text-gray-500">
+          No recurrings yet
+        </p>
       )}
     </div>
   )
