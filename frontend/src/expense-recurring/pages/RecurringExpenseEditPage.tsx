@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router"
 
 import { ConfirmDialog, useConfirmDialog } from "../../common/components/ConfirmDialog"
 import { api } from "../../common/libs/api"
+import { categoryGlyph } from "../../common/libs/category"
 import { getErrorMessage } from "../../common/libs/client"
 import type {
   CategoryResponse,
@@ -217,6 +218,7 @@ export const RecurringExpenseEditPage = () => {
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
               }`}
             >
+              <span className="mr-1">{categoryGlyph(c)}</span>
               {c.name}
             </button>
           ))}

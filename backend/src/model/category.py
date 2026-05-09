@@ -13,6 +13,7 @@ class Category(Base):
     uuid = Column(String(32), primary_key=True, default=generate_uuid_string)
     user_uuid = Column(String(32), ForeignKey("users.uuid", ondelete="CASCADE"), nullable=False)
     name = Column(String, nullable=False)
+    symbol = Column(String(8), nullable=True)
     position = Column(Integer, nullable=False, default=0)
 
     user = relationship("User")

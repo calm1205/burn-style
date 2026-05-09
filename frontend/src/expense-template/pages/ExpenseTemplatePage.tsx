@@ -11,6 +11,7 @@ import { Link } from "react-router"
 
 import { ConfirmDialog, useConfirmDialog } from "../../common/components/ConfirmDialog"
 import { api } from "../../common/libs/api"
+import { categoryGlyph } from "../../common/libs/category"
 import { getErrorMessage } from "../../common/libs/client"
 import type { CategoryResponse, ExpenseTemplateResponse } from "../../common/libs/types"
 
@@ -167,7 +168,7 @@ export const ExpenseTemplatePage = () => {
                 </option>
                 {categories.map((c) => (
                   <option key={c.uuid} value={c.uuid}>
-                    {c.name}
+                    {categoryGlyph(c)} {c.name}
                   </option>
                 ))}
               </select>
@@ -249,7 +250,7 @@ export const ExpenseTemplatePage = () => {
                       >
                         {categories.map((c) => (
                           <option key={c.uuid} value={c.uuid}>
-                            {c.name}
+                            {categoryGlyph(c)} {c.name}
                           </option>
                         ))}
                       </select>
@@ -277,8 +278,9 @@ export const ExpenseTemplatePage = () => {
                 <>
                   <div className="flex min-w-0 flex-1 flex-col">
                     <span className="truncate text-sm">{t.name}</span>
-                    <span className="truncate text-xs text-gray-400 dark:text-gray-500">
-                      {t.category.name}
+                    <span className="flex items-center gap-1 truncate text-xs text-gray-400 dark:text-gray-500">
+                      <span>{categoryGlyph(t.category)}</span>
+                      <span>{t.category.name}</span>
                     </span>
                   </div>
                   <span className="min-w-0 shrink-0 truncate text-sm tabular-nums">

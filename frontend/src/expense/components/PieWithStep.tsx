@@ -2,6 +2,7 @@ import { useMemo, useState } from "react"
 import type { PieSectorShapeProps } from "recharts"
 import { Pie, PieChart, Sector } from "recharts"
 
+import { categoryGlyph } from "../../common/libs/category"
 import type { ExpenseResponse } from "../../common/libs/types"
 
 const PIE_FILL = "var(--chart-bar)"
@@ -11,50 +12,49 @@ const MAX_OUTER = 100
 interface CategoryTotal {
   name: string
   amount: number
+  symbol: string | null
 }
 
 interface PieWithStepProps {
   expenses: ExpenseResponse[]
 }
 
+const aggregate = (
+  expenses: ExpenseResponse[],
+  excludeNames: ReadonlySet<string> = new Set(),
+): CategoryTotal[] => {
+  const totals = new Map<string, number>()
+  const symbols = new Map<string, string | null>()
+  for (const e of expenses) {
+    if (e.categories.length === 0) {
+      const key = "Uncategorized"
+      if (excludeNames.has(key)) continue
+      totals.set(key, (totals.get(key) ?? 0) + e.amount)
+      if (!symbols.has(key)) symbols.set(key, null)
+    } else {
+      for (const c of e.categories) {
+        if (excludeNames.has(c.name)) continue
+        totals.set(c.name, (totals.get(c.name) ?? 0) + e.amount)
+        if (!symbols.has(c.name)) symbols.set(c.name, c.symbol ?? null)
+      }
+    }
+  }
+  return [...totals.entries()]
+    .map(
+      ([name, amount]): CategoryTotal => ({
+        name,
+        amount,
+        symbol: symbols.get(name) ?? null,
+      }),
+    )
+    .toSorted((a, b) => b.amount - a.amount)
+}
+
 export const PieWithStep = ({ expenses }: PieWithStepProps) => {
   const [hidden, setHidden] = useState<Set<string>>(new Set())
 
-  const allCategories = useMemo(() => {
-    const map = new Map<string, number>()
-    for (const e of expenses) {
-      if (e.categories.length === 0) {
-        map.set("Uncategorized", (map.get("Uncategorized") ?? 0) + e.amount)
-      } else {
-        for (const c of e.categories) {
-          map.set(c.name, (map.get(c.name) ?? 0) + e.amount)
-        }
-      }
-    }
-    return [...map.entries()]
-      .map(([name, amount]) => ({ name, amount }))
-      .toSorted((a, b) => b.amount - a.amount)
-  }, [expenses])
-
-  const visibleData = useMemo(() => {
-    const map = new Map<string, number>()
-    for (const e of expenses) {
-      if (e.categories.length === 0) {
-        if (!hidden.has("Uncategorized")) {
-          map.set("Uncategorized", (map.get("Uncategorized") ?? 0) + e.amount)
-        }
-      } else {
-        for (const c of e.categories) {
-          if (!hidden.has(c.name)) {
-            map.set(c.name, (map.get(c.name) ?? 0) + e.amount)
-          }
-        }
-      }
-    }
-    return [...map.entries()]
-      .map(([name, amount]): CategoryTotal => ({ name, amount }))
-      .toSorted((a, b) => b.amount - a.amount)
-  }, [expenses, hidden])
+  const allCategories = useMemo(() => aggregate(expenses), [expenses])
+  const visibleData = useMemo(() => aggregate(expenses, hidden), [expenses, hidden])
 
   const total = visibleData.reduce((sum, c) => sum + c.amount, 0)
   const maxAmount = visibleData.length > 0 ? visibleData[0].amount : 0
@@ -120,6 +120,7 @@ export const PieWithStep = ({ expenses }: PieWithStepProps) => {
                 <span className="w-5 text-right text-xs text-gray-400 dark:text-gray-500">
                   {i + 1}
                 </span>
+                <span className="w-6 text-center text-sm">{categoryGlyph(cat)}</span>
                 <span className="flex-1 text-left text-sm">{cat.name}</span>
                 {matched && !isHidden && (
                   <div className="flex items-center gap-3">

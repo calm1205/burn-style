@@ -29,14 +29,21 @@ import { type SubmitEvent, useCallback, useEffect, useRef, useState } from "reac
 
 import { ConfirmDialog, useConfirmDialog } from "../../common/components/ConfirmDialog"
 import { api } from "../../common/libs/api"
+import { categoryGlyph } from "../../common/libs/category"
 import { getErrorMessage } from "../../common/libs/client"
 import type { CategoryResponse } from "../../common/libs/types"
+
+interface EditingState {
+  uuid: string
+  name: string
+  symbol: string
+}
 
 interface SortableRowProps {
   category: CategoryResponse
   loading: boolean
-  editing: { uuid: string; name: string } | null
-  setEditing: (e: { uuid: string; name: string } | null) => void
+  editing: EditingState | null
+  setEditing: (e: EditingState | null) => void
   editInputRef: React.RefObject<HTMLInputElement | null>
   onUpdate: () => void
   onStartEdit: (c: CategoryResponse) => void
@@ -83,6 +90,14 @@ const SortableRow = ({
     >
       {editing?.uuid === c.uuid ? (
         <div className="flex flex-1 items-center gap-2">
+          <input
+            type="text"
+            value={editing?.symbol ?? ""}
+            onChange={(e) => setEditing(editing ? { ...editing, symbol: e.target.value } : null)}
+            maxLength={8}
+            placeholder="🍱"
+            className="w-12 rounded-lg bg-gray-50 px-2 py-1.5 text-center text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+          />
           <input
             ref={editInputRef}
             type="text"
@@ -154,6 +169,9 @@ const SortableRow = ({
           >
             <DragHandleDots2Icon className="size-4" />
           </button>
+          <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm dark:bg-gray-700">
+            {categoryGlyph(c)}
+          </span>
           <span className="flex-1 text-sm">{c.name}</span>
           <button
             type="button"
@@ -189,7 +207,8 @@ export const CategoriesPage = () => {
   const [categories, setCategories] = useState<CategoryResponse[]>([])
   const [error, setError] = useState("")
   const [name, setName] = useState("")
-  const [editing, setEditing] = useState<{ uuid: string; name: string } | null>(null)
+  const [symbol, setSymbol] = useState("")
+  const [editing, setEditing] = useState<EditingState | null>(null)
   const editInputRef = useRef<HTMLInputElement>(null)
   const [deleteTarget, setDeleteTarget] = useState<CategoryResponse | null>(null)
   const [merging, setMerging] = useState<{ source: CategoryResponse; targetUuid: string } | null>(
@@ -222,8 +241,9 @@ export const CategoriesPage = () => {
     setError("")
     setLoading(true)
     try {
-      await api.createCategory({ name })
+      await api.createCategory({ name, symbol: symbol || null })
       setName("")
+      setSymbol("")
       await fetchData()
     } catch (err) {
       setError(getErrorMessage(err, "Failed to create"))
@@ -254,7 +274,7 @@ export const CategoriesPage = () => {
   }
 
   const startEdit = (c: CategoryResponse) => {
-    setEditing({ uuid: c.uuid, name: c.name })
+    setEditing({ uuid: c.uuid, name: c.name, symbol: c.symbol ?? "" })
     requestAnimationFrame(() => editInputRef.current?.focus())
   }
 
@@ -263,7 +283,10 @@ export const CategoriesPage = () => {
     setError("")
     setLoading(true)
     try {
-      await api.updateCategory(editing.uuid, { name: editing.name })
+      await api.updateCategory(editing.uuid, {
+        name: editing.name,
+        symbol: editing.symbol || null,
+      })
       setEditing(null)
       await fetchData()
     } catch (err) {
@@ -338,6 +361,15 @@ export const CategoriesPage = () => {
         onSubmit={handleCreate}
         className="flex items-center gap-2 rounded-2xl bg-white p-4 shadow-sm dark:bg-gray-800"
       >
+        <input
+          id="category-symbol"
+          type="text"
+          placeholder="🍱"
+          value={symbol}
+          onChange={(e) => setSymbol(e.target.value)}
+          maxLength={8}
+          className="w-14 rounded-xl bg-gray-50 px-2 py-2.5 text-center text-sm outline-none placeholder:text-gray-300 focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+        />
         <input
           id="category-name"
           type="text"

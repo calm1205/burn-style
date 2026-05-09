@@ -43,7 +43,7 @@ def post_category(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> CategoryResponse:
-    category = create_category(db, str(user.uuid), body.name)
+    category = create_category(db, str(user.uuid), body.name, symbol=body.symbol)
     return CategoryResponse.model_validate(category)
 
 
@@ -59,8 +59,8 @@ def patch_category(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Category not found")
 
     update_data = body.model_dump(exclude_unset=True)
-    if "name" in update_data:
-        category = update_category(db, category, update_data["name"])
+    if update_data:
+        category = update_category(db, category, update_data)
 
     return CategoryResponse.model_validate(category)
 

@@ -23,7 +23,9 @@ def get_category_by_uuid(db: Session, uuid: str, user_uuid: str) -> Category | N
     return db.query(Category).filter(Category.uuid == uuid, Category.user_uuid == user_uuid).first()
 
 
-def create_category(db: Session, user_uuid: str, name: str) -> Category:
+def create_category(
+    db: Session, user_uuid: str, name: str, symbol: str | None = None,
+) -> Category:
     """カテゴリを新規作成 (positionは末尾)。"""
     next_position = (
         db.query(func.coalesce(func.max(Category.position), -1))
@@ -31,7 +33,12 @@ def create_category(db: Session, user_uuid: str, name: str) -> Category:
         .scalar()
         or -1
     )
-    category = Category(user_uuid=user_uuid, name=name, position=int(next_position) + 1)
+    category = Category(
+        user_uuid=user_uuid,
+        name=name,
+        symbol=symbol,
+        position=int(next_position) + 1,
+    )
     db.add(category)
     db.commit()
     db.refresh(category)
@@ -94,9 +101,12 @@ def bulk_create_categories(db: Session, user_uuid: str, names: list[str]) -> lis
     return categories
 
 
-def update_category(db: Session, category: Category, name: str) -> Category:
-    """カテゴリ名を更新。"""
-    category.name = name  # type: ignore[assignment]
+def update_category(
+    db: Session, category: Category, fields: dict[str, str | None],
+) -> Category:
+    """カテゴリの指定フィールドを更新 (name / symbol)。"""
+    for key, value in fields.items():
+        setattr(category, key, value)
     db.commit()
     db.refresh(category)
     return category

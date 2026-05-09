@@ -2,6 +2,7 @@ import { type SubmitEvent, useCallback, useEffect, useRef, useState } from "reac
 import { useNavigate } from "react-router"
 
 import { api } from "../../common/libs/api"
+import { categoryGlyph } from "../../common/libs/category"
 import { getErrorMessage } from "../../common/libs/client"
 import type { CategoryResponse } from "../../common/libs/types"
 
@@ -139,6 +140,7 @@ export const ExpensesPage = () => {
                       : "bg-gray-50 text-gray-500 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600"
                   }`}
                 >
+                  <span className="mr-1">{categoryGlyph(c)}</span>
                   {c.name}
                 </button>
               ))}

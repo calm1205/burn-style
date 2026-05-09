@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router"
 
 import { ConfirmDialog, useConfirmDialog } from "../../common/components/ConfirmDialog"
 import { api } from "../../common/libs/api"
+import { categoryGlyph } from "../../common/libs/category"
 import { getErrorMessage } from "../../common/libs/client"
 import type { CategoryResponse, ExpenseResponse } from "../../common/libs/types"
 
@@ -175,6 +176,7 @@ export const ExpenseDetailPage = () => {
                       : "bg-gray-50 text-gray-500 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600"
                   }`}
                 >
+                  <span className="mr-1">{categoryGlyph(c)}</span>
                   {c.name}
                 </button>
               ))}
