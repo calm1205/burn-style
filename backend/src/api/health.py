@@ -1,6 +1,12 @@
 from __future__ import annotations
 
-from fastapi import APIRouter
+from typing import Annotated
+
+from fastapi import APIRouter, Depends
+from sqlalchemy import text
+from sqlalchemy.orm import Session
+
+from src.repository.database import get_db
 
 health_router = APIRouter()
 
@@ -11,5 +17,6 @@ async def root() -> dict[str, str]:
 
 
 @health_router.get("/health")
-async def health_check() -> dict[str, str]:
+def health_check(db: Annotated[Session, Depends(get_db)]) -> dict[str, str]:
+    db.execute(text("SELECT 1"))
     return {"status": "healthy"}
