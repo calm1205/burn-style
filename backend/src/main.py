@@ -13,7 +13,10 @@ from src.api import (
     user_router,
 )
 from src.config import get_frontend_origin
-from src.middleware import TokenRefreshMiddleware
+from src.logger import configure_logging
+from src.middleware import RequestLoggingMiddleware, TokenRefreshMiddleware
+
+configure_logging()
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
@@ -29,7 +32,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 app = FastAPI(title="BurnStyle API", version="1.0.0")
 
 # Middleware (later additions wrap outer layers)
-# Request order: CORS -> SecurityHeaders -> TokenRefresh -> Router
+# Request order: RequestLogging -> CORS -> SecurityHeaders -> TokenRefresh -> Router
 app.add_middleware(TokenRefreshMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(
@@ -38,9 +41,10 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["Content-Type", "Authorization"],
-    expose_headers=["X-New-Token"],
+    expose_headers=["X-New-Token", "X-Request-ID"],
     max_age=0,
 )
+app.add_middleware(RequestLoggingMiddleware)
 
 # Register routers
 app.include_router(health_router)
