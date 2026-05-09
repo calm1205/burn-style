@@ -18,12 +18,10 @@ services:
         - action: sync
           path: ./backend/src
           target: /app/src
-        - action: sync
+        - action: rebuild
           path: ./backend/pyproject.toml
-          target: /app/pyproject.toml
-        - action: sync
+        - action: rebuild
           path: ./backend/uv.lock
-          target: /app/uv.lock
         - action: rebuild
           path: ./backend/Dockerfile
 
