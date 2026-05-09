@@ -5,7 +5,6 @@
 - **UUID**: Use uuid6 (v7), 32 characters without hyphens
 - **Deletion**: Soft delete via `deleted_at` column
 - `print()` is only allowed in `scripts/` directory
-- `.env` must not be committed (use `.env.template` instead)
 
 ## Logging
 - Use `src.logger.get_logger(name)` — never `print()` in app code
