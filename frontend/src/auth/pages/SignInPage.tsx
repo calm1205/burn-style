@@ -1,9 +1,9 @@
 import { Cross2Icon } from "@radix-ui/react-icons"
-import { type SubmitEvent, useState } from "react"
+import { type SubmitEvent, useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router"
 
 import { api } from "../../common/libs/api"
-import { getErrorMessage } from "../../common/libs/client"
+import { client, getErrorMessage } from "../../common/libs/client"
 import { STORAGE_KEYS } from "../../common/libs/constants"
 
 export const SignInPage = () => {
@@ -13,6 +13,10 @@ export const SignInPage = () => {
   )
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    client.get("/health").catch(() => {})
+  }, [])
 
   const clearUsername = () => {
     setUsername("")
