@@ -2,6 +2,7 @@
 
 ## Language Policy
 - All text in the repository (code, comments, documentation, commit messages) must be written in English.
+- **Exception**: JSDoc / Python docstrings are written in Japanese (concise, 1–2 lines focusing on WHY).
 
 ## Implementation Policy
 - **Simplicity is the top priority**
