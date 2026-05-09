@@ -8,6 +8,7 @@ class CategoryResponse(BaseModel):
 
     uuid: str
     name: str
+    position: int
 
 
 class CategoryCreate(BaseModel):
@@ -20,4 +21,8 @@ class CategoryUpdate(BaseModel):
 
 class CategoryMergeRequest(BaseModel):
     target_uuid: str
+
+
+class CategoryReorderRequest(BaseModel):
+    uuids: list[str]
 
