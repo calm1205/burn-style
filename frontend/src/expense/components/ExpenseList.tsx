@@ -1,4 +1,4 @@
-import { MagnifyingGlassIcon, MixerHorizontalIcon } from "@radix-ui/react-icons"
+import { Cross2Icon, MagnifyingGlassIcon, MixerHorizontalIcon } from "@radix-ui/react-icons"
 import { useMemo, useState } from "react"
 import { useNavigate } from "react-router"
 
@@ -11,6 +11,7 @@ import {
   ExpenseFilterChips,
   ExpenseFilterSheet,
   filterCount,
+  SCOPE_OPTIONS,
 } from "./ExpenseFilterSheet"
 
 const pad = (n: number) => String(n).padStart(2, "0")
@@ -83,14 +84,26 @@ export const ExpenseList = ({ expenses }: ExpenseListProps) => {
   return (
     <>
       <div className="flex shrink-0 items-center gap-2 pt-2">
-        <button
-          type="button"
-          onClick={() => setSheetOpen(true)}
-          className="flex flex-1 items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-left text-sm text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500"
-        >
-          <MagnifyingGlassIcon className="size-4" />
-          <span className="flex-1 truncate">{filter.q || "Search expenses…"}</span>
-        </button>
+        <div className="flex flex-1 items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 dark:border-gray-700 dark:bg-gray-800">
+          <MagnifyingGlassIcon className="size-4 shrink-0 text-gray-400" />
+          <input
+            type="text"
+            value={filter.q}
+            onChange={(e) => setFilter({ ...filter, q: e.target.value })}
+            placeholder="Search expenses…"
+            className="w-full bg-transparent text-sm outline-none placeholder:text-gray-400 dark:text-gray-100"
+          />
+          {filter.q && (
+            <button
+              type="button"
+              onClick={() => setFilter({ ...filter, q: "" })}
+              aria-label="Clear search"
+              className="shrink-0 text-gray-400"
+            >
+              <Cross2Icon className="size-3.5" />
+            </button>
+          )}
+        </div>
         <button
           type="button"
           onClick={() => setSheetOpen(true)}
@@ -108,6 +121,26 @@ export const ExpenseList = ({ expenses }: ExpenseListProps) => {
             </span>
           )}
         </button>
+      </div>
+
+      <div className="flex shrink-0 gap-1.5 pt-2">
+        {SCOPE_OPTIONS.map((s) => {
+          const on = filter.scope === s.k
+          return (
+            <button
+              key={s.k}
+              type="button"
+              onClick={() => setFilter({ ...filter, scope: s.k })}
+              className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                on
+                  ? "bg-primary text-white"
+                  : "border border-gray-200 text-gray-500 dark:border-gray-700 dark:text-gray-400"
+              }`}
+            >
+              {s.short}
+            </button>
+          )
+        })}
       </div>
 
       <ExpenseFilterChips

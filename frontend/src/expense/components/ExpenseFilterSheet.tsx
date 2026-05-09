@@ -14,10 +14,10 @@ export interface ExpenseFilter {
   max: number
 }
 
-const SCOPE_OPTIONS: { k: FilterScope; label: string }[] = [
-  { k: "week", label: "This week" },
-  { k: "month", label: "This month" },
-  { k: "all", label: "All time" },
+export const SCOPE_OPTIONS: { k: FilterScope; label: string; short: string }[] = [
+  { k: "week", label: "This week", short: "Week" },
+  { k: "month", label: "This month", short: "Month" },
+  { k: "all", label: "All time", short: "All" },
 ]
 
 export const defaultFilter = (): ExpenseFilter => ({
@@ -157,29 +157,6 @@ export const ExpenseFilterSheet = ({
             </div>
           </section>
 
-          <section>
-            <h3 className="mb-2 text-[11px] font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
-              Range
-            </h3>
-            <div className="flex gap-1.5 rounded-xl border border-gray-200 bg-white p-1 dark:border-gray-700 dark:bg-gray-800">
-              {SCOPE_OPTIONS.map((s) => {
-                const on = draft.scope === s.k
-                return (
-                  <button
-                    key={s.k}
-                    type="button"
-                    onClick={() => setDraft({ ...draft, scope: s.k })}
-                    className={`flex-1 rounded-lg px-2 py-2 text-xs font-semibold ${
-                      on ? "bg-primary text-white" : "text-gray-600 dark:text-gray-300"
-                    }`}
-                  >
-                    {s.label}
-                  </button>
-                )
-              })}
-            </div>
-          </section>
-
           {categories.length > 0 && (
             <section>
               <div className="mb-2 flex items-center justify-between">
@@ -299,10 +276,6 @@ export const ExpenseFilterChips = ({
 }: ExpenseFilterChipsProps) => {
   const labels: string[] = []
   if (filter.q) labels.push(`"${filter.q}"`)
-  if (filter.scope !== "month") {
-    const s = SCOPE_OPTIONS.find((x) => x.k === filter.scope)
-    if (s) labels.push(s.label)
-  }
   for (const uuid of filter.categoryUuids) {
     const c = categories.find((x) => x.uuid === uuid)
     if (c) labels.push(c.name)
