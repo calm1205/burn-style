@@ -1,4 +1,4 @@
-import { GearIcon, HomeIcon, PlusIcon } from "@radix-ui/react-icons"
+import { BarChartIcon, HomeIcon, PersonIcon, PlusIcon, RowsIcon } from "@radix-ui/react-icons"
 import { useCallback, useEffect, useState } from "react"
 import { Outlet, useLocation, useNavigate } from "react-router"
 
@@ -9,9 +9,11 @@ import { LayoutLaptop } from "./LayoutLaptop"
 import { LayoutPhone } from "./LayoutPhone"
 
 const navItems = [
-  { label: "Dashboard", to: "/", icon: HomeIcon },
-  { label: "Expense", to: "/expense/new", icon: PlusIcon, accent: true },
-  { label: "Setting", to: "/setting", icon: GearIcon },
+  { label: "Today", to: "/", icon: HomeIcon },
+  { label: "Expense", to: "/expense/monthly", icon: RowsIcon },
+  { label: "Add", to: "/expense/new", icon: PlusIcon, accent: true },
+  { label: "Insights", to: "/expense/annual", icon: BarChartIcon },
+  { label: "You", to: "/setting", icon: PersonIcon },
 ]
 
 const PAGE_TITLES: Record<string, string> = {
@@ -60,7 +62,7 @@ export const AppLayout = () => {
         <header className="flex shrink-0 items-center border-b border-gray-100 px-4 py-3 dark:border-gray-700 md:hidden">
           <h1 className="text-lg font-bold">{getPageTitle(location.pathname)}</h1>
         </header>
-        <main className="flex-1 overflow-y-auto pt-6 pb-20 md:pb-0">
+        <main className="flex-1 overflow-y-auto pt-6 pb-[calc(env(safe-area-inset-bottom)+5rem)] md:pb-0">
           <Outlet context={{ user, onLogout, refreshUser: fetchUser }} />
         </main>
       </div>
