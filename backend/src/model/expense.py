@@ -20,6 +20,11 @@ class Expense(Base):
     name = Column(String, nullable=False)
     amount = Column(Integer, nullable=False)
     expensed_at = Column(DateTime, default=lambda: datetime.now(UTC), nullable=False)
+    recurring_expense_uuid = Column(
+        String(32),
+        ForeignKey("recurring_expenses.uuid", ondelete="SET NULL"),
+        nullable=True,
+    )
     created_at = Column(DateTime, default=lambda: datetime.now(UTC), nullable=False)
     updated_at = Column(
         DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC), nullable=False,
@@ -27,6 +32,7 @@ class Expense(Base):
     deleted_at = Column(DateTime, nullable=True)
 
     user = relationship("User")
+    recurring_expense = relationship("RecurringExpense")
 
     # Many-to-many relationship
     categories = relationship(
