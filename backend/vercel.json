@@ -1,4 +1,7 @@
 {
+  "crons": [
+    { "path": "/cron/recurring-expenses/record-due", "schedule": "0 15 * * *" }
+  ],
   "headers": [
     {
       "source": "/(.*)",

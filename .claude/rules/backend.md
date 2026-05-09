@@ -15,3 +15,8 @@
 ## mypy / ruff
 - mypy strict mode required, type annotations on all functions and variables
 - ruff line length: 120
+
+## Date / Time
+- For "JST today", use `datetime.now(JST).date()` — `date.today()` is OS-tz dependent and forbidden
+- `python-dateutil` is allowed only for `relativedelta` (month arithmetic). `dateutil.parser` is forbidden
+- For recurring schedules, compute dates from `start_date + n × interval` to avoid drift on month-end edges (do not chain from "last + interval")

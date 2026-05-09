@@ -7,9 +7,11 @@ from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoin
 from src.api import (
     auth_router,
     category_router,
+    cron_router,
     expense_router,
     expense_template_router,
     health_router,
+    recurring_expense_router,
     user_router,
 )
 from src.config import get_frontend_origin
@@ -52,4 +54,6 @@ app.include_router(auth_router)
 app.include_router(category_router)
 app.include_router(expense_router)
 app.include_router(expense_template_router)
+app.include_router(recurring_expense_router)
+app.include_router(cron_router)
 app.include_router(user_router)
