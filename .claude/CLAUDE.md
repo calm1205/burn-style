@@ -18,19 +18,11 @@
 
 ## Rule Files
 
-### Development Guidelines
-- [Architecture](rules/architecture.md) - Layered design & directory structure
-- [Backend](rules/backend.md) - Python / FastAPI / SQLAlchemy conventions
-- [Frontend](rules/frontend.md) - React / TypeScript / Tailwind CSS conventions
-- [Database](rules/database.md) - PostgreSQL / Alembic / connection settings
-- [Development Flow](rules/development.md) - Required lint & test processes
-- [Development Commands](rules/commands.md) - Makefile command reference
-- [Git & Deploy](rules/git.md) - Conventional Commits / GitHub Actions / Vercel
-
-### Application Specifications
 - [Product Concept](rules/concept.md) - Vision, target users & design philosophy
-- [Screens](rules/screens.md) - Screen list, navigation flow & data visualization
-- [API Specification](rules/api.md) - Endpoints, requests & responses
-- [Authentication](rules/auth.md) - WebAuthn/Passkey + JWT flow
-- [Data Model](rules/data-model.md) - Table definitions & ER diagram
-- [Infrastructure & Deploy](rules/infra.md) - Docker / CI/CD / Vercel / environment variables
+- [Backend](rules/backend.md) - Python coding conventions
+- [Frontend](rules/frontend.md) - TypeScript / React coding conventions
+- [Development Flow](rules/development.md) - Required lint & test process
+- [Git](rules/git.md) - Conventional Commits / commit language
+- [Infrastructure](rules/infra.md) - Deploy targets & environment variables
+
+> Architecture, schemas, endpoints, screens, and commands are read directly from the codebase (`backend/src/`, `frontend/src/`, `Makefile`, `docker-compose.yml`).
