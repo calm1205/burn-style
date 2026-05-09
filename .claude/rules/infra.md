@@ -19,6 +19,7 @@
 | `WEBAUTHN_RP_ID` | WebAuthn RP ID |
 | `WEBAUTHN_RP_NAME` | WebAuthn RP name |
 | `FRONTEND_ORIGIN` | CORS origin |
+| `CRON_SECRET` | Bearer token for `/cron/*` endpoints (32+ chars recommended) |
 
 ### Production Only
 | Variable | Purpose |
