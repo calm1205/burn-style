@@ -3,10 +3,9 @@ from __future__ import annotations
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session
 
 from src.api.deps import get_current_user
-from src.model.expense import Expense
 from src.model.user import User
 from src.repository.database import get_db
 from src.repository.expense_repository import (
@@ -14,9 +13,9 @@ from src.repository.expense_repository import (
     get_all_expenses,
     get_expense_by_uuid,
     soft_delete_expense,
-    update_expense_categories,
 )
 from src.schema.expense import ExpenseCreate, ExpenseResponse, ExpenseUpdate
+from src.service import expense_service
 
 expense_router = APIRouter(prefix="/expenses", tags=["expenses"])
 
@@ -64,27 +63,19 @@ def patch_expense(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> ExpenseResponse:
-    expense = (
-        db.query(Expense)
-        .options(joinedload(Expense.categories))
-        .filter(Expense.uuid == uuid, Expense.user_uuid == user.uuid, Expense.deleted_at.is_(None))
-        .first()
-    )
+    expense = get_expense_by_uuid(db, uuid, str(user.uuid))
     if not expense:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Expense not found")
 
     update_data = body.model_dump(exclude_unset=True)
-    category_uuid = update_data.pop("category_uuid", None)
-
-    for key, value in update_data.items():
-        setattr(expense, key, value)
-
+    category_uuids: list[str] | None = None
     if "category_uuid" in body.model_fields_set:
-        uuids = [category_uuid] if category_uuid else []
-        update_expense_categories(db, expense, str(user.uuid), uuids)
+        cat_uuid = update_data.pop("category_uuid")
+        category_uuids = [cat_uuid] if cat_uuid else []
 
-    db.commit()
-    db.refresh(expense)
+    expense = expense_service.update_expense(
+        db, expense, str(user.uuid), update_data, category_uuids,
+    )
     return ExpenseResponse.model_validate(expense)
 
 
