@@ -14,6 +14,7 @@ export const SignInPage = () => {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
+  // cold start対策: ユーザーが入力している間にAPI/DBを起こしておく
   useEffect(() => {
     client.get("/health").catch(() => {})
   }, [])
