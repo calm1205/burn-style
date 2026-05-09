@@ -17,3 +17,7 @@ class CategoryCreate(BaseModel):
 class CategoryUpdate(BaseModel):
     name: str | None = None
 
+
+class CategoryMergeRequest(BaseModel):
+    target_uuid: str
+

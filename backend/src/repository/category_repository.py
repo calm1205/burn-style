@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from src.model.category import Category
 from src.model.expense_category_association import ExpenseCategoryAssociation
+from src.model.expense_template import ExpenseTemplate
 
 
 def get_all_categories(db: Session, user_uuid: str) -> list[Category]:
@@ -53,3 +54,41 @@ def delete_category(db: Session, category: Category) -> None:
     """Hard-delete a category."""
     db.delete(category)
     db.commit()
+
+
+def merge_categories(db: Session, source: Category, target: Category) -> Category:
+    """Merge the source category into the target.
+
+    Re-link expense associations and templates from source to target,
+    then delete source. Duplicate expense links are deduplicated.
+    """
+    target_expense_uuids = {
+        row[0]
+        for row in db.query(ExpenseCategoryAssociation.expense_uuid)
+        .filter(ExpenseCategoryAssociation.category_uuid == target.uuid)
+        .all()
+    }
+    source_expense_uuids = {
+        row[0]
+        for row in db.query(ExpenseCategoryAssociation.expense_uuid)
+        .filter(ExpenseCategoryAssociation.category_uuid == source.uuid)
+        .all()
+    }
+
+    db.query(ExpenseCategoryAssociation).filter(
+        ExpenseCategoryAssociation.category_uuid == source.uuid,
+    ).delete()
+
+    for expense_uuid in source_expense_uuids - target_expense_uuids:
+        db.add(
+            ExpenseCategoryAssociation(expense_uuid=expense_uuid, category_uuid=target.uuid),
+        )
+
+    db.query(ExpenseTemplate).filter(ExpenseTemplate.category_uuid == source.uuid).update(
+        {"category_uuid": target.uuid},
+    )
+
+    db.delete(source)
+    db.commit()
+    db.refresh(target)
+    return target

@@ -12,10 +12,16 @@ from src.repository.category_repository import (
     delete_category,
     get_all_categories,
     get_category_by_uuid,
+    merge_categories,
     update_category,
 )
 from src.repository.database import get_db
-from src.schema.category import CategoryCreate, CategoryResponse, CategoryUpdate
+from src.schema.category import (
+    CategoryCreate,
+    CategoryMergeRequest,
+    CategoryResponse,
+    CategoryUpdate,
+)
 
 category_router = APIRouter(prefix="/categories", tags=["categories"])
 
@@ -69,3 +75,28 @@ def delete_category_endpoint(
 
     delete_category(db, category)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@category_router.post("/{uuid}/merge")
+def post_category_merge(
+    uuid: str,
+    body: CategoryMergeRequest,
+    user: Annotated[User, Depends(get_current_user)],
+    db: Annotated[Session, Depends(get_db)],
+) -> CategoryResponse:
+    if uuid == body.target_uuid:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Source and target must differ",
+        )
+
+    source = get_category_by_uuid(db, uuid, str(user.uuid))
+    if not source:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Source category not found")
+
+    target = get_category_by_uuid(db, body.target_uuid, str(user.uuid))
+    if not target:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Target category not found")
+
+    merged = merge_categories(db, source, target)
+    return CategoryResponse.model_validate(merged)
