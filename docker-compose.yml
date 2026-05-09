@@ -50,9 +50,7 @@ services:
           path: ./frontend/package.json
 
   db:
-    build:
-      context: ./db
-      dockerfile: Dockerfile.db
+    image: postgres:18-bookworm
     container_name: burn-style_db
     command: -p ${POSTGRES_PORT}
     env_file:
