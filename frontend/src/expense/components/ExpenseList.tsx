@@ -2,6 +2,7 @@ import { ArrowDownIcon, ArrowUpIcon } from "@radix-ui/react-icons"
 import { useMemo, useState } from "react"
 import { useNavigate } from "react-router"
 
+import { categoryGlyph } from "../../common/libs/category"
 import type { ExpenseResponse } from "../../common/libs/types"
 
 type SortKey = "date" | "amount"
@@ -79,8 +80,12 @@ export const ExpenseList = ({ expenses }: ExpenseListProps) => {
               {e.categories.length > 0 && (
                 <div className="flex gap-2">
                   {e.categories.map((c) => (
-                    <span key={c.uuid} className="text-xs text-gray-400 dark:text-gray-500">
-                      {c.name}
+                    <span
+                      key={c.uuid}
+                      className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500"
+                    >
+                      <span>{categoryGlyph(c)}</span>
+                      <span>{c.name}</span>
                     </span>
                   ))}
                 </div>

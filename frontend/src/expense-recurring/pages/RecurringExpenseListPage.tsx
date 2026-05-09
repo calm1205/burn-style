@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { Link, useNavigate } from "react-router"
 
 import { api } from "../../common/libs/api"
+import { categoryGlyph } from "../../common/libs/category"
 import { getErrorMessage } from "../../common/libs/client"
 import type {
   IntervalUnit,
@@ -203,6 +204,7 @@ export const RecurringExpenseListPage = () => {
                     <div className="flex flex-1 flex-col">
                       <div className="text-sm font-medium">{r.name}</div>
                       <div className="mt-0.5 flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+                        <span>{categoryGlyph(r.category)}</span>
                         <span>{r.category.name}</span>
                         {next && (
                           <>

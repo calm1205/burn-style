@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react"
 import { useNavigate } from "react-router"
 
 import { api } from "../../common/libs/api"
+import { categoryGlyph } from "../../common/libs/category"
 import { getErrorMessage } from "../../common/libs/client"
 import type { ExpenseTemplateResponse } from "../../common/libs/types"
 
@@ -122,8 +123,9 @@ export const ExpenseTemplateRecordPage = () => {
               <div className="flex items-center gap-3">
                 <div className="flex flex-1 flex-col">
                   <span className="text-sm">{r.template.name}</span>
-                  <span className="text-xs text-gray-400 dark:text-gray-500">
-                    {r.template.category.name}
+                  <span className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500">
+                    <span>{categoryGlyph(r.template.category)}</span>
+                    <span>{r.template.category.name}</span>
                   </span>
                 </div>
                 {r.selected ? (
