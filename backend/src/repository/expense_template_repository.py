@@ -21,6 +21,23 @@ def get_all_active(db: Session, user_uuid: str) -> list[ExpenseTemplate]:
     )
 
 
+def get_all_including_deleted(db: Session, user_uuid: str) -> list[ExpenseTemplate]:
+    """ユーザーの全テンプレート (削除済み含む) を取得 (export用)。"""
+    return (
+        db.query(ExpenseTemplate)
+        .options(joinedload(ExpenseTemplate.category))
+        .filter(ExpenseTemplate.user_uuid == user_uuid)
+        .all()
+    )
+
+
+def delete_all_for_user(db: Session, user_uuid: str) -> None:
+    """ユーザーの全テンプレートを物理削除 (import前リセット用)。"""
+    db.query(ExpenseTemplate).filter(
+        ExpenseTemplate.user_uuid == user_uuid,
+    ).delete(synchronize_session=False)
+
+
 def get_by_uuid(db: Session, uuid: str, user_uuid: str) -> ExpenseTemplate | None:
     """単体取得 (categoryをeager load、未削除のみ)。"""
     return (
