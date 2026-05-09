@@ -59,7 +59,7 @@ export const RecurringExpenseEditPage = () => {
       if (uuid) {
         const r = await api.getRecurringExpense(uuid)
         setName(r.name)
-        setAmount(String(r.amount))
+        setAmount(r.amount.toLocaleString())
         setFrequencyKey(matchFrequency(r.interval_unit, r.interval_count))
         setStartDate(r.start_date)
         setEndDate(r.end_date ?? "")
@@ -90,7 +90,7 @@ export const RecurringExpenseEditPage = () => {
       if (isEdit && uuid) {
         const data: RecurringExpenseUpdate = {
           name,
-          amount: Number(amount),
+          amount: Number(amount.replace(/,/g, "")),
           interval_unit: freq.unit,
           interval_count: freq.count,
           start_date: startDate,
@@ -101,7 +101,7 @@ export const RecurringExpenseEditPage = () => {
       } else {
         const data: RecurringExpenseCreate = {
           name,
-          amount: Number(amount),
+          amount: Number(amount.replace(/,/g, "")),
           interval_unit: freq.unit,
           interval_count: freq.count,
           start_date: startDate,
@@ -156,11 +156,13 @@ export const RecurringExpenseEditPage = () => {
           <span className="text-2xl text-gray-400">¥</span>
           <input
             id="recurring-amount"
-            type="number"
+            type="text"
             inputMode="numeric"
-            min={1}
             value={amount}
-            onChange={(e) => setAmount(e.target.value)}
+            onChange={(e) => {
+              const raw = e.target.value.replace(/[^0-9]/g, "")
+              setAmount(raw ? Number(raw).toLocaleString() : "")
+            }}
             required
             placeholder="0"
             className="flex-1 border-x-0 border-t-0 border-b border-gray-200 bg-transparent py-2 text-2xl outline-none focus:border-primary dark:border-gray-700 dark:text-gray-100"
