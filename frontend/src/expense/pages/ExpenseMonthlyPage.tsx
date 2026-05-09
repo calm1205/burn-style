@@ -171,7 +171,7 @@ export const ExpenseMonthlyPage = () => {
         ))}
       </div>
 
-      {tab === "list" && categories.length > 1 && (
+      {tab !== "list" && categories.length > 1 && (
         <div className="flex shrink-0 gap-2 overflow-x-auto pt-2 pb-1">
           {categories.map((cat) => (
             <button
@@ -195,7 +195,7 @@ export const ExpenseMonthlyPage = () => {
           <ExpenseEmptyState period={`${year}/${month}`} />
         ) : (
           <>
-            {tab === "list" && <ExpenseList expenses={filteredExpenses} />}
+            {tab === "list" && <ExpenseList expenses={expenses} />}
 
             {tab === "pie" && (
               <div className="min-h-0 flex-1 overflow-y-auto pt-4">

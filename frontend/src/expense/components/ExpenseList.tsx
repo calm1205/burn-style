@@ -1,8 +1,17 @@
-import { useMemo } from "react"
+import { MixerHorizontalIcon } from "@radix-ui/react-icons"
+import { useMemo, useState } from "react"
 import { useNavigate } from "react-router"
 
 import { categoryGlyph } from "../../common/libs/category"
-import type { ExpenseResponse } from "../../common/libs/types"
+import type { CategoryResponse, ExpenseResponse } from "../../common/libs/types"
+import {
+  applyFilter,
+  defaultFilter,
+  type ExpenseFilter,
+  ExpenseFilterChips,
+  ExpenseFilterSheet,
+  filterCount,
+} from "./ExpenseFilterSheet"
 
 const pad = (n: number) => String(n).padStart(2, "0")
 
@@ -33,9 +42,23 @@ interface DayGroup {
 
 export const ExpenseList = ({ expenses }: ExpenseListProps) => {
   const navigate = useNavigate()
+  const [filter, setFilter] = useState<ExpenseFilter>(defaultFilter)
+  const [sheetOpen, setSheetOpen] = useState(false)
+
+  const usedCategories = useMemo<CategoryResponse[]>(() => {
+    const map = new Map<string, CategoryResponse>()
+    for (const e of expenses) {
+      for (const c of e.categories) {
+        if (!map.has(c.uuid)) map.set(c.uuid, c)
+      }
+    }
+    return [...map.values()].toSorted((a, b) => a.position - b.position)
+  }, [expenses])
+
+  const filtered = useMemo(() => applyFilter(expenses, filter), [expenses, filter])
 
   const groups = useMemo<DayGroup[]>(() => {
-    const sorted = [...expenses].toSorted(
+    const sorted = [...filtered].toSorted(
       (a, b) => new Date(b.expensed_at).getTime() - new Date(a.expensed_at).getTime(),
     )
     const map = new Map<string, ExpenseResponse[]>()
@@ -53,52 +76,88 @@ export const ExpenseList = ({ expenses }: ExpenseListProps) => {
       label: dateLabel(key),
       items,
     }))
-  }, [expenses])
+  }, [filtered])
 
-  if (expenses.length === 0) {
-    return (
-      <p className="py-8 text-center text-sm text-gray-400 dark:text-gray-500">
-        No expenses this month
-      </p>
-    )
-  }
+  const fcount = filterCount(filter)
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto pt-2">
-      {groups.map((g) => (
-        <section key={g.key}>
-          <h2 className="mb-1.5 px-1 text-[11px] font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
-            {g.label}
-          </h2>
-          <ul className="divide-y divide-gray-100 overflow-hidden rounded-2xl border border-gray-100 bg-white dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800">
-            {g.items.map((e) => {
-              const c = e.categories[0]
-              return (
-                <li key={e.uuid}>
-                  <button
-                    type="button"
-                    onClick={() => navigate(`/expense/${e.uuid}`)}
-                    className="flex w-full items-center gap-3 px-3.5 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-700/50"
-                  >
-                    <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-gray-100 text-base dark:bg-gray-700">
-                      {c ? categoryGlyph(c) : "·"}
-                    </span>
-                    <div className="flex min-w-0 flex-1 flex-col">
-                      <span className="truncate text-sm font-medium">{e.name}</span>
-                      <span className="truncate text-[11px] text-gray-400 dark:text-gray-500">
-                        {c ? c.name : "Uncategorized"} · {timeLabel(e.expensed_at)}
-                      </span>
-                    </div>
-                    <span className="shrink-0 text-sm font-semibold tabular-nums">
-                      ¥{e.amount.toLocaleString()}
-                    </span>
-                  </button>
-                </li>
-              )
-            })}
-          </ul>
-        </section>
-      ))}
-    </div>
+    <>
+      <div className="flex shrink-0 items-center justify-between pt-2">
+        <ExpenseFilterChips
+          filter={filter}
+          categories={usedCategories}
+          onOpen={() => setSheetOpen(true)}
+          onClear={() => setFilter(defaultFilter())}
+        />
+        <button
+          type="button"
+          onClick={() => setSheetOpen(true)}
+          aria-label="Filter"
+          className={`relative flex size-8 shrink-0 items-center justify-center rounded-full border ${
+            fcount > 0
+              ? "border-primary bg-primary text-white"
+              : "border-gray-200 bg-white text-gray-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
+          }`}
+        >
+          <MixerHorizontalIcon className="size-4" />
+          {fcount > 0 && (
+            <span className="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white ring-2 ring-gray-50 dark:ring-gray-900">
+              {fcount}
+            </span>
+          )}
+        </button>
+      </div>
+
+      {filtered.length === 0 ? (
+        <p className="py-8 text-center text-sm text-gray-400 dark:text-gray-500">
+          {expenses.length === 0 ? "No expenses this month" : "No matches for this filter"}
+        </p>
+      ) : (
+        <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto pt-2">
+          {groups.map((g) => (
+            <section key={g.key}>
+              <h2 className="mb-1.5 px-1 text-[11px] font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
+                {g.label}
+              </h2>
+              <ul className="divide-y divide-gray-100 overflow-hidden rounded-2xl border border-gray-100 bg-white dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800">
+                {g.items.map((e) => {
+                  const c = e.categories[0]
+                  return (
+                    <li key={e.uuid}>
+                      <button
+                        type="button"
+                        onClick={() => navigate(`/expense/${e.uuid}`)}
+                        className="flex w-full items-center gap-3 px-3.5 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                      >
+                        <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-gray-100 text-base dark:bg-gray-700">
+                          {c ? categoryGlyph(c) : "·"}
+                        </span>
+                        <div className="flex min-w-0 flex-1 flex-col">
+                          <span className="truncate text-sm font-medium">{e.name}</span>
+                          <span className="truncate text-[11px] text-gray-400 dark:text-gray-500">
+                            {c ? c.name : "Uncategorized"} · {timeLabel(e.expensed_at)}
+                          </span>
+                        </div>
+                        <span className="shrink-0 text-sm font-semibold tabular-nums">
+                          ¥{e.amount.toLocaleString()}
+                        </span>
+                      </button>
+                    </li>
+                  )
+                })}
+              </ul>
+            </section>
+          ))}
+        </div>
+      )}
+
+      <ExpenseFilterSheet
+        open={sheetOpen}
+        onClose={() => setSheetOpen(false)}
+        filter={filter}
+        onApply={setFilter}
+        categories={usedCategories}
+      />
+    </>
   )
 }
