@@ -87,3 +87,16 @@ def soft_delete(db: Session, recurring: RecurringExpense) -> None:
     """定期支払を論理削除。"""
     recurring.deleted_at = datetime.now(UTC)  # type: ignore[assignment]
     db.commit()
+
+
+def get_all_including_deleted(db: Session, user_uuid: str) -> list[RecurringExpense]:
+    """export用: soft-delete含む全件を取得。"""
+    return db.query(RecurringExpense).filter(RecurringExpense.user_uuid == user_uuid).all()
+
+
+def delete_all_for_user(db: Session, user_uuid: str) -> None:
+    """import用: ユーザーの定期支払を物理削除。"""
+    db.query(RecurringExpense).filter(RecurringExpense.user_uuid == user_uuid).delete(
+        synchronize_session=False,
+    )
+    db.flush()
