@@ -1,4 +1,5 @@
 import type { VibeNecessity, VibePlanning, VibeSocial } from "../../common/libs/types"
+import { VibeChip } from "./VibeChip"
 
 interface VibePickerProps {
   social: VibeSocial | null
@@ -9,28 +10,8 @@ interface VibePickerProps {
   onNecessityChange: (v: VibeNecessity | null) => void
 }
 
-interface ChipProps {
-  active: boolean
-  label: string
-  onClick: () => void
-}
-
-const Chip = ({ active, label, onClick }: ChipProps) => (
-  <button
-    type="button"
-    onClick={onClick}
-    className={`rounded-xl border px-3 py-2 text-center text-xs font-semibold transition-colors ${
-      active
-        ? "border-primary bg-primary text-white"
-        : "border-gray-200 bg-white text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
-    }`}
-  >
-    {label}
-  </button>
-)
-
-const Separator = () => (
-  <div className="self-center h-px w-full bg-gray-200 opacity-60 dark:bg-gray-700" />
+const separator = (
+  <div className="h-px w-full self-center bg-gray-200 opacity-60 dark:bg-gray-700" />
 )
 
 export const VibePicker = ({
@@ -51,37 +32,37 @@ export const VibePicker = ({
       </span>
     </div>
     <div className="grid grid-cols-[1fr_12px_1fr] gap-y-1.5">
-      <Chip
+      <VibeChip
         active={social === "SOLO"}
         label="Solo"
         onClick={() => onSocialChange(social === "SOLO" ? null : "SOLO")}
       />
-      <Separator />
-      <Chip
+      {separator}
+      <VibeChip
         active={social === "WITH_SOMEONE"}
         label="With someone"
         onClick={() => onSocialChange(social === "WITH_SOMEONE" ? null : "WITH_SOMEONE")}
       />
 
-      <Chip
+      <VibeChip
         active={planning === "ROUTINE"}
         label="Routine"
         onClick={() => onPlanningChange(planning === "ROUTINE" ? null : "ROUTINE")}
       />
-      <Separator />
-      <Chip
+      {separator}
+      <VibeChip
         active={planning === "SPONTANEOUS"}
         label="Spontaneous"
         onClick={() => onPlanningChange(planning === "SPONTANEOUS" ? null : "SPONTANEOUS")}
       />
 
-      <Chip
+      <VibeChip
         active={necessity === "NEEDED"}
         label="Needed it"
         onClick={() => onNecessityChange(necessity === "NEEDED" ? null : "NEEDED")}
       />
-      <Separator />
-      <Chip
+      {separator}
+      <VibeChip
         active={necessity === "WANTED"}
         label="Wanted it"
         onClick={() => onNecessityChange(necessity === "WANTED" ? null : "WANTED")}
