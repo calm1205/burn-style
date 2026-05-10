@@ -1,5 +1,4 @@
 import {
-  BookmarkIcon,
   CheckIcon,
   ChevronRightIcon,
   CounterClockwiseClockIcon,
@@ -8,6 +7,7 @@ import {
   FileTextIcon,
   Pencil1Icon,
   ResetIcon,
+  RowsIcon,
   TrashIcon,
   UploadIcon,
 } from "@radix-ui/react-icons"
@@ -27,19 +27,29 @@ interface OutletContext {
   refreshUser: () => Promise<void>
 }
 
+interface RowAction {
+  label: string
+  Icon: typeof RowsIcon
+  onClick: () => void
+  accent?: boolean
+  disabled?: boolean
+}
+
 export const SettingsPage = () => {
   const navigate = useNavigate()
   const { user, onLogout, refreshUser } = useOutletContext<OutletContext>()
   const [error, setError] = useState("")
+  const [success, setSuccess] = useState("")
   const [editing, setEditing] = useState(false)
   const [name, setName] = useState("")
   const [theme, setTheme] = useState<ThemeMode>(getStoredTheme)
-  const [success, setSuccess] = useState("")
   const [loading, setLoading] = useState(false)
   const { dialogRef, open: openDialog } = useConfirmDialog()
   const { dialogRef: importDialogRef, open: openImportDialog } = useConfirmDialog()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const importDataRef = useRef<unknown>(null)
+
+  const initial = (user?.name ?? "?").charAt(0).toUpperCase()
 
   const changeTheme = (mode: ThemeMode) => {
     setTheme(mode)
@@ -83,9 +93,7 @@ export const SettingsPage = () => {
   const handleExport = async () => {
     try {
       const data = await api.exportMe()
-      const blob = new Blob([JSON.stringify(data, null, 2)], {
-        type: "application/json",
-      })
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" })
       const a = document.createElement("a")
       a.href = URL.createObjectURL(blob)
       a.download = `${user?.name ?? "export"}_expense.json`
@@ -129,121 +137,130 @@ export const SettingsPage = () => {
     }
   }
 
+  const navRows: RowAction[] = [
+    {
+      label: "Categories",
+      Icon: RowsIcon,
+      onClick: () => navigate("/category"),
+      accent: true,
+    },
+    {
+      label: "Templates",
+      Icon: FileTextIcon,
+      onClick: () => navigate("/expense/template"),
+      accent: true,
+    },
+    {
+      label: "Recurring",
+      Icon: CounterClockwiseClockIcon,
+      onClick: () => navigate("/expense/recurring"),
+      accent: true,
+    },
+  ]
+
+  const dataRows: RowAction[] = [
+    {
+      label: "Import data",
+      Icon: DownloadIcon,
+      onClick: () => fileInputRef.current?.click(),
+      accent: true,
+      disabled: loading,
+    },
+    {
+      label: "Export your data",
+      Icon: UploadIcon,
+      onClick: handleExport,
+      accent: true,
+    },
+  ]
+
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-6 px-6">
-      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
-      {success && <p className="text-sm text-green-600 dark:text-green-400">{success}</p>}
+    <div className="mx-auto flex max-w-2xl flex-col gap-5 px-4 pb-6">
+      {error && <p className="px-2 text-sm text-red-600 dark:text-red-400">{error}</p>}
+      {success && <p className="px-2 text-sm text-green-600 dark:text-green-400">{success}</p>}
 
-      {/* Profile */}
-      <div className="rounded-2xl bg-white p-5 shadow-sm dark:bg-gray-800">
-        <p className="mb-1 text-xs text-gray-500 dark:text-gray-400">Username</p>
-        {editing ? (
-          <div className="flex items-center gap-2">
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              maxLength={50}
-              className="flex-1 border-b border-gray-300 px-1 py-1 text-base outline-none focus:border-primary dark:border-gray-600 dark:bg-transparent dark:text-gray-100"
-            />
+      <div className="flex items-center gap-3.5 px-2 pt-2">
+        <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-gray-100 text-xl font-bold dark:bg-gray-700">
+          {initial}
+        </div>
+        <div className="min-w-0 flex-1">
+          {editing ? (
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                maxLength={50}
+                className="min-w-0 flex-1 border-b border-gray-300 px-1 py-0.5 text-lg font-bold tracking-tight outline-none focus:border-primary dark:border-gray-600 dark:bg-transparent dark:text-gray-100"
+              />
+              <button
+                type="button"
+                onClick={handleUpdate}
+                disabled={loading}
+                className="text-primary hover:text-primary-hover disabled:opacity-50"
+              >
+                <CheckIcon className="size-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setEditing(false)}
+                disabled={loading}
+                className="text-gray-400 hover:text-gray-600 disabled:opacity-50 dark:text-gray-500 dark:hover:text-gray-300"
+              >
+                <ResetIcon className="size-4" />
+              </button>
+            </div>
+          ) : (
             <button
               type="button"
-              onClick={handleUpdate}
-              disabled={loading}
-              className="text-primary hover:text-primary-hover disabled:opacity-50"
+              onClick={startEdit}
+              className="flex w-full items-center gap-2 text-left"
             >
-              <CheckIcon className="size-4" />
+              <span className="truncate text-xl font-bold tracking-tight">
+                {user?.name ?? "---"}
+              </span>
+              <Pencil1Icon className="size-3.5 shrink-0 text-gray-400 dark:text-gray-500" />
             </button>
-            <button
-              type="button"
-              onClick={() => setEditing(false)}
-              disabled={loading}
-              className="text-gray-400 hover:text-gray-600 disabled:opacity-50 dark:text-gray-500 dark:hover:text-gray-300"
-            >
-              <ResetIcon className="size-4" />
-            </button>
-          </div>
-        ) : (
-          <button
-            type="button"
-            onClick={startEdit}
-            className="flex w-full items-center justify-between"
-          >
-            <span className="text-base font-bold">{user?.name ?? "---"}</span>
-            <Pencil1Icon className="size-3.5 text-gray-400 dark:text-gray-500" />
-          </button>
-        )}
-      </div>
-
-      {/* Theme */}
-      <div className="rounded-2xl bg-white p-5 shadow-sm dark:bg-gray-800">
-        <p className="mb-3 text-xs text-gray-500 dark:text-gray-400">Theme</p>
-        <div className="flex gap-2">
-          {(["system", "light", "dark"] as const).map((mode) => (
-            <button
-              key={mode}
-              type="button"
-              onClick={() => changeTheme(mode)}
-              className={`flex-1 rounded-xl py-2 text-sm transition-colors ${
-                theme === mode
-                  ? "bg-primary text-white"
-                  : "bg-gray-50 text-gray-500 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600"
-              }`}
-            >
-              {mode === "system" ? "System" : mode === "light" ? "Light" : "Dark"}
-            </button>
-          ))}
+          )}
         </div>
       </div>
 
-      {/* Actions */}
-      <div className="divide-y divide-gray-100 overflow-hidden rounded-2xl bg-white shadow-sm dark:divide-gray-700 dark:bg-gray-800">
-        <button
-          type="button"
-          onClick={() => navigate("/category")}
-          className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
-        >
-          <BookmarkIcon className="size-4 text-gray-400 dark:text-gray-500" />
-          <span className="flex-1">Category</span>
-          <ChevronRightIcon className="size-4 text-gray-300 dark:text-gray-600" />
-        </button>
-        <button
-          type="button"
-          onClick={() => navigate("/expense/template")}
-          className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
-        >
-          <FileTextIcon className="size-4 text-gray-400 dark:text-gray-500" />
-          <span className="flex-1">Template</span>
-          <ChevronRightIcon className="size-4 text-gray-300 dark:text-gray-600" />
-        </button>
-        <button
-          type="button"
-          onClick={() => navigate("/expense/recurring")}
-          className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
-        >
-          <CounterClockwiseClockIcon className="size-4 text-gray-400 dark:text-gray-500" />
-          <span className="flex-1">Recurring</span>
-          <ChevronRightIcon className="size-4 text-gray-300 dark:text-gray-600" />
-        </button>
-        <button
-          type="button"
-          onClick={handleExport}
-          className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
-        >
-          <DownloadIcon className="size-4 text-gray-400 dark:text-gray-500" />
-          <span className="flex-1">Export Data</span>
-          <ChevronRightIcon className="size-4 text-gray-300 dark:text-gray-600" />
-        </button>
-        <button
-          type="button"
-          onClick={() => fileInputRef.current?.click()}
-          disabled={loading}
-          className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 dark:text-gray-300 dark:hover:bg-gray-700"
-        >
-          <UploadIcon className="size-4 text-gray-400 dark:text-gray-500" />
-          <span className="flex-1">Import Data</span>
-          <ChevronRightIcon className="size-4 text-gray-300 dark:text-gray-600" />
-        </button>
+      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+        {navRows.map((row, i) => (
+          <SettingsRow key={row.label} row={row} divided={i > 0} />
+        ))}
+      </div>
+
+      <div>
+        <SectionLabel>Preferences</SectionLabel>
+        <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
+          <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">Theme</p>
+          <div className="flex gap-2">
+            {(["system", "light", "dark"] as const).map((mode) => (
+              <button
+                key={mode}
+                type="button"
+                onClick={() => changeTheme(mode)}
+                className={`flex-1 rounded-xl py-2 text-sm transition-colors ${
+                  theme === mode
+                    ? "bg-primary text-white"
+                    : "bg-gray-50 text-gray-500 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600"
+                }`}
+              >
+                {mode === "system" ? "System" : mode === "light" ? "Light" : "Dark"}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <SectionLabel>Your data</SectionLabel>
+        <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+          {dataRows.map((row, i) => (
+            <SettingsRow key={row.label} row={row} divided={i > 0} />
+          ))}
+        </div>
         <input
           ref={fileInputRef}
           type="file"
@@ -251,28 +268,45 @@ export const SettingsPage = () => {
           onChange={handleFileSelect}
           className="hidden"
         />
-        <button
-          type="button"
-          onClick={onLogout}
-          className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
-        >
-          <ExitIcon className="size-4 text-gray-400 dark:text-gray-500" />
-          <span className="flex-1">Logout</span>
-          <ChevronRightIcon className="size-4 text-gray-300 dark:text-gray-600" />
-        </button>
       </div>
 
-      {/* Danger Zone */}
-      <div className="overflow-hidden rounded-2xl bg-white shadow-sm dark:bg-gray-800">
-        <button
-          type="button"
-          onClick={openDialog}
-          disabled={loading}
-          className="flex w-full items-center gap-3 px-5 py-4 text-left text-sm text-red-600 hover:bg-red-50 disabled:opacity-50 dark:text-red-400 dark:hover:bg-red-950"
-        >
-          <TrashIcon className="size-4" />
-          <span className="flex-1">Delete Account</span>
-        </button>
+      <div>
+        <SectionLabel>Account</SectionLabel>
+        <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+          <button
+            type="button"
+            onClick={onLogout}
+            className="flex w-full items-center gap-3 px-4 py-3.5 text-left hover:bg-gray-50 dark:hover:bg-gray-700/40"
+          >
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400">
+              <ExitIcon className="size-4" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="text-sm font-semibold">Log out</div>
+              {user?.name && (
+                <div className="truncate text-[11px] text-gray-500 dark:text-gray-400">
+                  {user.name}
+                </div>
+              )}
+            </div>
+          </button>
+          <button
+            type="button"
+            onClick={openDialog}
+            disabled={loading}
+            className="flex w-full items-center gap-3 border-t border-gray-100 px-4 py-3.5 text-left text-red-600 hover:bg-red-50 disabled:opacity-50 dark:border-gray-700 dark:text-red-400 dark:hover:bg-red-950/30"
+          >
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-red-50 text-red-600 dark:bg-red-950/40 dark:text-red-400">
+              <TrashIcon className="size-4" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="text-sm font-semibold">Delete account</div>
+              <div className="truncate text-[11px] text-red-400/80 dark:text-red-300/60">
+                Permanently erase all expenses
+              </div>
+            </div>
+          </button>
+        </div>
       </div>
 
       <ConfirmDialog
@@ -289,5 +323,42 @@ export const SettingsPage = () => {
         dialogRef={importDialogRef}
       />
     </div>
+  )
+}
+
+const SectionLabel = ({ children }: { children: React.ReactNode }) => (
+  <div className="px-2 pb-2 text-[10px] font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
+    {children}
+  </div>
+)
+
+interface SettingsRowProps {
+  row: RowAction
+  divided: boolean
+}
+
+const SettingsRow = ({ row, divided }: SettingsRowProps) => {
+  const { Icon } = row
+  return (
+    <button
+      type="button"
+      onClick={row.onClick}
+      disabled={row.disabled}
+      className={`flex w-full items-center gap-3 px-4 py-3.5 text-left hover:bg-gray-50 disabled:opacity-50 dark:hover:bg-gray-700/40 ${
+        divided ? "border-t border-gray-100 dark:border-gray-700" : ""
+      }`}
+    >
+      <span
+        className={`flex size-8 shrink-0 items-center justify-center rounded-lg ${
+          row.accent
+            ? "bg-primary/10 text-primary"
+            : "bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400"
+        }`}
+      >
+        <Icon className="size-4" />
+      </span>
+      <span className="flex-1 truncate text-sm font-semibold">{row.label}</span>
+      <ChevronRightIcon className="size-4 shrink-0 text-gray-300 dark:text-gray-600" />
+    </button>
   )
 }
