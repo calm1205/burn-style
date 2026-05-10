@@ -52,6 +52,9 @@ def post_expense(
     expense = create_expense(
         db, str(user.uuid), body.name, body.amount, body.expensed_at,
         category_uuids=[body.category_uuid] if body.category_uuid else None,
+        vibe_social=body.vibe_social,
+        vibe_planning=body.vibe_planning,
+        vibe_necessity=body.vibe_necessity,
     )
     return ExpenseResponse.model_validate(expense)
 

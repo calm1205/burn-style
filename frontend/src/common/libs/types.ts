@@ -40,6 +40,10 @@ export interface CategoryReorderRequest {
   uuids: string[]
 }
 
+export type VibeSocial = "SOLO" | "WITH_SOMEONE"
+export type VibePlanning = "ROUTINE" | "SPONTANEOUS"
+export type VibeNecessity = "NEEDED" | "WANTED"
+
 export interface ExpenseResponse {
   uuid: string
   name: string
@@ -49,6 +53,9 @@ export interface ExpenseResponse {
   updated_at: string
   deleted_at: string | null
   categories: CategoryResponse[]
+  vibe_social: VibeSocial | null
+  vibe_planning: VibePlanning | null
+  vibe_necessity: VibeNecessity | null
 }
 
 export interface ExpenseCreate {
@@ -56,6 +63,9 @@ export interface ExpenseCreate {
   amount: number
   expensed_at: string
   category_uuid?: string | null
+  vibe_social?: VibeSocial | null
+  vibe_planning?: VibePlanning | null
+  vibe_necessity?: VibeNecessity | null
 }
 
 export interface ExpenseUpdate {
@@ -63,6 +73,9 @@ export interface ExpenseUpdate {
   amount?: number
   expensed_at?: string
   category_uuid?: string | null
+  vibe_social?: VibeSocial | null
+  vibe_planning?: VibePlanning | null
+  vibe_necessity?: VibeNecessity | null
 }
 
 export interface UserResponse {

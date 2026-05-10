@@ -57,6 +57,27 @@ class TestPostExpense:
         assert data["amount"] == 800
         assert data["expensed_at"] is not None
         assert "uuid" in data
+        assert data["vibe_social"] is None
+        assert data["vibe_planning"] is None
+        assert data["vibe_necessity"] is None
+
+    def test_creates_expense_with_vibes(self, auth_client: TestClient) -> None:
+        res = auth_client.post("/expenses", json={
+            "name": "コーヒー", "amount": 500, "expensed_at": SAMPLE_EXPENSED_AT,
+            "vibe_social": "SOLO", "vibe_planning": "ROUTINE", "vibe_necessity": "WANTED",
+        })
+        assert res.status_code == 201
+        data = res.json()
+        assert data["vibe_social"] == "SOLO"
+        assert data["vibe_planning"] == "ROUTINE"
+        assert data["vibe_necessity"] == "WANTED"
+
+    def test_rejects_invalid_vibe(self, auth_client: TestClient) -> None:
+        res = auth_client.post("/expenses", json={
+            "name": "x", "amount": 100, "expensed_at": SAMPLE_EXPENSED_AT,
+            "vibe_social": "INVALID",
+        })
+        assert res.status_code == 422
 
     def test_creates_expense_with_categories(
         self, auth_client: TestClient, test_user: User, db: Session,
@@ -107,6 +128,18 @@ class TestPatchExpense:
         res = auth_client.patch(f"/expenses/{expense.uuid}", json={"category_uuid": cat.uuid})
         assert res.status_code == 200
         assert len(res.json()["categories"]) == 1
+
+    def test_updates_vibes(self, auth_client: TestClient, test_user: User, db: Session) -> None:
+        expense = _create_expense(db, str(test_user.uuid))
+
+        res = auth_client.patch(f"/expenses/{expense.uuid}", json={
+            "vibe_social": "WITH_SOMEONE", "vibe_necessity": "NEEDED",
+        })
+        assert res.status_code == 200
+        data = res.json()
+        assert data["vibe_social"] == "WITH_SOMEONE"
+        assert data["vibe_necessity"] == "NEEDED"
+        assert data["vibe_planning"] is None
 
     def test_returns_404_for_nonexistent(self, auth_client: TestClient) -> None:
         res = auth_client.patch("/expenses/nonexistent", json={"name": "test"})

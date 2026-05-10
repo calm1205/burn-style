@@ -6,7 +6,14 @@ import { ConfirmDialog, useConfirmDialog } from "../../common/components/Confirm
 import { api } from "../../common/libs/api"
 import { categoryGlyph } from "../../common/libs/category"
 import { getErrorMessage } from "../../common/libs/client"
-import type { CategoryResponse, ExpenseResponse } from "../../common/libs/types"
+import type {
+  CategoryResponse,
+  ExpenseResponse,
+  VibeNecessity,
+  VibePlanning,
+  VibeSocial,
+} from "../../common/libs/types"
+import { VibePicker } from "../components/VibePicker"
 
 const pad = (n: number) => String(n).padStart(2, "0")
 
@@ -29,6 +36,9 @@ export const ExpenseDetailPage = () => {
     amount: "",
     expensedAt: "",
     categoryUuid: null as string | null,
+    vibeSocial: null as VibeSocial | null,
+    vibePlanning: null as VibePlanning | null,
+    vibeNecessity: null as VibeNecessity | null,
   })
 
   const fetchData = useCallback(async () => {
@@ -42,6 +52,9 @@ export const ExpenseDetailPage = () => {
         amount: exp.amount.toLocaleString(),
         expensedAt: toLocalDatetime(exp.expensed_at),
         categoryUuid: exp.categories[0]?.uuid ?? null,
+        vibeSocial: exp.vibe_social,
+        vibePlanning: exp.vibe_planning,
+        vibeNecessity: exp.vibe_necessity,
       })
     } catch (err) {
       setError(getErrorMessage(err, "Failed to load"))
@@ -70,6 +83,9 @@ export const ExpenseDetailPage = () => {
         amount: Number(form.amount.replace(/,/g, "")),
         expensed_at: new Date(form.expensedAt).toISOString(),
         category_uuid: form.categoryUuid,
+        vibe_social: form.vibeSocial,
+        vibe_planning: form.vibePlanning,
+        vibe_necessity: form.vibeNecessity,
       })
       navigate(-1)
     } catch (err) {
@@ -183,6 +199,14 @@ export const ExpenseDetailPage = () => {
             </div>
           </div>
         )}
+        <VibePicker
+          social={form.vibeSocial}
+          planning={form.vibePlanning}
+          necessity={form.vibeNecessity}
+          onSocialChange={(v) => setForm((prev) => ({ ...prev, vibeSocial: v }))}
+          onPlanningChange={(v) => setForm((prev) => ({ ...prev, vibePlanning: v }))}
+          onNecessityChange={(v) => setForm((prev) => ({ ...prev, vibeNecessity: v }))}
+        />
       </form>
 
       <button
