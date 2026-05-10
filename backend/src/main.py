@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import os
+
 from fastapi import FastAPI, Request, Response
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 
 from src.api import (
@@ -12,6 +15,7 @@ from src.api import (
     recurring_expense_router,
     user_router,
 )
+from src.config import get_frontend_origin
 from src.logger import configure_logging
 from src.middleware import RequestLoggingMiddleware, TokenRefreshMiddleware
 
@@ -30,16 +34,28 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
 app = FastAPI(title="BurnStyle API", version="1.0.0")
 
-# CORS は vercel.json の headers で edge 層が一括付与する。
-# OPTIONS preflight だけは 2xx で応答する必要があるので、catch-all を定義。
 app.add_middleware(TokenRefreshMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
+
+# Vercel デプロイ時は vercel.json の headers が CORS を担う。
+# ローカル (uvicorn / docker compose) のみ FastAPI 側で CORS を付与する。
+if not os.getenv("VERCEL_ENV"):
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[get_frontend_origin()],
+        allow_credentials=True,
+        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allow_headers=["Content-Type", "Authorization"],
+        expose_headers=["X-New-Token", "X-Request-ID"],
+        max_age=0,
+    )
+
 app.add_middleware(RequestLoggingMiddleware)
 
 
 @app.options("/{path:path}")
 async def options_preflight(path: str) -> Response:
-    """CORS preflight 用の catch-all。レスポンス 204 + Vercel が CORS ヘッダを付与。"""
+    """CORS preflight 用の catch-all。Vercel では vercel.json が CORS ヘッダを付与する。"""
     del path
     return Response(status_code=204)
 
