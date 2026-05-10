@@ -1,4 +1,3 @@
-import { Cross2Icon } from "@radix-ui/react-icons"
 import { type SubmitEvent, useCallback, useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router"
 
@@ -72,19 +71,10 @@ export const ExpensesPage = () => {
       onSubmit={handleSubmit}
       className="mx-auto flex h-full max-w-2xl flex-col overflow-hidden"
     >
-      <div className="flex shrink-0 items-center justify-between px-4 pt-2 pb-1">
-        <button
-          type="button"
-          onClick={() => navigate(-1)}
-          aria-label="Cancel"
-          className="p-1.5 text-gray-500 dark:text-gray-400"
-        >
-          <Cross2Icon className="size-5" />
-        </button>
+      <div className="flex shrink-0 justify-center px-4 pt-8 pb-2">
         <span className="text-[11px] font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500">
           New expense
         </span>
-        <div className="size-9" />
       </div>
 
       {error && (
