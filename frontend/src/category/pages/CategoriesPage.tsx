@@ -1,4 +1,22 @@
-import { Cross2Icon, PlusIcon } from "@radix-ui/react-icons"
+import {
+  closestCenter,
+  DndContext,
+  type DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core"
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
+import { DragHandleDots2Icon, PlusIcon, TrashIcon } from "@radix-ui/react-icons"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router"
 
@@ -6,6 +24,82 @@ import { api } from "../../common/libs/api"
 import { categoryGlyph } from "../../common/libs/category"
 import { getErrorMessage } from "../../common/libs/client"
 import type { CategoryResponse, ExpenseResponse } from "../../common/libs/types"
+
+interface SortableRowProps {
+  category: CategoryResponse
+  used: number
+  onEdit: () => void
+  onMerge: () => void
+  onDelete: () => void
+  mergeDisabled: boolean
+}
+
+const SortableRow = ({
+  category: c,
+  used,
+  onEdit,
+  onMerge,
+  onDelete,
+  mergeDisabled,
+}: SortableRowProps) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: c.uuid,
+  })
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  }
+  return (
+    <li
+      ref={setNodeRef}
+      style={style}
+      className="flex items-center gap-3 bg-white px-3.5 py-3 dark:bg-gray-800"
+    >
+      <button
+        type="button"
+        {...attributes}
+        {...listeners}
+        aria-label="Reorder"
+        className="cursor-grab touch-none p-1 text-gray-400 dark:text-gray-500"
+      >
+        <DragHandleDots2Icon className="size-4" />
+      </button>
+      <button
+        type="button"
+        onClick={onEdit}
+        className="flex min-w-0 flex-1 items-center gap-3 text-left"
+      >
+        <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-gray-100 text-base font-bold dark:bg-gray-700">
+          {categoryGlyph(c)}
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-sm font-semibold">{c.name}</div>
+          <div className="text-[11px] text-gray-500 dark:text-gray-400">
+            {used} {used === 1 ? "expense" : "expenses"}
+          </div>
+        </div>
+      </button>
+      <button
+        type="button"
+        onClick={onMerge}
+        disabled={mergeDisabled}
+        aria-label="Merge into another"
+        className="p-1 text-base text-gray-400 disabled:text-gray-200 dark:text-gray-500 dark:disabled:text-gray-700"
+      >
+        ⇄
+      </button>
+      <button
+        type="button"
+        onClick={onDelete}
+        aria-label="Delete"
+        className="p-1 text-red-400 hover:text-red-600"
+      >
+        <TrashIcon className="size-4" />
+      </button>
+    </li>
+  )
+}
 
 export const CategoriesPage = () => {
   const navigate = useNavigate()
@@ -15,6 +109,12 @@ export const CategoriesPage = () => {
   const [loading, setLoading] = useState(false)
   const [confirmDel, setConfirmDel] = useState<string | null>(null)
   const [mergingFrom, setMergingFrom] = useState<string | null>(null)
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  )
 
   const fetchData = useCallback(async () => {
     try {
@@ -40,12 +140,13 @@ export const CategoriesPage = () => {
     return map
   }, [expenses])
 
-  const move = async (index: number, dir: -1 | 1) => {
-    const next = index + dir
-    if (next < 0 || next >= categories.length) return
-    const reordered = [...categories]
-    const [moved] = reordered.splice(index, 1)
-    reordered.splice(next, 0, moved)
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+    const oldIndex = categories.findIndex((c) => c.uuid === active.id)
+    const newIndex = categories.findIndex((c) => c.uuid === over.id)
+    if (oldIndex === -1 || newIndex === -1) return
+    const reordered = arrayMove(categories, oldIndex, newIndex)
     setCategories(reordered)
     setError("")
     try {
@@ -108,7 +209,7 @@ export const CategoriesPage = () => {
         </button>
       </div>
       <p className="shrink-0 px-5 pb-3 text-xs text-gray-500 dark:text-gray-400">
-        {categories.length} categories · tap to edit
+        {categories.length} categories · drag to reorder, tap to edit
       </p>
 
       {error && (
@@ -121,67 +222,30 @@ export const CategoriesPage = () => {
             No categories yet
           </p>
         ) : (
-          <ul className="divide-y divide-gray-100 overflow-hidden rounded-2xl border border-gray-100 bg-white dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800">
-            {categories.map((c, i) => {
-              const used = usage[c.uuid] ?? 0
-              return (
-                <li key={c.uuid} className="flex items-center gap-3 px-3.5 py-3">
-                  <div className="flex flex-col gap-0.5">
-                    <button
-                      type="button"
-                      onClick={() => move(i, -1)}
-                      disabled={i === 0}
-                      aria-label="Move up"
-                      className="text-[11px] leading-none text-gray-400 disabled:text-gray-200 dark:text-gray-500 dark:disabled:text-gray-700"
-                    >
-                      ▲
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => move(i, 1)}
-                      disabled={i === categories.length - 1}
-                      aria-label="Move down"
-                      className="text-[11px] leading-none text-gray-400 disabled:text-gray-200 dark:text-gray-500 dark:disabled:text-gray-700"
-                    >
-                      ▼
-                    </button>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => navigate(`/category/${c.uuid}`)}
-                    className="flex min-w-0 flex-1 items-center gap-3 text-left"
-                  >
-                    <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-gray-100 text-base font-bold dark:bg-gray-700">
-                      {categoryGlyph(c)}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <div className="truncate text-sm font-semibold">{c.name}</div>
-                      <div className="text-[11px] text-gray-500 dark:text-gray-400">
-                        {used} {used === 1 ? "expense" : "expenses"}
-                      </div>
-                    </div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setMergingFrom(c.uuid)}
-                    disabled={categories.length < 2}
-                    aria-label="Merge into another"
-                    className="p-1 text-base text-gray-400 disabled:text-gray-200 dark:text-gray-500 dark:disabled:text-gray-700"
-                  >
-                    ⇄
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setConfirmDel(c.uuid)}
-                    aria-label="Delete"
-                    className="p-1 text-gray-400 dark:text-gray-500"
-                  >
-                    <Cross2Icon className="size-4" />
-                  </button>
-                </li>
-              )
-            })}
-          </ul>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={categories.map((c) => c.uuid)}
+              strategy={verticalListSortingStrategy}
+            >
+              <ul className="divide-y divide-gray-100 overflow-hidden rounded-2xl border border-gray-100 bg-white dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800">
+                {categories.map((c) => (
+                  <SortableRow
+                    key={c.uuid}
+                    category={c}
+                    used={usage[c.uuid] ?? 0}
+                    onEdit={() => navigate(`/category/${c.uuid}`)}
+                    onMerge={() => setMergingFrom(c.uuid)}
+                    onDelete={() => setConfirmDel(c.uuid)}
+                    mergeDisabled={categories.length < 2}
+                  />
+                ))}
+              </ul>
+            </SortableContext>
+          </DndContext>
         )}
 
         <button
@@ -205,7 +269,7 @@ export const CategoriesPage = () => {
                 ? `${usage[mergingCategory.uuid]} ${usage[mergingCategory.uuid] === 1 ? "expense" : "expenses"} will be re-tagged. "${mergingCategory.name}" will then be removed.`
                 : `"${mergingCategory.name}" will be removed.`}
             </div>
-            <div className="mt-3 flex-1 overflow-y-auto -mx-2">
+            <div className="-mx-2 mt-3 flex-1 overflow-y-auto">
               {categories
                 .filter((c) => c.uuid !== mergingFrom)
                 .map((tc) => (
