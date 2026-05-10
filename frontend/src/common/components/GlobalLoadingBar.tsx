@@ -18,7 +18,7 @@ export const GlobalLoadingBar = () => {
       }
     }
 
-    return subscribeInflight((count) => {
+    const unsubscribe = subscribeInflight((count) => {
       if (count === 0) {
         cancelTimer()
         setShow(false)
@@ -30,6 +30,11 @@ export const GlobalLoadingBar = () => {
         timer = null
       }, SHOW_DELAY_MS)
     })
+
+    return () => {
+      cancelTimer()
+      unsubscribe()
+    }
   }, [])
 
   if (!show) return null
