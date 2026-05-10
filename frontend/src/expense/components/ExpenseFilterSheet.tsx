@@ -12,6 +12,8 @@ export interface ExpenseFilter {
   categoryUuids: string[]
   min: number
   max: number
+  /** 特定日のみ表示する場合に YYYY-MM-DD を指定。設定時は scope を無視。 */
+  date: string | null
 }
 
 export const SCOPE_OPTIONS: { k: FilterScope; label: string; short: string }[] = [
@@ -26,6 +28,7 @@ export const defaultFilter = (): ExpenseFilter => ({
   categoryUuids: [],
   min: 0,
   max: 0,
+  date: null,
 })
 
 export const filterCount = (f: ExpenseFilter): number => {
@@ -34,6 +37,7 @@ export const filterCount = (f: ExpenseFilter): number => {
   if (f.scope !== "month") n++
   if (f.categoryUuids.length > 0) n++
   if (f.min > 0 || f.max > 0) n++
+  if (f.date) n++
   return n
 }
 
@@ -42,16 +46,25 @@ const sameLocalDay = (a: Date, b: Date): boolean =>
   a.getMonth() === b.getMonth() &&
   a.getDate() === b.getDate()
 
+const parseDateKey = (key: string): Date | null => {
+  const parts = key.split("-").map(Number)
+  if (parts.length !== 3 || parts.some(Number.isNaN)) return null
+  return new Date(parts[0], parts[1] - 1, parts[2])
+}
+
 export const applyFilter = (expenses: ExpenseResponse[], f: ExpenseFilter): ExpenseResponse[] => {
   const now = new Date()
   const weekStart = new Date(now)
   weekStart.setDate(weekStart.getDate() - 6)
   weekStart.setHours(0, 0, 0, 0)
+  const targetDate = f.date ? parseDateKey(f.date) : null
 
   return expenses.filter((e) => {
     const d = new Date(e.expensed_at)
 
-    if (f.scope === "week") {
+    if (targetDate) {
+      if (!sameLocalDay(d, targetDate)) return false
+    } else if (f.scope === "week") {
       if (d < weekStart) return false
       if (d > now && !sameLocalDay(d, now)) return false
     } else if (f.scope === "month") {
@@ -268,6 +281,12 @@ interface ExpenseFilterChipsProps {
   onClear: () => void
 }
 
+const formatDateChip = (key: string): string => {
+  const d = parseDateKey(key)
+  if (!d) return key
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+}
+
 export const ExpenseFilterChips = ({
   filter,
   categories,
@@ -276,6 +295,7 @@ export const ExpenseFilterChips = ({
 }: ExpenseFilterChipsProps) => {
   const labels: string[] = []
   if (filter.q) labels.push(`"${filter.q}"`)
+  if (filter.date) labels.push(formatDateChip(filter.date))
   for (const uuid of filter.categoryUuids) {
     const c = categories.find((x) => x.uuid === uuid)
     if (c) labels.push(c.name)
