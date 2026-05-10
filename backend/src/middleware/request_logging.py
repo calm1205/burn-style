@@ -11,6 +11,14 @@ from src.logger import get_logger, request_id_var
 
 logger = get_logger("request")
 
+# ブラウザが自動取得する favicon / apple-touch-icon / robots.txt の 404 ノイズを抑止するパス
+_NOISE_PATH_PREFIXES = ("/favicon.ico", "/apple-touch-icon", "/robots.txt")
+_HTTP_NOT_FOUND = 404
+
+
+def _is_static_noise(path: str, status_code: int) -> bool:
+    return status_code == _HTTP_NOT_FOUND and path.startswith(_NOISE_PATH_PREFIXES)
+
 
 class RequestLoggingMiddleware(BaseHTTPMiddleware):
     """request_idを採番し、開始/終了アクセスログを出力。"""
@@ -33,7 +41,8 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
             request_id_var.reset(token)
 
         duration_ms = round((time.perf_counter() - start) * 1000, 2)
-        logger.info(
+        log = logger.debug if _is_static_noise(request.url.path, response.status_code) else logger.info
+        log(
             "request",
             extra={
                 "method": request.method,
