@@ -1,4 +1,4 @@
-import { ArrowLeftIcon, TrashIcon } from "@radix-ui/react-icons"
+import { TrashIcon } from "@radix-ui/react-icons"
 import { type SubmitEvent, useCallback, useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router"
 
@@ -65,11 +65,9 @@ export const ExpenseDetailPage = () => {
     fetchData()
   }, [fetchData])
 
-  const selectCategory = (catUuid: string) => {
-    setForm((prev) => ({
-      ...prev,
-      categoryUuid: prev.categoryUuid === catUuid ? null : catUuid,
-    }))
+  const handleAmountChange = (raw: string) => {
+    const digits = raw.replace(/[^0-9]/g, "")
+    setForm((prev) => ({ ...prev, amount: digits ? Number(digits).toLocaleString() : "" }))
   }
 
   const handleUpdate = async (e: SubmitEvent<HTMLFormElement>) => {
@@ -116,117 +114,137 @@ export const ExpenseDetailPage = () => {
   }
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-6 px-6 pb-6">
-      <button
-        type="button"
-        onClick={() => navigate(-1)}
-        className="flex size-9 items-center justify-center rounded-xl bg-white shadow-sm hover:shadow-md dark:bg-gray-800"
-      >
-        <ArrowLeftIcon className="size-4 text-gray-600 dark:text-gray-400" />
-      </button>
+    <form
+      onSubmit={handleUpdate}
+      className="mx-auto flex h-full max-w-2xl flex-col overflow-hidden"
+    >
+      <div className="flex shrink-0 justify-center px-4 pt-8 pb-2">
+        <span className="text-[11px] font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500">
+          Edit expense
+        </span>
+      </div>
 
-      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+      {error && (
+        <p className="mx-5 shrink-0 pb-1 text-sm text-red-600 dark:text-red-400">{error}</p>
+      )}
 
-      <form
-        id="expense-detail-form"
-        onSubmit={handleUpdate}
-        className="flex flex-col gap-4 rounded-2xl bg-white p-5 shadow-sm dark:bg-gray-800"
-      >
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="detail-name" className="text-xs text-gray-500 dark:text-gray-400">
-            Name
-          </label>
+      <div className="flex-1 overflow-y-auto">
+        <div className="px-5 pt-3">
           <input
-            id="detail-name"
             type="text"
             value={form.name}
             onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
             required
             maxLength={100}
-            className="rounded-xl bg-gray-50 px-4 py-3 text-base outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+            placeholder="What was this?"
+            className="w-full bg-transparent text-2xl font-bold tracking-tight outline-none placeholder:text-gray-300 dark:text-gray-100 dark:placeholder:text-gray-600"
           />
+          <div className="mt-2 h-px bg-gray-200 dark:bg-gray-700" />
         </div>
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="detail-amount" className="text-xs text-gray-500 dark:text-gray-400">
-            Amount
-          </label>
-          <input
-            id="detail-amount"
-            type="text"
-            inputMode="numeric"
-            value={form.amount}
-            onChange={(e) => {
-              const raw = e.target.value.replace(/[^0-9]/g, "")
-              const formatted = raw ? Number(raw).toLocaleString() : ""
-              setForm((prev) => ({ ...prev, amount: formatted }))
-            }}
-            required
-            className="rounded-xl bg-gray-50 px-4 py-3 text-base outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
-          />
+
+        <div className="px-5 pt-5 text-center">
+          <div className="text-[11px] font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
+            What did this cost you
+          </div>
+          <div className="mt-2 flex items-baseline justify-center gap-1">
+            <span className="text-2xl font-medium text-gray-500 dark:text-gray-400">¥</span>
+            <input
+              type="text"
+              inputMode="numeric"
+              value={form.amount}
+              onChange={(e) => handleAmountChange(e.target.value)}
+              required
+              placeholder="0"
+              className="w-44 bg-transparent text-center text-5xl font-bold tracking-tighter tabular-nums outline-none placeholder:text-gray-300 dark:text-gray-100 dark:placeholder:text-gray-600"
+            />
+          </div>
         </div>
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="detail-date" className="text-xs text-gray-500 dark:text-gray-400">
-            Date
-          </label>
+
+        <div className="px-5 pt-5 text-center">
+          <div className="text-[11px] font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
+            When
+          </div>
           <input
-            id="detail-date"
             type="datetime-local"
             value={form.expensedAt}
             onChange={(e) => setForm((prev) => ({ ...prev, expensedAt: e.target.value }))}
             required
-            className="rounded-xl bg-gray-50 px-4 py-3 text-base outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-700 dark:text-gray-100"
+            className="mt-1 bg-transparent text-center text-sm font-medium tabular-nums outline-none dark:text-gray-100"
           />
         </div>
+
         {categories.length > 0 && (
-          <div className="flex flex-col gap-1.5">
-            <span className="text-xs text-gray-500 dark:text-gray-400">Category</span>
+          <div className="px-4 pt-4">
             <div className="flex flex-wrap gap-2">
-              {categories.map((c) => (
-                <button
-                  key={c.uuid}
-                  type="button"
-                  onClick={() => selectCategory(c.uuid)}
-                  className={`rounded-full px-4 py-2 text-sm transition-colors ${
-                    form.categoryUuid === c.uuid
-                      ? "bg-primary text-white"
-                      : "bg-gray-50 text-gray-500 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600"
-                  }`}
-                >
-                  <span className="mr-1">{categoryGlyph(c)}</span>
-                  {c.name}
-                </button>
-              ))}
+              {categories.map((c) => {
+                const active = form.categoryUuid === c.uuid
+                return (
+                  <button
+                    key={c.uuid}
+                    type="button"
+                    onClick={() =>
+                      setForm((prev) => ({
+                        ...prev,
+                        categoryUuid: prev.categoryUuid === c.uuid ? null : c.uuid,
+                      }))
+                    }
+                    className={`flex items-center gap-1.5 rounded-2xl border px-3 py-2 text-xs font-semibold ${
+                      active
+                        ? "border-primary bg-primary text-white"
+                        : "border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
+                    }`}
+                  >
+                    <span>{categoryGlyph(c)}</span>
+                    <span>{c.name}</span>
+                  </button>
+                )
+              })}
+              <button
+                type="button"
+                onClick={() => navigate("/category/new")}
+                className="flex items-center rounded-2xl border border-dashed border-gray-300 bg-transparent px-3 py-2 text-xs font-semibold text-gray-500 dark:border-gray-700 dark:text-gray-400"
+              >
+                + Category
+              </button>
             </div>
+            {!form.categoryUuid && (
+              <p className="px-1 pt-2 text-[11px] text-gray-400 dark:text-gray-500">
+                No category — saved without one.
+              </p>
+            )}
           </div>
         )}
-        <VibePicker
-          social={form.vibeSocial}
-          planning={form.vibePlanning}
-          necessity={form.vibeNecessity}
-          onSocialChange={(v) => setForm((prev) => ({ ...prev, vibeSocial: v }))}
-          onPlanningChange={(v) => setForm((prev) => ({ ...prev, vibePlanning: v }))}
-          onNecessityChange={(v) => setForm((prev) => ({ ...prev, vibeNecessity: v }))}
-        />
-      </form>
 
-      <button
-        type="submit"
-        form="expense-detail-form"
-        disabled={loading}
-        className="rounded-xl bg-primary px-5 py-4 text-white hover:bg-primary-hover disabled:opacity-50"
-      >
-        {loading ? "Updating..." : "Update"}
-      </button>
+        <div className="px-4 pt-5 pb-4">
+          <VibePicker
+            social={form.vibeSocial}
+            planning={form.vibePlanning}
+            necessity={form.vibeNecessity}
+            onSocialChange={(v) => setForm((prev) => ({ ...prev, vibeSocial: v }))}
+            onPlanningChange={(v) => setForm((prev) => ({ ...prev, vibePlanning: v }))}
+            onNecessityChange={(v) => setForm((prev) => ({ ...prev, vibeNecessity: v }))}
+          />
+        </div>
+      </div>
 
-      <button
-        type="button"
-        onClick={openDeleteDialog}
-        disabled={loading}
-        className="flex items-center justify-center gap-2 text-sm text-red-500 hover:text-red-600 disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
-      >
-        <TrashIcon className="size-3.5" />
-        Delete
-      </button>
+      <div className="shrink-0 px-4 pt-2 pb-3">
+        <button
+          type="submit"
+          disabled={loading || !form.name || !form.amount}
+          className="w-full rounded-2xl bg-primary px-4 py-4 text-sm font-bold text-white shadow-[0_6px_18px_rgba(47,116,208,0.32)] hover:bg-primary-hover disabled:opacity-50 disabled:shadow-none"
+        >
+          {loading ? "Saving…" : "Save changes"}
+        </button>
+        <button
+          type="button"
+          onClick={openDeleteDialog}
+          disabled={loading}
+          className="mt-2 flex w-full items-center justify-center gap-1.5 py-2 text-xs font-semibold text-red-500 hover:text-red-600 disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
+        >
+          <TrashIcon className="size-3.5" />
+          Delete
+        </button>
+      </div>
 
       <ConfirmDialog
         message="Delete this expense?"
@@ -234,6 +252,6 @@ export const ExpenseDetailPage = () => {
         loading={loading}
         dialogRef={dialogRef}
       />
-    </div>
+    </form>
   )
 }
