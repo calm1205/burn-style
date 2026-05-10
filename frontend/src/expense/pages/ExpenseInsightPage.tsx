@@ -216,7 +216,7 @@ const YearChart = ({ year }: YearChartProps) => {
   )
 }
 
-export const ExpenseAnnualPage = () => {
+export const ExpenseInsightPage = () => {
   const [expenses, setExpenses] = useState<ExpenseResponse[]>([])
   const [error, setError] = useState("")
 

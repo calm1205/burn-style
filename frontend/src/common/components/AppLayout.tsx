@@ -12,7 +12,7 @@ const navItems = [
   { label: "Today", to: "/", icon: HomeIcon },
   { label: "Expense", to: "/expense/monthly", icon: RowsIcon },
   { label: "Add", to: "/expense/new", icon: PlusIcon, accent: true },
-  { label: "Insights", to: "/expense/annual", icon: BarChartIcon },
+  { label: "Insights", to: "/expense/insight", icon: BarChartIcon },
   { label: "You", to: "/setting", icon: PersonIcon },
 ]
 
