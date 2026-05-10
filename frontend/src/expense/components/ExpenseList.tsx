@@ -33,6 +33,7 @@ const timeLabel = (iso: string): string => {
 
 interface ExpenseListProps {
   expenses: ExpenseResponse[]
+  initialFilter?: ExpenseFilter
 }
 
 interface DayGroup {
@@ -42,9 +43,9 @@ interface DayGroup {
   total: number
 }
 
-export const ExpenseList = ({ expenses }: ExpenseListProps) => {
+export const ExpenseList = ({ expenses, initialFilter }: ExpenseListProps) => {
   const navigate = useNavigate()
-  const [filter, setFilter] = useState<ExpenseFilter>(defaultFilter)
+  const [filter, setFilter] = useState<ExpenseFilter>(initialFilter ?? defaultFilter())
   const [sheetOpen, setSheetOpen] = useState(false)
 
   const usedCategories = useMemo<CategoryResponse[]>(() => {

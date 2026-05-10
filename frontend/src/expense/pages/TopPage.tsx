@@ -28,9 +28,10 @@ interface HeatmapProps {
   month: number
   today: number
   totals: number[]
+  onSelectDay: (day: number) => void
 }
 
-const Heatmap = ({ year, month, today, totals }: HeatmapProps) => {
+const Heatmap = ({ year, month, today, totals, onSelectDay }: HeatmapProps) => {
   const daysInMonth = new Date(year, month, 0).getDate()
   const firstDow = new Date(year, month - 1, 1).getDay()
   const max = Math.max(...totals, 0)
@@ -60,10 +61,13 @@ const Heatmap = ({ year, month, today, totals }: HeatmapProps) => {
                 }
               : undefined
           return (
-            <div
+            <button
               key={i}
+              type="button"
+              onClick={() => onSelectDay(day)}
+              disabled={isFuture}
               style={cellStyle}
-              className={`flex aspect-square items-center justify-center rounded-md text-[10px] font-semibold ${
+              className={`flex aspect-square items-center justify-center rounded-md text-[10px] font-semibold disabled:cursor-default ${
                 isFuture
                   ? "border border-dashed border-gray-200 text-gray-300 dark:border-gray-700 dark:text-gray-600"
                   : isToday
@@ -74,7 +78,7 @@ const Heatmap = ({ year, month, today, totals }: HeatmapProps) => {
               }`}
             >
               {day}
-            </div>
+            </button>
           )
         })}
       </div>
@@ -138,7 +142,16 @@ export const TopPage = () => {
       </div>
 
       <div className="shrink-0 pt-4">
-        <Heatmap year={year} month={month} today={today} totals={totals} />
+        <Heatmap
+          year={year}
+          month={month}
+          today={today}
+          totals={totals}
+          onSelectDay={(day) => {
+            const dateKey = `${year}-${pad(month)}-${pad(day)}`
+            navigate(`/expense/monthly?date=${dateKey}`)
+          }}
+        />
       </div>
 
       <div className="mt-6 shrink-0 border-b border-gray-200 pb-4 dark:border-gray-700">
