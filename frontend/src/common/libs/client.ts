@@ -16,6 +16,23 @@ const STATUS_MESSAGES: Record<number, string> = {
 
 const baseUrl = import.meta.env.VITE_API_URL ?? "http://localhost:13000"
 
+type InflightListener = (count: number) => void
+const inflightListeners = new Set<InflightListener>()
+let inflightCount = 0
+
+const notifyInflight = () => {
+  for (const listener of inflightListeners) listener(inflightCount)
+}
+
+/** リクエスト in-flight 数の購読。cold start 中の長時間リクエストを検知する用途。 */
+export const subscribeInflight = (listener: InflightListener): (() => void) => {
+  inflightListeners.add(listener)
+  listener(inflightCount)
+  return () => {
+    inflightListeners.delete(listener)
+  }
+}
+
 const getHeaders = (): HeadersInit => {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -28,11 +45,19 @@ const getHeaders = (): HeadersInit => {
 }
 
 const request = async <T>(method: string, path: string, body?: unknown): Promise<T> => {
-  const response = await fetch(`${baseUrl}${path}`, {
-    method,
-    headers: getHeaders(),
-    body: body ? JSON.stringify(body) : undefined,
-  })
+  inflightCount += 1
+  notifyInflight()
+  let response: Response
+  try {
+    response = await fetch(`${baseUrl}${path}`, {
+      method,
+      headers: getHeaders(),
+      body: body ? JSON.stringify(body) : undefined,
+    })
+  } finally {
+    inflightCount -= 1
+    notifyInflight()
+  }
 
   const newToken = response.headers.get("X-New-Token")
   if (newToken) {

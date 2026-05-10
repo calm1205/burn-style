@@ -69,6 +69,19 @@ textarea {
   font-size: 16px;
 }
 
+@keyframes loading-bar-slide {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(420%);
+  }
+}
+
+.loading-bar-track {
+  animation: loading-bar-slide 1.6s ease-in-out infinite;
+}
+
 input::placeholder {
   color: var(--color-gray-300);
 }

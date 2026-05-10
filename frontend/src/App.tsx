@@ -1,7 +1,13 @@
 import { RouterProvider } from "react-router"
 
+import { GlobalLoadingBar } from "./common/components/GlobalLoadingBar"
 import { router } from "./router"
 
 export const App = () => {
-  return <RouterProvider router={router} />
+  return (
+    <>
+      <GlobalLoadingBar />
+      <RouterProvider router={router} />
+    </>
+  )
 }
