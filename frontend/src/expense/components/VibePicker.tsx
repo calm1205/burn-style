@@ -9,32 +9,28 @@ interface VibePickerProps {
   onNecessityChange: (v: VibeNecessity | null) => void
 }
 
-interface AxisProps<T extends string> {
-  current: T | null
-  options: { value: T; label: string }[]
-  onChange: (v: T | null) => void
+interface ChipProps {
+  active: boolean
+  label: string
+  onClick: () => void
 }
 
-const Axis = <T extends string>({ current, options, onChange }: AxisProps<T>) => (
-  <div className="flex gap-2">
-    {options.map((opt) => {
-      const on = current === opt.value
-      return (
-        <button
-          key={opt.value}
-          type="button"
-          onClick={() => onChange(on ? null : opt.value)}
-          className={`flex-1 rounded-full border px-3 py-2 text-xs font-semibold transition-colors ${
-            on
-              ? "border-primary bg-primary text-white"
-              : "border-gray-200 bg-white text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
-          }`}
-        >
-          {opt.label}
-        </button>
-      )
-    })}
-  </div>
+const Chip = ({ active, label, onClick }: ChipProps) => (
+  <button
+    type="button"
+    onClick={onClick}
+    className={`rounded-xl border px-3 py-2 text-center text-xs font-semibold transition-colors ${
+      active
+        ? "border-primary bg-primary text-white"
+        : "border-gray-200 bg-white text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+    }`}
+  >
+    {label}
+  </button>
+)
+
+const Separator = () => (
+  <div className="self-center h-px w-full bg-gray-200 opacity-60 dark:bg-gray-700" />
 )
 
 export const VibePicker = ({
@@ -45,31 +41,51 @@ export const VibePicker = ({
   onPlanningChange,
   onNecessityChange,
 }: VibePickerProps) => (
-  <div className="flex flex-col gap-1.5">
-    <span className="text-xs text-gray-500 dark:text-gray-400">Vibe</span>
-    <Axis
-      current={social}
-      onChange={onSocialChange}
-      options={[
-        { value: "SOLO", label: "Solo" },
-        { value: "WITH_SOMEONE", label: "With someone" },
-      ]}
-    />
-    <Axis
-      current={planning}
-      onChange={onPlanningChange}
-      options={[
-        { value: "ROUTINE", label: "Routine" },
-        { value: "SPONTANEOUS", label: "Spontaneous" },
-      ]}
-    />
-    <Axis
-      current={necessity}
-      onChange={onNecessityChange}
-      options={[
-        { value: "NEEDED", label: "Needed it" },
-        { value: "WANTED", label: "Wanted it" },
-      ]}
-    />
+  <div className="flex flex-col gap-2">
+    <div className="flex items-baseline justify-between">
+      <span className="text-[10px] font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500">
+        Vibe
+      </span>
+      <span className="text-[10px] tracking-wide text-gray-400 dark:text-gray-500">
+        pick one per row
+      </span>
+    </div>
+    <div className="grid grid-cols-[1fr_12px_1fr] gap-y-1.5">
+      <Chip
+        active={social === "SOLO"}
+        label="Solo"
+        onClick={() => onSocialChange(social === "SOLO" ? null : "SOLO")}
+      />
+      <Separator />
+      <Chip
+        active={social === "WITH_SOMEONE"}
+        label="With someone"
+        onClick={() => onSocialChange(social === "WITH_SOMEONE" ? null : "WITH_SOMEONE")}
+      />
+
+      <Chip
+        active={planning === "ROUTINE"}
+        label="Routine"
+        onClick={() => onPlanningChange(planning === "ROUTINE" ? null : "ROUTINE")}
+      />
+      <Separator />
+      <Chip
+        active={planning === "SPONTANEOUS"}
+        label="Spontaneous"
+        onClick={() => onPlanningChange(planning === "SPONTANEOUS" ? null : "SPONTANEOUS")}
+      />
+
+      <Chip
+        active={necessity === "NEEDED"}
+        label="Needed it"
+        onClick={() => onNecessityChange(necessity === "NEEDED" ? null : "NEEDED")}
+      />
+      <Separator />
+      <Chip
+        active={necessity === "WANTED"}
+        label="Wanted it"
+        onClick={() => onNecessityChange(necessity === "WANTED" ? null : "WANTED")}
+      />
+    </div>
   </div>
 )
