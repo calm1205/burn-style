@@ -131,12 +131,9 @@ export const TopPage = () => {
     <div className="mx-auto flex h-full max-w-2xl flex-col overflow-hidden px-6">
       {error && <p className="mt-4 text-sm text-red-600 dark:text-red-400">{error}</p>}
 
-      <div className="flex shrink-0 items-baseline justify-between pt-1">
+      <div className="shrink-0 pt-1">
         <span className="text-xs font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
           {monthLabel(year, month)}
-        </span>
-        <span className="text-xs text-gray-400 tabular-nums dark:text-gray-500">
-          Day {today} / {daysInMonth}
         </span>
       </div>
 
