@@ -10,21 +10,25 @@ export const GlobalLoadingBar = () => {
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | null = null
-    return subscribeInflight((count) => {
-      if (count > 0) {
-        if (!timer) {
-          timer = setTimeout(() => {
-            setShow(true)
-            timer = null
-          }, SHOW_DELAY_MS)
-        }
-      } else {
-        if (timer) {
-          clearTimeout(timer)
-          timer = null
-        }
-        setShow(false)
+
+    const cancelTimer = () => {
+      if (timer) {
+        clearTimeout(timer)
+        timer = null
       }
+    }
+
+    return subscribeInflight((count) => {
+      if (count === 0) {
+        cancelTimer()
+        setShow(false)
+        return
+      }
+      if (timer) return
+      timer = setTimeout(() => {
+        setShow(true)
+        timer = null
+      }, SHOW_DELAY_MS)
     })
   }, [])
 
