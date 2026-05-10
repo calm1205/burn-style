@@ -10,8 +10,8 @@ import { RecurringExpenseEditPage } from "./expense-recurring/pages/RecurringExp
 import { RecurringExpenseListPage } from "./expense-recurring/pages/RecurringExpenseListPage"
 import { ExpenseTemplatePage } from "./expense-template/pages/ExpenseTemplatePage"
 import { ExpenseTemplateRecordPage } from "./expense-template/pages/ExpenseTemplateRecordPage"
-import { ExpenseAnnualPage } from "./expense/pages/ExpenseAnnualPage"
 import { ExpenseDetailPage } from "./expense/pages/ExpenseDetailPage"
+import { ExpenseInsightPage } from "./expense/pages/ExpenseInsightPage"
 import { ExpenseMonthlyPage } from "./expense/pages/ExpenseMonthlyPage"
 import { ExpensesPage } from "./expense/pages/ExpensesPage"
 import { TopPage } from "./expense/pages/TopPage"
@@ -28,11 +28,11 @@ export const router = createBrowserRouter([
     ),
     children: [
       { path: "/", element: <TopPage /> },
+      { path: "/insight", element: <ExpenseInsightPage /> },
       {
         path: "/expense",
         children: [
           { path: "monthly", element: <ExpenseMonthlyPage /> },
-          { path: "annual", element: <ExpenseAnnualPage /> },
           { path: "new", element: <ExpensesPage /> },
           { path: "template", element: <ExpenseTemplatePage /> },
           { path: "template/new", element: <ExpenseTemplateRecordPage /> },
