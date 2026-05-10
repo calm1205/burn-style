@@ -119,11 +119,11 @@ export const TopPage = () => {
   const total = useMemo(() => expenses.reduce((sum, e) => sum + e.amount, 0), [expenses])
   const perDay = today > 0 ? Math.round(total / today) : 0
 
-  const recent = useMemo(
+  const monthExpenses = useMemo(
     () =>
-      [...expenses]
-        .toSorted((a, b) => new Date(b.expensed_at).getTime() - new Date(a.expensed_at).getTime())
-        .slice(0, 6),
+      [...expenses].toSorted(
+        (a, b) => new Date(b.expensed_at).getTime() - new Date(a.expensed_at).getTime(),
+      ),
     [expenses],
   )
 
@@ -131,91 +131,87 @@ export const TopPage = () => {
     <div className="mx-auto flex h-full max-w-2xl flex-col overflow-hidden px-6">
       {error && <p className="mt-4 text-sm text-red-600 dark:text-red-400">{error}</p>}
 
-      <div className="flex shrink-0 items-baseline justify-between pt-1">
+      <div className="shrink-0 pt-1">
         <span className="text-xs font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
           {monthLabel(year, month)}
         </span>
-        <span className="text-xs text-gray-400 tabular-nums dark:text-gray-500">
-          Day {today} / {daysInMonth}
-        </span>
       </div>
 
-      <div className="flex-1 overflow-y-auto pt-4 pb-6">
+      <div className="shrink-0 pt-4">
         <Heatmap year={year} month={month} today={today} totals={totals} />
+      </div>
 
-        <div className="mt-6 border-b border-gray-200 pb-4 dark:border-gray-700">
-          <div className="text-[11px] font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
-            Burned this month
-          </div>
-          <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-4xl font-bold tracking-tight tabular-nums">
-              ¥{total.toLocaleString()}
-            </span>
-            <span className="text-xs text-gray-400 dark:text-gray-500">
-              · ¥{perDay.toLocaleString()}/day
-            </span>
-          </div>
+      <div className="mt-6 shrink-0 border-b border-gray-200 pb-4 dark:border-gray-700">
+        <div className="text-[11px] font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
+          Burned this month
         </div>
-
-        <div className="mt-5">
-          <div className="mb-1.5 flex items-baseline justify-between">
-            <span className="text-[11px] font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
-              Latest moments
-            </span>
-            <button
-              type="button"
-              onClick={() => navigate("/expense/monthly")}
-              className="text-xs font-semibold text-primary"
-            >
-              All →
-            </button>
-          </div>
-          {recent.length === 0 ? (
-            <p className="py-6 text-center text-sm text-gray-400 dark:text-gray-500">
-              No expenses yet
-            </p>
-          ) : (
-            <ul className="divide-y divide-gray-100 dark:divide-gray-700">
-              {recent.map((e, i) => {
-                const c = e.categories[0]
-                const showDate =
-                  i === 0 ||
-                  new Date(recent[i - 1].expensed_at).toDateString() !==
-                    new Date(e.expensed_at).toDateString()
-                return (
-                  <li key={e.uuid}>
-                    <button
-                      type="button"
-                      onClick={() => navigate(`/expense/${e.uuid}`)}
-                      className="grid w-full grid-cols-[46px_14px_1fr_auto] items-center gap-1.5 py-2 text-left"
-                    >
-                      <span
-                        className={`text-[11px] font-semibold ${
-                          showDate ? "text-gray-500 dark:text-gray-400" : "text-transparent"
-                        }`}
-                      >
-                        {dayShort(e.expensed_at)}
-                      </span>
-                      <span className="text-center text-[11px] text-gray-400 dark:text-gray-500">
-                        {c ? categoryGlyph(c) : "·"}
-                      </span>
-                      <div className="min-w-0">
-                        <div className="truncate text-sm font-medium">{e.name}</div>
-                        <div className="truncate text-[10px] text-gray-400 dark:text-gray-500">
-                          {c ? c.name : "Uncategorized"} · {timeLabel(e.expensed_at)}
-                        </div>
-                      </div>
-                      <span className="text-sm font-medium tabular-nums">
-                        ¥{e.amount.toLocaleString()}
-                      </span>
-                    </button>
-                  </li>
-                )
-              })}
-            </ul>
-          )}
+        <div className="mt-2 flex items-baseline gap-2">
+          <span className="text-4xl font-bold tracking-tight tabular-nums">
+            ¥{total.toLocaleString()}
+          </span>
+          <span className="text-xs text-gray-400 dark:text-gray-500">
+            · ¥{perDay.toLocaleString()}/day
+          </span>
         </div>
       </div>
+
+      <div className="mt-5 mb-1.5 flex shrink-0 items-baseline justify-between">
+        <span className="text-[11px] font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
+          Latest moments
+        </span>
+        <button
+          type="button"
+          onClick={() => navigate("/expense/monthly")}
+          className="text-xs font-semibold text-primary"
+        >
+          All →
+        </button>
+      </div>
+
+      {monthExpenses.length === 0 ? (
+        <p className="shrink-0 py-6 text-center text-sm text-gray-400 dark:text-gray-500">
+          No expenses yet
+        </p>
+      ) : (
+        <ul className="min-h-0 flex-1 divide-y divide-gray-100 overflow-y-auto pb-2 dark:divide-gray-700">
+          {monthExpenses.map((e, i) => {
+            const c = e.categories[0]
+            const showDate =
+              i === 0 ||
+              new Date(monthExpenses[i - 1].expensed_at).toDateString() !==
+                new Date(e.expensed_at).toDateString()
+            return (
+              <li key={e.uuid}>
+                <button
+                  type="button"
+                  onClick={() => navigate(`/expense/${e.uuid}`)}
+                  className="grid w-full grid-cols-[46px_14px_1fr_auto] items-center gap-1.5 py-2 text-left"
+                >
+                  <span
+                    className={`text-[11px] font-semibold ${
+                      showDate ? "text-gray-500 dark:text-gray-400" : "text-transparent"
+                    }`}
+                  >
+                    {dayShort(e.expensed_at)}
+                  </span>
+                  <span className="text-center text-[11px] text-gray-400 dark:text-gray-500">
+                    {c ? categoryGlyph(c) : "·"}
+                  </span>
+                  <div className="min-w-0">
+                    <div className="truncate text-sm font-medium">{e.name}</div>
+                    <div className="truncate text-[10px] text-gray-400 dark:text-gray-500">
+                      {c ? c.name : "Uncategorized"} · {timeLabel(e.expensed_at)}
+                    </div>
+                  </div>
+                  <span className="text-sm font-medium tabular-nums">
+                    ¥{e.amount.toLocaleString()}
+                  </span>
+                </button>
+              </li>
+            )
+          })}
+        </ul>
+      )}
     </div>
   )
 }
