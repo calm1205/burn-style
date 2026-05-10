@@ -20,11 +20,9 @@ load_dotenv()
 from sqlalchemy.orm import Session  # noqa: E402
 
 from scripts.seed_categories import seed_categories  # noqa: E402
-from scripts.seed_expense_templates import seed_expense_templates  # noqa: E402
 from scripts.seed_expenses import seed_expenses  # noqa: E402
 from src.model import Category, Expense  # noqa: E402
 from src.model.expense_category_association import ExpenseCategoryAssociation  # noqa: E402
-from src.model.expense_template import ExpenseTemplate  # noqa: E402
 from src.model.user import User  # noqa: E402
 from src.repository.database import get_session_local  # noqa: E402
 
@@ -55,18 +53,13 @@ def delete_existing_data(db: Session, user: User) -> None:
     # 2. expenses
     expense_count = db.query(Expense).filter(Expense.user_uuid == user.uuid).delete(synchronize_session=False)
 
-    # 3. expense_templates
-    template_count = db.query(ExpenseTemplate).filter(
-        ExpenseTemplate.user_uuid == user.uuid,
-    ).delete(synchronize_session=False)
-
-    # 4. categories
+    # 3. categories
     category_count = db.query(Category).filter(Category.user_uuid == user.uuid).delete(synchronize_session=False)
 
     db.commit()
 
     print(f"既存データを削除: カテゴリ {category_count}件, 支出 {expense_count}件, "
-          f"関連付け {assoc_count}件, テンプレート {template_count}件")
+          f"関連付け {assoc_count}件")
 
 
 def seed_all(user_name: str | None = None) -> None:
@@ -80,27 +73,21 @@ def seed_all(user_name: str | None = None) -> None:
         print()
 
         # 0. 既存データの削除
-        print("[0/3] 既存データの削除...")
+        print("[0/2] 既存データの削除...")
         print("-" * 60)
         delete_existing_data(db, user)
         print()
 
         # 1. カテゴリを投入
-        print("[1/3] カテゴリの投入を開始します...")
+        print("[1/2] カテゴリの投入を開始します...")
         print("-" * 60)
         seed_categories(db, user)
         print()
 
         # 2. エクスペンスを投入
-        print("[2/3] エクスペンスの投入を開始します...")
+        print("[2/2] エクスペンスの投入を開始します...")
         print("-" * 60)
         seed_expenses(db, user)
-        print()
-
-        # 3. テンプレートを投入
-        print("[3/3] テンプレートの投入を開始します...")
-        print("-" * 60)
-        seed_expense_templates(db, user)
         print()
 
         print("=" * 60)

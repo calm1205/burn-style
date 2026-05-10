@@ -83,27 +83,6 @@ export interface UserResponse {
   name: string
 }
 
-export interface ExpenseTemplateResponse {
-  uuid: string
-  name: string
-  amount: number
-  category: CategoryResponse
-  created_at: string
-  updated_at: string
-}
-
-export interface ExpenseTemplateCreate {
-  name: string
-  amount: number
-  category_uuid: string
-}
-
-export interface ExpenseTemplateUpdate {
-  name?: string
-  amount?: number
-  category_uuid?: string
-}
-
 export interface ImportResponse {
   categories_count: number
   expenses_count: number

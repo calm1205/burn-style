@@ -5,7 +5,6 @@ from sqlalchemy.orm import Session
 
 from src.model.category import Category
 from src.model.expense_category_association import ExpenseCategoryAssociation
-from src.model.expense_template import ExpenseTemplate
 
 
 def get_all_categories(db: Session, user_uuid: str) -> list[Category]:
@@ -119,7 +118,7 @@ def delete_category(db: Session, category: Category) -> None:
 
 
 def merge_categories(db: Session, source: Category, target: Category) -> Category:
-    """sourceカテゴリをtargetに統合。expense関連付けとtemplateを付け替えてsourceを削除。重複は排除。"""
+    """sourceカテゴリをtargetに統合。expense関連付けを付け替えてsourceを削除。重複は排除。"""
     target_expense_uuids = {
         row[0]
         for row in db.query(ExpenseCategoryAssociation.expense_uuid)
@@ -141,10 +140,6 @@ def merge_categories(db: Session, source: Category, target: Category) -> Categor
         db.add(
             ExpenseCategoryAssociation(expense_uuid=expense_uuid, category_uuid=target.uuid),
         )
-
-    db.query(ExpenseTemplate).filter(ExpenseTemplate.category_uuid == source.uuid).update(
-        {"category_uuid": target.uuid},
-    )
 
     user_uuid = str(source.user_uuid)
     db.delete(source)

@@ -7,9 +7,6 @@ import type {
   CategoryUpdate,
   ExpenseCreate,
   ExpenseResponse,
-  ExpenseTemplateCreate,
-  ExpenseTemplateResponse,
-  ExpenseTemplateUpdate,
   ExpenseUpdate,
   ImportResponse,
   RecurringExpenseCreate,
@@ -120,23 +117,6 @@ const updateExpense = (uuid: string, data: ExpenseUpdate): Promise<ExpenseRespon
 
 const deleteExpense = (uuid: string): Promise<void> => client.delete<void>(`/expenses/${uuid}`)
 
-// --- Expense Template ---
-
-const getExpenseTemplates = (): Promise<ExpenseTemplateResponse[]> =>
-  client.get<ExpenseTemplateResponse[]>("/expense-templates")
-
-const createExpenseTemplate = (data: ExpenseTemplateCreate): Promise<ExpenseTemplateResponse> =>
-  client.post<ExpenseTemplateResponse>("/expense-templates", data)
-
-const updateExpenseTemplate = (
-  uuid: string,
-  data: ExpenseTemplateUpdate,
-): Promise<ExpenseTemplateResponse> =>
-  client.patch<ExpenseTemplateResponse>(`/expense-templates/${uuid}`, data)
-
-const deleteExpenseTemplate = (uuid: string): Promise<void> =>
-  client.delete<void>(`/expense-templates/${uuid}`)
-
 // --- Recurring Expense ---
 
 const getRecurringExpenses = (): Promise<RecurringExpenseResponse[]> =>
@@ -185,10 +165,6 @@ export const api = {
   createExpense,
   updateExpense,
   deleteExpense,
-  getExpenseTemplates,
-  createExpenseTemplate,
-  updateExpenseTemplate,
-  deleteExpenseTemplate,
   getRecurringExpenses,
   getRecurringExpenseDue,
   getRecurringExpense,
