@@ -107,59 +107,6 @@ const computeYear = (expenses: ExpenseResponse[]): YearMonth[] => {
   return months
 }
 
-const buildArcs = (cats: CategoryStat[], total: number): { d: string; opacity: number }[] => {
-  const R = 78
-  const r = 48
-  const cx = 100
-  const cy = 100
-  let acc = 0
-  return cats.map(({ amount }, i) => {
-    const frac = total > 0 ? amount / total : 0
-    const a0 = acc * 2 * Math.PI - Math.PI / 2
-    acc += frac
-    const a1 = acc * 2 * Math.PI - Math.PI / 2
-    const large = frac > 0.5 ? 1 : 0
-    const x0 = cx + R * Math.cos(a0)
-    const y0 = cy + R * Math.sin(a0)
-    const x1 = cx + R * Math.cos(a1)
-    const y1 = cy + R * Math.sin(a1)
-    const xi1 = cx + r * Math.cos(a1)
-    const yi1 = cy + r * Math.sin(a1)
-    const xi0 = cx + r * Math.cos(a0)
-    const yi0 = cy + r * Math.sin(a0)
-    const d = `M ${x0} ${y0} A ${R} ${R} 0 ${large} 1 ${x1} ${y1} L ${xi1} ${yi1} A ${r} ${r} 0 ${large} 0 ${xi0} ${yi0} Z`
-    return { d, opacity: 1 - i * 0.13 }
-  })
-}
-
-interface DonutProps {
-  arcs: { d: string; opacity: number }[]
-  total: number
-}
-
-const Donut = ({ arcs, total }: DonutProps) => (
-  <div className="relative flex justify-center">
-    <svg width="200" height="200" viewBox="0 0 200 200">
-      {arcs.map((a, i) => (
-        <path
-          key={i}
-          d={a.d}
-          fill="var(--color-primary)"
-          fillOpacity={a.opacity}
-          stroke="#ffffff"
-          strokeWidth="1"
-        />
-      ))}
-    </svg>
-    <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-      <div className="text-[10px] font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500">
-        Spent
-      </div>
-      <div className="mt-0.5 text-2xl font-bold tabular-nums">{fmtAmount(total)}</div>
-    </div>
-  </div>
-)
-
 interface YearChartProps {
   year: YearMonth[]
 }
@@ -303,7 +250,6 @@ export const ExpenseAnnualPage = () => {
   const yearMonths = useMemo(() => computeYear(expenses), [expenses])
 
   const catTotal = cats.reduce((s, c) => s + c.amount, 0)
-  const arcs = buildArcs(cats, catTotal)
   const topVibe = vibes[0]
 
   return (
@@ -379,7 +325,21 @@ export const ExpenseAnnualPage = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800">
           {cats.length > 0 ? (
             <>
-              <Donut arcs={arcs} total={catTotal} />
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl font-bold tracking-tight tabular-nums">
+                  {fmtAmount(catTotal)}
+                </span>
+                <span className="text-sm text-gray-500 dark:text-gray-400">total</span>
+              </div>
+              <div className="mt-3 flex h-3.5 gap-0.5 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-700">
+                {cats.map((c, i) => (
+                  <div
+                    key={c.category?.uuid ?? "__none__"}
+                    style={{ width: `${c.pct}%`, opacity: 1 - i * 0.13 }}
+                    className="bg-primary"
+                  />
+                ))}
+              </div>
               <div className="mt-3 divide-y divide-gray-100 dark:divide-gray-700">
                 {cats.map((c, i) => (
                   <div
