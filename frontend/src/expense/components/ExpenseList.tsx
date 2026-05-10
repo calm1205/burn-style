@@ -39,6 +39,7 @@ interface DayGroup {
   key: string
   label: string
   items: ExpenseResponse[]
+  total: number
 }
 
 export const ExpenseList = ({ expenses }: ExpenseListProps) => {
@@ -76,6 +77,7 @@ export const ExpenseList = ({ expenses }: ExpenseListProps) => {
       key,
       label: dateLabel(key),
       items,
+      total: items.reduce((sum, e) => sum + e.amount, 0),
     }))
   }, [filtered])
 
@@ -166,9 +168,10 @@ export const ExpenseList = ({ expenses }: ExpenseListProps) => {
         <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto pt-2">
           {groups.map((g) => (
             <section key={g.key}>
-              <h2 className="mb-1.5 px-1 text-[11px] font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
-                {g.label}
-              </h2>
+              <div className="mb-1.5 flex items-baseline justify-between px-1 text-[11px] font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
+                <h2>{g.label}</h2>
+                <span className="tabular-nums">¥{g.total.toLocaleString()}</span>
+              </div>
               <ul className="divide-y divide-gray-100 overflow-hidden rounded-2xl border border-gray-100 bg-white dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800">
                 {g.items.map((e) => {
                   const c = e.categories[0]
