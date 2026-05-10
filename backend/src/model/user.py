@@ -28,6 +28,3 @@ class User(Base):
     expenses = relationship(
         "Expense", cascade="all, delete-orphan", passive_deletes=True, overlaps="user",
     )
-    expense_templates = relationship(
-        "ExpenseTemplate", cascade="all, delete-orphan", passive_deletes=True, overlaps="user",
-    )

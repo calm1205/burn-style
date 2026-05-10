@@ -3,7 +3,6 @@ import {
   CounterClockwiseClockIcon,
   DownloadIcon,
   ExitIcon,
-  FileTextIcon,
   Pencil1Icon,
   ResetIcon,
   RowsIcon,
@@ -135,12 +134,6 @@ export const SettingsPage = () => {
       label: "Categories",
       Icon: RowsIcon,
       onClick: () => navigate("/category"),
-      accent: true,
-    },
-    {
-      label: "Templates",
-      Icon: FileTextIcon,
-      onClick: () => navigate("/expense/template"),
       accent: true,
     },
     {
@@ -309,7 +302,7 @@ export const SettingsPage = () => {
         dialogRef={dialogRef}
       />
       <ConfirmDialog
-        message="All existing categories, expenses, and templates will be deleted and replaced with the imported data. Continue?"
+        message="All existing categories and expenses will be deleted and replaced with the imported data. Continue?"
         onConfirm={handleImport}
         confirmText="Import"
         loading={loading}

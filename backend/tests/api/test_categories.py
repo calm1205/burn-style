@@ -8,7 +8,6 @@ from sqlalchemy.orm import Session
 from src.model.category import Category
 from src.model.expense import Expense
 from src.model.expense_category_association import ExpenseCategoryAssociation
-from src.model.expense_template import ExpenseTemplate
 from src.model.user import User
 
 
@@ -241,26 +240,6 @@ class TestMergeCategory:
         assocs = db.query(ExpenseCategoryAssociation).all()
         assert len(assocs) == 1
         assert assocs[0].category_uuid == target.uuid
-
-    def test_relinks_expense_templates(
-        self, auth_client: TestClient, test_user: User, db: Session,
-    ) -> None:
-        source, target = self._create_pair(db, test_user)
-        template = ExpenseTemplate(
-            user_uuid=str(test_user.uuid),
-            name="定期",
-            amount=500,
-            category_uuid=source.uuid,
-        )
-        db.add(template)
-        db.commit()
-        db.refresh(template)
-
-        res = auth_client.post(f"/categories/{source.uuid}/merge", json={"target_uuid": target.uuid})
-        assert res.status_code == 200
-
-        db.refresh(template)
-        assert template.category_uuid == target.uuid
 
     def test_rejects_same_source_and_target(
         self, auth_client: TestClient, test_user: User, db: Session,

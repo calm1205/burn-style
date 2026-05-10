@@ -13,7 +13,6 @@ from src.schema.auth import UserResponse, UserUpdateRequest
 from src.schema.category import CategoryResponse
 from src.schema.expense import ExpenseResponse
 from src.schema.user import (
-    ExportExpenseTemplateResponse,
     UserExportResponse,
     UserImportRequest,
     UserImportResponse,
@@ -46,12 +45,11 @@ def export_me(
     db: Annotated[Session, Depends(get_db)],
 ) -> UserExportResponse:
     """現在のユーザーの全データをエクスポート。"""
-    categories, expenses, templates = user_service.export_user_data(db, current_user)
+    categories, expenses = user_service.export_user_data(db, current_user)
     return UserExportResponse(
         name=str(current_user.name),
         categories=[CategoryResponse.model_validate(c) for c in categories],
         expenses=[ExpenseResponse.model_validate(e) for e in expenses],
-        expense_templates=[ExportExpenseTemplateResponse.model_validate(t) for t in templates],
     )
 
 
@@ -62,12 +60,11 @@ def import_me(
     db: Annotated[Session, Depends(get_db)],
 ) -> UserImportResponse:
     """既存データを全削除し、エクスポート済みJSONを再インポート。"""
-    cat_count, exp_count, tmpl_count = user_service.import_user_data(db, current_user, body)
+    cat_count, exp_count = user_service.import_user_data(db, current_user, body)
     return UserImportResponse(
         categories_count=cat_count,
         expenses_count=exp_count,
-        expense_templates_count=tmpl_count,
-        message=f"Imported {cat_count} categories, {exp_count} expenses, and {tmpl_count} templates",
+        message=f"Imported {cat_count} categories and {exp_count} expenses",
     )
 
 
