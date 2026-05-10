@@ -1,6 +1,5 @@
 import {
   CheckIcon,
-  ChevronRightIcon,
   CounterClockwiseClockIcon,
   DownloadIcon,
   ExitIcon,
@@ -20,19 +19,13 @@ import { getErrorMessage } from "../../common/libs/client"
 import { STORAGE_KEYS } from "../../common/libs/constants"
 import { type ThemeMode, applyTheme, getStoredTheme } from "../../common/libs/theme"
 import type { UserResponse } from "../../common/libs/types"
+import { SettingsRow, type SettingsRowAction } from "../components/SettingsRow"
+import { SettingsSectionLabel } from "../components/SettingsSectionLabel"
 
 interface OutletContext {
   user: UserResponse | null
   onLogout: () => void
   refreshUser: () => Promise<void>
-}
-
-interface RowAction {
-  label: string
-  Icon: typeof RowsIcon
-  onClick: () => void
-  accent?: boolean
-  disabled?: boolean
 }
 
 export const SettingsPage = () => {
@@ -137,7 +130,7 @@ export const SettingsPage = () => {
     }
   }
 
-  const navRows: RowAction[] = [
+  const navRows: SettingsRowAction[] = [
     {
       label: "Categories",
       Icon: RowsIcon,
@@ -158,7 +151,7 @@ export const SettingsPage = () => {
     },
   ]
 
-  const dataRows: RowAction[] = [
+  const dataRows: SettingsRowAction[] = [
     {
       label: "Import data",
       Icon: DownloadIcon,
@@ -232,7 +225,7 @@ export const SettingsPage = () => {
       </div>
 
       <div>
-        <SectionLabel>Preferences</SectionLabel>
+        <SettingsSectionLabel>Preferences</SettingsSectionLabel>
         <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
           <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">Theme</p>
           <div className="flex gap-2">
@@ -255,7 +248,7 @@ export const SettingsPage = () => {
       </div>
 
       <div>
-        <SectionLabel>Your data</SectionLabel>
+        <SettingsSectionLabel>Your data</SettingsSectionLabel>
         <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
           {dataRows.map((row, i) => (
             <SettingsRow key={row.label} row={row} divided={i > 0} />
@@ -271,7 +264,7 @@ export const SettingsPage = () => {
       </div>
 
       <div>
-        <SectionLabel>Account</SectionLabel>
+        <SettingsSectionLabel>Account</SettingsSectionLabel>
         <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
           <button
             type="button"
@@ -323,42 +316,5 @@ export const SettingsPage = () => {
         dialogRef={importDialogRef}
       />
     </div>
-  )
-}
-
-const SectionLabel = ({ children }: { children: React.ReactNode }) => (
-  <div className="px-2 pb-2 text-[10px] font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
-    {children}
-  </div>
-)
-
-interface SettingsRowProps {
-  row: RowAction
-  divided: boolean
-}
-
-const SettingsRow = ({ row, divided }: SettingsRowProps) => {
-  const { Icon } = row
-  return (
-    <button
-      type="button"
-      onClick={row.onClick}
-      disabled={row.disabled}
-      className={`flex w-full items-center gap-3 px-4 py-3.5 text-left hover:bg-gray-50 disabled:opacity-50 dark:hover:bg-gray-700/40 ${
-        divided ? "border-t border-gray-100 dark:border-gray-700" : ""
-      }`}
-    >
-      <span
-        className={`flex size-8 shrink-0 items-center justify-center rounded-lg ${
-          row.accent
-            ? "bg-primary/10 text-primary"
-            : "bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400"
-        }`}
-      >
-        <Icon className="size-4" />
-      </span>
-      <span className="flex-1 truncate text-sm font-semibold">{row.label}</span>
-      <ChevronRightIcon className="size-4 shrink-0 text-gray-300 dark:text-gray-600" />
-    </button>
   )
 }
