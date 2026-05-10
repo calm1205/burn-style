@@ -4,7 +4,13 @@ import { useNavigate } from "react-router"
 import { api } from "../../common/libs/api"
 import { categoryGlyph } from "../../common/libs/category"
 import { getErrorMessage } from "../../common/libs/client"
-import type { CategoryResponse } from "../../common/libs/types"
+import type {
+  CategoryResponse,
+  VibeNecessity,
+  VibePlanning,
+  VibeSocial,
+} from "../../common/libs/types"
+import { VibePicker } from "../components/VibePicker"
 
 const pad = (n: number) => String(n).padStart(2, "0")
 
@@ -27,6 +33,9 @@ export const ExpensesPage = () => {
     amount: "",
     expensedAt: today,
     categoryUuid: null as string | null,
+    vibeSocial: null as VibeSocial | null,
+    vibePlanning: null as VibePlanning | null,
+    vibeNecessity: null as VibeNecessity | null,
   })
 
   const fetchData = useCallback(async () => {
@@ -59,6 +68,9 @@ export const ExpensesPage = () => {
         amount: Number(form.amount.replace(/,/g, "")),
         expensed_at: form.expensedAt,
         category_uuid: form.categoryUuid,
+        vibe_social: form.vibeSocial,
+        vibe_planning: form.vibePlanning,
+        vibe_necessity: form.vibeNecessity,
       })
       navigate("/expense/monthly")
     } catch (err) {
@@ -147,6 +159,14 @@ export const ExpensesPage = () => {
             </div>
           </div>
         )}
+        <VibePicker
+          social={form.vibeSocial}
+          planning={form.vibePlanning}
+          necessity={form.vibeNecessity}
+          onSocialChange={(v) => setForm((prev) => ({ ...prev, vibeSocial: v }))}
+          onPlanningChange={(v) => setForm((prev) => ({ ...prev, vibePlanning: v }))}
+          onNecessityChange={(v) => setForm((prev) => ({ ...prev, vibeNecessity: v }))}
+        />
       </form>
 
       <button

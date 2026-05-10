@@ -1,5 +1,5 @@
 from src.model.category import Category
-from src.model.expense import Expense
+from src.model.expense import Expense, VibeNecessity, VibePlanning, VibeSocial
 from src.model.expense_category_association import ExpenseCategoryAssociation
 from src.model.expense_template import ExpenseTemplate
 from src.model.recurring_expense import IntervalUnit, RecurringExpense
@@ -15,6 +15,9 @@ __all__ = [
     "IntervalUnit",
     "RecurringExpense",
     "User",
+    "VibeNecessity",
+    "VibePlanning",
+    "VibeSocial",
     "WebAuthnCredential",
     "generate_uuid_string",
 ]
