@@ -1,11 +1,9 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router"
 
-import { api } from "../../common/libs/api"
-import { categoryGlyph } from "../../common/libs/category"
-import { getErrorMessage } from "../../common/libs/client"
-import type { ExpenseResponse } from "../../common/libs/types"
 import { TopHeatmap } from "../components/TopHeatmap"
+import { TopMomentsList } from "../components/TopMomentsList"
+import { TopMonthSummary } from "../components/TopMonthSummary"
+import { useTopMonth } from "../hooks/useTopMonth"
 
 const pad = (n: number) => String(n).padStart(2, "0")
 
@@ -13,16 +11,6 @@ const monthLabel = (year: number, month: number): string =>
   new Date(year, month - 1, 1)
     .toLocaleDateString("en-US", { month: "long", year: "numeric" })
     .toUpperCase()
-
-const dayShort = (iso: string): string => {
-  const d = new Date(iso)
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" })
-}
-
-const timeLabel = (iso: string): string => {
-  const d = new Date(iso)
-  return `${pad(d.getHours())}:${pad(d.getMinutes())}`
-}
 
 export const TopPage = () => {
   const navigate = useNavigate()
@@ -32,41 +20,11 @@ export const TopPage = () => {
   const today = now.getDate()
   const daysInMonth = new Date(year, month, 0).getDate()
 
-  const [expenses, setExpenses] = useState<ExpenseResponse[]>([])
-  const [error, setError] = useState("")
-
-  const fetchData = useCallback(async () => {
-    try {
-      setExpenses(await api.getExpenses(year, month))
-    } catch (err) {
-      setError(getErrorMessage(err, "Failed to fetch data"))
-    }
-  }, [year, month])
-
-  useEffect(() => {
-    fetchData()
-  }, [fetchData])
-
-  const totals = useMemo(() => {
-    const arr: number[] = Array.from({ length: daysInMonth }, () => 0)
-    for (const e of expenses) {
-      const d = new Date(e.expensed_at)
-      if (d.getFullYear() === year && d.getMonth() === month - 1) {
-        arr[d.getDate() - 1] += e.amount
-      }
-    }
-    return arr
-  }, [expenses, year, month, daysInMonth])
-
-  const total = useMemo(() => expenses.reduce((sum, e) => sum + e.amount, 0), [expenses])
-  const perDay = today > 0 ? Math.round(total / today) : 0
-
-  const monthExpenses = useMemo(
-    () =>
-      [...expenses].toSorted(
-        (a, b) => new Date(b.expensed_at).getTime() - new Date(a.expensed_at).getTime(),
-      ),
-    [expenses],
+  const { error, totals, total, perDay, monthExpenses } = useTopMonth(
+    year,
+    month,
+    today,
+    daysInMonth,
   )
 
   return (
@@ -85,26 +43,11 @@ export const TopPage = () => {
           month={month}
           today={today}
           totals={totals}
-          onSelectDay={(day) => {
-            const dateKey = `${year}-${pad(month)}-${pad(day)}`
-            navigate(`/expense/monthly?date=${dateKey}`)
-          }}
+          onSelectDay={(day) => navigate(`/expense/monthly?date=${year}-${pad(month)}-${pad(day)}`)}
         />
       </div>
 
-      <div className="mt-6 shrink-0 border-b border-gray-200 pb-4 dark:border-gray-700">
-        <div className="text-[11px] font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
-          Burned this month
-        </div>
-        <div className="mt-2 flex items-baseline gap-2">
-          <span className="text-4xl font-bold tracking-tight tabular-nums">
-            ¥{total.toLocaleString()}
-          </span>
-          <span className="text-xs text-gray-400 dark:text-gray-500">
-            · ¥{perDay.toLocaleString()}/day
-          </span>
-        </div>
-      </div>
+      <TopMonthSummary total={total} perDay={perDay} />
 
       <div className="mt-5 mb-1.5 flex shrink-0 items-baseline justify-between">
         <span className="text-[11px] font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
@@ -119,50 +62,7 @@ export const TopPage = () => {
         </button>
       </div>
 
-      {monthExpenses.length === 0 ? (
-        <p className="shrink-0 py-6 text-center text-sm text-gray-400 dark:text-gray-500">
-          No expenses yet
-        </p>
-      ) : (
-        <ul className="min-h-0 flex-1 divide-y divide-gray-100 overflow-y-auto pb-2 dark:divide-gray-700">
-          {monthExpenses.map((e, i) => {
-            const c = e.categories[0]
-            const showDate =
-              i === 0 ||
-              new Date(monthExpenses[i - 1].expensed_at).toDateString() !==
-                new Date(e.expensed_at).toDateString()
-            return (
-              <li key={e.uuid}>
-                <button
-                  type="button"
-                  onClick={() => navigate(`/expense/${e.uuid}`)}
-                  className="grid w-full grid-cols-[46px_14px_1fr_auto] items-center gap-1.5 py-2 text-left"
-                >
-                  <span
-                    className={`text-[11px] font-semibold ${
-                      showDate ? "text-gray-500 dark:text-gray-400" : "text-transparent"
-                    }`}
-                  >
-                    {dayShort(e.expensed_at)}
-                  </span>
-                  <span className="text-center text-[11px] text-gray-400 dark:text-gray-500">
-                    {c ? categoryGlyph(c) : "·"}
-                  </span>
-                  <div className="min-w-0">
-                    <div className="truncate text-sm font-medium">{e.name}</div>
-                    <div className="truncate text-[10px] text-gray-400 dark:text-gray-500">
-                      {c ? c.name : "Uncategorized"} · {timeLabel(e.expensed_at)}
-                    </div>
-                  </div>
-                  <span className="text-sm font-medium tabular-nums">
-                    ¥{e.amount.toLocaleString()}
-                  </span>
-                </button>
-              </li>
-            )
-          })}
-        </ul>
-      )}
+      <TopMomentsList expenses={monthExpenses} />
     </div>
   )
 }
