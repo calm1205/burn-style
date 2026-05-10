@@ -27,7 +27,7 @@ export const RecurringExpenseEditPage = () => {
 
       <div className="rounded-2xl bg-white p-5 shadow-sm dark:bg-gray-800">
         <label className="text-xs text-gray-500 dark:text-gray-400" htmlFor="recurring-start">
-          Start date
+          First charge date
         </label>
         <input
           id="recurring-start"
@@ -37,6 +37,9 @@ export const RecurringExpenseEditPage = () => {
           required
           className="mt-1 w-full border-x-0 border-t-0 border-b border-gray-200 bg-transparent py-2 outline-none focus:border-primary dark:border-gray-700 dark:text-gray-100"
         />
+        <p className="mt-2 text-xs text-gray-400 dark:text-gray-500">
+          Future charges repeat on this day.
+        </p>
       </div>
 
       <RecurringCategoryPicker
