@@ -38,8 +38,9 @@ jobs:
       - name: test
         run: cd backend && uv run pytest -v
 
-  deploy:
+  migrate:
     needs: lint-and-test
+    if: inputs.environment == 'production'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -56,15 +57,10 @@ jobs:
       - name: Install Vercel CLI
         run: npm install -g vercel
 
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=${{ inputs.environment }} --token=${{ secrets.VERCEL_TOKEN }}
-
       - name: Install dependencies
-        if: inputs.environment == 'production'
         run: cd backend && uv sync --all-groups
 
       - name: Run database migrations
-        if: inputs.environment == 'production'
         env:
           VERCEL_ENV: production
         run: |
@@ -74,6 +70,23 @@ jobs:
           . .env.production
           set +a
           uv run alembic upgrade head
+
+  deploy:
+    needs: [lint-and-test, migrate]
+    if: |
+      always() &&
+      needs.lint-and-test.result == 'success' &&
+      (needs.migrate.result == 'success' || needs.migrate.result == 'skipped')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=${{ inputs.environment }} --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Build
         run: vercel build ${{ inputs.environment == 'production' && '--prod' || '' }} --token=${{ secrets.VERCEL_TOKEN }}
