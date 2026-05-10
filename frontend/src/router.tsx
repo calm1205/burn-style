@@ -28,11 +28,11 @@ export const router = createBrowserRouter([
     ),
     children: [
       { path: "/", element: <TopPage /> },
+      { path: "/insight", element: <ExpenseInsightPage /> },
       {
         path: "/expense",
         children: [
           { path: "monthly", element: <ExpenseMonthlyPage /> },
-          { path: "insight", element: <ExpenseInsightPage /> },
           { path: "new", element: <ExpensesPage /> },
           { path: "template", element: <ExpenseTemplatePage /> },
           { path: "template/new", element: <ExpenseTemplateRecordPage /> },
