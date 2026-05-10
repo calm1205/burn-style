@@ -166,7 +166,7 @@ export const ExpenseList = ({ expenses, initialFilter }: ExpenseListProps) => {
           {expenses.length === 0 ? "No expenses yet" : "No matches for this filter"}
         </p>
       ) : (
-        <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto pt-2">
+        <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto pt-4">
           {groups.map((g) => (
             <section key={g.key}>
               <div className="mb-1.5 flex items-baseline justify-between px-1 text-[11px] font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
