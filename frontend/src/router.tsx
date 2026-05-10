@@ -3,6 +3,7 @@ import { Navigate, createBrowserRouter } from "react-router"
 import { SignInPage } from "./auth/pages/SignInPage"
 import { SignupPage } from "./auth/pages/SignupPage"
 import { CategoriesPage } from "./category/pages/CategoriesPage"
+import { CategoryEditPage } from "./category/pages/CategoryEditPage"
 import { AppLayout } from "./common/components/AppLayout"
 import { ProtectedRoute } from "./common/components/ProtectedRoute"
 import { RecurringExpenseEditPage } from "./expense-recurring/pages/RecurringExpenseEditPage"
@@ -41,7 +42,14 @@ export const router = createBrowserRouter([
           { path: ":uuid", element: <ExpenseDetailPage /> },
         ],
       },
-      { path: "/category", element: <CategoriesPage /> },
+      {
+        path: "/category",
+        children: [
+          { index: true, element: <CategoriesPage /> },
+          { path: "new", element: <CategoryEditPage /> },
+          { path: ":uuid", element: <CategoryEditPage /> },
+        ],
+      },
       { path: "/setting", element: <SettingsPage /> },
     ],
   },
