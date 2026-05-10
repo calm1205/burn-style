@@ -56,6 +56,7 @@ export interface ExpenseResponse {
   vibe_social: VibeSocial | null
   vibe_planning: VibePlanning | null
   vibe_necessity: VibeNecessity | null
+  recurring_expense_uuid: string | null
 }
 
 export interface ExpenseCreate {
@@ -86,6 +87,7 @@ export interface UserResponse {
 export interface ImportResponse {
   categories_count: number
   expenses_count: number
+  recurring_expenses_count: number
   message: string
 }
 

@@ -21,6 +21,7 @@ class ExpenseResponse(BaseModel):
     vibe_social: VibeSocial | None
     vibe_planning: VibePlanning | None
     vibe_necessity: VibeNecessity | None
+    recurring_expense_uuid: str | None
 
 
 class ExpenseCreate(BaseModel):
