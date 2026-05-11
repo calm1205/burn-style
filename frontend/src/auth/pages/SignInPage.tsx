@@ -16,7 +16,17 @@ export const SignInPage = () => {
 
   // cold start対策: ユーザーが入力している間にAPI/DBを起こしておく
   useEffect(() => {
-    client.get("/health").catch(() => {})
+    const startedAt = performance.now()
+    client
+      .get("/health")
+      .then(() => {
+        const elapsedMs = Math.round(performance.now() - startedAt)
+        console.info("[health] prewarm ok", { elapsedMs })
+      })
+      .catch((err) => {
+        const elapsedMs = Math.round(performance.now() - startedAt)
+        console.warn("[health] prewarm failed", { elapsedMs, err })
+      })
   }, [])
 
   const clearUsername = () => {
