@@ -4,13 +4,36 @@ import os
 from collections.abc import Generator
 from functools import lru_cache
 from pathlib import Path
+from typing import Any
 
 from dotenv import load_dotenv
-from sqlalchemy import Engine, create_engine
+from sqlalchemy import Engine, create_engine, event
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
+from sqlalchemy.pool import Pool
+
+from src.logger import get_logger
 
 # Load environment variables from .env file
 load_dotenv()
+
+logger = get_logger(__name__)
+
+
+@event.listens_for(Pool, "invalidate")
+def _on_pool_invalidate(
+    dbapi_connection: Any,
+    connection_record: Any,
+    exception: BaseException | None,
+) -> None:
+    """死んだDB接続を検知した際にwarning (Neon auto-suspend復帰等の観測用)。"""
+    del dbapi_connection, connection_record
+    logger.warning(
+        "db connection invalidated",
+        extra={
+            "event": "db_connection_invalidate",
+            "exc": str(exception) if exception else None,
+        },
+    )
 
 
 def get_database_url() -> str:
@@ -52,8 +75,12 @@ class Base(DeclarativeBase):
 
 @lru_cache(maxsize=1)
 def get_engine() -> Engine:
-    """DBエンジンを遅延生成。"""
-    return create_engine(get_database_url())
+    """DBエンジンを遅延生成。Neonのauto-suspend(300s)による接続切断を回避するためpool設定を付与。"""
+    return create_engine(
+        get_database_url(),
+        pool_pre_ping=True,
+        pool_recycle=240,
+    )
 
 
 @lru_cache(maxsize=1)
