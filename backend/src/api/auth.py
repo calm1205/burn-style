@@ -15,6 +15,7 @@ from webauthn import (
 from webauthn.helpers.structs import AuthenticatorTransport, PublicKeyCredentialDescriptor
 
 from src.config import get_frontend_origin, get_webauthn_rp_id, get_webauthn_rp_name
+from src.logger import get_logger
 from src.repository.database import get_db
 from src.repository.user_repository import create_user, get_user_by_name
 from src.repository.webauthn_challenge_repository import save_challenge, take_challenge
@@ -37,6 +38,15 @@ from src.schema.auth import (
 from src.service.jwt_service import create_access_token
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
+logger = get_logger("auth")
+
+
+def _log_auth_failure(msg: str, *, reason: str, name: str, error: str | None = None) -> None:
+    """auth経路の4xx失敗を構造化ログに残す。生credential等のPIIは載せない。"""
+    extra: dict[str, str] = {"event": "auth_failure", "reason": reason, "name": name}
+    if error is not None:
+        extra["error"] = error
+    logger.warning(msg, extra=extra)
 
 
 @auth_router.post("/register/options")
@@ -47,6 +57,7 @@ def register_options(
     """登録オプションを生成。"""
     existing = get_user_by_name(db, body.name)
     if existing is not None:
+        _log_auth_failure("register name conflict", reason="name_taken", name=body.name)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Registration failed")
 
     options = generate_registration_options(
@@ -69,6 +80,7 @@ def register_verify(
     """登録を検証しユーザーと資格情報を作成。"""
     challenge = take_challenge(db, body.name)
     if challenge is None:
+        _log_auth_failure("challenge missing on register/verify", reason="challenge_missing", name=body.name)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Challenge not found or expired")
 
     try:
@@ -78,7 +90,10 @@ def register_verify(
             expected_rp_id=get_webauthn_rp_id(),
             expected_origin=get_frontend_origin(),
         )
-    except Exception:
+    except Exception as e:
+        _log_auth_failure(
+            "register verification failed", reason="verification_failed", name=body.name, error=str(e),
+        )
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Registration failed") from None
 
     user = create_user(db, body.name)
@@ -107,6 +122,7 @@ def sign_in_options(
     """認証オプションを生成。"""
     user = get_user_by_name(db, body.name)
     if user is None:
+        _log_auth_failure("signin user not found", reason="user_not_found", name=body.name)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Authentication failed")
 
     credentials = get_credentials_by_user_uuid(db, user.uuid)  # type: ignore[arg-type]
@@ -140,10 +156,12 @@ def sign_in_verify(
     """認証を検証しJWTを返却。"""
     challenge = take_challenge(db, body.name)
     if challenge is None:
+        _log_auth_failure("challenge missing on signin/verify", reason="challenge_missing", name=body.name)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Challenge not found or expired")
 
     user = get_user_by_name(db, body.name)
     if user is None:
+        _log_auth_failure("signin user not found on verify", reason="user_not_found", name=body.name)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Authentication failed")
 
     raw_id = body.credential.get("rawId", "")
@@ -153,6 +171,7 @@ def sign_in_verify(
 
     stored_credential = get_credential_by_credential_id(db, credential_id_bytes)
     if stored_credential is None:
+        _log_auth_failure("credential not found on signin/verify", reason="credential_not_found", name=body.name)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Credential not found")
 
     try:
@@ -164,7 +183,10 @@ def sign_in_verify(
             credential_public_key=stored_credential.credential_public_key,  # type: ignore[arg-type]
             credential_current_sign_count=stored_credential.sign_count,  # type: ignore[arg-type]
         )
-    except Exception:
+    except Exception as e:
+        _log_auth_failure(
+            "signin verification failed", reason="verification_failed", name=body.name, error=str(e),
+        )
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Authentication failed") from None
 
     update_sign_count(db, stored_credential, verification.new_sign_count)
