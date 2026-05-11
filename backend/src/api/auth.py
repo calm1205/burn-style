@@ -17,6 +17,7 @@ from webauthn.helpers.structs import AuthenticatorTransport, PublicKeyCredential
 from src.config import get_frontend_origin, get_webauthn_rp_id, get_webauthn_rp_name
 from src.repository.database import get_db
 from src.repository.user_repository import create_user, get_user_by_name
+from src.repository.webauthn_challenge_repository import save_challenge, take_challenge
 from src.repository.webauthn_repository import (
     create_credential,
     get_credential_by_credential_id,
@@ -33,7 +34,6 @@ from src.schema.auth import (
     SignInVerifyRequest,
     SignInVerifyResponse,
 )
-from src.service.challenge_store import challenge_store
 from src.service.jwt_service import create_access_token
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
@@ -55,7 +55,7 @@ def register_options(
         user_name=body.name,
     )
 
-    challenge_store.save(body.name, options.challenge)
+    save_challenge(db, body.name, options.challenge)
 
     options_json: dict[str, Any] = json.loads(options_to_json(options))
     return RegisterOptionsResponse(options=options_json)
@@ -67,7 +67,7 @@ def register_verify(
     db: Annotated[Session, Depends(get_db)],
 ) -> RegisterVerifyResponse:
     """登録を検証しユーザーと資格情報を作成。"""
-    challenge = challenge_store.get(body.name)
+    challenge = take_challenge(db, body.name)
     if challenge is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Challenge not found or expired")
 
@@ -126,7 +126,7 @@ def sign_in_options(
         allow_credentials=allow_credentials,
     )
 
-    challenge_store.save(body.name, options.challenge)
+    save_challenge(db, body.name, options.challenge)
 
     options_json: dict[str, Any] = json.loads(options_to_json(options))
     return SignInOptionsResponse(options=options_json)
@@ -138,7 +138,7 @@ def sign_in_verify(
     db: Annotated[Session, Depends(get_db)],
 ) -> SignInVerifyResponse:
     """認証を検証しJWTを返却。"""
-    challenge = challenge_store.get(body.name)
+    challenge = take_challenge(db, body.name)
     if challenge is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Challenge not found or expired")
 
