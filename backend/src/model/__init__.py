@@ -4,6 +4,7 @@ from src.model.expense_category_association import ExpenseCategoryAssociation
 from src.model.recurring_expense import IntervalUnit, RecurringExpense
 from src.model.user import User
 from src.model.utils import generate_uuid_string
+from src.model.webauthn_challenge import WebAuthnChallenge
 from src.model.webauthn_credential import WebAuthnCredential
 
 __all__ = [
@@ -16,6 +17,7 @@ __all__ = [
     "VibeNecessity",
     "VibePlanning",
     "VibeSocial",
+    "WebAuthnChallenge",
     "WebAuthnCredential",
     "generate_uuid_string",
 ]
