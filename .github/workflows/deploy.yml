@@ -15,6 +15,10 @@ on:
         required: false
         type: string
 
+env:
+  # actions/cache@v4 等のJS actionをNode 24で動かす (Node 20は2026/9/16撤去予定)
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   backend:
     uses: ./.github/workflows/deploy_backend.yml
