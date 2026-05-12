@@ -1,0 +1,19 @@
+name: Setup Vercel CLI
+description: Install Vercel CLI globally with cache. Bump cache key suffix to force a fresh install.
+
+runs:
+  using: composite
+  steps:
+    - name: Cache Vercel CLI
+      id: cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          /usr/local/lib/node_modules/vercel
+          /usr/local/bin/vercel
+        key: vercel-cli-${{ runner.os }}-v1
+
+    - name: Install Vercel CLI
+      if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: npm install -g vercel
