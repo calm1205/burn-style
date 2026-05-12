@@ -10,8 +10,6 @@ on:
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_BACKEND_PROJECT_ID }}
-  # actions/cache@v4 等のJS actionをNode 24で動かす (Node 20は2026/9/16撤去予定)
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   lint-and-test:
@@ -35,7 +33,7 @@ jobs:
         run: cd backend && uv sync --all-groups
 
       - name: Cache mypy
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: backend/.mypy_cache
           key: mypy-${{ runner.os }}-${{ hashFiles('backend/uv.lock', 'backend/**/*.py') }}
