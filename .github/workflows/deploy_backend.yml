@@ -32,6 +32,14 @@ jobs:
       - name: Install dependencies
         run: cd backend && uv sync --all-groups
 
+      - name: Cache mypy
+        uses: actions/cache@v4
+        with:
+          path: backend/.mypy_cache
+          key: mypy-${{ runner.os }}-${{ hashFiles('backend/uv.lock', 'backend/**/*.py') }}
+          restore-keys: |
+            mypy-${{ runner.os }}-
+
       - name: mypy
         run: cd backend && uv run mypy .
 
