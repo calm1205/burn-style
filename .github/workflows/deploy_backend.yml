@@ -18,11 +18,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Resolve Python version
+        id: python
+        run: echo "version=$(cat backend/.python-version)" >> "$GITHUB_OUTPUT"
+
       - name: Install uv (with Python and cache)
         uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
-          python-version-file: "backend/.python-version"
+          python-version: ${{ steps.python.outputs.version }}
           cache-dependency-glob: "backend/uv.lock"
 
       - name: Install dependencies
@@ -45,11 +49,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Resolve Python version
+        id: python
+        run: echo "version=$(cat backend/.python-version)" >> "$GITHUB_OUTPUT"
+
       - name: Install uv (with Python and cache)
         uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
-          python-version-file: "backend/.python-version"
+          python-version: ${{ steps.python.outputs.version }}
           cache-dependency-glob: "backend/uv.lock"
 
       - name: Install Vercel CLI
@@ -80,11 +88,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Resolve Python version
+        id: python
+        run: echo "version=$(cat backend/.python-version)" >> "$GITHUB_OUTPUT"
+
       - name: Install uv (with Python and cache)
         uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
-          python-version-file: "backend/.python-version"
+          python-version: ${{ steps.python.outputs.version }}
           cache-dependency-glob: "backend/uv.lock"
 
       - name: Install Vercel CLI
