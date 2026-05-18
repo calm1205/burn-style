@@ -47,9 +47,15 @@ class TestPostCategory:
 
     def test_rejects_too_long_symbol(self, auth_client: TestClient) -> None:
         res = auth_client.post(
-            "/categories", json={"name": "x", "symbol": "abcdefghi"},
+            "/categories", json={"name": "x", "symbol": "a" * 65},
         )
         assert res.status_code == 422
+
+    def test_accepts_zwj_emoji(self, auth_client: TestClient) -> None:
+        # ZWJ結合絵文字 (👨‍👩‍👧‍👦 = 7コードポイント) を受け入れること
+        res = auth_client.post("/categories", json={"name": "家族", "symbol": "👨‍👩‍👧‍👦"})
+        assert res.status_code == 201
+        assert res.json()["symbol"] == "👨‍👩‍👧‍👦"
 
     def test_rejects_empty_body(self, auth_client: TestClient) -> None:
         res = auth_client.post("/categories", json={})

@@ -14,12 +14,12 @@ class CategoryResponse(BaseModel):
 
 class CategoryCreate(BaseModel):
     name: str
-    symbol: str | None = Field(default=None, max_length=8)
+    symbol: str | None = Field(default=None, max_length=64)
 
 
 class CategoryUpdate(BaseModel):
     name: str | None = None
-    symbol: str | None = Field(default=None, max_length=8)
+    symbol: str | None = Field(default=None, max_length=64)
 
 
 class CategoryMergeRequest(BaseModel):
