@@ -26,10 +26,20 @@ interface CategoryGlyphPickerProps {
   onChange: (g: string) => void
 }
 
+/** グラフェムクラスタ単位で末尾1文字を抽出。Intl.Segmenter 未対応環境はコードポイントフォールバック。 */
+const lastGrapheme = (v: string): string => {
+  if (!v) return ""
+  if (typeof Intl !== "undefined" && "Segmenter" in Intl) {
+    const segments = [...new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(v)]
+    return segments.length > 0 ? segments[segments.length - 1].segment : ""
+  }
+  const arr = [...v]
+  return arr.length > 0 ? arr[arr.length - 1] : ""
+}
+
 export const CategoryGlyphPicker = ({ glyph, onChange }: CategoryGlyphPickerProps) => {
   const handleInput = (v: string) => {
-    const arr = [...v]
-    onChange(arr.length > 0 ? arr[arr.length - 1] : "")
+    onChange(lastGrapheme(v))
   }
 
   return (
@@ -42,7 +52,7 @@ export const CategoryGlyphPicker = ({ glyph, onChange }: CategoryGlyphPickerProp
         value={glyph}
         onChange={(e) => handleInput(e.target.value)}
         placeholder="Type any emoji or character"
-        maxLength={8}
+        maxLength={64}
         className="w-full rounded-xl border border-gray-200 bg-white px-3.5 py-3 text-center text-lg outline-none focus:ring-2 focus:ring-primary/20 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
       />
       <div className="mt-3 mb-2.5 text-[11px] text-gray-400 dark:text-gray-500">Suggestions</div>
