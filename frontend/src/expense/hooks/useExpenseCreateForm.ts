@@ -9,6 +9,7 @@ import type {
   VibePlanning,
   VibeSocial,
 } from "../../common/libs/types"
+import { toLocalDatetime } from "../libs/datetime"
 
 /** 新規 expense 作成フォームの state とハンドラ。 */
 export const useExpenseCreateForm = () => {
@@ -20,6 +21,7 @@ export const useExpenseCreateForm = () => {
 
   const [name, setName] = useState("")
   const [amount, setAmount] = useState("")
+  const [expensedAt, setExpensedAt] = useState(() => toLocalDatetime(new Date().toISOString()))
   const [categoryUuid, setCategoryUuid] = useState<string | null>(null)
   const [vibeSocial, setVibeSocial] = useState<VibeSocial | null>(null)
   const [vibePlanning, setVibePlanning] = useState<VibePlanning | null>(null)
@@ -46,7 +48,7 @@ export const useExpenseCreateForm = () => {
       await api.createExpense({
         name,
         amount: Number(amount.replace(/,/g, "")),
-        expensed_at: new Date().toISOString(),
+        expensed_at: new Date(expensedAt).toISOString(),
         category_uuid: categoryUuid,
         vibe_social: vibeSocial,
         vibe_planning: vibePlanning,
@@ -69,6 +71,8 @@ export const useExpenseCreateForm = () => {
     setName,
     amount,
     setAmount,
+    expensedAt,
+    setExpensedAt,
     categoryUuid,
     setCategoryUuid,
     vibeSocial,
