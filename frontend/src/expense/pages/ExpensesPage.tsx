@@ -24,23 +24,25 @@ export const ExpensesPage = () => {
       )}
 
       <div className="flex-1 overflow-y-auto">
-        <ExpenseNameInput value={f.name} onChange={f.setName} inputRef={f.nameRef} />
-        <ExpenseAmountInput value={f.amount} onChange={f.setAmount} />
-        <ExpenseDateTimeInput value={f.expensedAt} onChange={f.setExpensedAt} />
-        <ExpenseCategoryChips
-          categories={f.categories}
-          selectedUuid={f.categoryUuid}
-          onSelect={f.setCategoryUuid}
-        />
-        <div className="px-5 pt-5 pb-4">
-          <VibePicker
-            social={f.vibeSocial}
-            planning={f.vibePlanning}
-            necessity={f.vibeNecessity}
-            onSocialChange={f.setVibeSocial}
-            onPlanningChange={f.setVibePlanning}
-            onNecessityChange={f.setVibeNecessity}
+        <div className="flex min-h-full flex-col justify-center py-4">
+          <ExpenseNameInput value={f.name} onChange={f.setName} inputRef={f.nameRef} />
+          <ExpenseAmountInput value={f.amount} onChange={f.setAmount} />
+          <ExpenseDateTimeInput value={f.expensedAt} onChange={f.setExpensedAt} />
+          <ExpenseCategoryChips
+            categories={f.categories}
+            selectedUuid={f.categoryUuid}
+            onSelect={f.setCategoryUuid}
           />
+          <div className="px-5 pt-5">
+            <VibePicker
+              social={f.vibeSocial}
+              planning={f.vibePlanning}
+              necessity={f.vibeNecessity}
+              onSocialChange={f.setVibeSocial}
+              onPlanningChange={f.setVibePlanning}
+              onNecessityChange={f.setVibeNecessity}
+            />
+          </div>
         </div>
       </div>
 

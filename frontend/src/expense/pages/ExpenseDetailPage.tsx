@@ -44,23 +44,25 @@ export const ExpenseDetailPage = () => {
       )}
 
       <div className="flex-1 overflow-y-auto">
-        <ExpenseNameInput value={form.name} onChange={(v) => update("name", v)} />
-        <ExpenseAmountInput value={form.amount} onChange={(v) => update("amount", v)} />
-        <ExpenseDateTimeInput value={form.expensedAt} onChange={(v) => update("expensedAt", v)} />
-        <ExpenseCategoryChips
-          categories={categories}
-          selectedUuid={form.categoryUuid}
-          onSelect={(v) => update("categoryUuid", v)}
-        />
-        <div className="px-5 pt-5 pb-4">
-          <VibePicker
-            social={form.vibeSocial}
-            planning={form.vibePlanning}
-            necessity={form.vibeNecessity}
-            onSocialChange={(v) => update("vibeSocial", v)}
-            onPlanningChange={(v) => update("vibePlanning", v)}
-            onNecessityChange={(v) => update("vibeNecessity", v)}
+        <div className="flex min-h-full flex-col justify-center py-4">
+          <ExpenseNameInput value={form.name} onChange={(v) => update("name", v)} />
+          <ExpenseAmountInput value={form.amount} onChange={(v) => update("amount", v)} />
+          <ExpenseDateTimeInput value={form.expensedAt} onChange={(v) => update("expensedAt", v)} />
+          <ExpenseCategoryChips
+            categories={categories}
+            selectedUuid={form.categoryUuid}
+            onSelect={(v) => update("categoryUuid", v)}
           />
+          <div className="px-5 pt-5">
+            <VibePicker
+              social={form.vibeSocial}
+              planning={form.vibePlanning}
+              necessity={form.vibeNecessity}
+              onSocialChange={(v) => update("vibeSocial", v)}
+              onPlanningChange={(v) => update("vibePlanning", v)}
+              onNecessityChange={(v) => update("vibeNecessity", v)}
+            />
+          </div>
         </div>
       </div>
 
