@@ -6,6 +6,11 @@ interface TopHeatmapProps {
   onSelectDay: (day: number) => void
 }
 
+const compactAmount = new Intl.NumberFormat("en-US", {
+  notation: "compact",
+  maximumFractionDigits: 1,
+})
+
 export const TopHeatmap = ({ year, month, today, totals, onSelectDay }: TopHeatmapProps) => {
   const daysInMonth = new Date(year, month, 0).getDate()
   const firstDow = new Date(year, month - 1, 1).getDay()
@@ -42,7 +47,7 @@ export const TopHeatmap = ({ year, month, today, totals, onSelectDay }: TopHeatm
               onClick={() => onSelectDay(day)}
               disabled={isFuture}
               style={cellStyle}
-              className={`flex aspect-square items-center justify-center rounded-md text-[10px] font-semibold disabled:cursor-default ${
+              className={`flex aspect-square flex-col items-center justify-center rounded-md text-[10px] font-semibold disabled:cursor-default ${
                 isFuture
                   ? "border border-dashed border-gray-200 text-gray-300 dark:border-gray-700 dark:text-gray-600"
                   : isToday
@@ -52,7 +57,12 @@ export const TopHeatmap = ({ year, month, today, totals, onSelectDay }: TopHeatm
                       : ""
               }`}
             >
-              {day}
+              <span>{day}</span>
+              {!isFuture && v > 0 && (
+                <span className="mt-0.5 text-[8px] font-medium tabular-nums opacity-80">
+                  {compactAmount.format(v)}
+                </span>
+              )}
             </button>
           )
         })}
