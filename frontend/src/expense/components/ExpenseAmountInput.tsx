@@ -10,7 +10,7 @@ export const ExpenseAmountInput = ({ value, onChange }: ExpenseAmountInputProps)
   }
 
   return (
-    <div className="px-5 pt-5 text-center">
+    <div className="px-5 pt-6 text-center">
       <div className="flex items-baseline justify-center gap-1">
         <span className="text-2xl font-medium text-gray-500 dark:text-gray-400">¥</span>
         <input

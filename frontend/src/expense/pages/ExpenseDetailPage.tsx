@@ -33,7 +33,7 @@ export const ExpenseDetailPage = () => {
       onSubmit={handleUpdate}
       className="mx-auto flex h-full max-w-2xl flex-col overflow-hidden"
     >
-      <div className="flex shrink-0 justify-center px-4 pt-8 pb-2">
+      <div className="flex shrink-0 justify-center px-5 pt-5 pb-1">
         <span className="text-[11px] font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500">
           Edit expense
         </span>
@@ -52,7 +52,7 @@ export const ExpenseDetailPage = () => {
           selectedUuid={form.categoryUuid}
           onSelect={(v) => update("categoryUuid", v)}
         />
-        <div className="px-4 pt-5 pb-4">
+        <div className="px-5 pt-5 pb-4">
           <VibePicker
             social={form.vibeSocial}
             planning={form.vibePlanning}
@@ -64,11 +64,11 @@ export const ExpenseDetailPage = () => {
         </div>
       </div>
 
-      <div className="shrink-0 px-4 pt-2 pb-3">
+      <div className="shrink-0 px-5 pt-2 pb-3">
         <button
           type="submit"
           disabled={loading || !form.name || !form.amount}
-          className="w-full rounded-2xl bg-primary px-4 py-4 text-sm font-bold text-white shadow-[0_6px_18px_rgba(47,116,208,0.32)] hover:bg-primary-hover disabled:opacity-50 disabled:shadow-none"
+          className="w-full rounded-xl bg-primary px-4 py-3.5 text-sm font-bold text-white shadow-[0_6px_18px_rgba(47,116,208,0.32)] hover:bg-primary-hover disabled:opacity-50 disabled:shadow-none"
         >
           {loading ? "Updating…" : "Update"}
         </button>
