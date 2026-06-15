@@ -5,6 +5,7 @@ import { defaultFilter, type ExpenseFilter } from "../libs/expenseFilter"
 import { FilterSheetAmountSection } from "./FilterSheetAmountSection"
 import { FilterSheetCategorySection } from "./FilterSheetCategorySection"
 import { FilterSheetHeader } from "./FilterSheetHeader"
+import { FilterSheetScopeSection } from "./FilterSheetScopeSection"
 import { FilterSheetSearchSection } from "./FilterSheetSearchSection"
 
 interface ExpenseFilterSheetProps {
@@ -65,6 +66,10 @@ export const ExpenseFilterSheet = ({
           <FilterSheetSearchSection
             value={draft.q}
             onChange={(v) => setDraft({ ...draft, q: v })}
+          />
+          <FilterSheetScopeSection
+            scope={draft.scope}
+            onChange={(v) => setDraft({ ...draft, scope: v })}
           />
           <FilterSheetCategorySection
             categories={categories}
