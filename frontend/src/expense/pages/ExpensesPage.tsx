@@ -11,11 +11,8 @@ export const ExpensesPage = () => {
   return (
     <form
       onSubmit={f.handleSubmit}
-      className="relative mx-auto flex h-full max-w-2xl flex-col overflow-hidden"
+      className="mx-auto flex h-full max-w-2xl flex-col overflow-hidden"
     >
-      <div className="absolute top-5 right-5 z-10">
-        <ExpenseDateTimeInput value={f.expensedAt} onChange={f.setExpensedAt} />
-      </div>
       <div className="flex shrink-0 justify-center px-5 pt-5 pb-1">
         <span className="text-[11px] font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500">
           New expense
@@ -27,7 +24,10 @@ export const ExpensesPage = () => {
       )}
 
       <div className="flex-1 overflow-y-auto">
-        <div className="flex min-h-full flex-col justify-center py-4">
+        <div className="flex min-h-full flex-col justify-center py-8">
+          <div className="flex justify-end px-5">
+            <ExpenseDateTimeInput value={f.expensedAt} onChange={f.setExpensedAt} />
+          </div>
           <ExpenseNameInput value={f.name} onChange={f.setName} inputRef={f.nameRef} />
           <ExpenseAmountInput value={f.amount} onChange={f.setAmount} />
           <ExpenseCategoryChips
