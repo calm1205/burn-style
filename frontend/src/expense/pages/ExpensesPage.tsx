@@ -1,5 +1,6 @@
 import { ExpenseAmountInput } from "../components/ExpenseAmountInput"
 import { ExpenseCategoryChips } from "../components/ExpenseCategoryChips"
+import { ExpenseDateTimeInput } from "../components/ExpenseDateTimeInput"
 import { ExpenseNameInput } from "../components/ExpenseNameInput"
 import { VibePicker } from "../components/VibePicker"
 import { useExpenseCreateForm } from "../hooks/useExpenseCreateForm"
@@ -25,6 +26,7 @@ export const ExpensesPage = () => {
       <div className="flex-1 overflow-y-auto">
         <ExpenseNameInput value={f.name} onChange={f.setName} inputRef={f.nameRef} />
         <ExpenseAmountInput value={f.amount} onChange={f.setAmount} />
+        <ExpenseDateTimeInput value={f.expensedAt} onChange={f.setExpensedAt} />
         <ExpenseCategoryChips
           categories={f.categories}
           selectedUuid={f.categoryUuid}
