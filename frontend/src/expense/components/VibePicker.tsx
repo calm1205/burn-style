@@ -41,25 +41,25 @@ export const VibePicker = ({
 
       <VibeChip
         active={planning === "ROUTINE"}
-        label="Routine"
+        label="Habitual"
         onClick={() => onPlanningChange(planning === "ROUTINE" ? null : "ROUTINE")}
       />
       {separator}
       <VibeChip
         active={planning === "SPONTANEOUS"}
-        label="Spontaneous"
+        label="Impulsive"
         onClick={() => onPlanningChange(planning === "SPONTANEOUS" ? null : "SPONTANEOUS")}
       />
 
       <VibeChip
         active={necessity === "NEEDED"}
-        label="Needed it"
+        label="Need"
         onClick={() => onNecessityChange(necessity === "NEEDED" ? null : "NEEDED")}
       />
       {separator}
       <VibeChip
         active={necessity === "WANTED"}
-        label="Wanted it"
+        label="Want"
         onClick={() => onNecessityChange(necessity === "WANTED" ? null : "WANTED")}
       />
     </div>

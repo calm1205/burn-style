@@ -2,10 +2,10 @@ import type { CategoryResponse, ExpenseResponse } from "../../common/libs/types"
 import type { YearMonth } from "../components/InsightYearChart"
 
 const VIBE_LABELS: { key: string; label: string; field: keyof ExpenseResponse }[] = [
-  { key: "ROUTINE", label: "Routine", field: "vibe_planning" },
-  { key: "SPONTANEOUS", label: "Spontaneous", field: "vibe_planning" },
-  { key: "NEEDED", label: "Needed it", field: "vibe_necessity" },
-  { key: "WANTED", label: "Wanted it", field: "vibe_necessity" },
+  { key: "ROUTINE", label: "Habitual", field: "vibe_planning" },
+  { key: "SPONTANEOUS", label: "Impulsive", field: "vibe_planning" },
+  { key: "NEEDED", label: "Need", field: "vibe_necessity" },
+  { key: "WANTED", label: "Want", field: "vibe_necessity" },
   { key: "SOLO", label: "Solo", field: "vibe_social" },
   { key: "WITH_SOMEONE", label: "With someone", field: "vibe_social" },
 ]
