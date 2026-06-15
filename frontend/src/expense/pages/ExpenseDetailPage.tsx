@@ -70,7 +70,7 @@ export const ExpenseDetailPage = () => {
           disabled={loading || !form.name || !form.amount}
           className="w-full rounded-2xl bg-primary px-4 py-4 text-sm font-bold text-white shadow-[0_6px_18px_rgba(47,116,208,0.32)] hover:bg-primary-hover disabled:opacity-50 disabled:shadow-none"
         >
-          {loading ? "Saving…" : "Save changes"}
+          {loading ? "Updating…" : "Update"}
         </button>
         <button
           type="button"
