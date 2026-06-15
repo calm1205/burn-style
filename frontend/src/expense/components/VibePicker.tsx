@@ -23,14 +23,9 @@ export const VibePicker = ({
   onNecessityChange,
 }: VibePickerProps) => (
   <div className="flex flex-col gap-2">
-    <div className="flex items-baseline justify-between">
-      <span className="text-[10px] font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500">
-        Vibe
-      </span>
-      <span className="text-[10px] tracking-wide text-gray-400 dark:text-gray-500">
-        pick one per row
-      </span>
-    </div>
+    <span className="text-[10px] font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500">
+      Vibe
+    </span>
     <div className="grid grid-cols-[1fr_12px_1fr] gap-y-1.5">
       <VibeChip
         active={social === "SOLO"}
