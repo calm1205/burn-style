@@ -46,11 +46,6 @@ export const ExpenseCategoryChips = ({
           + Category
         </button>
       </div>
-      {!selectedUuid && (
-        <p className="px-1 pt-2 text-[11px] text-gray-400 dark:text-gray-500">
-          No category — saved without one.
-        </p>
-      )}
     </div>
   )
 }
