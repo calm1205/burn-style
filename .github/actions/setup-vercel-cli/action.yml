@@ -11,9 +11,9 @@ runs:
         path: |
           /usr/local/lib/node_modules/vercel
           /usr/local/bin/vercel
-        key: vercel-cli-${{ runner.os }}-v1
+        key: vercel-cli-${{ runner.os }}-v53
 
     - name: Install Vercel CLI
       if: steps.cache.outputs.cache-hit != 'true'
       shell: bash
-      run: npm install -g vercel
+      run: npm install -g vercel@53
