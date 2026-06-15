@@ -45,7 +45,7 @@ export const ExpenseDetailPage = () => {
 
       <div className="flex-1 overflow-y-auto">
         <div className="flex min-h-full flex-col justify-center py-8">
-          <div className="flex justify-end px-5">
+          <div className="flex justify-end pr-2">
             <ExpenseDateTimeInput
               value={form.expensedAt}
               onChange={(v) => update("expensedAt", v)}

@@ -25,7 +25,7 @@ export const ExpensesPage = () => {
 
       <div className="flex-1 overflow-y-auto">
         <div className="flex min-h-full flex-col justify-center py-8">
-          <div className="flex justify-end px-5">
+          <div className="flex justify-end pr-2">
             <ExpenseDateTimeInput value={f.expensedAt} onChange={f.setExpensedAt} />
           </div>
           <ExpenseNameInput value={f.name} onChange={f.setName} inputRef={f.nameRef} />
