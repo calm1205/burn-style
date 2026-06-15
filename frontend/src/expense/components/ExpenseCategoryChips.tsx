@@ -18,7 +18,7 @@ export const ExpenseCategoryChips = ({
   if (categories.length === 0) return null
 
   return (
-    <div className="px-4 pt-4">
+    <div className="px-5 pt-5">
       <div className="flex flex-wrap gap-2">
         {categories.map((c) => {
           const active = selectedUuid === c.uuid
@@ -27,7 +27,7 @@ export const ExpenseCategoryChips = ({
               key={c.uuid}
               type="button"
               onClick={() => onSelect(active ? null : c.uuid)}
-              className={`flex items-center gap-1.5 rounded-2xl border px-3 py-2 text-xs font-semibold ${
+              className={`flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-semibold ${
                 active
                   ? "border-primary bg-primary text-white"
                   : "border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
@@ -41,7 +41,7 @@ export const ExpenseCategoryChips = ({
         <button
           type="button"
           onClick={() => navigate("/category/new")}
-          className="flex items-center rounded-2xl border border-dashed border-gray-300 bg-transparent px-3 py-2 text-xs font-semibold text-gray-500 dark:border-gray-700 dark:text-gray-400"
+          className="flex items-center rounded-xl border border-dashed border-gray-300 bg-transparent px-3 py-2 text-xs font-semibold text-gray-500 dark:border-gray-700 dark:text-gray-400"
         >
           + Category
         </button>
