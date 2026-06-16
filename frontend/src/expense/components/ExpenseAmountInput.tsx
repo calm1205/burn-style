@@ -25,7 +25,7 @@ export const ExpenseAmountInput = ({ value, onChange, inputRef }: ExpenseAmountI
         required
         placeholder="0"
         size={1}
-        className="bg-transparent text-5xl font-bold tracking-tighter tabular-nums outline-none field-sizing-content placeholder:text-gray-300 dark:text-gray-100 dark:placeholder:text-gray-600"
+        className="bg-transparent text-6xl font-bold tracking-tighter tabular-nums outline-none field-sizing-content placeholder:text-gray-300 dark:text-gray-100 dark:placeholder:text-gray-600"
       />
     </div>
   )
