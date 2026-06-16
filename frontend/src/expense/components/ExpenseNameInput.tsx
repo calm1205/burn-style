@@ -16,7 +16,7 @@ export const ExpenseNameInput = ({ value, onChange, inputRef }: ExpenseNameInput
       required
       maxLength={100}
       placeholder="What was this?"
-      className="w-full bg-transparent text-2xl font-bold tracking-tight outline-none placeholder:text-gray-300 dark:text-gray-100 dark:placeholder:text-gray-600"
+      className="w-full bg-transparent text-base font-bold tracking-tight outline-none placeholder:text-gray-300 dark:text-gray-100 dark:placeholder:text-gray-600"
     />
     <div className="mt-2 h-px bg-gray-200 dark:bg-gray-700" />
   </div>
