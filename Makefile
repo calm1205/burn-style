@@ -1,4 +1,4 @@
-.PHONY: lint test-backend migrate upgrade seed db-clear db-connect prod-upgrade
+.PHONY: lint test-backend test-frontend migrate upgrade seed db-clear db-connect prod-upgrade
 
 BACKEND_DIR = backend
 FRONTEND_DIR = frontend
@@ -12,6 +12,9 @@ lint: ## backend(mypy & ruff) + frontend(typecheck & oxlint & oxfmt)
 
 test-backend: ## backendのテストを実行
 	cd $(BACKEND_DIR) && uv run pytest -v
+
+test-frontend: ## frontendのテストを実行
+	cd $(FRONTEND_DIR) && npm test
 
 upgrade: ## データベースを最新バージョンにアップグレード
 	cd $(BACKEND_DIR) && uv run alembic upgrade head
