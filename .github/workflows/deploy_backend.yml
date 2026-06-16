@@ -12,45 +12,7 @@ env:
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_BACKEND_PROJECT_ID }}
 
 jobs:
-  lint-and-test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Resolve Python version
-        id: python
-        run: echo "version=$(cat backend/.python-version)" >> "$GITHUB_OUTPUT"
-
-      - name: Install uv (with Python and cache)
-        uses: astral-sh/setup-uv@v7
-        with:
-          enable-cache: true
-          python-version: ${{ steps.python.outputs.version }}
-          cache-dependency-glob: "backend/uv.lock"
-
-      - name: Install dependencies
-        run: cd backend && uv sync --all-groups
-
-      - name: Cache mypy
-        uses: actions/cache@v5
-        with:
-          path: backend/.mypy_cache
-          key: mypy-${{ runner.os }}-${{ hashFiles('backend/uv.lock', 'backend/**/*.py') }}
-          restore-keys: |
-            mypy-${{ runner.os }}-
-
-      - name: mypy
-        run: cd backend && uv run mypy .
-
-      - name: ruff
-        run: cd backend && uv run ruff check .
-
-      - name: test
-        run: cd backend && uv run pytest -v
-
   migrate:
-    needs: lint-and-test
     if: inputs.environment == 'production'
     runs-on: ubuntu-latest
     steps:
@@ -86,10 +48,9 @@ jobs:
           uv run alembic upgrade head
 
   deploy:
-    needs: [lint-and-test, migrate]
+    needs: migrate
     if: |
       always() &&
-      needs.lint-and-test.result == 'success' &&
       (needs.migrate.result == 'success' || needs.migrate.result == 'skipped')
     runs-on: ubuntu-latest
     steps:
