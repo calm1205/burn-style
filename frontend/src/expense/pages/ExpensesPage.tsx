@@ -13,10 +13,8 @@ export const ExpensesPage = () => {
       onSubmit={f.handleSubmit}
       className="mx-auto flex h-full max-w-2xl flex-col overflow-hidden"
     >
-      <div className="flex shrink-0 justify-center px-5 pt-5 pb-1">
-        <span className="text-[11px] font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500">
-          New expense
-        </span>
+      <div className="flex shrink-0 justify-end px-5 pt-2">
+        <ExpenseDateTimeInput value={f.expensedAt} onChange={f.setExpensedAt} />
       </div>
 
       {f.error && (
@@ -26,9 +24,6 @@ export const ExpensesPage = () => {
       <div className="flex-1 overflow-y-auto">
         <div className="flex min-h-full flex-col justify-center py-8">
           <ExpenseAmountInput value={f.amount} onChange={f.setAmount} inputRef={f.amountRef} />
-          <div className="flex justify-end pr-2 pt-3">
-            <ExpenseDateTimeInput value={f.expensedAt} onChange={f.setExpensedAt} />
-          </div>
           <ExpenseNameInput value={f.name} onChange={f.setName} />
           <ExpenseCategoryChips
             categories={f.categories}
