@@ -1,6 +1,8 @@
 import { FileTextIcon, PlusIcon } from "@radix-ui/react-icons"
 import { useNavigate } from "react-router"
 
+import { focusShim } from "../../common/libs/focusShim"
+
 interface ExpenseEmptyStateProps {
   period: string
 }
@@ -21,6 +23,7 @@ export const ExpenseEmptyState = ({ period }: ExpenseEmptyStateProps) => {
       </div>
       <button
         type="button"
+        onPointerDown={focusShim}
         onClick={() => navigate("/expense/new")}
         className="mt-2 inline-flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2.5 text-sm text-white hover:bg-primary-hover"
       >
