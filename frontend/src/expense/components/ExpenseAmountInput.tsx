@@ -1,9 +1,12 @@
+import type { RefObject } from "react"
+
 interface ExpenseAmountInputProps {
   value: string
   onChange: (v: string) => void
+  inputRef?: RefObject<HTMLInputElement | null>
 }
 
-export const ExpenseAmountInput = ({ value, onChange }: ExpenseAmountInputProps) => {
+export const ExpenseAmountInput = ({ value, onChange, inputRef }: ExpenseAmountInputProps) => {
   const handle = (raw: string) => {
     const digits = raw.replace(/[^0-9]/g, "")
     onChange(digits ? Number(digits).toLocaleString() : "")
@@ -14,8 +17,10 @@ export const ExpenseAmountInput = ({ value, onChange }: ExpenseAmountInputProps)
       <div className="flex items-baseline justify-center gap-1">
         <span className="text-2xl font-medium text-gray-500 dark:text-gray-400">¥</span>
         <input
+          ref={inputRef}
           type="text"
           inputMode="numeric"
+          pattern="[0-9]*"
           value={value}
           onChange={(e) => handle(e.target.value)}
           required

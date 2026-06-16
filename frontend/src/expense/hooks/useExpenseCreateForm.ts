@@ -14,7 +14,7 @@ import { toLocalDatetime } from "../libs/datetime"
 /** 新規 expense 作成フォームの state とハンドラ。 */
 export const useExpenseCreateForm = () => {
   const navigate = useNavigate()
-  const nameRef = useRef<HTMLInputElement>(null)
+  const amountRef = useRef<HTMLInputElement>(null)
   const [categories, setCategories] = useState<CategoryResponse[]>([])
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
@@ -37,7 +37,7 @@ export const useExpenseCreateForm = () => {
 
   useEffect(() => {
     fetchData()
-    nameRef.current?.focus()
+    amountRef.current?.focus()
   }, [fetchData])
 
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
@@ -63,7 +63,7 @@ export const useExpenseCreateForm = () => {
   }
 
   return {
-    nameRef,
+    amountRef,
     categories,
     error,
     loading,
