@@ -43,7 +43,7 @@ export const ExpensesPage = () => {
         </div>
       </div>
 
-      <div className="shrink-0 px-5 pt-2 pb-3">
+      <div className="shrink-0 px-5 pt-2 pb-8">
         <button
           type="submit"
           disabled={f.loading || !f.name || !f.amount}
