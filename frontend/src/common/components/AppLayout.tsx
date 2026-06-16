@@ -4,6 +4,7 @@ import { Outlet, useNavigate } from "react-router"
 
 import { api } from "../libs/api"
 import { STORAGE_KEYS } from "../libs/constants"
+import { focusShimRef } from "../libs/focusShim"
 import type { UserResponse } from "../libs/types"
 import { LayoutLaptop } from "./LayoutLaptop"
 import { LayoutPhone } from "./LayoutPhone"
@@ -47,6 +48,16 @@ export const AppLayout = () => {
         </main>
       </div>
       <LayoutPhone navItems={navItems} />
+      <input
+        ref={(el) => {
+          focusShimRef.current = el
+        }}
+        type="text"
+        inputMode="numeric"
+        aria-hidden
+        tabIndex={-1}
+        className="pointer-events-none fixed top-0 left-[-9999px] size-px opacity-0"
+      />
     </div>
   )
 }
