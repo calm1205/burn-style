@@ -25,11 +25,11 @@ export const ExpensesPage = () => {
 
       <div className="flex-1 overflow-y-auto">
         <div className="flex min-h-full flex-col justify-center py-8">
-          <div className="flex justify-end pr-2">
+          <ExpenseAmountInput value={f.amount} onChange={f.setAmount} inputRef={f.amountRef} />
+          <div className="flex justify-end pr-2 pt-3">
             <ExpenseDateTimeInput value={f.expensedAt} onChange={f.setExpensedAt} />
           </div>
-          <ExpenseNameInput value={f.name} onChange={f.setName} inputRef={f.nameRef} />
-          <ExpenseAmountInput value={f.amount} onChange={f.setAmount} />
+          <ExpenseNameInput value={f.name} onChange={f.setName} />
           <ExpenseCategoryChips
             categories={f.categories}
             selectedUuid={f.categoryUuid}
