@@ -49,10 +49,7 @@ export const ExpenseInsightPage = () => {
       )}
 
       <div className="shrink-0 px-5 pt-2 pb-3">
-        <div className="text-[10px] font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500">
-          The full read
-        </div>
-        <h1 className="mt-1 text-3xl font-bold tracking-tight">Insights</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Insights</h1>
         <div className="mt-1 text-sm text-gray-500 dark:text-gray-400">
           {monthLabel(year, month)}
         </div>
