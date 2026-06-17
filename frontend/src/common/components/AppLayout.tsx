@@ -10,7 +10,7 @@ import { LayoutLaptop } from "./LayoutLaptop"
 import { LayoutPhone } from "./LayoutPhone"
 
 const navItems = [
-  { label: "Today", to: "/", icon: HomeIcon },
+  { label: "Home", to: "/", icon: HomeIcon },
   { label: "Expense", to: "/expense/monthly", icon: RowsIcon },
   { label: "Add", to: "/expense/new", icon: PlusIcon, accent: true },
   { label: "Insights", to: "/insight", icon: BarChartIcon },
