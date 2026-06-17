@@ -6,6 +6,7 @@ export interface SettingsRowAction {
   onClick: () => void
   accent?: boolean
   disabled?: boolean
+  chevron?: boolean
 }
 
 interface SettingsRowProps {
@@ -34,7 +35,9 @@ export const SettingsRow = ({ row, divided }: SettingsRowProps) => {
         <Icon className="size-4" />
       </span>
       <span className="flex-1 truncate text-sm font-semibold">{row.label}</span>
-      <ChevronRightIcon className="size-4 shrink-0 text-gray-300 dark:text-gray-600" />
+      {row.chevron !== false && (
+        <ChevronRightIcon className="size-4 shrink-0 text-gray-300 dark:text-gray-600" />
+      )}
     </button>
   )
 }

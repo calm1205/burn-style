@@ -23,9 +23,6 @@ export interface CategoryStat {
   pct: number
 }
 
-export const monthLabel = (year: number, month: number): string =>
-  new Date(year, month - 1, 1).toLocaleDateString("en-US", { month: "long", year: "numeric" })
-
 export const fmtAmount = (n: number): string => `¥${Math.round(n).toLocaleString()}`
 
 export const computeVibes = (expenses: ExpenseResponse[]): VibeStat[] => {

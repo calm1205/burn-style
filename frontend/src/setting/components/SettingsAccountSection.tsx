@@ -3,14 +3,12 @@ import { ExitIcon, TrashIcon } from "@radix-ui/react-icons"
 import { SettingsSectionLabel } from "./SettingsSectionLabel"
 
 interface SettingsAccountSectionProps {
-  userName: string | undefined
   loading: boolean
   onLogout: () => void
   onOpenDelete: () => void
 }
 
 export const SettingsAccountSection = ({
-  userName,
   loading,
   onLogout,
   onOpenDelete,
@@ -28,9 +26,6 @@ export const SettingsAccountSection = ({
         </span>
         <div className="min-w-0 flex-1">
           <div className="text-sm font-semibold">Log out</div>
-          {userName && (
-            <div className="truncate text-[11px] text-gray-500 dark:text-gray-400">{userName}</div>
-          )}
         </div>
       </button>
       <button
@@ -44,9 +39,6 @@ export const SettingsAccountSection = ({
         </span>
         <div className="min-w-0 flex-1">
           <div className="text-sm font-semibold">Delete account</div>
-          <div className="truncate text-[11px] text-red-400/80 dark:text-red-300/60">
-            Permanently erase all expenses
-          </div>
         </div>
       </button>
     </div>

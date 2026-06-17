@@ -67,7 +67,6 @@ export const SettingsPage = () => {
       />
 
       <SettingsAccountSection
-        userName={user?.name}
         loading={actions.loading}
         onLogout={onLogout}
         onOpenDelete={actions.openDeleteDialog}

@@ -18,17 +18,19 @@ export const SettingsDataSection = ({
 }: SettingsDataSectionProps) => {
   const rows: SettingsRowAction[] = [
     {
-      label: "Import data",
+      label: "Import expenses",
       Icon: DownloadIcon,
       onClick: () => fileInputRef.current?.click(),
       accent: true,
       disabled: loading,
+      chevron: false,
     },
     {
-      label: "Export your data",
+      label: "Export expenses",
       Icon: UploadIcon,
       onClick: onExport,
       accent: true,
+      chevron: false,
     },
   ]
 
