@@ -1,35 +1,35 @@
-# Infrastructure & Deploy
+# インフラ & デプロイ
 
-## Deploy
-- Platform: Vercel (frontend + backend)
-- Production DB: Neon (PostgreSQL)
-- CI/CD: GitHub Actions `workflow_dispatch` (manual trigger), production / preview selectable
-- Workflows: `deploy_backend.yml` / `deploy_frontend.yml`
+## デプロイ
+- プラットフォーム: Vercel (フロントエンド + バックエンド)
+- 本番 DB: Neon (PostgreSQL)
+- CI/CD: GitHub Actions `workflow_dispatch` (手動トリガー)、production / preview 選択可
+- ワークフロー: `deploy_backend.yml` / `deploy_frontend.yml`
 
-## DB Connection Switching
+## DB 接続の切り替え
 - `VERCEL_ENV=production` → Neon
-- Otherwise → local Docker
+- それ以外 → ローカル Docker
 
 ## CORS
 
-- CORS headers are set at the Vercel edge layer via `backend/vercel.json` (`headers`), not by FastAPI middleware.
-- The OPTIONS preflight is handled by a catch-all route in `backend/src/main.py` that returns 204 (Vercel adds the CORS headers).
-- The frontend origin in `vercel.json` is hard-coded; update it there if the production URL changes.
+- CORS ヘッダは FastAPI ミドルウェアではなく `backend/vercel.json` (`headers`) 経由で Vercel エッジ層に設定
+- OPTIONS preflight は `backend/src/main.py` のキャッチオールルートで 204 を返す (CORS ヘッダは Vercel が付与)
+- `vercel.json` 内のフロントエンドオリジンはハードコード — 本番 URL が変わったらここを更新する
 
-## Environment Variables
+## 環境変数
 
-### Local + Production
-| Variable | Purpose |
-|----------|---------|
-| `JWT_SECRET_KEY` | JWT signing secret (32+ chars in production) |
+### ローカル + 本番
+| 変数 | 用途 |
+|------|------|
+| `JWT_SECRET_KEY` | JWT 署名シークレット (本番は32文字以上) |
 | `WEBAUTHN_RP_ID` | WebAuthn RP ID |
-| `WEBAUTHN_RP_NAME` | WebAuthn RP name |
-| `FRONTEND_ORIGIN` | WebAuthn `expected_origin` for register/sign-in verification (NOT used for CORS — that's in `vercel.json`) |
-| `CRON_SECRET` | Bearer token for `/cron/*` endpoints (32+ chars recommended) |
+| `WEBAUTHN_RP_NAME` | WebAuthn RP 名 |
+| `FRONTEND_ORIGIN` | WebAuthn の register/sign-in 検証時の `expected_origin` (CORS には未使用 — それは `vercel.json` 側) |
+| `CRON_SECRET` | `/cron/*` エンドポイント用 Bearer トークン (32文字以上推奨) |
 
-### Production Only
-| Variable | Purpose |
-|----------|---------|
-| `VITE_API_URL` | API endpoint URL |
-| `POSTGRES_URL` | Neon DB connection URL |
-| `VERCEL_ENV` | `production` selects production DB |
+### 本番のみ
+| 変数 | 用途 |
+|------|------|
+| `VITE_API_URL` | API エンドポイント URL |
+| `POSTGRES_URL` | Neon DB 接続 URL |
+| `VERCEL_ENV` | `production` で本番 DB を選択 |

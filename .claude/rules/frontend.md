@@ -1,14 +1,14 @@
-# Frontend Conventions
+# フロントエンド規約
 
-## Coding Conventions
-- Use arrow functions for function definitions (`const fn = () => {}`) — `function` declarations are not allowed
-- Prefer `interface` for type definitions — use `type` only when `interface` cannot express it (e.g., union types)
-- Use named exports only — `export default` is not allowed
+## コーディング規約
+- 関数定義はアロー関数 (`const fn = () => {}`) を使う — `function` 宣言は禁止
+- 型定義は `interface` を優先 — union 型など `interface` で表現できない場合のみ `type` を使う
+- 名前付きエクスポートのみ使用 — `export default` は禁止
 
 ## oxlint / oxfmt
-- oxlint: correctness + suspicious categories enabled
-- oxfmt: spaces, double quotes, no semicolons (auto-inserted only for ASI protection), auto import sorting
+- oxlint: correctness + suspicious カテゴリを有効化
+- oxfmt: スペース・ダブルクォート・セミコロンなし (ASI 保護用に自動挿入のみ)・import 自動ソート
 
 ## Tailwind CSS v4
-- Integrated via Vite plugin (`@tailwindcss/vite`)
-- CSS-first configuration (no `tailwind.config.js`)
+- Vite プラグイン (`@tailwindcss/vite`) で統合
+- CSS-first 設定 (`tailwind.config.js` なし)
