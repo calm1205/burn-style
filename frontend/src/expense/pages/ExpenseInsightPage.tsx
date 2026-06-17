@@ -7,7 +7,7 @@ import { InsightCategoryCard } from "../components/InsightCategoryCard"
 import { InsightSection } from "../components/InsightSection"
 import { InsightVibeCard } from "../components/InsightVibeCard"
 import { InsightYearChart } from "../components/InsightYearChart"
-import { computeCategories, computeVibes, computeYear, monthLabel } from "../libs/insightStats"
+import { computeCategories, computeVibes, computeYear } from "../libs/insightStats"
 
 export const ExpenseInsightPage = () => {
   const [expenses, setExpenses] = useState<ExpenseResponse[]>([])
@@ -50,9 +50,6 @@ export const ExpenseInsightPage = () => {
 
       <div className="shrink-0 px-5 pt-2 pb-3">
         <h1 className="text-3xl font-bold tracking-tight">Insights</h1>
-        <div className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          {monthLabel(year, month)}
-        </div>
       </div>
 
       <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-5 pb-8">

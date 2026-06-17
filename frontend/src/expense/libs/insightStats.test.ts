@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import type { CategoryResponse, ExpenseResponse } from "../../common/libs/types"
-import { computeCategories, computeVibes, computeYear, fmtAmount, monthLabel } from "./insightStats"
+import { computeCategories, computeVibes, computeYear, fmtAmount } from "./insightStats"
 
 const cat = (uuid: string, name: string): CategoryResponse => ({
   uuid,
@@ -24,12 +24,6 @@ const mkExpense = (overrides: Partial<ExpenseResponse> = {}): ExpenseResponse =>
   vibe_necessity: null,
   recurring_expense_uuid: null,
   ...overrides,
-})
-
-describe("monthLabel", () => {
-  it("formats year and month in English long form", () => {
-    expect(monthLabel(2026, 6)).toBe("June 2026")
-  })
 })
 
 describe("fmtAmount", () => {

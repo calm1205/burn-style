@@ -37,10 +37,6 @@ export const CategoriesPage = () => {
           +
         </button>
       </div>
-      <p className="shrink-0 px-5 pb-3 text-xs text-gray-500 dark:text-gray-400">
-        {categories.length} categories · drag to reorder, tap to edit
-      </p>
-
       {error && (
         <p className="mx-5 shrink-0 pb-2 text-sm text-red-600 dark:text-red-400">{error}</p>
       )}
