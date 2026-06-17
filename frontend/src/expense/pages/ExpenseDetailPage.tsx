@@ -33,10 +33,8 @@ export const ExpenseDetailPage = () => {
       onSubmit={handleUpdate}
       className="mx-auto flex h-full max-w-2xl flex-col overflow-hidden"
     >
-      <div className="flex shrink-0 justify-center px-5 pt-5 pb-1">
-        <span className="text-[11px] font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500">
-          Edit expense
-        </span>
+      <div className="flex shrink-0 justify-end px-5 pt-2">
+        <ExpenseDateTimeInput value={form.expensedAt} onChange={(v) => update("expensedAt", v)} />
       </div>
 
       {error && (
@@ -45,14 +43,8 @@ export const ExpenseDetailPage = () => {
 
       <div className="flex-1 overflow-y-auto">
         <div className="flex min-h-full flex-col justify-center py-8">
-          <div className="flex justify-end pr-2">
-            <ExpenseDateTimeInput
-              value={form.expensedAt}
-              onChange={(v) => update("expensedAt", v)}
-            />
-          </div>
-          <ExpenseNameInput value={form.name} onChange={(v) => update("name", v)} />
           <ExpenseAmountInput value={form.amount} onChange={(v) => update("amount", v)} />
+          <ExpenseNameInput value={form.name} onChange={(v) => update("name", v)} />
           <ExpenseCategoryChips
             categories={categories}
             selectedUuid={form.categoryUuid}
