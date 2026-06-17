@@ -10,7 +10,7 @@ export const TopMonthSummary = ({ total, perDay }: TopMonthSummaryProps) => (
         ¥{total.toLocaleString()}
       </span>
       <span className="text-xs text-gray-400 dark:text-gray-500">
-        · ¥{perDay.toLocaleString()}/day
+        ¥{perDay.toLocaleString()}/day
       </span>
     </div>
   </div>
