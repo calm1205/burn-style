@@ -7,6 +7,7 @@ import { ExpenseFilterChips } from "./ExpenseFilterChips"
 import { ExpenseFilterSheet } from "./ExpenseFilterSheet"
 import { ExpenseFlatList } from "./ExpenseFlatList"
 import { ExpenseListFilterButton } from "./ExpenseListFilterButton"
+import { ExpenseListMonthNav } from "./ExpenseListMonthNav"
 import { ExpenseListScopeChips } from "./ExpenseListScopeChips"
 
 interface ExpenseListProps {
@@ -29,8 +30,15 @@ export const ExpenseList = ({ expenses, initialFilter }: ExpenseListProps) => {
 
       <ExpenseListScopeChips
         scope={filter.scope}
-        onChange={(scope) => setFilter({ ...filter, scope })}
+        onChange={(scope) => setFilter({ ...filter, scope, month: null })}
       />
+
+      {filter.scope === "month" && (
+        <ExpenseListMonthNav
+          month={filter.month}
+          onChange={(month) => setFilter({ ...filter, month })}
+        />
+      )}
 
       <ExpenseFilterChips
         filter={filter}
