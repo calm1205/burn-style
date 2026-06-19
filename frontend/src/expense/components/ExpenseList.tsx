@@ -23,9 +23,6 @@ export const ExpenseList = ({ expenses, initialFilter }: ExpenseListProps) => {
   return (
     <>
       <div className="flex shrink-0 items-baseline justify-end gap-2 pt-2">
-        <span className="text-[10px] font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
-          Total
-        </span>
         <span className="text-2xl font-bold tabular-nums">¥{total.toLocaleString()}</span>
       </div>
 
