@@ -38,9 +38,9 @@ export const ExpenseFlatList = ({
             <button
               type="button"
               onClick={() => navigate(`/expense/${e.uuid}`)}
-              className="grid w-full grid-cols-[14px_1fr_auto] items-center gap-1.5 py-2 text-left"
+              className="grid w-full grid-cols-[22px_1fr_auto] items-center gap-2 py-2 text-left"
             >
-              <span className="text-center text-[11px] text-gray-400 dark:text-gray-500">
+              <span className="text-center text-base leading-none text-gray-500 dark:text-gray-400">
                 {c ? categoryGlyph(c) : "·"}
               </span>
               <div className="min-w-0">
