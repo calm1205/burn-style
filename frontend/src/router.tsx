@@ -23,11 +23,10 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      { path: "/", element: <Navigate to="/expense/monthly" replace /> },
+      { path: "/", element: <ExpenseMonthlyPage /> },
       {
         path: "/expense",
         children: [
-          { path: "monthly", element: <ExpenseMonthlyPage /> },
           { path: "new", element: <ExpensesPage /> },
           { path: "recurring", element: <RecurringExpenseListPage /> },
           { path: "recurring/new", element: <RecurringExpenseEditPage /> },
@@ -46,5 +45,5 @@ export const router = createBrowserRouter([
       { path: "/setting", element: <SettingsPage /> },
     ],
   },
-  { path: "*", element: <Navigate to="/expense/monthly" replace /> },
+  { path: "*", element: <Navigate to="/" replace /> },
 ])

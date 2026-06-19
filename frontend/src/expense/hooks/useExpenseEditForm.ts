@@ -100,7 +100,7 @@ export const useExpenseEditForm = (uuid: string | undefined) => {
     try {
       await api.deleteExpense(uuid)
       dialogRef.current?.close()
-      navigate("/expense/monthly")
+      navigate("/")
     } catch (err) {
       setError(getErrorMessage(err, "Delete failed"))
     } finally {
