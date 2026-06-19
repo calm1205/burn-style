@@ -39,7 +39,6 @@ export const ExpenseMonthlyPage = () => {
   return (
     <div className="mx-auto flex h-full max-w-2xl flex-col overflow-hidden px-5">
       {error && <p className="mt-4 text-sm text-red-600 dark:text-red-400">{error}</p>}
-      <h1 className="shrink-0 pt-2 pb-2 text-3xl font-bold tracking-tight">Expense</h1>
       <ExpenseList expenses={expenses} initialFilter={initialFilter} />
     </div>
   )
