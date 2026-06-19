@@ -28,6 +28,7 @@ describe("defaultFilter", () => {
       min: 0,
       max: 0,
       date: null,
+      month: null,
       vibeSocial: null,
       vibePlanning: null,
       vibeNecessity: null,
@@ -49,6 +50,7 @@ describe("filterCount", () => {
         min: 100,
         max: 200,
         date: "2026-06-16",
+        month: null,
         vibeSocial: null,
         vibePlanning: null,
         vibeNecessity: null,
@@ -102,6 +104,13 @@ describe("applyFilter", () => {
     const inMonth = mkExpense({ uuid: "a", expensed_at: new Date(2026, 5, 1).toISOString() })
     const lastMonth = mkExpense({ uuid: "b", expensed_at: new Date(2026, 4, 30).toISOString() })
     const result = applyFilter([inMonth, lastMonth], defaultFilter())
+    expect(result.map((e) => e.uuid)).toEqual(["a"])
+  })
+
+  it("month scope honors explicit month key", () => {
+    const inMonth = mkExpense({ uuid: "a", expensed_at: new Date(2026, 4, 15).toISOString() })
+    const otherMonth = mkExpense({ uuid: "b", expensed_at: new Date(2026, 5, 15).toISOString() })
+    const result = applyFilter([inMonth, otherMonth], { ...defaultFilter(), month: "2026-05" })
     expect(result.map((e) => e.uuid)).toEqual(["a"])
   })
 

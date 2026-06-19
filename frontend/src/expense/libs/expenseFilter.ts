@@ -15,6 +15,8 @@ export interface ExpenseFilter {
   max: number
   /** 特定日のみ表示する場合に YYYY-MM-DD を指定。設定時は scope を無視。 */
   date: string | null
+  /** scope=="month" で対象月を YYYY-MM 指定。null なら当月。 */
+  month: string | null
   vibeSocial: VibeSocial | null
   vibePlanning: VibePlanning | null
   vibeNecessity: VibeNecessity | null
@@ -33,6 +35,7 @@ export const defaultFilter = (): ExpenseFilter => ({
   min: 0,
   max: 0,
   date: null,
+  month: null,
   vibeSocial: null,
   vibePlanning: null,
   vibeNecessity: null,
@@ -62,6 +65,22 @@ export const parseDateKey = (key: string): Date | null => {
   return new Date(parts[0], parts[1] - 1, parts[2])
 }
 
+export const parseMonthKey = (key: string): { year: number; month: number } | null => {
+  const parts = key.split("-").map(Number)
+  if (parts.length !== 2 || parts.some(Number.isNaN)) return null
+  return { year: parts[0], month: parts[1] - 1 }
+}
+
+export const formatMonthKey = (year: number, month: number): string =>
+  `${year}-${String(month + 1).padStart(2, "0")}`
+
+export const shiftMonthKey = (key: string, delta: number): string => {
+  const parsed = parseMonthKey(key)
+  if (!parsed) return key
+  const d = new Date(parsed.year, parsed.month + delta, 1)
+  return formatMonthKey(d.getFullYear(), d.getMonth())
+}
+
 export const applyFilter = (expenses: ExpenseResponse[], f: ExpenseFilter): ExpenseResponse[] => {
   const now = new Date()
   const weekStart = new Date(now)
@@ -78,7 +97,11 @@ export const applyFilter = (expenses: ExpenseResponse[], f: ExpenseFilter): Expe
       if (d < weekStart) return false
       if (d > now && !sameLocalDay(d, now)) return false
     } else if (f.scope === "month") {
-      if (d.getFullYear() !== now.getFullYear() || d.getMonth() !== now.getMonth()) return false
+      const target = f.month
+        ? parseMonthKey(f.month)
+        : { year: now.getFullYear(), month: now.getMonth() }
+      if (!target) return false
+      if (d.getFullYear() !== target.year || d.getMonth() !== target.month) return false
     }
 
     if (f.q && !e.name.toLowerCase().includes(f.q.toLowerCase())) return false
