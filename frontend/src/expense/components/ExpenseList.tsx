@@ -5,7 +5,7 @@ import { useFilteredExpenses } from "../hooks/useFilteredExpenses"
 import { defaultFilter, type ExpenseFilter, filterCount } from "../libs/expenseFilter"
 import { ExpenseFilterChips } from "./ExpenseFilterChips"
 import { ExpenseFilterSheet } from "./ExpenseFilterSheet"
-import { ExpenseListDayGroup } from "./ExpenseListDayGroup"
+import { ExpenseFlatList } from "./ExpenseFlatList"
 import { ExpenseListFilterButton } from "./ExpenseListFilterButton"
 import { ExpenseListScopeChips } from "./ExpenseListScopeChips"
 
@@ -17,7 +17,7 @@ interface ExpenseListProps {
 export const ExpenseList = ({ expenses, initialFilter }: ExpenseListProps) => {
   const [filter, setFilter] = useState<ExpenseFilter>(initialFilter ?? defaultFilter())
   const [sheetOpen, setSheetOpen] = useState(false)
-  const { usedCategories, filtered, groups, total } = useFilteredExpenses(expenses, filter)
+  const { usedCategories, filtered, total } = useFilteredExpenses(expenses, filter)
   const fcount = filterCount(filter)
 
   return (
@@ -39,17 +39,10 @@ export const ExpenseList = ({ expenses, initialFilter }: ExpenseListProps) => {
         onClear={() => setFilter(defaultFilter())}
       />
 
-      {filtered.length === 0 ? (
-        <p className="py-8 text-center text-sm text-gray-400 dark:text-gray-500">
-          {expenses.length === 0 ? "No expenses yet" : "No matches for this filter"}
-        </p>
-      ) : (
-        <div className="mt-4 flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto pt-2">
-          {groups.map((g) => (
-            <ExpenseListDayGroup key={g.key} label={g.label} total={g.total} items={g.items} />
-          ))}
-        </div>
-      )}
+      <ExpenseFlatList
+        expenses={filtered}
+        emptyLabel={expenses.length === 0 ? "No expenses yet" : "No matches for this filter"}
+      />
 
       <ExpenseFilterSheet
         open={sheetOpen}

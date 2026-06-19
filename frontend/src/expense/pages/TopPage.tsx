@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router"
 
+import { ExpenseFlatList } from "../components/ExpenseFlatList"
 import { TopHeatmap } from "../components/TopHeatmap"
-import { TopMomentsList } from "../components/TopMomentsList"
 import { TopMonthSummary } from "../components/TopMonthSummary"
 import { useTopMonth } from "../hooks/useTopMonth"
 
@@ -62,7 +62,7 @@ export const TopPage = () => {
         </button>
       </div>
 
-      <TopMomentsList expenses={monthExpenses} />
+      <ExpenseFlatList expenses={monthExpenses} />
     </div>
   )
 }

@@ -15,16 +15,20 @@ const timeLabel = (iso: string): string => {
   return `${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
 
-interface TopMomentsListProps {
+interface ExpenseFlatListProps {
   expenses: ExpenseResponse[]
+  emptyLabel?: string
 }
 
-export const TopMomentsList = ({ expenses }: TopMomentsListProps) => {
+export const ExpenseFlatList = ({
+  expenses,
+  emptyLabel = "No expenses yet",
+}: ExpenseFlatListProps) => {
   const navigate = useNavigate()
   if (expenses.length === 0) {
     return (
       <p className="shrink-0 py-6 text-center text-sm text-gray-400 dark:text-gray-500">
-        No expenses yet
+        {emptyLabel}
       </p>
     )
   }
