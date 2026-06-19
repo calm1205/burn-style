@@ -10,10 +10,7 @@ interface ExpenseListMonthNavProps {
 const monthLabel = (key: string): string => {
   const parsed = parseMonthKey(key)
   if (!parsed) return key
-  return new Date(parsed.year, parsed.month, 1).toLocaleDateString("en-US", {
-    month: "short",
-    year: "numeric",
-  })
+  return `${parsed.year}/${parsed.month + 1}`
 }
 
 export const ExpenseListMonthNav = ({ month, onChange }: ExpenseListMonthNavProps) => {
