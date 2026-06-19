@@ -23,8 +23,8 @@ export const ExpenseList = ({ expenses, initialFilter }: ExpenseListProps) => {
   return (
     <>
       <div className="flex shrink-0 items-center justify-between gap-2 pt-2">
-        <ExpenseListFilterButton filterCount={fcount} onClick={() => setSheetOpen(true)} />
         <span className="text-2xl font-bold tabular-nums">¥{total.toLocaleString()}</span>
+        <ExpenseListFilterButton filterCount={fcount} onClick={() => setSheetOpen(true)} />
       </div>
 
       <ExpenseListScopeChips
