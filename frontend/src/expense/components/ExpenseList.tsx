@@ -6,8 +6,8 @@ import { defaultFilter, type ExpenseFilter, filterCount } from "../libs/expenseF
 import { ExpenseFilterChips } from "./ExpenseFilterChips"
 import { ExpenseFilterSheet } from "./ExpenseFilterSheet"
 import { ExpenseListDayGroup } from "./ExpenseListDayGroup"
+import { ExpenseListFilterButton } from "./ExpenseListFilterButton"
 import { ExpenseListScopeChips } from "./ExpenseListScopeChips"
-import { ExpenseListSearchBar } from "./ExpenseListSearchBar"
 
 interface ExpenseListProps {
   expenses: ExpenseResponse[]
@@ -22,16 +22,10 @@ export const ExpenseList = ({ expenses, initialFilter }: ExpenseListProps) => {
 
   return (
     <>
-      <div className="flex shrink-0 items-baseline justify-end gap-2 pt-2">
+      <div className="flex shrink-0 items-center justify-between gap-2 pt-2">
+        <ExpenseListFilterButton filterCount={fcount} onClick={() => setSheetOpen(true)} />
         <span className="text-2xl font-bold tabular-nums">¥{total.toLocaleString()}</span>
       </div>
-
-      <ExpenseListSearchBar
-        query={filter.q}
-        filterCount={fcount}
-        onQueryChange={(v) => setFilter({ ...filter, q: v })}
-        onOpenFilter={() => setSheetOpen(true)}
-      />
 
       <ExpenseListScopeChips
         scope={filter.scope}
