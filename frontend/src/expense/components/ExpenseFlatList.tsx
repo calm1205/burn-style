@@ -37,6 +37,7 @@ export const ExpenseFlatList = ({
     <ul className="min-h-0 flex-1 divide-y divide-gray-100 overflow-y-auto pb-2 dark:divide-gray-700">
       {expenses.map((e, i) => {
         const c = e.categories[0]
+        const hasSymbol = !!c?.symbol?.trim()
         const showDate =
           i === 0 ||
           new Date(expenses[i - 1].expensed_at).toDateString() !==
@@ -61,7 +62,9 @@ export const ExpenseFlatList = ({
               <div className="min-w-0">
                 <div className="truncate text-sm font-medium">{e.name}</div>
                 <div className="truncate text-[10px] text-gray-400 dark:text-gray-500">
-                  {c ? c.name : "Uncategorized"} · {timeLabel(e.expensed_at)}
+                  {hasSymbol
+                    ? timeLabel(e.expensed_at)
+                    : `${c ? c.name : "Uncategorized"} · ${timeLabel(e.expensed_at)}`}
                 </div>
               </div>
               <span className="text-sm font-medium tabular-nums">¥{e.amount.toLocaleString()}</span>
