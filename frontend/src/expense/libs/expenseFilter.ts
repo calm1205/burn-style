@@ -1,4 +1,9 @@
-import type { ExpenseResponse } from "../../common/libs/types"
+import type {
+  ExpenseResponse,
+  VibeNecessity,
+  VibePlanning,
+  VibeSocial,
+} from "../../common/libs/types"
 
 export type FilterScope = "week" | "month" | "all"
 
@@ -10,6 +15,9 @@ export interface ExpenseFilter {
   max: number
   /** 特定日のみ表示する場合に YYYY-MM-DD を指定。設定時は scope を無視。 */
   date: string | null
+  vibeSocial: VibeSocial | null
+  vibePlanning: VibePlanning | null
+  vibeNecessity: VibeNecessity | null
 }
 
 export const SCOPE_OPTIONS: { k: FilterScope; label: string; short: string }[] = [
@@ -25,6 +33,9 @@ export const defaultFilter = (): ExpenseFilter => ({
   min: 0,
   max: 0,
   date: null,
+  vibeSocial: null,
+  vibePlanning: null,
+  vibeNecessity: null,
 })
 
 export const filterCount = (f: ExpenseFilter): number => {
@@ -34,6 +45,9 @@ export const filterCount = (f: ExpenseFilter): number => {
   if (f.categoryUuids.length > 0) n++
   if (f.min > 0 || f.max > 0) n++
   if (f.date) n++
+  if (f.vibeSocial) n++
+  if (f.vibePlanning) n++
+  if (f.vibeNecessity) n++
   return n
 }
 
@@ -74,6 +88,9 @@ export const applyFilter = (expenses: ExpenseResponse[], f: ExpenseFilter): Expe
     }
     if (f.min > 0 && e.amount < f.min) return false
     if (f.max > 0 && e.amount > f.max) return false
+    if (f.vibeSocial && e.vibe_social !== f.vibeSocial) return false
+    if (f.vibePlanning && e.vibe_planning !== f.vibePlanning) return false
+    if (f.vibeNecessity && e.vibe_necessity !== f.vibeNecessity) return false
     return true
   })
 }

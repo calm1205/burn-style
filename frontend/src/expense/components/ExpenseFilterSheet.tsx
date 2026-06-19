@@ -7,6 +7,7 @@ import { FilterSheetCategorySection } from "./FilterSheetCategorySection"
 import { FilterSheetHeader } from "./FilterSheetHeader"
 import { FilterSheetScopeSection } from "./FilterSheetScopeSection"
 import { FilterSheetSearchSection } from "./FilterSheetSearchSection"
+import { FilterSheetVibeSection } from "./FilterSheetVibeSection"
 
 interface ExpenseFilterSheetProps {
   open: boolean
@@ -83,6 +84,14 @@ export const ExpenseFilterSheet = ({
             onMinChange={(v) => setDraft({ ...draft, min: v })}
             onMaxChange={(v) => setDraft({ ...draft, max: v })}
             onPreset={(min, max) => setDraft({ ...draft, min, max })}
+          />
+          <FilterSheetVibeSection
+            social={draft.vibeSocial}
+            planning={draft.vibePlanning}
+            necessity={draft.vibeNecessity}
+            onSocialChange={(v) => setDraft({ ...draft, vibeSocial: v })}
+            onPlanningChange={(v) => setDraft({ ...draft, vibePlanning: v })}
+            onNecessityChange={(v) => setDraft({ ...draft, vibeNecessity: v })}
           />
 
           <button

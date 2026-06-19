@@ -30,7 +30,10 @@ export const ExpensesPage = () => {
             selectedUuid={f.categoryUuid}
             onSelect={f.setCategoryUuid}
           />
-          <div className="px-5 pt-5">
+          <div className="flex flex-col gap-2 px-5 pt-5">
+            <span className="text-[10px] font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500">
+              Vibe
+            </span>
             <VibePicker
               social={f.vibeSocial}
               planning={f.vibePlanning}
