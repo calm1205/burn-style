@@ -49,10 +49,7 @@ export const ExpenseFilterSheet = ({
     onClose()
   }
 
-  const reset = () => {
-    onApply(defaultFilter())
-    onClose()
-  }
+  const reset = () => setDraft(defaultFilter())
 
   return (
     <dialog
@@ -61,7 +58,7 @@ export const ExpenseFilterSheet = ({
       className="m-0 h-full max-h-none w-full max-w-none bg-gray-50 text-gray-900 backdrop:bg-black/30 dark:bg-gray-900 dark:text-gray-100"
     >
       <div className="flex h-full flex-col">
-        <FilterSheetHeader onCancel={onClose} onApply={apply} />
+        <FilterSheetHeader onCancel={onClose} onReset={reset} />
 
         <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-5 py-5 pb-24">
           <FilterSheetSearchSection
@@ -93,13 +90,15 @@ export const ExpenseFilterSheet = ({
             onPlanningChange={(v) => setDraft({ ...draft, vibePlanning: v })}
             onNecessityChange={(v) => setDraft({ ...draft, vibeNecessity: v })}
           />
+        </div>
 
+        <div className="shrink-0 px-5 pt-2 pb-8">
           <button
             type="button"
-            onClick={reset}
-            className="mt-4 rounded-xl border border-gray-200 py-3 text-sm font-semibold text-gray-500 dark:border-gray-700 dark:text-gray-400"
+            onClick={apply}
+            className="w-full rounded-xl bg-primary px-4 py-3.5 text-sm font-bold text-white shadow-[0_6px_18px_rgba(47,116,208,0.32)] hover:bg-primary-hover"
           >
-            Reset all filters
+            Apply
           </button>
         </div>
       </div>
