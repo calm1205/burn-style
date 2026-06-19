@@ -23,15 +23,17 @@ export const ExpenseList = ({ expenses, initialFilter }: ExpenseListProps) => {
 
   return (
     <>
-      <div className="flex shrink-0 items-center justify-between gap-2 pt-2">
+      <div className="flex shrink-0 items-center justify-end pt-2">
         <span className="text-2xl font-bold tabular-nums">¥{total.toLocaleString()}</span>
-        <ExpenseListFilterButton filterCount={fcount} onClick={() => setSheetOpen(true)} />
       </div>
 
-      <ExpenseListScopeChips
-        scope={filter.scope}
-        onChange={(scope) => setFilter({ ...filter, scope, month: null })}
-      />
+      <div className="flex shrink-0 items-center justify-between gap-2">
+        <ExpenseListScopeChips
+          scope={filter.scope}
+          onChange={(scope) => setFilter({ ...filter, scope, month: null })}
+        />
+        <ExpenseListFilterButton filterCount={fcount} onClick={() => setSheetOpen(true)} />
+      </div>
 
       {filter.scope === "month" && (
         <ExpenseListMonthNav
