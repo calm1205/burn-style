@@ -28,6 +28,9 @@ describe("defaultFilter", () => {
       min: 0,
       max: 0,
       date: null,
+      vibeSocial: null,
+      vibePlanning: null,
+      vibeNecessity: null,
     })
   })
 })
@@ -46,6 +49,9 @@ describe("filterCount", () => {
         min: 100,
         max: 200,
         date: "2026-06-16",
+        vibeSocial: null,
+        vibePlanning: null,
+        vibeNecessity: null,
       }),
     ).toBe(5)
   })
@@ -53,6 +59,17 @@ describe("filterCount", () => {
   it("does not double-count when only min or only max is set", () => {
     expect(filterCount({ ...defaultFilter(), min: 100 })).toBe(1)
     expect(filterCount({ ...defaultFilter(), max: 100 })).toBe(1)
+  })
+
+  it("counts each vibe axis independently", () => {
+    expect(
+      filterCount({
+        ...defaultFilter(),
+        vibeSocial: "SOLO",
+        vibePlanning: "ROUTINE",
+        vibeNecessity: "NEEDED",
+      }),
+    ).toBe(3)
   })
 })
 
@@ -124,6 +141,41 @@ describe("applyFilter", () => {
     const result = applyFilter([hit, miss], {
       ...defaultFilter(),
       categoryUuids: ["c1"],
+    })
+    expect(result.map((e) => e.uuid)).toEqual(["a"])
+  })
+
+  it("filters by each vibe axis independently", () => {
+    const solo = mkExpense({ uuid: "a", vibe_social: "SOLO" })
+    const with_ = mkExpense({ uuid: "b", vibe_social: "WITH_SOMEONE" })
+    const none = mkExpense({ uuid: "c", vibe_social: null })
+    const result = applyFilter([solo, with_, none], {
+      ...defaultFilter(),
+      scope: "all",
+      vibeSocial: "SOLO",
+    })
+    expect(result.map((e) => e.uuid)).toEqual(["a"])
+  })
+
+  it("combines multiple vibe axes with AND semantics", () => {
+    const hit = mkExpense({
+      uuid: "a",
+      vibe_social: "SOLO",
+      vibe_planning: "ROUTINE",
+      vibe_necessity: "NEEDED",
+    })
+    const partial = mkExpense({
+      uuid: "b",
+      vibe_social: "SOLO",
+      vibe_planning: "SPONTANEOUS",
+      vibe_necessity: "NEEDED",
+    })
+    const result = applyFilter([hit, partial], {
+      ...defaultFilter(),
+      scope: "all",
+      vibeSocial: "SOLO",
+      vibePlanning: "ROUTINE",
+      vibeNecessity: "NEEDED",
     })
     expect(result.map((e) => e.uuid)).toEqual(["a"])
   })
