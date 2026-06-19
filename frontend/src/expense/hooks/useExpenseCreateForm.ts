@@ -54,7 +54,7 @@ export const useExpenseCreateForm = () => {
         vibe_planning: vibePlanning,
         vibe_necessity: vibeNecessity,
       })
-      navigate("/expense/monthly")
+      navigate("/")
     } catch (err) {
       setError(getErrorMessage(err, "Failed to create"))
     } finally {
