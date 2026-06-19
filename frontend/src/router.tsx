@@ -11,7 +11,6 @@ import { RecurringExpenseListPage } from "./expense-recurring/pages/RecurringExp
 import { ExpenseDetailPage } from "./expense/pages/ExpenseDetailPage"
 import { ExpenseMonthlyPage } from "./expense/pages/ExpenseMonthlyPage"
 import { ExpensesPage } from "./expense/pages/ExpensesPage"
-import { TopPage } from "./expense/pages/TopPage"
 import { SettingsPage } from "./setting/pages/SettingsPage"
 
 export const router = createBrowserRouter([
@@ -24,7 +23,7 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      { path: "/", element: <TopPage /> },
+      { path: "/", element: <Navigate to="/expense/monthly" replace /> },
       {
         path: "/expense",
         children: [
@@ -47,5 +46,5 @@ export const router = createBrowserRouter([
       { path: "/setting", element: <SettingsPage /> },
     ],
   },
-  { path: "*", element: <Navigate to="/" replace /> },
+  { path: "*", element: <Navigate to="/expense/monthly" replace /> },
 ])

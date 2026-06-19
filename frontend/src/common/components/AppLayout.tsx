@@ -1,4 +1,4 @@
-import { GearIcon, HomeIcon, PlusIcon, RowsIcon } from "@radix-ui/react-icons"
+import { GearIcon, PlusIcon, RowsIcon } from "@radix-ui/react-icons"
 import { useCallback, useEffect, useState } from "react"
 import { Outlet, useNavigate } from "react-router"
 
@@ -10,7 +10,6 @@ import { LayoutLaptop } from "./LayoutLaptop"
 import { LayoutPhone } from "./LayoutPhone"
 
 const navItems = [
-  { label: "Home", to: "/", icon: HomeIcon },
   { label: "Expense", to: "/expense/monthly", icon: RowsIcon },
   { label: "Add", to: "/expense/new", icon: PlusIcon, accent: true },
   { label: "Setting", to: "/setting", icon: GearIcon },
