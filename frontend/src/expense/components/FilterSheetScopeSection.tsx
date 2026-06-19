@@ -7,9 +7,20 @@ interface FilterSheetScopeSectionProps {
 
 export const FilterSheetScopeSection = ({ scope, onChange }: FilterSheetScopeSectionProps) => (
   <section>
-    <h3 className="mb-2 text-[11px] font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
-      Period
-    </h3>
+    <div className="mb-2 flex items-center justify-between">
+      <h3 className="text-[11px] font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
+        Period
+      </h3>
+      {scope !== "month" && (
+        <button
+          type="button"
+          onClick={() => onChange("month")}
+          className="text-[11px] text-gray-400"
+        >
+          clear
+        </button>
+      )}
+    </div>
     <div className="flex flex-wrap gap-2">
       {SCOPE_OPTIONS.map((s) => {
         const on = scope === s.k
