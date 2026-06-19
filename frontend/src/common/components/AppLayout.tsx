@@ -1,4 +1,4 @@
-import { BarChartIcon, HomeIcon, PersonIcon, PlusIcon, RowsIcon } from "@radix-ui/react-icons"
+import { HomeIcon, PersonIcon, PlusIcon, RowsIcon } from "@radix-ui/react-icons"
 import { useCallback, useEffect, useState } from "react"
 import { Outlet, useNavigate } from "react-router"
 
@@ -13,7 +13,6 @@ const navItems = [
   { label: "Home", to: "/", icon: HomeIcon },
   { label: "Expense", to: "/expense/monthly", icon: RowsIcon },
   { label: "Add", to: "/expense/new", icon: PlusIcon, accent: true },
-  { label: "Insights", to: "/insight", icon: BarChartIcon },
   { label: "You", to: "/setting", icon: PersonIcon },
 ]
 

@@ -9,7 +9,6 @@ import { ProtectedRoute } from "./common/components/ProtectedRoute"
 import { RecurringExpenseEditPage } from "./expense-recurring/pages/RecurringExpenseEditPage"
 import { RecurringExpenseListPage } from "./expense-recurring/pages/RecurringExpenseListPage"
 import { ExpenseDetailPage } from "./expense/pages/ExpenseDetailPage"
-import { ExpenseInsightPage } from "./expense/pages/ExpenseInsightPage"
 import { ExpenseMonthlyPage } from "./expense/pages/ExpenseMonthlyPage"
 import { ExpensesPage } from "./expense/pages/ExpensesPage"
 import { TopPage } from "./expense/pages/TopPage"
@@ -26,7 +25,6 @@ export const router = createBrowserRouter([
     ),
     children: [
       { path: "/", element: <TopPage /> },
-      { path: "/insight", element: <ExpenseInsightPage /> },
       {
         path: "/expense",
         children: [
