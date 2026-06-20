@@ -1,4 +1,4 @@
-import { ChevronRightIcon, PlusIcon } from "@radix-ui/react-icons"
+import { PlusIcon } from "@radix-ui/react-icons"
 import { useNavigate } from "react-router"
 
 import { categoryGlyph } from "../../common/libs/category"
@@ -26,7 +26,6 @@ export const RecurringList = ({ items }: RecurringListProps) => {
             <PlusIcon className="size-4" />
           </span>
           <span className="flex-1 text-sm font-medium text-primary">Add recurring</span>
-          <ChevronRightIcon className="size-4 text-gray-300 dark:text-gray-600" />
         </button>
         {items.map((r) => {
           const next = nextOccurrence(r.start_date, r.interval_unit, r.interval_count, r.end_date)
@@ -55,7 +54,6 @@ export const RecurringList = ({ items }: RecurringListProps) => {
                   {PERIOD_LABEL[periodKey]}
                 </span>
               </div>
-              <ChevronRightIcon className="size-4 text-gray-300 dark:text-gray-600" />
             </button>
           )
         })}
