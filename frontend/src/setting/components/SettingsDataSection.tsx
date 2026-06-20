@@ -18,7 +18,7 @@ export const SettingsDataSection = ({
 }: SettingsDataSectionProps) => {
   const rows: SettingsRowAction[] = [
     {
-      label: "Import expenses",
+      label: "Import",
       Icon: DownloadIcon,
       onClick: () => fileInputRef.current?.click(),
       accent: true,
@@ -26,7 +26,7 @@ export const SettingsDataSection = ({
       chevron: false,
     },
     {
-      label: "Export expenses",
+      label: "Export",
       Icon: UploadIcon,
       onClick: onExport,
       accent: true,
@@ -36,7 +36,7 @@ export const SettingsDataSection = ({
 
   return (
     <div>
-      <SettingsSectionLabel>Your data</SettingsSectionLabel>
+      <SettingsSectionLabel>Your expense</SettingsSectionLabel>
       <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
         {rows.map((row, i) => (
           <SettingsRow key={row.label} row={row} divided={i > 0} />
