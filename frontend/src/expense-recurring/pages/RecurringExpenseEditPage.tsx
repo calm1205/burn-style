@@ -1,5 +1,5 @@
-import { TrashIcon } from "@radix-ui/react-icons"
-import { useParams } from "react-router"
+import { ArrowLeftIcon, TrashIcon } from "@radix-ui/react-icons"
+import { useNavigate, useParams } from "react-router"
 
 import { ConfirmDialog } from "../../common/components/ConfirmDialog"
 import { ExpenseAmountInput } from "../../expense/components/ExpenseAmountInput"
@@ -10,6 +10,7 @@ import { RecurringStartDateInput } from "../components/RecurringStartDateInput"
 import { useRecurringExpenseForm } from "../hooks/useRecurringExpenseForm"
 
 export const RecurringExpenseEditPage = () => {
+  const navigate = useNavigate()
   const { uuid } = useParams<{ uuid: string }>()
   const f = useRecurringExpenseForm(uuid)
 
@@ -18,7 +19,15 @@ export const RecurringExpenseEditPage = () => {
       onSubmit={f.handleSubmit}
       className="mx-auto flex h-full max-w-2xl flex-col overflow-hidden"
     >
-      <div className="flex shrink-0 justify-end px-5 pt-2">
+      <div className="flex shrink-0 items-center justify-between px-5 pt-2">
+        <button
+          type="button"
+          onClick={() => navigate("/expense/recurring")}
+          aria-label="Back"
+          className="-ml-1 p-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+        >
+          <ArrowLeftIcon className="size-4" />
+        </button>
         <RecurringStartDateInput value={f.startDate} onChange={f.setStartDate} />
       </div>
 
