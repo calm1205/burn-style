@@ -53,8 +53,8 @@ export const RecurringFrequencyGroup = ({ group, items, due }: RecurringFrequenc
             >
               <div className="flex flex-1 flex-col">
                 <div className="flex items-center gap-2 text-sm font-medium">
-                  <span>{r.name}</span>
                   <span>{categoryGlyph(r.category)}</span>
+                  <span>{r.name}</span>
                 </div>
                 {next && (
                   <div className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
