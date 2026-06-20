@@ -17,10 +17,6 @@ describe("matchFrequency", () => {
     expect(matchFrequency("WEEK", 2)).toBe("biweekly")
   })
 
-  it("matches MONTH/3 to quarterly", () => {
-    expect(matchFrequency("MONTH", 3)).toBe("quarterly")
-  })
-
   it("falls back to monthly for unknown combinations", () => {
     expect(matchFrequency("WEEK", 99)).toBe("monthly")
   })

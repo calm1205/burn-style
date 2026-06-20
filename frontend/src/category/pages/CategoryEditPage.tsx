@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from "react-router"
 
+import { CategoryDeleteModal } from "../components/CategoryDeleteModal"
 import { CategoryGlyphPicker } from "../components/CategoryGlyphPicker"
 import { useCategoryEditForm } from "../hooks/useCategoryEditForm"
 
@@ -54,7 +55,28 @@ export const CategoryEditPage = () => {
         />
 
         <CategoryGlyphPicker glyph={f.glyph} onChange={f.setGlyph} />
+
+        {!f.isNew && (
+          <button
+            type="button"
+            onClick={() => f.setConfirmingDelete(true)}
+            disabled={f.loading}
+            className="mt-8 w-full rounded-xl border border-red-200 py-3 text-sm font-semibold text-red-600 disabled:opacity-50 dark:border-red-900/50 dark:text-red-400"
+          >
+            Delete category
+          </button>
+        )}
       </div>
+
+      {f.confirmingDelete && !f.isNew && (
+        <CategoryDeleteModal
+          name={f.trimmed}
+          used={f.usage}
+          loading={f.loading}
+          onDelete={f.remove}
+          onClose={() => f.setConfirmingDelete(false)}
+        />
+      )}
     </div>
   )
 }

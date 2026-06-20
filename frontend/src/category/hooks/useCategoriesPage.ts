@@ -12,7 +12,6 @@ export const useCategoriesPage = () => {
   const [expenses, setExpenses] = useState<ExpenseResponse[]>([])
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-  const [confirmDel, setConfirmDel] = useState<string | null>(null)
   const [mergingFrom, setMergingFrom] = useState<string | null>(null)
 
   const fetchData = useCallback(async () => {
@@ -56,21 +55,6 @@ export const useCategoriesPage = () => {
     }
   }
 
-  const handleDelete = async () => {
-    if (!confirmDel) return
-    setError("")
-    setLoading(true)
-    try {
-      await api.deleteCategory(confirmDel)
-      setConfirmDel(null)
-      await fetchData()
-    } catch (err) {
-      setError(getErrorMessage(err, "Delete failed"))
-    } finally {
-      setLoading(false)
-    }
-  }
-
   const handleMerge = async (targetUuid: string) => {
     if (!mergingFrom) return
     setError("")
@@ -89,9 +73,6 @@ export const useCategoriesPage = () => {
   const mergingCategory = mergingFrom
     ? (categories.find((c) => c.uuid === mergingFrom) ?? null)
     : null
-  const confirmCategory = confirmDel
-    ? (categories.find((c) => c.uuid === confirmDel) ?? null)
-    : null
 
   return {
     categories,
@@ -99,12 +80,9 @@ export const useCategoriesPage = () => {
     error,
     loading,
     mergingCategory,
-    confirmCategory,
     mergingFrom,
     setMergingFrom,
-    setConfirmDel,
     handleDragEnd,
-    handleDelete,
     handleMerge,
   }
 }

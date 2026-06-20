@@ -22,7 +22,6 @@ interface CategoryListProps {
   usage: Record<string, number>
   onEdit: (uuid: string) => void
   onMerge: (uuid: string) => void
-  onDelete: (uuid: string) => void
   onDragEnd: (event: DragEndEvent) => void
 }
 
@@ -31,7 +30,6 @@ export const CategoryList = ({
   usage,
   onEdit,
   onMerge,
-  onDelete,
   onDragEnd,
 }: CategoryListProps) => {
   const sensors = useSensors(
@@ -51,7 +49,6 @@ export const CategoryList = ({
               used={usage[c.uuid] ?? 0}
               onEdit={() => onEdit(c.uuid)}
               onMerge={() => onMerge(c.uuid)}
-              onDelete={() => onDelete(c.uuid)}
               mergeDisabled={categories.length < 2}
             />
           ))}

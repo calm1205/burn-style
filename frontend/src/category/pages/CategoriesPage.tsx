@@ -1,7 +1,6 @@
 import { PlusIcon } from "@radix-ui/react-icons"
 import { useNavigate } from "react-router"
 
-import { CategoryDeleteModal } from "../components/CategoryDeleteModal"
 import { CategoryList } from "../components/CategoryList"
 import { CategoryMergeModal } from "../components/CategoryMergeModal"
 import { useCategoriesPage } from "../hooks/useCategoriesPage"
@@ -14,12 +13,9 @@ export const CategoriesPage = () => {
     error,
     loading,
     mergingCategory,
-    confirmCategory,
     mergingFrom,
     setMergingFrom,
-    setConfirmDel,
     handleDragEnd,
-    handleDelete,
     handleMerge,
   } = useCategoriesPage()
 
@@ -43,7 +39,6 @@ export const CategoriesPage = () => {
             usage={usage}
             onEdit={(uuid) => navigate(`/category/${uuid}`)}
             onMerge={setMergingFrom}
-            onDelete={setConfirmDel}
             onDragEnd={handleDragEnd}
           />
         )}
@@ -66,16 +61,6 @@ export const CategoriesPage = () => {
           loading={loading}
           onMerge={handleMerge}
           onClose={() => setMergingFrom(null)}
-        />
-      )}
-
-      {confirmCategory && (
-        <CategoryDeleteModal
-          category={confirmCategory}
-          used={usage[confirmCategory.uuid] ?? 0}
-          loading={loading}
-          onDelete={handleDelete}
-          onClose={() => setConfirmDel(null)}
         />
       )}
     </div>

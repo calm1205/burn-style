@@ -23,14 +23,12 @@ export const SettingsDataSection = ({
       onClick: () => fileInputRef.current?.click(),
       accent: true,
       disabled: loading,
-      chevron: false,
     },
     {
       label: "Export",
       Icon: UploadIcon,
       onClick: onExport,
       accent: true,
-      chevron: false,
     },
   ]
 

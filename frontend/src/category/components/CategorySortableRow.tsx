@@ -1,6 +1,6 @@
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { DragHandleDots2Icon, TrashIcon } from "@radix-ui/react-icons"
+import { DragHandleDots2Icon } from "@radix-ui/react-icons"
 
 import { categoryGlyph } from "../../common/libs/category"
 import type { CategoryResponse } from "../../common/libs/types"
@@ -10,7 +10,6 @@ interface CategorySortableRowProps {
   used: number
   onEdit: () => void
   onMerge: () => void
-  onDelete: () => void
   mergeDisabled: boolean
 }
 
@@ -19,7 +18,6 @@ export const CategorySortableRow = ({
   used,
   onEdit,
   onMerge,
-  onDelete,
   mergeDisabled,
 }: CategorySortableRowProps) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -68,14 +66,6 @@ export const CategorySortableRow = ({
         className="p-1 text-base text-gray-400 disabled:text-gray-200 dark:text-gray-500 dark:disabled:text-gray-700"
       >
         ⇄
-      </button>
-      <button
-        type="button"
-        onClick={onDelete}
-        aria-label="Delete"
-        className="p-1 text-red-400 hover:text-red-600"
-      >
-        <TrashIcon className="size-4" />
       </button>
     </li>
   )

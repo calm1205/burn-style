@@ -14,16 +14,19 @@ export const useCategoryEditForm = (uuid: string | undefined) => {
   const [glyph, setGlyph] = useState(DEFAULT_GLYPH)
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const [usage, setUsage] = useState(0)
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
 
   const fetchExisting = useCallback(async () => {
     if (!uuid) return
     try {
-      const cats = await api.getCategories()
+      const [cats, exps] = await Promise.all([api.getCategories(), api.getExpenses()])
       const c = cats.find((x) => x.uuid === uuid)
       if (c) {
         setName(c.name)
         setGlyph(c.symbol ?? DEFAULT_GLYPH)
       }
+      setUsage(exps.filter((e) => e.categories.some((cat) => cat.uuid === uuid)).length)
     } catch (err) {
       setError(getErrorMessage(err, "Failed to load"))
     }
@@ -54,6 +57,19 @@ export const useCategoryEditForm = (uuid: string | undefined) => {
     }
   }
 
+  const remove = async () => {
+    if (!uuid) return
+    setError("")
+    setLoading(true)
+    try {
+      await api.deleteCategory(uuid)
+      navigate("/category")
+    } catch (err) {
+      setError(getErrorMessage(err, "Delete failed"))
+      setLoading(false)
+    }
+  }
+
   return {
     isNew,
     name,
@@ -64,6 +80,10 @@ export const useCategoryEditForm = (uuid: string | undefined) => {
     loading,
     trimmed,
     canSave,
+    usage,
+    confirmingDelete,
+    setConfirmingDelete,
     save,
+    remove,
   }
 }
