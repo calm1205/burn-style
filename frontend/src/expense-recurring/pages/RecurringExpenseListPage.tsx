@@ -1,13 +1,12 @@
 import { PlusIcon } from "@radix-ui/react-icons"
 import { Link } from "react-router"
 
-import { RecurringFrequencyGroup } from "../components/RecurringFrequencyGroup"
+import { RecurringList } from "../components/RecurringList"
 import { RecurringSummaryCard } from "../components/RecurringSummaryCard"
 import { useRecurringList } from "../hooks/useRecurringList"
-import { FREQUENCY_OPTIONS } from "../libs/recurringFrequency"
 
 export const RecurringExpenseListPage = () => {
-  const { items, due, error, totalMonthly, grouped } = useRecurringList()
+  const { items, due, error, totalMonthly } = useRecurringList()
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-6 px-6 pb-6">
@@ -23,9 +22,7 @@ export const RecurringExpenseListPage = () => {
         Add recurring
       </Link>
 
-      {FREQUENCY_OPTIONS.map((g) => (
-        <RecurringFrequencyGroup key={g.key} group={g} items={grouped.get(g.key) ?? []} due={due} />
-      ))}
+      <RecurringList items={items} due={due} />
 
       {items.length === 0 && (
         <p className="py-8 text-center text-sm text-gray-400 dark:text-gray-500">

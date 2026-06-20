@@ -3,13 +3,9 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { api } from "../../common/libs/api"
 import { getErrorMessage } from "../../common/libs/client"
 import type { RecurringExpenseDueResponse, RecurringExpenseResponse } from "../../common/libs/types"
-import { FREQUENCY_OPTIONS, monthlyEquivalent } from "../libs/recurringFrequency"
+import { monthlyEquivalent } from "../libs/recurringFrequency"
 
-const groupKeyOf = (r: RecurringExpenseResponse): string | null =>
-  FREQUENCY_OPTIONS.find((g) => g.unit === r.interval_unit && g.count === r.interval_count)?.key ??
-  null
-
-/** 定期支払一覧と due (期日到来分) のデータ取得 + 月次合計 + グループ化を提供。 */
+/** 定期支払一覧と due (期日到来分) のデータ取得 + 月次合計を提供。 */
 export const useRecurringList = () => {
   const [items, setItems] = useState<RecurringExpenseResponse[]>([])
   const [due, setDue] = useState<RecurringExpenseDueResponse[]>([])
@@ -41,17 +37,5 @@ export const useRecurringList = () => {
     [items],
   )
 
-  const grouped = useMemo(() => {
-    const map = new Map<string, RecurringExpenseResponse[]>()
-    for (const g of FREQUENCY_OPTIONS) {
-      map.set(g.key, [])
-    }
-    for (const r of items) {
-      const k = groupKeyOf(r)
-      if (k) map.get(k)?.push(r)
-    }
-    return map
-  }, [items])
-
-  return { items, due, error, totalMonthly, grouped }
+  return { items, due, error, totalMonthly }
 }
