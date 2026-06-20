@@ -4,7 +4,6 @@ import { useNavigate, useParams } from "react-router"
 import { ConfirmDialog } from "../../common/components/ConfirmDialog"
 import { ExpenseCategoryChips } from "../../expense/components/ExpenseCategoryChips"
 import { RecurringFrequencyPicker } from "../components/RecurringFrequencyPicker"
-import { RecurringStartDateInput } from "../components/RecurringStartDateInput"
 import { useRecurringExpenseForm } from "../hooks/useRecurringExpenseForm"
 
 export const RecurringExpenseEditPage = () => {
@@ -17,7 +16,7 @@ export const RecurringExpenseEditPage = () => {
       onSubmit={f.handleSubmit}
       className="mx-auto flex h-full max-w-2xl flex-col overflow-hidden"
     >
-      <div className="flex shrink-0 items-center justify-between px-5 pt-2">
+      <div className="flex shrink-0 items-center px-5 pt-2">
         <button
           type="button"
           onClick={() => navigate("/expense/recurring")}
@@ -26,7 +25,6 @@ export const RecurringExpenseEditPage = () => {
         >
           <ArrowLeftIcon className="size-4" />
         </button>
-        <RecurringStartDateInput value={f.startDate} onChange={f.setStartDate} />
       </div>
 
       {f.error && (
@@ -69,6 +67,20 @@ export const RecurringExpenseEditPage = () => {
                 className="flex-1 bg-transparent text-2xl font-bold tracking-tighter tabular-nums outline-none placeholder:text-gray-300 dark:text-gray-100 dark:placeholder:text-gray-600"
               />
             </div>
+            <div className="mt-2 h-px bg-gray-200 dark:bg-gray-700" />
+          </div>
+          <div className="px-5 pt-5">
+            <span className="text-[10px] font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500">
+              Start date
+            </span>
+            <input
+              type="date"
+              value={f.startDate}
+              onChange={(e) => f.setStartDate(e.target.value)}
+              onClick={(e) => e.currentTarget.showPicker?.()}
+              required
+              className="mt-1 w-full cursor-pointer bg-transparent text-base font-medium tabular-nums outline-none dark:text-gray-100"
+            />
             <div className="mt-2 h-px bg-gray-200 dark:bg-gray-700" />
           </div>
           <ExpenseCategoryChips
