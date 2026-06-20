@@ -5,10 +5,7 @@ import { categoryGlyph } from "../../common/libs/category"
 import type { RecurringExpenseResponse } from "../../common/libs/types"
 import { matchFrequency, nextOccurrence, PERIOD_LABEL } from "../libs/recurringFrequency"
 
-const formatDate = (iso: string): string => {
-  const d = new Date(`${iso}T00:00:00`)
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" })
-}
+const formatDate = (iso: string): string => iso.replace(/-/g, "/")
 
 interface RecurringListProps {
   items: RecurringExpenseResponse[]
