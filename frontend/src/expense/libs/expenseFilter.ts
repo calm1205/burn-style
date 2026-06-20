@@ -6,6 +6,7 @@ import type {
 } from "../../common/libs/types"
 
 export type FilterScope = "week" | "month" | "all"
+export type RecurringMode = "all" | "exclude" | "only"
 
 export interface ExpenseFilter {
   q: string
@@ -20,8 +21,8 @@ export interface ExpenseFilter {
   vibeSocial: VibeSocial | null
   vibePlanning: VibePlanning | null
   vibeNecessity: VibeNecessity | null
-  /** 繰り返し支出から生成された支出を含めるか。false の場合は除外。 */
-  includeRecurring: boolean
+  /** 繰り返し支出から生成された支出の扱い。all=全て / exclude=除外 / only=繰り返しのみ。 */
+  recurringMode: RecurringMode
 }
 
 export const SCOPE_OPTIONS: { k: FilterScope; label: string; short: string }[] = [
@@ -41,7 +42,7 @@ export const defaultFilter = (): ExpenseFilter => ({
   vibeSocial: null,
   vibePlanning: null,
   vibeNecessity: null,
-  includeRecurring: true,
+  recurringMode: "all",
 })
 
 export const filterCount = (f: ExpenseFilter): number => {
@@ -54,7 +55,7 @@ export const filterCount = (f: ExpenseFilter): number => {
   if (f.vibeSocial) n++
   if (f.vibePlanning) n++
   if (f.vibeNecessity) n++
-  if (!f.includeRecurring) n++
+  if (f.recurringMode !== "all") n++
   return n
 }
 
@@ -118,7 +119,8 @@ export const applyFilter = (expenses: ExpenseResponse[], f: ExpenseFilter): Expe
     if (f.vibeSocial && e.vibe_social !== f.vibeSocial) return false
     if (f.vibePlanning && e.vibe_planning !== f.vibePlanning) return false
     if (f.vibeNecessity && e.vibe_necessity !== f.vibeNecessity) return false
-    if (!f.includeRecurring && e.recurring_expense_uuid !== null) return false
+    if (f.recurringMode === "exclude" && e.recurring_expense_uuid !== null) return false
+    if (f.recurringMode === "only" && e.recurring_expense_uuid === null) return false
     return true
   })
 }

@@ -32,7 +32,7 @@ describe("defaultFilter", () => {
       vibeSocial: null,
       vibePlanning: null,
       vibeNecessity: null,
-      includeRecurring: true,
+      recurringMode: "all",
     })
   })
 })
@@ -55,13 +55,14 @@ describe("filterCount", () => {
         vibeSocial: null,
         vibePlanning: null,
         vibeNecessity: null,
-        includeRecurring: true,
+        recurringMode: "all",
       }),
     ).toBe(5)
   })
 
-  it("counts excluded recurring", () => {
-    expect(filterCount({ ...defaultFilter(), includeRecurring: false })).toBe(1)
+  it("counts recurringMode when not 'all'", () => {
+    expect(filterCount({ ...defaultFilter(), recurringMode: "exclude" })).toBe(1)
+    expect(filterCount({ ...defaultFilter(), recurringMode: "only" })).toBe(1)
   })
 
   it("does not double-count when only min or only max is set", () => {
@@ -195,22 +196,33 @@ describe("applyFilter", () => {
     expect(result.map((e) => e.uuid)).toEqual(["a"])
   })
 
-  it("excludes recurring-generated expenses when includeRecurring is false", () => {
+  it("recurringMode 'all' includes both recurring and non-recurring", () => {
+    const normal = mkExpense({ uuid: "a", recurring_expense_uuid: null })
+    const recurring = mkExpense({ uuid: "b", recurring_expense_uuid: "r1" })
+    const result = applyFilter([normal, recurring], { ...defaultFilter(), scope: "all" })
+    expect(result.map((e) => e.uuid).toSorted()).toEqual(["a", "b"])
+  })
+
+  it("recurringMode 'exclude' drops recurring-generated expenses", () => {
     const normal = mkExpense({ uuid: "a", recurring_expense_uuid: null })
     const recurring = mkExpense({ uuid: "b", recurring_expense_uuid: "r1" })
     const result = applyFilter([normal, recurring], {
       ...defaultFilter(),
       scope: "all",
-      includeRecurring: false,
+      recurringMode: "exclude",
     })
     expect(result.map((e) => e.uuid)).toEqual(["a"])
   })
 
-  it("includes recurring-generated expenses when includeRecurring is true", () => {
+  it("recurringMode 'only' keeps only recurring-generated expenses", () => {
     const normal = mkExpense({ uuid: "a", recurring_expense_uuid: null })
     const recurring = mkExpense({ uuid: "b", recurring_expense_uuid: "r1" })
-    const result = applyFilter([normal, recurring], { ...defaultFilter(), scope: "all" })
-    expect(result.map((e) => e.uuid).toSorted()).toEqual(["a", "b"])
+    const result = applyFilter([normal, recurring], {
+      ...defaultFilter(),
+      scope: "all",
+      recurringMode: "only",
+    })
+    expect(result.map((e) => e.uuid)).toEqual(["b"])
   })
 
   it("min and max bound the amount inclusively", () => {

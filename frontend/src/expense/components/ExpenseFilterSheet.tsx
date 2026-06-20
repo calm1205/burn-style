@@ -71,8 +71,8 @@ export const ExpenseFilterSheet = ({
             onChange={(v) => setDraft({ ...draft, scope: v })}
           />
           <FilterSheetRecurringSection
-            includeRecurring={draft.includeRecurring}
-            onChange={(v) => setDraft({ ...draft, includeRecurring: v })}
+            mode={draft.recurringMode}
+            onChange={(v) => setDraft({ ...draft, recurringMode: v })}
           />
           <FilterSheetCategorySection
             categories={categories}

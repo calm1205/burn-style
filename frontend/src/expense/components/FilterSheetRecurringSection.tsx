@@ -1,15 +1,18 @@
+import type { RecurringMode } from "../libs/expenseFilter"
+
 interface FilterSheetRecurringSectionProps {
-  includeRecurring: boolean
-  onChange: (include: boolean) => void
+  mode: RecurringMode
+  onChange: (mode: RecurringMode) => void
 }
 
-const OPTIONS: { include: boolean; label: string }[] = [
-  { include: true, label: "Include" },
-  { include: false, label: "Exclude" },
+const OPTIONS: { k: RecurringMode; label: string }[] = [
+  { k: "all", label: "All" },
+  { k: "exclude", label: "Exclude" },
+  { k: "only", label: "Only" },
 ]
 
 export const FilterSheetRecurringSection = ({
-  includeRecurring,
+  mode,
   onChange,
 }: FilterSheetRecurringSectionProps) => (
   <section>
@@ -17,20 +20,20 @@ export const FilterSheetRecurringSection = ({
       <h3 className="text-[11px] font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
         Recurring
       </h3>
-      {!includeRecurring && (
-        <button type="button" onClick={() => onChange(true)} className="text-[11px] text-gray-400">
+      {mode !== "all" && (
+        <button type="button" onClick={() => onChange("all")} className="text-[11px] text-gray-400">
           clear
         </button>
       )}
     </div>
     <div className="flex flex-wrap gap-2">
       {OPTIONS.map((o) => {
-        const on = includeRecurring === o.include
+        const on = mode === o.k
         return (
           <button
-            key={String(o.include)}
+            key={o.k}
             type="button"
-            onClick={() => onChange(o.include)}
+            onClick={() => onChange(o.k)}
             className={`rounded-full border px-3 py-1.5 text-xs font-semibold ${
               on
                 ? "border-primary bg-primary text-white"
