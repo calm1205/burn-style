@@ -2,9 +2,7 @@ import { ArrowLeftIcon, TrashIcon } from "@radix-ui/react-icons"
 import { useNavigate, useParams } from "react-router"
 
 import { ConfirmDialog } from "../../common/components/ConfirmDialog"
-import { ExpenseAmountInput } from "../../expense/components/ExpenseAmountInput"
 import { ExpenseCategoryChips } from "../../expense/components/ExpenseCategoryChips"
-import { ExpenseNameInput } from "../../expense/components/ExpenseNameInput"
 import { RecurringFrequencyPicker } from "../components/RecurringFrequencyPicker"
 import { RecurringStartDateInput } from "../components/RecurringStartDateInput"
 import { useRecurringExpenseForm } from "../hooks/useRecurringExpenseForm"
@@ -36,9 +34,43 @@ export const RecurringExpenseEditPage = () => {
       )}
 
       <div className="flex-1 overflow-y-auto">
-        <div className="flex min-h-full flex-col justify-center py-8">
-          <ExpenseAmountInput value={f.amount} onChange={f.setAmount} />
-          <ExpenseNameInput value={f.name} onChange={f.setName} />
+        <div className="flex flex-col py-6">
+          <div className="px-5">
+            <span className="text-[10px] font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500">
+              Recurring title
+            </span>
+            <input
+              type="text"
+              value={f.name}
+              onChange={(e) => f.setName(e.target.value)}
+              required
+              maxLength={100}
+              placeholder="House cleaner"
+              className="mt-1 w-full bg-transparent text-2xl font-bold tracking-tight outline-none placeholder:text-gray-300 dark:text-gray-100 dark:placeholder:text-gray-600"
+            />
+            <div className="mt-2 h-px bg-gray-200 dark:bg-gray-700" />
+          </div>
+          <div className="px-5 pt-5">
+            <span className="text-[10px] font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500">
+              Recurring amount
+            </span>
+            <div className="mt-1 flex items-baseline gap-1">
+              <span className="text-lg font-medium text-gray-500 dark:text-gray-400">¥</span>
+              <input
+                type="text"
+                inputMode="numeric"
+                value={f.amount}
+                onChange={(e) => {
+                  const digits = e.target.value.replace(/[^0-9]/g, "")
+                  f.setAmount(digits ? Number(digits).toLocaleString() : "")
+                }}
+                required
+                placeholder="0"
+                className="flex-1 bg-transparent text-2xl font-bold tracking-tighter tabular-nums outline-none placeholder:text-gray-300 dark:text-gray-100 dark:placeholder:text-gray-600"
+              />
+            </div>
+            <div className="mt-2 h-px bg-gray-200 dark:bg-gray-700" />
+          </div>
           <ExpenseCategoryChips
             categories={f.categories}
             selectedUuid={f.categoryUuid || null}
