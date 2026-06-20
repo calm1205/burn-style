@@ -14,7 +14,6 @@ export const useRecurringList = () => {
   const [items, setItems] = useState<RecurringExpenseResponse[]>([])
   const [due, setDue] = useState<RecurringExpenseDueResponse[]>([])
   const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
 
   const fetchData = useCallback(async () => {
     try {
@@ -54,18 +53,5 @@ export const useRecurringList = () => {
     return map
   }, [items])
 
-  const handleRecord = async (uuid: string, missedCount: number) => {
-    setError("")
-    setLoading(true)
-    try {
-      await api.recordRecurringExpense(uuid, { count: missedCount })
-      await fetchData()
-    } catch (err) {
-      setError(getErrorMessage(err, "Failed to record"))
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  return { items, due, error, loading, totalMonthly, grouped, handleRecord }
+  return { items, due, error, totalMonthly, grouped }
 }

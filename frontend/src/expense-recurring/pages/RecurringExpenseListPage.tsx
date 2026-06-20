@@ -1,22 +1,19 @@
 import { PlusIcon } from "@radix-ui/react-icons"
 import { Link } from "react-router"
 
-import { RecurringDueList } from "../components/RecurringDueList"
 import { RecurringFrequencyGroup } from "../components/RecurringFrequencyGroup"
 import { RecurringSummaryCard } from "../components/RecurringSummaryCard"
 import { useRecurringList } from "../hooks/useRecurringList"
 import { FREQUENCY_OPTIONS } from "../libs/recurringFrequency"
 
 export const RecurringExpenseListPage = () => {
-  const { items, due, error, loading, totalMonthly, grouped, handleRecord } = useRecurringList()
+  const { items, due, error, totalMonthly, grouped } = useRecurringList()
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-6 px-6 pb-6">
       {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
 
       <RecurringSummaryCard totalMonthly={totalMonthly} count={items.length} />
-
-      <RecurringDueList due={due} loading={loading} onRecord={handleRecord} />
 
       <Link
         to="/expense/recurring/new"
