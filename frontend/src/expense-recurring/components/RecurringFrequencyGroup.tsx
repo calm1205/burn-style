@@ -52,17 +52,15 @@ export const RecurringFrequencyGroup = ({ group, items, due }: RecurringFrequenc
               className="flex w-full items-center gap-3 px-5 py-3.5 text-left hover:bg-gray-50 dark:hover:bg-gray-700"
             >
               <div className="flex flex-1 flex-col">
-                <div className="text-sm font-medium">{r.name}</div>
-                <div className="mt-0.5 flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+                <div className="flex items-center gap-2 text-sm font-medium">
+                  <span>{r.name}</span>
                   <span>{categoryGlyph(r.category)}</span>
-                  <span>{r.category.name}</span>
-                  {next && (
-                    <>
-                      <span>·</span>
-                      <span>next {formatDate(next)}</span>
-                    </>
-                  )}
                 </div>
+                {next && (
+                  <div className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+                    next {formatDate(next)}
+                  </div>
+                )}
               </div>
               <div className="text-right">
                 <div className="text-sm font-medium">¥{r.amount.toLocaleString("en-US")}</div>
