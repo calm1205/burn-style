@@ -49,11 +49,11 @@ export const RecurringList = ({ items }: RecurringListProps) => {
                   </div>
                 )}
               </div>
-              <div className="text-right">
-                <div className="text-sm font-medium">¥{r.amount.toLocaleString("en-US")}</div>
-                <div className="mt-0.5 text-xs text-gray-400 dark:text-gray-500">
+              <div className="flex items-baseline gap-1 whitespace-nowrap">
+                <span className="text-sm font-medium">¥{r.amount.toLocaleString("en-US")}</span>
+                <span className="text-xs text-gray-400 dark:text-gray-500">
                   {PERIOD_LABEL[periodKey]}
-                </div>
+                </span>
               </div>
               <ChevronRightIcon className="size-4 text-gray-300 dark:text-gray-600" />
             </button>
