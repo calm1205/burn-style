@@ -6,7 +6,7 @@ import { RecurringSummaryCard } from "../components/RecurringSummaryCard"
 import { useRecurringList } from "../hooks/useRecurringList"
 
 export const RecurringExpenseListPage = () => {
-  const { items, due, error, totalMonthly } = useRecurringList()
+  const { items, error, totalMonthly } = useRecurringList()
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-6 px-6 pb-6">
@@ -22,7 +22,7 @@ export const RecurringExpenseListPage = () => {
         Add recurring
       </Link>
 
-      <RecurringList items={items} due={due} />
+      <RecurringList items={items} />
 
       {items.length === 0 && (
         <p className="py-8 text-center text-sm text-gray-400 dark:text-gray-500">
