@@ -21,13 +21,8 @@ export const SettingsProfileHeader = ({
   onSave,
   onCancel,
 }: SettingsProfileHeaderProps) => {
-  const initial = (name ?? "?").charAt(0).toUpperCase()
-
   return (
     <div className="flex items-center gap-3.5 px-2 pt-2">
-      <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-gray-100 text-xl font-bold dark:bg-gray-700">
-        {initial}
-      </div>
       <div className="min-w-0 flex-1">
         {editing ? (
           <div className="flex items-center gap-2">
