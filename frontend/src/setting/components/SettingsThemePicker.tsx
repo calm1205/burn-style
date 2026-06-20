@@ -20,9 +20,8 @@ export const SettingsThemePicker = () => {
 
   return (
     <div>
-      <SettingsSectionLabel>Preferences</SettingsSectionLabel>
+      <SettingsSectionLabel>Theme</SettingsSectionLabel>
       <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
-        <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">Theme</p>
         <div className="flex gap-2">
           {MODES.map((mode) => (
             <button
