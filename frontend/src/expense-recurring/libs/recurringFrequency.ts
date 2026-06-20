@@ -11,7 +11,6 @@ export const FREQUENCY_OPTIONS: FrequencyOption[] = [
   { key: "weekly", label: "Weekly", unit: "WEEK", count: 1 },
   { key: "biweekly", label: "Every 2 wk", unit: "WEEK", count: 2 },
   { key: "monthly", label: "Monthly", unit: "MONTH", count: 1 },
-  { key: "quarterly", label: "Quarterly", unit: "MONTH", count: 3 },
   { key: "yearly", label: "Yearly", unit: "MONTH", count: 12 },
 ]
 
@@ -29,7 +28,6 @@ export const PERIOD_LABEL: Record<string, string> = {
   weekly: "/ wk",
   biweekly: "/ 2wk",
   monthly: "/ mo",
-  quarterly: "/ 3mo",
   yearly: "/ yr",
 }
 
