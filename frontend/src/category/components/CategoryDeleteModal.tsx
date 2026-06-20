@@ -1,7 +1,5 @@
-import type { CategoryResponse } from "../../common/libs/types"
-
 interface CategoryDeleteModalProps {
-  category: CategoryResponse
+  name: string
   used: number
   loading: boolean
   onDelete: () => void
@@ -9,7 +7,7 @@ interface CategoryDeleteModalProps {
 }
 
 export const CategoryDeleteModal = ({
-  category,
+  name,
   used,
   loading,
   onDelete,
@@ -23,7 +21,7 @@ export const CategoryDeleteModal = ({
   return (
     <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/45 p-6">
       <div className="w-full max-w-xs rounded-2xl bg-white p-5 dark:bg-gray-800">
-        <div className="text-base font-bold">Delete &quot;{category.name}&quot;?</div>
+        <div className="text-base font-bold">Delete &quot;{name}&quot;?</div>
         <div className="mt-1.5 text-xs text-gray-500 dark:text-gray-400">{subtitle}</div>
         <div className="mt-4 flex gap-2">
           <button
