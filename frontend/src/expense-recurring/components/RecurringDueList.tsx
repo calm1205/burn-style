@@ -16,9 +16,6 @@ export const RecurringDueList = ({ due, loading, onRecord }: RecurringDueListPro
 
   return (
     <div className="rounded-2xl bg-white p-5 shadow-sm dark:bg-gray-800">
-      <div className="mb-3 text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
-        Coming up
-      </div>
       <div className="flex flex-col gap-3">
         {due.map((d) => (
           <button
