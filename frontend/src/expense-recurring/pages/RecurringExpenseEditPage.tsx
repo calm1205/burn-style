@@ -87,6 +87,7 @@ export const RecurringExpenseEditPage = () => {
             categories={f.categories}
             selectedUuid={f.categoryUuid || null}
             onSelect={(v) => f.setCategoryUuid(v ?? "")}
+            label="Category"
           />
           <RecurringFrequencyPicker selectedKey={f.frequencyKey} onChange={f.setFrequencyKey} />
         </div>

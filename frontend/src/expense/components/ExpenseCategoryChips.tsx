@@ -7,18 +7,25 @@ interface ExpenseCategoryChipsProps {
   categories: CategoryResponse[]
   selectedUuid: string | null
   onSelect: (uuid: string | null) => void
+  label?: string
 }
 
 export const ExpenseCategoryChips = ({
   categories,
   selectedUuid,
   onSelect,
+  label,
 }: ExpenseCategoryChipsProps) => {
   const navigate = useNavigate()
   if (categories.length === 0) return null
 
   return (
     <div className="px-5 pt-5">
+      {label && (
+        <div className="mb-2 text-[10px] font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500">
+          {label}
+        </div>
+      )}
       <div className="flex flex-wrap gap-2">
         {categories.map((c) => {
           const active = selectedUuid === c.uuid

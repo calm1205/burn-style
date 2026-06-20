@@ -10,6 +10,9 @@ export const RecurringFrequencyPicker = ({
   onChange,
 }: RecurringFrequencyPickerProps) => (
   <div className="px-5 pt-5">
+    <div className="mb-2 text-[10px] font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500">
+      Recurring interval
+    </div>
     <div className="flex flex-wrap gap-2">
       {FREQUENCY_OPTIONS.map((f) => {
         const active = selectedKey === f.key
