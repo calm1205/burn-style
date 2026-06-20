@@ -5,6 +5,7 @@ import { defaultFilter, type ExpenseFilter } from "../libs/expenseFilter"
 import { FilterSheetAmountSection } from "./FilterSheetAmountSection"
 import { FilterSheetCategorySection } from "./FilterSheetCategorySection"
 import { FilterSheetHeader } from "./FilterSheetHeader"
+import { FilterSheetRecurringSection } from "./FilterSheetRecurringSection"
 import { FilterSheetScopeSection } from "./FilterSheetScopeSection"
 import { FilterSheetSearchSection } from "./FilterSheetSearchSection"
 import { FilterSheetVibeSection } from "./FilterSheetVibeSection"
@@ -68,6 +69,10 @@ export const ExpenseFilterSheet = ({
           <FilterSheetScopeSection
             scope={draft.scope}
             onChange={(v) => setDraft({ ...draft, scope: v })}
+          />
+          <FilterSheetRecurringSection
+            includeRecurring={draft.includeRecurring}
+            onChange={(v) => setDraft({ ...draft, includeRecurring: v })}
           />
           <FilterSheetCategorySection
             categories={categories}

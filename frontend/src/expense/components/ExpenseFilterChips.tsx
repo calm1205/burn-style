@@ -34,6 +34,7 @@ export const ExpenseFilterChips = ({
         : `¥${filter.min.toLocaleString()}+`,
     )
   }
+  if (!filter.includeRecurring) labels.push("No recurring")
 
   if (labels.length === 0) return null
 
