@@ -53,13 +53,12 @@ export const useRecurringExpenseForm = (uuid: string | undefined) => {
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError("")
-    setLoading(true)
     const freq = FREQUENCY_OPTIONS.find((f) => f.key === frequencyKey)
     if (!freq) {
       setError("Invalid frequency")
-      setLoading(false)
       return
     }
+    setLoading(true)
     const payload = {
       name,
       amount: Number(amount.replace(/,/g, "")),
