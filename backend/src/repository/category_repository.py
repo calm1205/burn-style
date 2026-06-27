@@ -79,25 +79,9 @@ def compact_positions(db: Session, user_uuid: str) -> None:
     db.commit()
 
 
-def delete_all_categories(db: Session) -> None:
-    """全カテゴリを削除 (association表のレコードも含む)。"""
-    db.query(ExpenseCategoryAssociation).delete()
-    db.query(Category).delete()
-
-
 def delete_all_for_user(db: Session, user_uuid: str) -> None:
     """ユーザーの全Categoryを物理削除 (FK CASCADEでassociationも消える)。"""
     db.query(Category).filter(Category.user_uuid == user_uuid).delete(synchronize_session=False)
-
-
-def bulk_create_categories(db: Session, user_uuid: str, names: list[str]) -> list[Category]:
-    """カテゴリを一括作成。"""
-    categories = [Category(user_uuid=user_uuid, name=name) for name in names]
-    db.add_all(categories)
-    db.commit()
-    for category in categories:
-        db.refresh(category)
-    return categories
 
 
 def update_category(
