@@ -64,7 +64,7 @@ const request = async <T>(method: string, path: string, body?: unknown): Promise
   return response.json() as Promise<T>
 }
 
-export const isApiError = (err: unknown): err is ApiError =>
+const isApiError = (err: unknown): err is ApiError =>
   typeof err === "object" && err !== null && "status" in err && "message" in err
 
 export const getErrorMessage = (err: unknown, fallback: string): string =>
