@@ -14,8 +14,10 @@ export interface ExpenseFilter {
   categoryUuids: string[]
   min: number
   max: number
-  /** 特定日のみ表示する場合に YYYY-MM-DD を指定。設定時は scope を無視。 */
-  date: string | null
+  /** 期間の開始日 (YYYY-MM-DD, 当日含む)。dateStart/dateEnd いずれか設定時は scope を無視。 */
+  dateStart: string | null
+  /** 期間の終了日 (YYYY-MM-DD, 当日含む)。 */
+  dateEnd: string | null
   /** scope=="month" で対象月を YYYY-MM 指定。null なら当月。 */
   month: string | null
   vibeSocial: VibeSocial | null
@@ -37,7 +39,8 @@ export const defaultFilter = (): ExpenseFilter => ({
   categoryUuids: [],
   min: 0,
   max: 0,
-  date: null,
+  dateStart: null,
+  dateEnd: null,
   month: null,
   vibeSocial: null,
   vibePlanning: null,
@@ -51,7 +54,7 @@ export const filterCount = (f: ExpenseFilter): number => {
   if (f.scope !== "month") n++
   if (f.categoryUuids.length > 0) n++
   if (f.min > 0 || f.max > 0) n++
-  if (f.date) n++
+  if (f.dateStart || f.dateEnd) n++
   if (f.vibeSocial) n++
   if (f.vibePlanning) n++
   if (f.vibeNecessity) n++
@@ -91,13 +94,18 @@ export const applyFilter = (expenses: ExpenseResponse[], f: ExpenseFilter): Expe
   const weekStart = new Date(now)
   weekStart.setDate(weekStart.getDate() - 6)
   weekStart.setHours(0, 0, 0, 0)
-  const targetDate = f.date ? parseDateKey(f.date) : null
+  const rangeStart = f.dateStart ? parseDateKey(f.dateStart) : null
+  const rangeEnd = f.dateEnd ? parseDateKey(f.dateEnd) : null
+  // 終了日を含めるため翌日 0:00 を上限 (排他) とする。
+  const rangeEndExclusive = rangeEnd ? new Date(rangeEnd) : null
+  if (rangeEndExclusive) rangeEndExclusive.setDate(rangeEndExclusive.getDate() + 1)
 
   return expenses.filter((e) => {
     const d = new Date(e.expensed_at)
 
-    if (targetDate) {
-      if (!sameLocalDay(d, targetDate)) return false
+    if (rangeStart || rangeEndExclusive) {
+      if (rangeStart && d < rangeStart) return false
+      if (rangeEndExclusive && d >= rangeEndExclusive) return false
     } else if (f.scope === "week") {
       if (d < weekStart) return false
       if (d > now && !sameLocalDay(d, now)) return false

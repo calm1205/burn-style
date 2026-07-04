@@ -27,7 +27,8 @@ describe("defaultFilter", () => {
       categoryUuids: [],
       min: 0,
       max: 0,
-      date: null,
+      dateStart: null,
+      dateEnd: null,
       month: null,
       vibeSocial: null,
       vibePlanning: null,
@@ -42,7 +43,7 @@ describe("filterCount", () => {
     expect(filterCount(defaultFilter())).toBe(0)
   })
 
-  it("counts q, scope!=month, categories, amount range, and date", () => {
+  it("counts q, scope!=month, categories, amount range, and date range", () => {
     expect(
       filterCount({
         q: "x",
@@ -50,7 +51,8 @@ describe("filterCount", () => {
         categoryUuids: ["c1"],
         min: 100,
         max: 200,
-        date: "2026-06-16",
+        dateStart: "2026-06-16",
+        dateEnd: "2026-06-20",
         month: null,
         vibeSocial: null,
         vibePlanning: null,
@@ -58,6 +60,14 @@ describe("filterCount", () => {
         recurringMode: "all",
       }),
     ).toBe(5)
+  })
+
+  it("counts the date range once when only start or only end is set", () => {
+    expect(filterCount({ ...defaultFilter(), dateStart: "2026-06-01" })).toBe(1)
+    expect(filterCount({ ...defaultFilter(), dateEnd: "2026-06-30" })).toBe(1)
+    expect(
+      filterCount({ ...defaultFilter(), dateStart: "2026-06-01", dateEnd: "2026-06-30" }),
+    ).toBe(1)
   })
 
   it("counts recurringMode when not 'all'", () => {
@@ -129,7 +139,7 @@ describe("applyFilter", () => {
     expect(result.map((e) => e.uuid).toSorted()).toEqual(["a", "b"])
   })
 
-  it("date filter restricts to a single local day and overrides scope", () => {
+  it("equal start and end restrict to a single local day and override scope", () => {
     const target = mkExpense({
       uuid: "a",
       expensed_at: new Date(2026, 5, 10, 23, 30).toISOString(),
@@ -138,7 +148,56 @@ describe("applyFilter", () => {
     const result = applyFilter([target, other], {
       ...defaultFilter(),
       scope: "all",
-      date: "2026-06-10",
+      dateStart: "2026-06-10",
+      dateEnd: "2026-06-10",
+    })
+    expect(result.map((e) => e.uuid)).toEqual(["a"])
+  })
+
+  it("date range includes both endpoints inclusively", () => {
+    const before = mkExpense({ uuid: "a", expensed_at: new Date(2026, 5, 9, 23, 0).toISOString() })
+    const startDay = mkExpense({
+      uuid: "b",
+      expensed_at: new Date(2026, 5, 10, 0, 30).toISOString(),
+    })
+    const endDay = mkExpense({
+      uuid: "c",
+      expensed_at: new Date(2026, 5, 12, 23, 30).toISOString(),
+    })
+    const after = mkExpense({ uuid: "d", expensed_at: new Date(2026, 5, 13, 0, 10).toISOString() })
+    const result = applyFilter([before, startDay, endDay, after], {
+      ...defaultFilter(),
+      scope: "all",
+      dateStart: "2026-06-10",
+      dateEnd: "2026-06-12",
+    })
+    expect(result.map((e) => e.uuid).toSorted()).toEqual(["b", "c"])
+  })
+
+  it("open-ended start keeps everything on or after the start day", () => {
+    const before = mkExpense({ uuid: "a", expensed_at: new Date(2026, 5, 9, 23, 0).toISOString() })
+    const onOrAfter = mkExpense({
+      uuid: "b",
+      expensed_at: new Date(2026, 5, 10, 0, 0).toISOString(),
+    })
+    const result = applyFilter([before, onOrAfter], {
+      ...defaultFilter(),
+      scope: "all",
+      dateStart: "2026-06-10",
+    })
+    expect(result.map((e) => e.uuid)).toEqual(["b"])
+  })
+
+  it("open-ended end keeps everything on or before the end day", () => {
+    const onOrBefore = mkExpense({
+      uuid: "a",
+      expensed_at: new Date(2026, 5, 10, 23, 30).toISOString(),
+    })
+    const after = mkExpense({ uuid: "b", expensed_at: new Date(2026, 5, 11, 0, 30).toISOString() })
+    const result = applyFilter([onOrBefore, after], {
+      ...defaultFilter(),
+      scope: "all",
+      dateEnd: "2026-06-10",
     })
     expect(result.map((e) => e.uuid)).toEqual(["a"])
   })
