@@ -29,7 +29,7 @@ export const ExpenseMonthlyPage = () => {
   const initialFilter = useMemo<ExpenseFilter>(() => {
     const dateParam = searchParams.get("date")
     if (dateParam && isValidDateKey(dateParam)) {
-      return { ...defaultFilter(), date: dateParam }
+      return { ...defaultFilter(), dateStart: dateParam, dateEnd: dateParam }
     }
     return defaultFilter()
     // initial読み取りのみで意図的に searchParams 変更には追従しない

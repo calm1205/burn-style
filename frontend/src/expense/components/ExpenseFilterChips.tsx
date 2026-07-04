@@ -8,10 +8,18 @@ interface ExpenseFilterChipsProps {
   onClear: () => void
 }
 
-const formatDateChip = (key: string): string => {
+const formatDay = (key: string): string => {
   const d = parseDateKey(key)
   if (!d) return key
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+}
+
+const formatDateRangeChip = (start: string | null, end: string | null): string | null => {
+  if (start && end)
+    return start === end ? formatDay(start) : `${formatDay(start)} – ${formatDay(end)}`
+  if (start) return `From ${formatDay(start)}`
+  if (end) return `Until ${formatDay(end)}`
+  return null
 }
 
 export const ExpenseFilterChips = ({
@@ -22,7 +30,8 @@ export const ExpenseFilterChips = ({
 }: ExpenseFilterChipsProps) => {
   const labels: string[] = []
   if (filter.q) labels.push(`"${filter.q}"`)
-  if (filter.date) labels.push(formatDateChip(filter.date))
+  const dateChip = formatDateRangeChip(filter.dateStart, filter.dateEnd)
+  if (dateChip) labels.push(dateChip)
   for (const uuid of filter.categoryUuids) {
     const c = categories.find((x) => x.uuid === uuid)
     if (c) labels.push(c.name)
