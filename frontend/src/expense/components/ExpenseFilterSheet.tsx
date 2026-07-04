@@ -4,6 +4,7 @@ import type { CategoryResponse } from "../../common/libs/types"
 import { defaultFilter, type ExpenseFilter } from "../libs/expenseFilter"
 import { FilterSheetAmountSection } from "./FilterSheetAmountSection"
 import { FilterSheetCategorySection } from "./FilterSheetCategorySection"
+import { FilterSheetDateSection } from "./FilterSheetDateSection"
 import { FilterSheetHeader } from "./FilterSheetHeader"
 import { FilterSheetRecurringSection } from "./FilterSheetRecurringSection"
 import { FilterSheetScopeSection } from "./FilterSheetScopeSection"
@@ -69,6 +70,10 @@ export const ExpenseFilterSheet = ({
           <FilterSheetScopeSection
             scope={draft.scope}
             onChange={(v) => setDraft({ ...draft, scope: v })}
+          />
+          <FilterSheetDateSection
+            date={draft.date}
+            onChange={(v) => setDraft({ ...draft, date: v })}
           />
           <FilterSheetRecurringSection
             mode={draft.recurringMode}
