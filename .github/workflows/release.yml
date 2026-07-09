@@ -1,0 +1,77 @@
+name: Release
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+jobs:
+  release:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Determine version bump
+        id: bump
+        env:
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+        run: |
+          if [[ ",$LABELS," == *,major,* ]]; then
+            BUMP=major
+          elif [[ ",$LABELS," == *,minor,* ]]; then
+            BUMP=minor
+          elif [[ ",$LABELS," == *,patch,* ]]; then
+            BUMP=patch
+          else
+            BUMP=minor
+          fi
+
+          PREV_TAG=$(git describe --tags --abbrev=0 --match "v*" 2>/dev/null || echo "v0.0.0")
+          IFS='.' read -r MAJOR MINOR PATCH <<< "${PREV_TAG#v}"
+          case "$BUMP" in
+            major) MAJOR=$((MAJOR + 1)); MINOR=0; PATCH=0 ;;
+            minor) MINOR=$((MINOR + 1)); PATCH=0 ;;
+            patch) PATCH=$((PATCH + 1)) ;;
+          esac
+          NEW_VERSION="v${MAJOR}.${MINOR}.${PATCH}"
+
+          echo "prev_tag=$PREV_TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Generate release notes from commits
+        id: notes
+        run: |
+          PREV_TAG="${{ steps.bump.outputs.prev_tag }}"
+          LOG=$(git log "${PREV_TAG}..HEAD" --pretty=format:"- %s" --no-merges)
+          {
+            echo "body<<EOF"
+            echo "$LOG"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create tag and GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.bump.outputs.version }}
+          BODY: ${{ steps.notes.outputs.body }}
+        run: gh release create "$VERSION" --title "$VERSION" --notes "$BODY" --target main
+
+  backend:
+    needs: release
+    uses: ./.github/workflows/deploy_backend.yml
+    with:
+      environment: production
+    secrets: inherit
+
+  frontend:
+    needs: release
+    uses: ./.github/workflows/deploy_frontend.yml
+    with:
+      environment: production
+    secrets: inherit
