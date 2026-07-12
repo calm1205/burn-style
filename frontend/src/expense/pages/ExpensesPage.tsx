@@ -1,8 +1,6 @@
-import { ExpenseAmountInput } from "../components/ExpenseAmountInput"
-import { ExpenseCategoryChips } from "../components/ExpenseCategoryChips"
+import { PrimaryButton } from "../../common/components/PrimaryButton"
 import { ExpenseDateTimeInput } from "../components/ExpenseDateTimeInput"
-import { ExpenseNameInput } from "../components/ExpenseNameInput"
-import { VibePicker } from "../components/VibePicker"
+import { ExpenseFormFields } from "../components/ExpenseFormFields"
 import { useExpenseCreateForm } from "../hooks/useExpenseCreateForm"
 
 export const ExpensesPage = () => {
@@ -14,7 +12,10 @@ export const ExpensesPage = () => {
       className="mx-auto flex h-full max-w-2xl flex-col overflow-hidden"
     >
       <div className="flex shrink-0 justify-end px-5 pt-2">
-        <ExpenseDateTimeInput value={f.expensedAt} onChange={f.setExpensedAt} />
+        <ExpenseDateTimeInput
+          value={f.form.expensedAt}
+          onChange={(v) => f.update("expensedAt", v)}
+        />
       </div>
 
       {f.error && (
@@ -22,38 +23,18 @@ export const ExpensesPage = () => {
       )}
 
       <div className="flex-1 overflow-y-auto">
-        <div className="flex min-h-full flex-col justify-center py-8">
-          <ExpenseAmountInput value={f.amount} onChange={f.setAmount} inputRef={f.amountRef} />
-          <ExpenseNameInput value={f.name} onChange={f.setName} />
-          <ExpenseCategoryChips
-            categories={f.categories}
-            selectedUuid={f.categoryUuid}
-            onSelect={f.setCategoryUuid}
-          />
-          <div className="flex flex-col gap-2 px-5 pt-5">
-            <span className="text-[10px] font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500">
-              Vibe
-            </span>
-            <VibePicker
-              social={f.vibeSocial}
-              planning={f.vibePlanning}
-              necessity={f.vibeNecessity}
-              onSocialChange={f.setVibeSocial}
-              onPlanningChange={f.setVibePlanning}
-              onNecessityChange={f.setVibeNecessity}
-            />
-          </div>
-        </div>
+        <ExpenseFormFields
+          values={f.form}
+          onChange={f.update}
+          categories={f.categories}
+          amountRef={f.amountRef}
+        />
       </div>
 
       <div className="shrink-0 px-5 pt-2 pb-8">
-        <button
-          type="submit"
-          disabled={f.loading || !f.name || !f.amount}
-          className="w-full rounded-xl bg-primary px-4 py-3.5 text-sm font-bold text-white shadow-[0_6px_18px_rgba(47,116,208,0.32)] hover:bg-primary-hover disabled:opacity-50 disabled:shadow-none"
-        >
+        <PrimaryButton type="submit" disabled={f.loading || !f.form.name || !f.form.amount}>
           {f.loading ? "Saving…" : "Save"}
-        </button>
+        </PrimaryButton>
       </div>
     </form>
   )

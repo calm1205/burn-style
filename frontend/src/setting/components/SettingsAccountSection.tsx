@@ -1,5 +1,4 @@
-import { ExitIcon, TrashIcon } from "@radix-ui/react-icons"
-
+import { ExitIcon, TrashIcon } from "../../common/icons"
 import { SettingsSectionLabel } from "./SettingsSectionLabel"
 
 interface SettingsAccountSectionProps {

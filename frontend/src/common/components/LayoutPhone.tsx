@@ -22,7 +22,7 @@ export const LayoutPhone = ({ navItems }: LayoutPhoneProps) => {
           key={item.to}
           to={item.to}
           end
-          onPointerDown={item.to === "/expense/new" ? focusShim : undefined}
+          onClick={item.to === "/expense/new" ? focusShim : undefined}
           className={({ isActive }) =>
             `flex flex-1 flex-col items-center gap-1 px-1 py-1 text-[10px] font-semibold tracking-wide ${
               isActive && !item.accent ? "text-primary" : "text-gray-400 dark:text-gray-500"

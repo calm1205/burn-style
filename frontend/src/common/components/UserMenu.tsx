@@ -1,5 +1,6 @@
-import { ExitIcon, PersonIcon } from "@radix-ui/react-icons"
 import { Popover } from "radix-ui"
+
+import { ExitIcon, PersonIcon } from "../icons"
 
 interface UserMenuProps {
   userName?: string

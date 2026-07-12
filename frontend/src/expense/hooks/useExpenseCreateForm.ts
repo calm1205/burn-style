@@ -11,6 +11,16 @@ import type {
 } from "../../common/libs/types"
 import { toLocalDatetime } from "../libs/datetime"
 
+interface FormState {
+  name: string
+  amount: string
+  expensedAt: string
+  categoryUuid: string | null
+  vibeSocial: VibeSocial | null
+  vibePlanning: VibePlanning | null
+  vibeNecessity: VibeNecessity | null
+}
+
 /** 新規 expense 作成フォームの state とハンドラ。 */
 export const useExpenseCreateForm = () => {
   const navigate = useNavigate()
@@ -18,14 +28,19 @@ export const useExpenseCreateForm = () => {
   const [categories, setCategories] = useState<CategoryResponse[]>([])
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const [form, setForm] = useState<FormState>(() => ({
+    name: "",
+    amount: "",
+    expensedAt: toLocalDatetime(new Date().toISOString()),
+    categoryUuid: null,
+    vibeSocial: null,
+    vibePlanning: null,
+    vibeNecessity: null,
+  }))
 
-  const [name, setName] = useState("")
-  const [amount, setAmount] = useState("")
-  const [expensedAt, setExpensedAt] = useState(() => toLocalDatetime(new Date().toISOString()))
-  const [categoryUuid, setCategoryUuid] = useState<string | null>(null)
-  const [vibeSocial, setVibeSocial] = useState<VibeSocial | null>(null)
-  const [vibePlanning, setVibePlanning] = useState<VibePlanning | null>(null)
-  const [vibeNecessity, setVibeNecessity] = useState<VibeNecessity | null>(null)
+  const update = <K extends keyof FormState>(key: K, value: FormState[K]) => {
+    setForm((prev) => ({ ...prev, [key]: value }))
+  }
 
   const fetchData = useCallback(async () => {
     try {
@@ -46,13 +61,13 @@ export const useExpenseCreateForm = () => {
     setLoading(true)
     try {
       await api.createExpense({
-        name,
-        amount: Number(amount.replace(/,/g, "")),
-        expensed_at: new Date(expensedAt).toISOString(),
-        category_uuid: categoryUuid,
-        vibe_social: vibeSocial,
-        vibe_planning: vibePlanning,
-        vibe_necessity: vibeNecessity,
+        name: form.name,
+        amount: Number(form.amount.replace(/,/g, "")),
+        expensed_at: new Date(form.expensedAt).toISOString(),
+        category_uuid: form.categoryUuid,
+        vibe_social: form.vibeSocial,
+        vibe_planning: form.vibePlanning,
+        vibe_necessity: form.vibeNecessity,
       })
       navigate("/")
     } catch (err) {
@@ -62,25 +77,5 @@ export const useExpenseCreateForm = () => {
     }
   }
 
-  return {
-    amountRef,
-    categories,
-    error,
-    loading,
-    name,
-    setName,
-    amount,
-    setAmount,
-    expensedAt,
-    setExpensedAt,
-    categoryUuid,
-    setCategoryUuid,
-    vibeSocial,
-    setVibeSocial,
-    vibePlanning,
-    setVibePlanning,
-    vibeNecessity,
-    setVibeNecessity,
-    handleSubmit,
-  }
+  return { amountRef, categories, error, loading, form, update, handleSubmit }
 }

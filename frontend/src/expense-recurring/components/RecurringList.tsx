@@ -1,6 +1,6 @@
-import { PlusIcon } from "@radix-ui/react-icons"
 import { useNavigate } from "react-router"
 
+import { PlusIcon } from "../../common/icons"
 import { categoryGlyph } from "../../common/libs/category"
 import type { RecurringExpenseResponse } from "../../common/libs/types"
 import { matchFrequency, nextOccurrence, PERIOD_LABEL } from "../libs/recurringFrequency"

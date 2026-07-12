@@ -1,48 +1,52 @@
-import { useSortable } from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
-import { DragHandleDots2Icon } from "@radix-ui/react-icons"
-
+import { ChevronDownIcon, ChevronUpIcon } from "../../common/icons"
 import { categoryGlyph } from "../../common/libs/category"
 import type { CategoryResponse } from "../../common/libs/types"
 
-interface CategorySortableRowProps {
+interface CategoryRowProps {
   category: CategoryResponse
   used: number
   onEdit: () => void
   onMerge: () => void
   mergeDisabled: boolean
+  onMoveUp: () => void
+  onMoveDown: () => void
+  moveUpDisabled: boolean
+  moveDownDisabled: boolean
 }
 
-export const CategorySortableRow = ({
+export const CategoryRow = ({
   category: c,
   used,
   onEdit,
   onMerge,
   mergeDisabled,
-}: CategorySortableRowProps) => {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-    id: c.uuid,
-  })
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  }
+  onMoveUp,
+  onMoveDown,
+  moveUpDisabled,
+  moveDownDisabled,
+}: CategoryRowProps) => {
   return (
-    <li
-      ref={setNodeRef}
-      style={style}
-      className="flex items-center gap-3 bg-white px-3.5 py-3 dark:bg-gray-800"
-    >
-      <button
-        type="button"
-        {...attributes}
-        {...listeners}
-        aria-label="Reorder"
-        className="cursor-grab touch-none p-1 text-gray-400 dark:text-gray-500"
-      >
-        <DragHandleDots2Icon className="size-4" />
-      </button>
+    <li className="flex items-center gap-3 bg-white px-3.5 py-3 dark:bg-gray-800">
+      <div className="flex flex-col">
+        <button
+          type="button"
+          onClick={onMoveUp}
+          disabled={moveUpDisabled}
+          aria-label="Move up"
+          className="p-0.5 text-gray-400 disabled:text-gray-200 dark:text-gray-500 dark:disabled:text-gray-700"
+        >
+          <ChevronUpIcon className="size-4" />
+        </button>
+        <button
+          type="button"
+          onClick={onMoveDown}
+          disabled={moveDownDisabled}
+          aria-label="Move down"
+          className="p-0.5 text-gray-400 disabled:text-gray-200 dark:text-gray-500 dark:disabled:text-gray-700"
+        >
+          <ChevronDownIcon className="size-4" />
+        </button>
+      </div>
       <button
         type="button"
         onClick={onEdit}

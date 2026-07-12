@@ -1,5 +1,4 @@
-import { DownloadIcon, UploadIcon } from "@radix-ui/react-icons"
-
+import { DownloadIcon, UploadIcon } from "../../common/icons"
 import { SettingsRow, type SettingsRowAction } from "./SettingsRow"
 import { SettingsSectionLabel } from "./SettingsSectionLabel"
 

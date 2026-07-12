@@ -1,4 +1,4 @@
-import type { RowsIcon } from "@radix-ui/react-icons"
+import type { RowsIcon } from "../../common/icons"
 
 export interface SettingsRowAction {
   label: string

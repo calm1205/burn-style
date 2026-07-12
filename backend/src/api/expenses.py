@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
+from fastapi import APIRouter, Depends, Query, Response, status
 from sqlalchemy.orm import Session
 
-from src.api.deps import get_current_user
+from src.api.deps import get_current_user, get_or_404
 from src.model.user import User
 from src.repository.database import get_db
 from src.repository.expense_repository import (
@@ -37,9 +37,7 @@ def get_expense(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> ExpenseResponse:
-    expense = get_expense_by_uuid(db, uuid, str(user.uuid))
-    if not expense:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Expense not found")
+    expense = get_or_404(get_expense_by_uuid(db, uuid, str(user.uuid)), "Expense not found")
     return ExpenseResponse.model_validate(expense)
 
 
@@ -66,9 +64,7 @@ def patch_expense(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> ExpenseResponse:
-    expense = get_expense_by_uuid(db, uuid, str(user.uuid))
-    if not expense:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Expense not found")
+    expense = get_or_404(get_expense_by_uuid(db, uuid, str(user.uuid)), "Expense not found")
 
     update_data = body.model_dump(exclude_unset=True)
     category_uuids: list[str] | None = None
@@ -88,9 +84,7 @@ def delete_expense(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> Response:
-    expense = get_expense_by_uuid(db, uuid, str(user.uuid))
-    if not expense:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Expense not found")
+    expense = get_or_404(get_expense_by_uuid(db, uuid, str(user.uuid)), "Expense not found")
 
     soft_delete_expense(db, expense)
     return Response(status_code=status.HTTP_204_NO_CONTENT)

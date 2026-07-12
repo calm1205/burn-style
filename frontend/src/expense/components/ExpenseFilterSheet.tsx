@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 
+import { PrimaryButton } from "../../common/components/PrimaryButton"
 import type { CategoryResponse } from "../../common/libs/types"
 import { defaultFilter, type ExpenseFilter } from "../libs/expenseFilter"
 import { FilterSheetAmountSection } from "./FilterSheetAmountSection"
@@ -7,7 +8,6 @@ import { FilterSheetCategorySection } from "./FilterSheetCategorySection"
 import { FilterSheetDateSection } from "./FilterSheetDateSection"
 import { FilterSheetHeader } from "./FilterSheetHeader"
 import { FilterSheetRecurringSection } from "./FilterSheetRecurringSection"
-import { FilterSheetScopeSection } from "./FilterSheetScopeSection"
 import { FilterSheetSearchSection } from "./FilterSheetSearchSection"
 import { FilterSheetVibeSection } from "./FilterSheetVibeSection"
 
@@ -67,10 +67,6 @@ export const ExpenseFilterSheet = ({
             value={draft.q}
             onChange={(v) => setDraft({ ...draft, q: v })}
           />
-          <FilterSheetScopeSection
-            scope={draft.scope}
-            onChange={(v) => setDraft({ ...draft, scope: v })}
-          />
           <FilterSheetDateSection
             start={draft.dateStart}
             end={draft.dateEnd}
@@ -105,13 +101,7 @@ export const ExpenseFilterSheet = ({
         </div>
 
         <div className="shrink-0 px-5 pt-2 pb-8">
-          <button
-            type="button"
-            onClick={apply}
-            className="w-full rounded-xl bg-primary px-4 py-3.5 text-sm font-bold text-white shadow-[0_6px_18px_rgba(47,116,208,0.32)] hover:bg-primary-hover"
-          >
-            Apply
-          </button>
+          <PrimaryButton onClick={apply}>Apply</PrimaryButton>
         </div>
       </div>
     </dialog>

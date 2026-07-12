@@ -1,3 +1,5 @@
+import { presetDateRange, SCOPE_OPTIONS } from "../libs/expenseFilter"
+
 interface FilterSheetDateSectionProps {
   start: string | null
   end: string | null
@@ -32,6 +34,22 @@ export const FilterSheetDateSection = ({
         </button>
       )}
     </div>
+    <div className="mb-2 flex flex-wrap gap-2">
+      {SCOPE_OPTIONS.map((s) => (
+        <button
+          key={s.k}
+          type="button"
+          onClick={() => {
+            const range = presetDateRange(s.k)
+            onStartChange(range.start)
+            onEndChange(range.end)
+          }}
+          className="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
+        >
+          {s.label}
+        </button>
+      ))}
+    </div>
     <div className="flex items-center gap-2">
       <input
         type="date"
@@ -49,6 +67,5 @@ export const FilterSheetDateSection = ({
         className={inputClass}
       />
     </div>
-    <p className="mt-1.5 text-[11px] text-gray-400">Setting a range overrides the period above.</p>
   </section>
 )

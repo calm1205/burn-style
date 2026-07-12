@@ -15,6 +15,13 @@ from src.service.jwt_service import decode_access_token
 security = HTTPBearer()
 
 
+def get_or_404[T](item: T | None, detail: str) -> T:
+    """item が None なら404を送出し、そうでなければそのまま返す。"""
+    if item is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=detail)
+    return item
+
+
 def get_current_user(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],
     db: Annotated[Session, Depends(get_db)],

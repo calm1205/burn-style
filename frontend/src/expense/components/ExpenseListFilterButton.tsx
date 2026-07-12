@@ -1,4 +1,4 @@
-import { MixerHorizontalIcon } from "@radix-ui/react-icons"
+import { MixerHorizontalIcon } from "../../common/icons"
 
 interface ExpenseListFilterButtonProps {
   filterCount: number
