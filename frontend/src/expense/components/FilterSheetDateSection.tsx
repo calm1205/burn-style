@@ -67,5 +67,8 @@ export const FilterSheetDateSection = ({
         className={inputClass}
       />
     </div>
+    <p className="mt-1.5 text-[11px] text-gray-400">
+      Leave start blank for everything up to end, or end blank for everything from start.
+    </p>
   </section>
 )
