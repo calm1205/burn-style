@@ -1,8 +1,8 @@
-name: PR Check
+name: CI
 
 on:
   pull_request:
-    branches: [main]
+    branches: [development]
 
 jobs:
   backend:

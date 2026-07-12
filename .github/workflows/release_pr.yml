@@ -1,0 +1,27 @@
+name: Release PR
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release-pr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Create release PR if none open
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          EXISTING=$(gh pr list --base main --head development --state open --json number --jq '.[0].number')
+          if [ -n "$EXISTING" ]; then
+            echo "Release PR #$EXISTING already open"
+          else
+            gh pr create --base main --head development \
+              --title "Release" \
+              --body "Automated release PR. Add a \`major\`/\`minor\`/\`patch\` label before merging (defaults to minor)."
+          fi
