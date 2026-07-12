@@ -1,5 +1,4 @@
-import { CheckIcon, Pencil1Icon, ResetIcon } from "@radix-ui/react-icons"
-
+import { CheckIcon, Pencil1Icon, ResetIcon } from "../../common/icons"
 import type { useSettingsActions } from "../hooks/useSettingsActions"
 
 interface SettingsProfileHeaderProps {

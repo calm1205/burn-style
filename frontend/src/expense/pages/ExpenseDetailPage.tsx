@@ -1,7 +1,7 @@
-import { TrashIcon } from "@radix-ui/react-icons"
 import { useParams } from "react-router"
 
 import { ConfirmDialog } from "../../common/components/ConfirmDialog"
+import { TrashIcon } from "../../common/icons"
 import { ExpenseDateTimeInput } from "../components/ExpenseDateTimeInput"
 import { ExpenseFormFields } from "../components/ExpenseFormFields"
 import { useExpenseEditForm } from "../hooks/useExpenseEditForm"

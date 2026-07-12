@@ -1,5 +1,4 @@
-import { TrashIcon } from "@radix-ui/react-icons"
-
+import { TrashIcon } from "../../common/icons"
 import type { useRecurringExpenseForm } from "../hooks/useRecurringExpenseForm"
 
 interface RecurringExpenseFormFooterProps {

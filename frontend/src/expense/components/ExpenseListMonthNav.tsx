@@ -1,5 +1,4 @@
-import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons"
-
+import { ChevronLeftIcon, ChevronRightIcon } from "../../common/icons"
 import { formatMonthKey, parseMonthKey, shiftMonthKey } from "../libs/expenseFilter"
 
 interface ExpenseListMonthNavProps {

@@ -1,6 +1,6 @@
-import { PlusIcon } from "@radix-ui/react-icons"
 import { useNavigate } from "react-router"
 
+import { PlusIcon } from "../../common/icons"
 import type { useCategoriesPage } from "../hooks/useCategoriesPage"
 import { CategoryList } from "./CategoryList"
 

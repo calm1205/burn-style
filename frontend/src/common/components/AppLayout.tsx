@@ -1,7 +1,7 @@
-import { GearIcon, PlusIcon, RowsIcon } from "@radix-ui/react-icons"
 import { useCallback, useEffect, useState } from "react"
 import { Outlet, useNavigate } from "react-router"
 
+import { GearIcon, PlusIcon, RowsIcon } from "../icons"
 import { api } from "../libs/api"
 import { STORAGE_KEYS } from "../libs/constants"
 import { focusShimRef } from "../libs/focusShim"

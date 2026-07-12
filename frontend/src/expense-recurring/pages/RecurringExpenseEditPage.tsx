@@ -1,7 +1,7 @@
-import { ArrowLeftIcon } from "@radix-ui/react-icons"
 import { useNavigate, useParams } from "react-router"
 
 import { ConfirmDialog } from "../../common/components/ConfirmDialog"
+import { ArrowLeftIcon } from "../../common/icons"
 import { RecurringExpenseFields } from "../components/RecurringExpenseFields"
 import { RecurringExpenseFormFooter } from "../components/RecurringExpenseFormFooter"
 import { useRecurringExpenseForm } from "../hooks/useRecurringExpenseForm"

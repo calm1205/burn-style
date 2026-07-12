@@ -1,5 +1,4 @@
-import { ChevronDownIcon, ChevronUpIcon } from "@radix-ui/react-icons"
-
+import { ChevronDownIcon, ChevronUpIcon } from "../../common/icons"
 import { categoryGlyph } from "../../common/libs/category"
 import type { CategoryResponse } from "../../common/libs/types"
 

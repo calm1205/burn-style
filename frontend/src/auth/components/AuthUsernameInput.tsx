@@ -1,4 +1,4 @@
-import { Cross2Icon } from "@radix-ui/react-icons"
+import { Cross2Icon } from "../../common/icons"
 
 interface AuthUsernameInputProps {
   value: string

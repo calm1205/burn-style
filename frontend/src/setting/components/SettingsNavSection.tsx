@@ -1,6 +1,6 @@
-import { CounterClockwiseClockIcon, RowsIcon } from "@radix-ui/react-icons"
 import { useNavigate } from "react-router"
 
+import { CounterClockwiseClockIcon, RowsIcon } from "../../common/icons"
 import { SettingsRow, type SettingsRowAction } from "./SettingsRow"
 
 export const SettingsNavSection = () => {
