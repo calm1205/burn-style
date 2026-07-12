@@ -6,6 +6,7 @@ from typing import Annotated, Any
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from webauthn import (
+    base64url_to_bytes,
     generate_authentication_options,
     generate_registration_options,
     options_to_json,
@@ -165,8 +166,6 @@ def sign_in_verify(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Authentication failed")
 
     raw_id = body.credential.get("rawId", "")
-    from webauthn import base64url_to_bytes  # noqa: PLC0415
-
     credential_id_bytes = base64url_to_bytes(raw_id)
 
     stored_credential = get_credential_by_credential_id(db, credential_id_bytes)
