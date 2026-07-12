@@ -5,7 +5,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Header, HTTPException, Response, status
 from sqlalchemy.orm import Session
 
-from src.api.deps import get_current_user
+from src.api.deps import get_current_user, get_or_404
 from src.config import get_cron_secret
 from src.model.user import User
 from src.repository import recurring_expense_repository
@@ -100,9 +100,9 @@ def get_recurring(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> RecurringExpenseResponse:
-    recurring = recurring_expense_repository.get_by_uuid(db, uuid, str(user.uuid))
-    if not recurring:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Recurring expense not found")
+    recurring = get_or_404(
+        recurring_expense_repository.get_by_uuid(db, uuid, str(user.uuid)), "Recurring expense not found",
+    )
     return RecurringExpenseResponse.model_validate(recurring)
 
 
@@ -113,9 +113,9 @@ def update_recurring(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> RecurringExpenseResponse:
-    recurring = recurring_expense_repository.get_by_uuid(db, uuid, str(user.uuid))
-    if not recurring:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Recurring expense not found")
+    recurring = get_or_404(
+        recurring_expense_repository.get_by_uuid(db, uuid, str(user.uuid)), "Recurring expense not found",
+    )
 
     update_data = body.model_dump(exclude_unset=True)
     if "category_uuid" in update_data:
@@ -139,9 +139,9 @@ def delete_recurring(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> Response:
-    recurring = recurring_expense_repository.get_by_uuid(db, uuid, str(user.uuid))
-    if not recurring:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Recurring expense not found")
+    recurring = get_or_404(
+        recurring_expense_repository.get_by_uuid(db, uuid, str(user.uuid)), "Recurring expense not found",
+    )
     recurring_expense_repository.soft_delete(db, recurring)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
@@ -153,9 +153,9 @@ def record_recurring(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> dict[str, int]:
-    recurring = recurring_expense_repository.get_by_uuid(db, uuid, str(user.uuid))
-    if not recurring:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Recurring expense not found")
+    recurring = get_or_404(
+        recurring_expense_repository.get_by_uuid(db, uuid, str(user.uuid)), "Recurring expense not found",
+    )
 
     created = recurring_expense_service.record_occurrences(
         db, recurring, count=body.count, expensed_at_override=body.expensed_at,

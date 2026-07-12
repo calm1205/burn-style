@@ -5,7 +5,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.orm import Session
 
-from src.api.deps import get_current_user
+from src.api.deps import get_current_user, get_or_404
 from src.model.user import User
 from src.repository.category_repository import (
     create_category,
@@ -54,9 +54,7 @@ def patch_category(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> CategoryResponse:
-    category = get_category_by_uuid(db, uuid, str(user.uuid))
-    if not category:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Category not found")
+    category = get_or_404(get_category_by_uuid(db, uuid, str(user.uuid)), "Category not found")
 
     update_data = body.model_dump(exclude_unset=True)
     if update_data:
@@ -71,9 +69,7 @@ def delete_category_endpoint(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> Response:
-    category = get_category_by_uuid(db, uuid, str(user.uuid))
-    if not category:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Category not found")
+    category = get_or_404(get_category_by_uuid(db, uuid, str(user.uuid)), "Category not found")
 
     delete_category(db, category)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -107,13 +103,10 @@ def post_category_merge(
             detail="Source and target must differ",
         )
 
-    source = get_category_by_uuid(db, uuid, str(user.uuid))
-    if not source:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Source category not found")
-
-    target = get_category_by_uuid(db, body.target_uuid, str(user.uuid))
-    if not target:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Target category not found")
+    source = get_or_404(get_category_by_uuid(db, uuid, str(user.uuid)), "Source category not found")
+    target = get_or_404(
+        get_category_by_uuid(db, body.target_uuid, str(user.uuid)), "Target category not found",
+    )
 
     merged = merge_categories(db, source, target)
     return CategoryResponse.model_validate(merged)
