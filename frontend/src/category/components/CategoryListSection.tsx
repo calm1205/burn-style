@@ -23,7 +23,7 @@ export const CategoryListSection = ({ page: p }: CategoryListSectionProps) => {
           usage={p.usage}
           onEdit={(uuid) => navigate(`/category/${uuid}`)}
           onMerge={p.setMergingFrom}
-          onDragEnd={p.handleDragEnd}
+          onMove={p.moveCategory}
         />
       )}
 

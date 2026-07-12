@@ -1,5 +1,3 @@
-import { type DragEndEvent } from "@dnd-kit/core"
-import { arrayMove } from "@dnd-kit/sortable"
 import { useCallback, useEffect, useMemo, useState } from "react"
 
 import { api } from "../../common/libs/api"
@@ -38,13 +36,12 @@ export const useCategoriesPage = () => {
     return map
   }, [expenses])
 
-  const handleDragEnd = async (event: DragEndEvent) => {
-    const { active, over } = event
-    if (!over || active.id === over.id) return
-    const oldIndex = categories.findIndex((c) => c.uuid === active.id)
-    const newIndex = categories.findIndex((c) => c.uuid === over.id)
-    if (oldIndex === -1 || newIndex === -1) return
-    const reordered = arrayMove(categories, oldIndex, newIndex)
+  const moveCategory = async (uuid: string, direction: "up" | "down") => {
+    const index = categories.findIndex((c) => c.uuid === uuid)
+    const newIndex = direction === "up" ? index - 1 : index + 1
+    if (index === -1 || newIndex < 0 || newIndex >= categories.length) return
+    const reordered = [...categories]
+    ;[reordered[index], reordered[newIndex]] = [reordered[newIndex], reordered[index]]
     setCategories(reordered)
     setError("")
     try {
@@ -82,7 +79,7 @@ export const useCategoriesPage = () => {
     mergingCategory,
     mergingFrom,
     setMergingFrom,
-    handleDragEnd,
+    moveCategory,
     handleMerge,
   }
 }
