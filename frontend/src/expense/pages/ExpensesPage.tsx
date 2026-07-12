@@ -1,3 +1,4 @@
+import { PrimaryButton } from "../../common/components/PrimaryButton"
 import { ExpenseDateTimeInput } from "../components/ExpenseDateTimeInput"
 import { ExpenseFormFields } from "../components/ExpenseFormFields"
 import { useExpenseCreateForm } from "../hooks/useExpenseCreateForm"
@@ -31,13 +32,9 @@ export const ExpensesPage = () => {
       </div>
 
       <div className="shrink-0 px-5 pt-2 pb-8">
-        <button
-          type="submit"
-          disabled={f.loading || !f.form.name || !f.form.amount}
-          className="w-full rounded-xl bg-primary px-4 py-3.5 text-sm font-bold text-white shadow-[0_6px_18px_rgba(47,116,208,0.32)] hover:bg-primary-hover disabled:opacity-50 disabled:shadow-none"
-        >
+        <PrimaryButton type="submit" disabled={f.loading || !f.form.name || !f.form.amount}>
           {f.loading ? "Saving…" : "Save"}
-        </button>
+        </PrimaryButton>
       </div>
     </form>
   )
