@@ -7,7 +7,6 @@ import { FilterSheetCategorySection } from "./FilterSheetCategorySection"
 import { FilterSheetDateSection } from "./FilterSheetDateSection"
 import { FilterSheetHeader } from "./FilterSheetHeader"
 import { FilterSheetRecurringSection } from "./FilterSheetRecurringSection"
-import { FilterSheetScopeSection } from "./FilterSheetScopeSection"
 import { FilterSheetSearchSection } from "./FilterSheetSearchSection"
 import { FilterSheetVibeSection } from "./FilterSheetVibeSection"
 
@@ -66,10 +65,6 @@ export const ExpenseFilterSheet = ({
           <FilterSheetSearchSection
             value={draft.q}
             onChange={(v) => setDraft({ ...draft, q: v })}
-          />
-          <FilterSheetScopeSection
-            scope={draft.scope}
-            onChange={(v) => setDraft({ ...draft, scope: v })}
           />
           <FilterSheetDateSection
             start={draft.dateStart}
