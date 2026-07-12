@@ -24,16 +24,7 @@ export const SettingsPage = () => {
     <div className="mx-auto flex max-w-2xl flex-col gap-5 px-4 pb-6">
       <SettingsStatusMessages error={actions.error} success={actions.success} />
 
-      <SettingsProfileHeader
-        name={user?.name}
-        editing={actions.editing}
-        draftName={actions.name}
-        loading={actions.loading}
-        onDraftChange={actions.setName}
-        onStartEdit={actions.startEdit}
-        onSave={actions.handleUpdate}
-        onCancel={() => actions.setEditing(false)}
-      />
+      <SettingsProfileHeader name={user?.name} actions={actions} />
 
       <SettingsNavSection />
 

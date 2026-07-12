@@ -1,26 +1,23 @@
 import { CheckIcon, Pencil1Icon, ResetIcon } from "@radix-ui/react-icons"
 
+import type { useSettingsActions } from "../hooks/useSettingsActions"
+
 interface SettingsProfileHeaderProps {
   name: string | undefined
-  editing: boolean
-  draftName: string
-  loading: boolean
-  onDraftChange: (v: string) => void
-  onStartEdit: () => void
-  onSave: () => void
-  onCancel: () => void
+  actions: ReturnType<typeof useSettingsActions>
 }
 
-export const SettingsProfileHeader = ({
-  name,
-  editing,
-  draftName,
-  loading,
-  onDraftChange,
-  onStartEdit,
-  onSave,
-  onCancel,
-}: SettingsProfileHeaderProps) => {
+export const SettingsProfileHeader = ({ name, actions }: SettingsProfileHeaderProps) => {
+  const {
+    editing,
+    name: draftName,
+    loading,
+    setName,
+    startEdit,
+    handleUpdate,
+    setEditing,
+  } = actions
+
   return (
     <div className="flex items-center gap-3.5 px-2 pt-2">
       <div className="min-w-0 flex-1">
@@ -29,13 +26,13 @@ export const SettingsProfileHeader = ({
             <input
               type="text"
               value={draftName}
-              onChange={(e) => onDraftChange(e.target.value)}
+              onChange={(e) => setName(e.target.value)}
               maxLength={50}
               className="min-w-0 flex-1 border-b border-gray-300 px-1 py-0.5 text-lg font-bold tracking-tight outline-none focus:border-primary dark:border-gray-600 dark:bg-transparent dark:text-gray-100"
             />
             <button
               type="button"
-              onClick={onSave}
+              onClick={handleUpdate}
               disabled={loading}
               className="text-primary hover:text-primary-hover disabled:opacity-50"
             >
@@ -43,7 +40,7 @@ export const SettingsProfileHeader = ({
             </button>
             <button
               type="button"
-              onClick={onCancel}
+              onClick={() => setEditing(false)}
               disabled={loading}
               className="text-gray-400 hover:text-gray-600 disabled:opacity-50 dark:text-gray-500 dark:hover:text-gray-300"
             >
@@ -53,7 +50,7 @@ export const SettingsProfileHeader = ({
         ) : (
           <button
             type="button"
-            onClick={onStartEdit}
+            onClick={startEdit}
             className="flex w-full items-center gap-2 text-left"
           >
             <span className="truncate text-xl font-bold tracking-tight">{name ?? "---"}</span>
