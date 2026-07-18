@@ -1,5 +1,7 @@
 import { presetDateRange, SCOPE_OPTIONS } from "../libs/expenseFilter"
 
+const PERIOD_PRESETS = SCOPE_OPTIONS.filter((s) => s.k !== "all")
+
 interface FilterSheetDateSectionProps {
   start: string | null
   end: string | null
@@ -35,7 +37,7 @@ export const FilterSheetDateSection = ({
       )}
     </div>
     <div className="mb-2 flex flex-wrap gap-2">
-      {SCOPE_OPTIONS.map((s) => (
+      {PERIOD_PRESETS.map((s) => (
         <button
           key={s.k}
           type="button"
