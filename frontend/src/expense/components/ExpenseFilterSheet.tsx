@@ -70,8 +70,8 @@ export const ExpenseFilterSheet = ({
           <FilterSheetDateSection
             start={draft.dateStart}
             end={draft.dateEnd}
-            onStartChange={(v) => setDraft({ ...draft, dateStart: v })}
-            onEndChange={(v) => setDraft({ ...draft, dateEnd: v })}
+            onStartChange={(v) => setDraft((d) => ({ ...d, dateStart: v }))}
+            onEndChange={(v) => setDraft((d) => ({ ...d, dateEnd: v }))}
           />
           <FilterSheetRecurringSection
             mode={draft.recurringMode}
