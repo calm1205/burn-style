@@ -14,8 +14,8 @@ load_dotenv()
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # Baseとモデルをインポート
-import src.model  # noqa: F401, E402 - 全てのモデルを自動的にロード
-from src.repository.database import Base, get_database_url  # noqa: E402
+import src.domain  # noqa: F401, E402 - 全てのモデルを自動的にロード
+from src.infrastructure.database import Base, get_database_url  # noqa: E402
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

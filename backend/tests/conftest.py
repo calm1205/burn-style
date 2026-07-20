@@ -7,10 +7,10 @@ from fastapi.testclient import TestClient
 from sqlalchemy import StaticPool, create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
-from src.api.deps import get_current_user
+from src.domain.user import User
+from src.infrastructure.database import Base, get_db
 from src.main import app
-from src.model.user import User
-from src.repository.database import Base, get_db
+from src.presentation.deps import get_current_user
 
 # インメモリSQLiteエンジン
 test_engine = create_engine("sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool)

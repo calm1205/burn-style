@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from src.repository import expense_repository
+from src.infrastructure import expense_repository
 
 if TYPE_CHECKING:
     from sqlalchemy.orm import Session
 
-    from src.model.expense import Expense
+    from src.domain.expense import Expense
 
 
 def update_expense(
