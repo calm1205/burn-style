@@ -6,8 +6,8 @@ from datetime import UTC, datetime
 from sqlalchemy import CheckConstraint, Column, DateTime, Enum, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
+from src.domain.base import Base
 from src.domain.utils import generate_uuid_string
-from src.infrastructure.database import Base
 
 
 class VibeSocial(str, enum.Enum):

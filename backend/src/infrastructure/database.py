@@ -8,15 +8,18 @@ from typing import Any
 
 from dotenv import load_dotenv
 from sqlalchemy import Engine, create_engine, event
-from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
+from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import Pool
 
+from src.domain.base import Base
 from src.logger import get_logger
 
 # Load environment variables from .env file
 load_dotenv()
 
 logger = get_logger(__name__)
+
+__all__ = ["Base", "get_database_url", "get_db", "get_engine", "get_session_local"]
 
 
 @event.listens_for(Pool, "invalidate")
@@ -67,10 +70,6 @@ def get_database_url() -> str:
         database_url = database_url.replace("@db/", "@localhost/").replace("@db:", "@localhost:")
 
     return database_url
-
-
-class Base(DeclarativeBase):
-    pass
 
 
 @lru_cache(maxsize=1)

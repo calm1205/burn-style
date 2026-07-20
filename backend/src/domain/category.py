@@ -3,8 +3,8 @@ from __future__ import annotations
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
+from src.domain.base import Base
 from src.domain.utils import generate_uuid_string
-from src.infrastructure.database import Base
 
 
 class Category(Base):

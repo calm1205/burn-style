@@ -4,7 +4,7 @@ from datetime import UTC, datetime
 
 from sqlalchemy import Column, DateTime, LargeBinary, String
 
-from src.infrastructure.database import Base
+from src.domain.base import Base
 
 
 class WebAuthnChallenge(Base):

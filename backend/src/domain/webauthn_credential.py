@@ -5,8 +5,8 @@ from datetime import UTC, datetime
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, LargeBinary, String, Text
 from sqlalchemy.orm import relationship
 
+from src.domain.base import Base
 from src.domain.utils import generate_uuid_string
-from src.infrastructure.database import Base
 
 
 class WebAuthnCredential(Base):

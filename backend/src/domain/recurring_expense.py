@@ -15,8 +15,8 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
+from src.domain.base import Base
 from src.domain.utils import generate_uuid_string
-from src.infrastructure.database import Base
 
 
 class IntervalUnit(str, enum.Enum):
