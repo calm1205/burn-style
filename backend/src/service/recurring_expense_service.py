@@ -5,16 +5,16 @@ from typing import TYPE_CHECKING
 
 from dateutil.relativedelta import relativedelta
 
-from src.model.expense import Expense
-from src.model.expense_category_association import ExpenseCategoryAssociation
-from src.model.recurring_expense import IntervalUnit
-from src.repository import recurring_expense_repository
-from src.schema.types import JST
+from src.domain.expense import Expense
+from src.domain.expense_category_association import ExpenseCategoryAssociation
+from src.domain.recurring_expense import IntervalUnit
+from src.infrastructure import recurring_expense_repository
+from src.presentation.schema.types import JST
 
 if TYPE_CHECKING:
     from sqlalchemy.orm import Session
 
-    from src.model.recurring_expense import RecurringExpense
+    from src.domain.recurring_expense import RecurringExpense
 
 
 def jst_today() -> date:

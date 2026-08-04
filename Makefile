@@ -1,4 +1,4 @@
-.PHONY: lint test-backend test-frontend migrate upgrade seed db-clear db-connect prod-upgrade
+.PHONY: lint test-backend test-frontend migrate upgrade db-clear db-connect prod-upgrade
 
 BACKEND_DIR = backend
 FRONTEND_DIR = frontend
@@ -18,10 +18,6 @@ test-frontend: ## frontendのテストを実行
 
 upgrade: ## データベースを最新バージョンにアップグレード
 	cd $(BACKEND_DIR) && uv run alembic upgrade head
-
-SEED_USER ?=
-seed: ## seedデータを投入（使用例: make seed SEED_USER="username"）
-	cd $(BACKEND_DIR) && uv run python scripts/seed_all.py $(SEED_USER)
 
 db-clear: ## データベースの全テーブルを削除
 	@echo "全テーブルを削除します。よろしいですか? [y/N]" && read ans && [ "$$ans" = "y" ] || (echo "中止" && exit 1)

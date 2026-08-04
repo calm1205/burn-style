@@ -2,29 +2,29 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from src.model.category import Category
-from src.model.expense import Expense
-from src.model.expense_category_association import ExpenseCategoryAssociation
-from src.model.recurring_expense import RecurringExpense
-from src.repository import recurring_expense_repository
-from src.repository.category_repository import (
+from src.domain.category import Category
+from src.domain.expense import Expense
+from src.domain.expense_category_association import ExpenseCategoryAssociation
+from src.domain.recurring_expense import RecurringExpense
+from src.infrastructure import recurring_expense_repository
+from src.infrastructure.category_repository import (
     delete_all_for_user as delete_all_categories_for_user,
 )
-from src.repository.category_repository import (
+from src.infrastructure.category_repository import (
     get_all_categories,
 )
-from src.repository.expense_repository import (
+from src.infrastructure.expense_repository import (
     delete_all_for_user as delete_all_expenses_for_user,
 )
-from src.repository.expense_repository import (
+from src.infrastructure.expense_repository import (
     get_all_expenses,
 )
 
 if TYPE_CHECKING:
     from sqlalchemy.orm import Session
 
-    from src.model.user import User
-    from src.schema.user import UserImportRequest
+    from src.domain.user import User
+    from src.presentation.schema.user import UserImportRequest
 
 
 def export_user_data(

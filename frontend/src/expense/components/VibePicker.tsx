@@ -22,7 +22,7 @@ export const VibePicker = ({
   onPlanningChange,
   onNecessityChange,
 }: VibePickerProps) => (
-  <div className="grid grid-cols-[1fr_12px_1fr] gap-y-1.5">
+  <div className="grid grid-cols-[1fr_16px_1fr] gap-y-3">
     <VibeChip
       active={social === "SOLO"}
       label="Solo"

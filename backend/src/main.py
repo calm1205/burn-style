@@ -6,7 +6,9 @@ from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 
-from src.api import (
+from src.config import get_frontend_origin
+from src.logger import configure_logging
+from src.presentation.api import (
     auth_router,
     category_router,
     cron_router,
@@ -15,9 +17,7 @@ from src.api import (
     recurring_expense_router,
     user_router,
 )
-from src.config import get_frontend_origin
-from src.logger import configure_logging
-from src.middleware import RequestLoggingMiddleware, TokenRefreshMiddleware
+from src.presentation.middleware import RequestLoggingMiddleware, TokenRefreshMiddleware
 
 configure_logging()
 

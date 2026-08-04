@@ -222,9 +222,9 @@ describe("applyFilter", () => {
 
   it("filters by each vibe axis independently", () => {
     const solo = mkExpense({ uuid: "a", vibe_social: "SOLO" })
-    const with_ = mkExpense({ uuid: "b", vibe_social: "WITH_SOMEONE" })
+    const withSomeone = mkExpense({ uuid: "b", vibe_social: "WITH_SOMEONE" })
     const none = mkExpense({ uuid: "c", vibe_social: null })
-    const result = applyFilter([solo, with_, none], {
+    const result = applyFilter([solo, withSomeone, none], {
       ...defaultFilter(),
       scope: "all",
       vibeSocial: "SOLO",
