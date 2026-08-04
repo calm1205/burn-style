@@ -15,7 +15,7 @@ export const ExpenseNameInput = ({ value, onChange, inputRef }: ExpenseNameInput
       onChange={(e) => onChange(e.target.value)}
       required
       maxLength={100}
-      placeholder="What was this?"
+      placeholder="title"
       className="w-full bg-transparent text-base font-bold tracking-tight outline-none placeholder:text-gray-300 dark:text-gray-100 dark:placeholder:text-gray-600"
     />
     <div className="mt-2 h-px bg-gray-200 dark:bg-gray-700" />
