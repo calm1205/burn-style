@@ -8,7 +8,7 @@ export const VibeChip = ({ active, label, onClick }: VibeChipProps) => (
   <button
     type="button"
     onClick={onClick}
-    className={`rounded-xl border px-3 py-2 text-center text-xs font-semibold transition-colors ${
+    className={`min-h-11 rounded-xl border px-3 py-3 text-center text-sm font-semibold transition-colors ${
       active
         ? "border-primary bg-primary text-white"
         : "border-gray-200 bg-white text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
