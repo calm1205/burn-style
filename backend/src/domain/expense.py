@@ -10,17 +10,17 @@ from src.domain.base import Base
 from src.domain.utils import generate_uuid_string
 
 
-class VibeSocial(str, enum.Enum):
+class VibeSocial(enum.StrEnum):
     SOLO = "SOLO"
     WITH_SOMEONE = "WITH_SOMEONE"
 
 
-class VibePlanning(str, enum.Enum):
+class VibePlanning(enum.StrEnum):
     ROUTINE = "ROUTINE"
     SPONTANEOUS = "SPONTANEOUS"
 
 
-class VibeNecessity(str, enum.Enum):
+class VibeNecessity(enum.StrEnum):
     NEEDED = "NEEDED"
     WANTED = "WANTED"
 

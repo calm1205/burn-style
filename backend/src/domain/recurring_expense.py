@@ -19,7 +19,7 @@ from src.domain.base import Base
 from src.domain.utils import generate_uuid_string
 
 
-class IntervalUnit(str, enum.Enum):
+class IntervalUnit(enum.StrEnum):
     WEEK = "WEEK"
     MONTH = "MONTH"
 
