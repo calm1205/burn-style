@@ -3,8 +3,8 @@
 ## デプロイ
 - プラットフォーム: Vercel (フロントエンド + バックエンド)
 - 本番 DB: Neon (PostgreSQL)
-- CI/CD: GitHub Actions `workflow_dispatch` (手動トリガー)、production / preview 選択可
-- ワークフロー: `deploy_backend.yml` / `deploy_frontend.yml`
+- CI/CD: Release PR フローのみ（`release_pr.yml` → `release.yml`）
+- 再利用ワークフロー: `deploy_backend.yml` / `deploy_frontend.yml`（`release.yml` から production デプロイ時に呼び出し）
 
 ## DB 接続の切り替え
 - `VERCEL_ENV=production` → Neon
