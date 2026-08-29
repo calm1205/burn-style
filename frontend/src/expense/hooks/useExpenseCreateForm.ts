@@ -33,9 +33,9 @@ export const useExpenseCreateForm = () => {
     amount: "",
     expensedAt: toLocalDatetime(new Date().toISOString()),
     categoryUuid: null,
-    vibeSocial: null,
-    vibePlanning: null,
-    vibeNecessity: null,
+    vibeSocial: "SOLO",
+    vibePlanning: "ROUTINE",
+    vibeNecessity: "NEEDED",
   }))
 
   const update = <K extends keyof FormState>(key: K, value: FormState[K]) => {
