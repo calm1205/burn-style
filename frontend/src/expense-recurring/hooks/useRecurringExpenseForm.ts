@@ -9,7 +9,7 @@ import type {
   RecurringExpenseCreate,
   RecurringExpenseUpdate,
 } from "../../common/libs/types"
-import { FREQUENCY_OPTIONS, frequencyKeyFor, todayJst } from "../libs/recurringFrequency"
+import { FREQUENCY_OPTIONS, frequencyKeyFromInterval, todayJst } from "../libs/recurringFrequency"
 
 /** 定期支払の新規/編集フォームの state とハンドラ。uuid 指定時は edit モード。 */
 export const useRecurringExpenseForm = (uuid: string | undefined) => {
@@ -36,7 +36,7 @@ export const useRecurringExpenseForm = (uuid: string | undefined) => {
         setName(recurringExpense.name)
         setAmount(recurringExpense.amount.toLocaleString())
         setFrequencyKey(
-          frequencyKeyFor(recurringExpense.interval_unit, recurringExpense.interval_count),
+          frequencyKeyFromInterval(recurringExpense.interval_unit, recurringExpense.interval_count),
         )
         setStartDate(recurringExpense.start_date)
         setCategoryUuid(recurringExpense.category.uuid)
