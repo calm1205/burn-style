@@ -12,7 +12,7 @@ export const useCategoriesPage = () => {
   const [loading, setLoading] = useState(false)
   const [mergingFrom, setMergingFrom] = useState<string | null>(null)
 
-  const loadCategoriesPage = useCallback(async () => {
+  const fetchCategoriesPage = useCallback(async () => {
     try {
       const [cats, exps] = await Promise.all([api.getCategories(), api.getExpenses()])
       setCategories(cats)
@@ -23,8 +23,8 @@ export const useCategoriesPage = () => {
   }, [])
 
   useEffect(() => {
-    loadCategoriesPage()
-  }, [loadCategoriesPage])
+    fetchCategoriesPage()
+  }, [fetchCategoriesPage])
 
   const usage = useMemo(() => {
     const map: Record<string, number> = {}
@@ -48,7 +48,7 @@ export const useCategoriesPage = () => {
       await api.reorderCategories({ uuids: reordered.map((c) => c.uuid) })
     } catch (err) {
       setError(getErrorMessage(err, "Reorder failed"))
-      await loadCategoriesPage()
+      await fetchCategoriesPage()
     }
   }
 
@@ -59,7 +59,7 @@ export const useCategoriesPage = () => {
     try {
       await api.mergeCategory(mergingFrom, { target_uuid: targetUuid })
       setMergingFrom(null)
-      await loadCategoriesPage()
+      await fetchCategoriesPage()
     } catch (err) {
       setError(getErrorMessage(err, "Merge failed"))
     } finally {
