@@ -8,7 +8,7 @@ export const ExpensesPage = () => {
 
   return (
     <form
-      onSubmit={expenseForm.submitExpense}
+      onSubmit={expenseForm.createExpense}
       className="mx-auto flex h-full max-w-2xl flex-col overflow-hidden"
     >
       <div className="flex shrink-0 justify-end px-5 pt-2">
