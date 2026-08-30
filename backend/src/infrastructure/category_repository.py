@@ -79,7 +79,7 @@ def compact_positions(db: Session, user_uuid: str) -> None:
     db.commit()
 
 
-def delete_all_for_user(db: Session, user_uuid: str) -> None:
+def delete_all_by_user_uuid(db: Session, user_uuid: str) -> None:
     """ユーザーの全Categoryを物理削除 (FK CASCADEでassociationも消える)。"""
     db.query(Category).filter(Category.user_uuid == user_uuid).delete(synchronize_session=False)
 

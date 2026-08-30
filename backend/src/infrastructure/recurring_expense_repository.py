@@ -30,27 +30,21 @@ class RecurringExpensePatch(TypedDict, total=False):
     end_date: date | None
 
 
-def get_all_active(db: Session, user_uuid: str) -> list[RecurringExpense]:
-    """ユーザーの未削除定期支払一覧を取得 (categoryをeager load)。"""
-    return (
+def get_all_recurring_expenses(
+    db: Session,
+    user_uuid: str,
+    *,
+    include_deleted: bool = False,
+) -> list[RecurringExpense]:
+    """ユーザーの定期支払一覧を取得 (デフォルトは未削除のみ、categoryをeager load)。"""
+    query = (
         db.query(RecurringExpense)
         .options(joinedload(RecurringExpense.category))
-        .filter(
-            RecurringExpense.user_uuid == user_uuid,
-            RecurringExpense.deleted_at.is_(None),
-        )
-        .all()
+        .filter(RecurringExpense.user_uuid == user_uuid)
     )
-
-
-def get_all_active_for_cron(db: Session) -> list[RecurringExpense]:
-    """全ユーザーの未削除定期支払を取得 (cron用)。"""
-    return (
-        db.query(RecurringExpense)
-        .options(joinedload(RecurringExpense.category))
-        .filter(RecurringExpense.deleted_at.is_(None))
-        .all()
-    )
+    if not include_deleted:
+        query = query.filter(RecurringExpense.deleted_at.is_(None))
+    return query.all()
 
 
 def get_recurring_expense_by_uuid(db: Session, uuid: str, user_uuid: str) -> RecurringExpense | None:
@@ -117,12 +111,7 @@ def soft_delete(db: Session, recurring: RecurringExpense) -> None:
     db.commit()
 
 
-def get_all_including_deleted(db: Session, user_uuid: str) -> list[RecurringExpense]:
-    """export用: soft-delete含む全件を取得。"""
-    return db.query(RecurringExpense).filter(RecurringExpense.user_uuid == user_uuid).all()
-
-
-def delete_all_for_user(db: Session, user_uuid: str) -> None:
+def delete_all_by_user_uuid(db: Session, user_uuid: str) -> None:
     """import用: ユーザーの定期支払を物理削除。"""
     db.query(RecurringExpense).filter(RecurringExpense.user_uuid == user_uuid).delete(
         synchronize_session=False,
