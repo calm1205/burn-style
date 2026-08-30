@@ -17,7 +17,7 @@ from src.presentation.api import (
     recurring_expense_router,
     user_router,
 )
-from src.presentation.middleware import RequestLoggingMiddleware, TokenRefreshMiddleware
+from src.presentation.middleware import RequestLoggingMiddleware, TokenRefreshMiddleware, UserContextMiddleware
 
 configure_logging()
 
@@ -51,6 +51,7 @@ if not os.getenv("VERCEL_ENV"):
     )
 
 app.add_middleware(RequestLoggingMiddleware)
+app.add_middleware(UserContextMiddleware)
 
 
 @app.options("/{path:path}")
