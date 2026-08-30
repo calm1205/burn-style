@@ -105,7 +105,7 @@ def update_recurring_expense(
     return recurring
 
 
-def soft_delete(db: Session, recurring: RecurringExpense) -> None:
+def soft_delete_recurring_expense(db: Session, recurring: RecurringExpense) -> None:
     """定期支払を論理削除。"""
     recurring.deleted_at = datetime.now(UTC)  # type: ignore[assignment]
     db.commit()

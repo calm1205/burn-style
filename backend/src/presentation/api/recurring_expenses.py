@@ -150,7 +150,7 @@ def delete_recurring(
         recurring_expense_repository.get_recurring_expense_by_uuid(db, uuid, str(user.uuid)),
         "Recurring expense not found",
     )
-    recurring_expense_repository.soft_delete(db, recurring)
+    recurring_expense_repository.soft_delete_recurring_expense(db, recurring)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
