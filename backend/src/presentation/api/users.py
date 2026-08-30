@@ -24,7 +24,7 @@ user_router = APIRouter(tags=["users"])
 
 
 @user_router.get("/me")
-def me(current_user: Annotated[User, Depends(get_current_user)]) -> UserResponse:
+def get_me(current_user: Annotated[User, Depends(get_current_user)]) -> UserResponse:
     """現在のユーザー情報を返す。"""
     return UserResponse.model_validate(current_user)
 

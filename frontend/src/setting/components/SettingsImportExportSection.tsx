@@ -2,19 +2,19 @@ import { DownloadIcon, UploadIcon } from "../../common/icons"
 import { SettingsRow, type SettingsRowAction } from "./SettingsRow"
 import { SettingsSectionLabel } from "./SettingsSectionLabel"
 
-interface SettingsDataSectionProps {
+interface SettingsImportExportSectionProps {
   loading: boolean
   fileInputRef: React.RefObject<HTMLInputElement | null>
   onExport: () => void
   onFileSelect: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-export const SettingsDataSection = ({
+export const SettingsImportExportSection = ({
   loading,
   fileInputRef,
   onExport,
   onFileSelect,
-}: SettingsDataSectionProps) => {
+}: SettingsImportExportSectionProps) => {
   const rows: SettingsRowAction[] = [
     {
       label: "Import",

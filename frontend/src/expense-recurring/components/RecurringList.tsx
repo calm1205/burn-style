@@ -3,7 +3,7 @@ import { useNavigate } from "react-router"
 import { PlusIcon } from "../../common/icons"
 import { categoryGlyph } from "../../common/libs/category"
 import type { RecurringExpenseResponse } from "../../common/libs/types"
-import { matchFrequency, nextOccurrence, PERIOD_LABEL } from "../libs/recurringFrequency"
+import { frequencyKeyFor, nextOccurrence, PERIOD_LABEL } from "../libs/recurringFrequency"
 
 const formatDate = (iso: string): string => iso.replace(/-/g, "/")
 
@@ -29,7 +29,7 @@ export const RecurringList = ({ items }: RecurringListProps) => {
         </button>
         {items.map((r) => {
           const next = nextOccurrence(r.start_date, r.interval_unit, r.interval_count, r.end_date)
-          const periodKey = matchFrequency(r.interval_unit, r.interval_count)
+          const periodKey = frequencyKeyFor(r.interval_unit, r.interval_count)
           return (
             <button
               key={r.uuid}
