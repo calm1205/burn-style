@@ -38,7 +38,7 @@ def missed_dates(
     recurring: RecurringExpense, recorded_count: int, today: date,
 ) -> list[date]:
     """期日到来で未記録の発生日リストを返す (today・end_dateで打ち切り)。"""
-    result: list[date] = []
+    missed: list[date] = []
     n = recorded_count
     while True:
         d = occurrence_date(
@@ -51,9 +51,9 @@ def missed_dates(
             break
         if recurring.end_date is not None and d > recurring.end_date:
             break
-        result.append(d)
+        missed.append(d)
         n += 1
-    return result
+    return missed
 
 
 def record_occurrences(
@@ -63,7 +63,7 @@ def record_occurrences(
     expensed_at_override: date | None = None,
 ) -> int:
     """定期支払に紐づくExpenseをcount件生成 (expensed_atは算出日付か上書き値)。作成件数を返す。"""
-    recorded = recurring_expense_repository.count_recorded(db, str(recurring.uuid))
+    linked_expense_count = recurring_expense_repository.count_linked_expenses(db, str(recurring.uuid))
     created = 0
     for i in range(count):
         if expensed_at_override is not None:
@@ -73,7 +73,7 @@ def record_occurrences(
                 recurring.start_date,  # type: ignore[arg-type]
                 recurring.interval_unit,  # type: ignore[arg-type]
                 recurring.interval_count,  # type: ignore[arg-type]
-                recorded + i,
+                linked_expense_count + i,
             )
             expensed_at = datetime.combine(occurrence, datetime.min.time())
 
@@ -98,17 +98,3 @@ def record_occurrences(
     return created
 
 
-def record_all_due_for_cron(db: Session) -> tuple[int, int]:
-    """全ユーザーの未削除定期支払を処理。返り値は (recorded_count, processed_recurring_count)。"""
-    today = jst_today()
-    recurrings = recurring_expense_repository.get_all_active_for_cron(db)
-    total_recorded = 0
-    processed = 0
-    for r in recurrings:
-        recorded = recurring_expense_repository.count_recorded(db, str(r.uuid))
-        dates = missed_dates(r, recorded, today)
-        if not dates:
-            continue
-        total_recorded += record_occurrences(db, r, count=len(dates))
-        processed += 1
-    return total_recorded, processed

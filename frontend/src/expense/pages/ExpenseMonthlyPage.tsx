@@ -5,7 +5,7 @@ import { api } from "../../common/libs/api"
 import { getErrorMessage } from "../../common/libs/client"
 import type { ExpenseResponse } from "../../common/libs/types"
 import { ExpenseList } from "../components/ExpenseList"
-import { defaultFilter, type ExpenseFilter } from "../libs/expenseFilter"
+import { createDefaultExpenseFilter, type ExpenseFilter } from "../libs/expenseFilter"
 
 const isValidDateKey = (s: string): boolean => /^\d{4}-\d{2}-\d{2}$/.test(s)
 
@@ -14,7 +14,7 @@ export const ExpenseMonthlyPage = () => {
   const [expenses, setExpenses] = useState<ExpenseResponse[]>([])
   const [error, setError] = useState("")
 
-  const fetchData = useCallback(async () => {
+  const fetchExpenses = useCallback(async () => {
     try {
       setExpenses(await api.getExpenses())
     } catch (err) {
@@ -23,15 +23,15 @@ export const ExpenseMonthlyPage = () => {
   }, [])
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    fetchExpenses()
+  }, [fetchExpenses])
 
   const initialFilter = useMemo<ExpenseFilter>(() => {
     const dateParam = searchParams.get("date")
     if (dateParam && isValidDateKey(dateParam)) {
-      return { ...defaultFilter(), dateStart: dateParam, dateEnd: dateParam }
+      return { ...createDefaultExpenseFilter(), dateStart: dateParam, dateEnd: dateParam }
     }
-    return defaultFilter()
+    return createDefaultExpenseFilter()
     // initial読み取りのみで意図的に searchParams 変更には追従しない
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

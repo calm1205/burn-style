@@ -20,7 +20,7 @@ const clearTokenAndRedirect = () => {
 
 export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN)
-  const [verified, setVerified] = useState(false)
+  const [isSessionVerified, setIsSessionVerified] = useState(false)
 
   const verify = useCallback(() => {
     const stored = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN)
@@ -33,7 +33,7 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
     api
       .getMe()
-      .then(() => setVerified(true))
+      .then(() => setIsSessionVerified(true))
       .catch(() => {
         // 401 -> client.ts redirects to /signin
       })
@@ -59,7 +59,7 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return <Navigate to="/signin" replace />
   }
 
-  if (!verified) {
+  if (!isSessionVerified) {
     return null
   }
 

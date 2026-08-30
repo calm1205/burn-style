@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated
+from typing import Annotated, cast
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Response, status
 from sqlalchemy.orm import Session
@@ -10,16 +10,17 @@ from src.domain.user import User
 from src.infrastructure import recurring_expense_repository
 from src.infrastructure.category_repository import get_category_by_uuid
 from src.infrastructure.database import get_db
+from src.infrastructure.recurring_expense_repository import RecurringExpensePatch
 from src.presentation.deps import get_current_user, get_or_404
 from src.presentation.schema.recurring_expense import (
     CronRecordResponse,
-    RecordRequest,
+    RecordRecurringOccurrencesRequest,
     RecurringExpenseCreate,
     RecurringExpenseDueResponse,
     RecurringExpenseResponse,
     RecurringExpenseUpdate,
 )
-from src.service import recurring_expense_service
+from src.service import cron_recurring_expense_service, recurring_expense_service
 
 recurring_expense_router = APIRouter(prefix="/recurring-expenses", tags=["recurring-expenses"])
 
@@ -30,42 +31,44 @@ def _verify_user_category(db: Session, category_uuid: str, user_uuid: str) -> No
 
 
 @recurring_expense_router.get("")
-def list_recurring(
+def list_recurring_expenses(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> list[RecurringExpenseResponse]:
-    items = recurring_expense_repository.get_all_active(db, str(user.uuid))
-    return [RecurringExpenseResponse.model_validate(r) for r in items]
+    recurring_expenses = recurring_expense_repository.get_all_recurring_expenses(db, str(user.uuid))
+    return [RecurringExpenseResponse.model_validate(recurring_expense) for recurring_expense in recurring_expenses]
 
 
 @recurring_expense_router.get("/due")
-def list_due(
+def list_due_recurring_expenses(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> list[RecurringExpenseDueResponse]:
     today = recurring_expense_service.jst_today()
-    items = recurring_expense_repository.get_all_active(db, str(user.uuid))
-    result: list[RecurringExpenseDueResponse] = []
-    for r in items:
-        recorded = recurring_expense_repository.count_recorded(db, str(r.uuid))
-        dates = recurring_expense_service.missed_dates(r, recorded, today)
+    recurring_expenses = recurring_expense_repository.get_all_recurring_expenses(db, str(user.uuid))
+    due_recurring_expenses: list[RecurringExpenseDueResponse] = []
+    for recurring_expense in recurring_expenses:
+        linked_expense_count = recurring_expense_repository.count_linked_expenses(
+            db, str(recurring_expense.uuid),
+        )
+        dates = recurring_expense_service.missed_dates(recurring_expense, linked_expense_count, today)
         if not dates:
             continue
-        result.append(
+        due_recurring_expenses.append(
             RecurringExpenseDueResponse(
-                uuid=str(r.uuid),
-                name=str(r.name),
-                amount=int(r.amount),
-                category=r.category,
+                uuid=str(recurring_expense.uuid),
+                name=str(recurring_expense.name),
+                amount=int(recurring_expense.amount),
+                category=recurring_expense.category,
                 missed_count=len(dates),
                 missed_dates=dates,
             ),
         )
-    return result
+    return due_recurring_expenses
 
 
 @recurring_expense_router.post("", status_code=status.HTTP_201_CREATED)
-def create_recurring(
+def create_recurring_expense(
     body: RecurringExpenseCreate,
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
@@ -78,10 +81,10 @@ def create_recurring(
             detail="end_date must be on or after start_date",
         )
 
-    recurring = recurring_expense_repository.create(
+    recurring = recurring_expense_repository.create_recurring_expense(
         db,
         user_uuid=str(user.uuid),
-        fields={
+        create_fields={
             "name": body.name,
             "amount": body.amount,
             "category_uuid": body.category_uuid,
@@ -95,66 +98,72 @@ def create_recurring(
 
 
 @recurring_expense_router.get("/{uuid}")
-def get_recurring(
+def get_recurring_expense(
     uuid: str,
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> RecurringExpenseResponse:
     recurring = get_or_404(
-        recurring_expense_repository.get_by_uuid(db, uuid, str(user.uuid)), "Recurring expense not found",
+        recurring_expense_repository.get_recurring_expense_by_uuid(db, uuid, str(user.uuid)),
+        "Recurring expense not found",
     )
     return RecurringExpenseResponse.model_validate(recurring)
 
 
 @recurring_expense_router.patch("/{uuid}")
-def update_recurring(
+def update_recurring_expense(
     uuid: str,
     body: RecurringExpenseUpdate,
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> RecurringExpenseResponse:
     recurring = get_or_404(
-        recurring_expense_repository.get_by_uuid(db, uuid, str(user.uuid)), "Recurring expense not found",
+        recurring_expense_repository.get_recurring_expense_by_uuid(db, uuid, str(user.uuid)),
+        "Recurring expense not found",
     )
 
-    update_data = body.model_dump(exclude_unset=True)
-    if "category_uuid" in update_data:
-        _verify_user_category(db, update_data["category_uuid"], str(user.uuid))
+    recurring_expense_patch = cast(RecurringExpensePatch, body.model_dump(exclude_unset=True))
+    if "category_uuid" in recurring_expense_patch:
+        _verify_user_category(db, recurring_expense_patch["category_uuid"], str(user.uuid))
 
-    new_start = update_data.get("start_date", recurring.start_date)
-    new_end = update_data.get("end_date", recurring.end_date)
+    new_start = recurring_expense_patch.get("start_date", recurring.start_date)
+    new_end = recurring_expense_patch.get("end_date", recurring.end_date)
     if new_end is not None and new_end < new_start:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="end_date must be on or after start_date",
         )
 
-    recurring = recurring_expense_repository.update(db, recurring, update_data)
+    recurring = recurring_expense_repository.update_recurring_expense(
+        db, recurring, recurring_expense_patch,
+    )
     return RecurringExpenseResponse.model_validate(recurring)
 
 
 @recurring_expense_router.delete("/{uuid}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_recurring(
+def delete_recurring_expense(
     uuid: str,
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> Response:
     recurring = get_or_404(
-        recurring_expense_repository.get_by_uuid(db, uuid, str(user.uuid)), "Recurring expense not found",
+        recurring_expense_repository.get_recurring_expense_by_uuid(db, uuid, str(user.uuid)),
+        "Recurring expense not found",
     )
-    recurring_expense_repository.soft_delete(db, recurring)
+    recurring_expense_repository.soft_delete_recurring_expense(db, recurring)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @recurring_expense_router.post("/{uuid}/record")
 def record_recurring(
     uuid: str,
-    body: RecordRequest,
+    body: RecordRecurringOccurrencesRequest,
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> dict[str, int]:
     recurring = get_or_404(
-        recurring_expense_repository.get_by_uuid(db, uuid, str(user.uuid)), "Recurring expense not found",
+        recurring_expense_repository.get_recurring_expense_by_uuid(db, uuid, str(user.uuid)),
+        "Recurring expense not found",
     )
 
     created = recurring_expense_service.record_occurrences(
@@ -173,11 +182,11 @@ def _verify_cron_secret(authorization: Annotated[str | None, Header()] = None) -
 
 
 @cron_router.api_route("/record-due", methods=["GET", "POST"])
-def cron_record_due(
+def cron_record_due_recurring_occurrences(
     db: Annotated[Session, Depends(get_db)],
     _: Annotated[None, Depends(_verify_cron_secret)],
 ) -> CronRecordResponse:
-    recorded, processed = recurring_expense_service.record_all_due_for_cron(db)
+    recorded, processed = cron_recurring_expense_service.record_due_recurring_occurrences(db)
     return CronRecordResponse(
         recorded_count=recorded, processed_recurring_count=processed,
     )

@@ -9,7 +9,6 @@ from sqlalchemy.orm import Session
 from src.domain.user import User
 from src.infrastructure.database import get_db
 from src.infrastructure.user_repository import get_user_by_uuid
-from src.logger import user_uuid_var
 from src.service.jwt_service import decode_access_token
 
 security = HTTPBearer()
@@ -22,11 +21,11 @@ def get_or_404[T](item: T | None, detail: str) -> T:
     return item
 
 
-def get_current_user(
+def resolve_authenticated_user(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],
     db: Annotated[Session, Depends(get_db)],
 ) -> User:
-    """JWTトークンから現在のユーザーを取得。"""
+    """JWTトークンから認証済みユーザーを解決。"""
     try:
         payload = decode_access_token(credentials.credentials)
     except Exception:
@@ -40,5 +39,7 @@ def get_current_user(
     if user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
 
-    user_uuid_var.set(user_uuid)
     return user
+
+
+get_current_user = resolve_authenticated_user

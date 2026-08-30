@@ -4,34 +4,9 @@ import { useNavigate } from "react-router"
 import { useConfirmDialog } from "../../common/components/ConfirmDialog"
 import { api } from "../../common/libs/api"
 import { getErrorMessage } from "../../common/libs/client"
-import type {
-  CategoryResponse,
-  ExpenseResponse,
-  VibeNecessity,
-  VibePlanning,
-  VibeSocial,
-} from "../../common/libs/types"
+import type { CategoryResponse, ExpenseResponse } from "../../common/libs/types"
 import { toLocalDatetime } from "../libs/datetime"
-
-interface FormState {
-  name: string
-  amount: string
-  expensedAt: string
-  categoryUuid: string | null
-  vibeSocial: VibeSocial | null
-  vibePlanning: VibePlanning | null
-  vibeNecessity: VibeNecessity | null
-}
-
-const initialForm: FormState = {
-  name: "",
-  amount: "",
-  expensedAt: "",
-  categoryUuid: null,
-  vibeSocial: null,
-  vibePlanning: null,
-  vibeNecessity: null,
-}
+import { emptyExpenseFormDraft, type ExpenseFormDraft } from "../libs/expenseFormDraft"
 
 /** 既存 expense の編集フォーム state とハンドラ。 */
 export const useExpenseEditForm = (uuid: string | undefined) => {
@@ -40,23 +15,26 @@ export const useExpenseEditForm = (uuid: string | undefined) => {
   const [categories, setCategories] = useState<CategoryResponse[]>([])
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-  const [form, setForm] = useState<FormState>(initialForm)
+  const [form, setForm] = useState<ExpenseFormDraft>(emptyExpenseFormDraft)
   const { dialogRef, open: openDeleteDialog } = useConfirmDialog()
 
-  const fetchData = useCallback(async () => {
+  const fetchExpenseEditInitialState = useCallback(async () => {
     if (!uuid) return
     try {
-      const [exp, cats] = await Promise.all([api.getExpense(uuid), api.getCategories()])
-      setExpense(exp)
-      setCategories(cats)
+      const [loadedExpense, loadedCategories] = await Promise.all([
+        api.getExpense(uuid),
+        api.getCategories(),
+      ])
+      setExpense(loadedExpense)
+      setCategories(loadedCategories)
       setForm({
-        name: exp.name,
-        amount: exp.amount.toLocaleString(),
-        expensedAt: toLocalDatetime(exp.expensed_at),
-        categoryUuid: exp.categories[0]?.uuid ?? null,
-        vibeSocial: exp.vibe_social,
-        vibePlanning: exp.vibe_planning,
-        vibeNecessity: exp.vibe_necessity,
+        name: loadedExpense.name,
+        amount: loadedExpense.amount.toLocaleString(),
+        expensedAt: toLocalDatetime(loadedExpense.expensed_at),
+        categoryUuid: loadedExpense.categories[0]?.uuid ?? null,
+        vibeSocial: loadedExpense.vibe_social,
+        vibePlanning: loadedExpense.vibe_planning,
+        vibeNecessity: loadedExpense.vibe_necessity,
       })
     } catch (err) {
       setError(getErrorMessage(err, "Failed to load"))
@@ -64,14 +42,17 @@ export const useExpenseEditForm = (uuid: string | undefined) => {
   }, [uuid])
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    fetchExpenseEditInitialState()
+  }, [fetchExpenseEditInitialState])
 
-  const update = <K extends keyof FormState>(key: K, value: FormState[K]) => {
+  const updateDraftField = <K extends keyof ExpenseFormDraft>(
+    key: K,
+    value: ExpenseFormDraft[K],
+  ) => {
     setForm((prev) => ({ ...prev, [key]: value }))
   }
 
-  const handleUpdate = async (e: SubmitEvent<HTMLFormElement>) => {
+  const updateExpense = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!uuid) return
     setError("")
@@ -94,7 +75,7 @@ export const useExpenseEditForm = (uuid: string | undefined) => {
     }
   }
 
-  const handleDelete = async () => {
+  const deleteExpense = async () => {
     if (!uuid) return
     setLoading(true)
     try {
@@ -114,10 +95,10 @@ export const useExpenseEditForm = (uuid: string | undefined) => {
     error,
     loading,
     form,
-    update,
+    updateDraftField,
     dialogRef,
     openDeleteDialog,
-    handleUpdate,
-    handleDelete,
+    updateExpense,
+    deleteExpense,
   }
 }

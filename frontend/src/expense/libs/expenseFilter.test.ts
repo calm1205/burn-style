@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import type { ExpenseResponse } from "../../common/libs/types"
-import { applyFilter, defaultFilter, filterCount, parseDateKey } from "./expenseFilter"
+import { applyFilter, createDefaultExpenseFilter, filterCount, parseDateKey } from "./expenseFilter"
 
 const mkExpense = (overrides: Partial<ExpenseResponse> = {}): ExpenseResponse => ({
   uuid: "u1",
@@ -19,14 +19,14 @@ const mkExpense = (overrides: Partial<ExpenseResponse> = {}): ExpenseResponse =>
   ...overrides,
 })
 
-describe("defaultFilter", () => {
+describe("createDefaultExpenseFilter", () => {
   it("defaults to month scope and empty values", () => {
-    expect(defaultFilter()).toEqual({
-      q: "",
+    expect(createDefaultExpenseFilter()).toEqual({
+      searchQuery: "",
       scope: "month",
       categoryUuids: [],
-      min: 0,
-      max: 0,
+      amountMin: 0,
+      amountMax: 0,
       dateStart: null,
       dateEnd: null,
       month: null,
@@ -40,17 +40,17 @@ describe("defaultFilter", () => {
 
 describe("filterCount", () => {
   it("returns 0 for default filter", () => {
-    expect(filterCount(defaultFilter())).toBe(0)
+    expect(filterCount(createDefaultExpenseFilter())).toBe(0)
   })
 
-  it("counts q, scope!=month, categories, amount range, and date range", () => {
+  it("counts searchQuery, scope!=month, categories, amount range, and date range", () => {
     expect(
       filterCount({
-        q: "x",
+        searchQuery: "x",
         scope: "week",
         categoryUuids: ["c1"],
-        min: 100,
-        max: 200,
+        amountMin: 100,
+        amountMax: 200,
         dateStart: "2026-06-16",
         dateEnd: "2026-06-20",
         month: null,
@@ -63,27 +63,31 @@ describe("filterCount", () => {
   })
 
   it("counts the date range once when only start or only end is set", () => {
-    expect(filterCount({ ...defaultFilter(), dateStart: "2026-06-01" })).toBe(1)
-    expect(filterCount({ ...defaultFilter(), dateEnd: "2026-06-30" })).toBe(1)
+    expect(filterCount({ ...createDefaultExpenseFilter(), dateStart: "2026-06-01" })).toBe(1)
+    expect(filterCount({ ...createDefaultExpenseFilter(), dateEnd: "2026-06-30" })).toBe(1)
     expect(
-      filterCount({ ...defaultFilter(), dateStart: "2026-06-01", dateEnd: "2026-06-30" }),
+      filterCount({
+        ...createDefaultExpenseFilter(),
+        dateStart: "2026-06-01",
+        dateEnd: "2026-06-30",
+      }),
     ).toBe(1)
   })
 
   it("counts recurringMode when not 'all'", () => {
-    expect(filterCount({ ...defaultFilter(), recurringMode: "exclude" })).toBe(1)
-    expect(filterCount({ ...defaultFilter(), recurringMode: "only" })).toBe(1)
+    expect(filterCount({ ...createDefaultExpenseFilter(), recurringMode: "exclude" })).toBe(1)
+    expect(filterCount({ ...createDefaultExpenseFilter(), recurringMode: "only" })).toBe(1)
   })
 
-  it("does not double-count when only min or only max is set", () => {
-    expect(filterCount({ ...defaultFilter(), min: 100 })).toBe(1)
-    expect(filterCount({ ...defaultFilter(), max: 100 })).toBe(1)
+  it("does not double-count when only amountMin or only amountMax is set", () => {
+    expect(filterCount({ ...createDefaultExpenseFilter(), amountMin: 100 })).toBe(1)
+    expect(filterCount({ ...createDefaultExpenseFilter(), amountMax: 100 })).toBe(1)
   })
 
   it("counts each vibe axis independently", () => {
     expect(
       filterCount({
-        ...defaultFilter(),
+        ...createDefaultExpenseFilter(),
         vibeSocial: "SOLO",
         vibePlanning: "ROUTINE",
         vibeNecessity: "NEEDED",
@@ -120,23 +124,29 @@ describe("applyFilter", () => {
   it("month scope includes only current month", () => {
     const inMonth = mkExpense({ uuid: "a", expensed_at: new Date(2026, 5, 1).toISOString() })
     const lastMonth = mkExpense({ uuid: "b", expensed_at: new Date(2026, 4, 30).toISOString() })
-    const result = applyFilter([inMonth, lastMonth], defaultFilter())
-    expect(result.map((e) => e.uuid)).toEqual(["a"])
+    const filtered = applyFilter([inMonth, lastMonth], createDefaultExpenseFilter())
+    expect(filtered.map((e) => e.uuid)).toEqual(["a"])
   })
 
   it("month scope honors explicit month key", () => {
     const inMonth = mkExpense({ uuid: "a", expensed_at: new Date(2026, 4, 15).toISOString() })
     const otherMonth = mkExpense({ uuid: "b", expensed_at: new Date(2026, 5, 15).toISOString() })
-    const result = applyFilter([inMonth, otherMonth], { ...defaultFilter(), month: "2026-05" })
-    expect(result.map((e) => e.uuid)).toEqual(["a"])
+    const filtered = applyFilter([inMonth, otherMonth], {
+      ...createDefaultExpenseFilter(),
+      month: "2026-05",
+    })
+    expect(filtered.map((e) => e.uuid)).toEqual(["a"])
   })
 
   it("week scope includes last 7 days up to today", () => {
     const today = mkExpense({ uuid: "a", expensed_at: new Date(2026, 5, 16, 9, 0).toISOString() })
     const sixDays = mkExpense({ uuid: "b", expensed_at: new Date(2026, 5, 10, 0, 0).toISOString() })
     const tooOld = mkExpense({ uuid: "c", expensed_at: new Date(2026, 5, 9, 23, 0).toISOString() })
-    const result = applyFilter([today, sixDays, tooOld], { ...defaultFilter(), scope: "week" })
-    expect(result.map((e) => e.uuid).toSorted()).toEqual(["a", "b"])
+    const filtered = applyFilter([today, sixDays, tooOld], {
+      ...createDefaultExpenseFilter(),
+      scope: "week",
+    })
+    expect(filtered.map((e) => e.uuid).toSorted()).toEqual(["a", "b"])
   })
 
   it("equal start and end restrict to a single local day and override scope", () => {
@@ -145,13 +155,13 @@ describe("applyFilter", () => {
       expensed_at: new Date(2026, 5, 10, 23, 30).toISOString(),
     })
     const other = mkExpense({ uuid: "b", expensed_at: new Date(2026, 5, 11, 0, 30).toISOString() })
-    const result = applyFilter([target, other], {
-      ...defaultFilter(),
+    const filtered = applyFilter([target, other], {
+      ...createDefaultExpenseFilter(),
       scope: "all",
       dateStart: "2026-06-10",
       dateEnd: "2026-06-10",
     })
-    expect(result.map((e) => e.uuid)).toEqual(["a"])
+    expect(filtered.map((e) => e.uuid)).toEqual(["a"])
   })
 
   it("date range includes both endpoints inclusively", () => {
@@ -165,13 +175,13 @@ describe("applyFilter", () => {
       expensed_at: new Date(2026, 5, 12, 23, 30).toISOString(),
     })
     const after = mkExpense({ uuid: "d", expensed_at: new Date(2026, 5, 13, 0, 10).toISOString() })
-    const result = applyFilter([before, startDay, endDay, after], {
-      ...defaultFilter(),
+    const filtered = applyFilter([before, startDay, endDay, after], {
+      ...createDefaultExpenseFilter(),
       scope: "all",
       dateStart: "2026-06-10",
       dateEnd: "2026-06-12",
     })
-    expect(result.map((e) => e.uuid).toSorted()).toEqual(["b", "c"])
+    expect(filtered.map((e) => e.uuid).toSorted()).toEqual(["b", "c"])
   })
 
   it("open-ended start keeps everything on or after the start day", () => {
@@ -180,12 +190,12 @@ describe("applyFilter", () => {
       uuid: "b",
       expensed_at: new Date(2026, 5, 10, 0, 0).toISOString(),
     })
-    const result = applyFilter([before, onOrAfter], {
-      ...defaultFilter(),
+    const filtered = applyFilter([before, onOrAfter], {
+      ...createDefaultExpenseFilter(),
       scope: "all",
       dateStart: "2026-06-10",
     })
-    expect(result.map((e) => e.uuid)).toEqual(["b"])
+    expect(filtered.map((e) => e.uuid)).toEqual(["b"])
   })
 
   it("open-ended end keeps everything on or before the end day", () => {
@@ -194,42 +204,45 @@ describe("applyFilter", () => {
       expensed_at: new Date(2026, 5, 10, 23, 30).toISOString(),
     })
     const after = mkExpense({ uuid: "b", expensed_at: new Date(2026, 5, 11, 0, 30).toISOString() })
-    const result = applyFilter([onOrBefore, after], {
-      ...defaultFilter(),
+    const filtered = applyFilter([onOrBefore, after], {
+      ...createDefaultExpenseFilter(),
       scope: "all",
       dateEnd: "2026-06-10",
     })
-    expect(result.map((e) => e.uuid)).toEqual(["a"])
+    expect(filtered.map((e) => e.uuid)).toEqual(["a"])
   })
 
-  it("q matches name case-insensitively", () => {
+  it("searchQuery matches name case-insensitively", () => {
     const hit = mkExpense({ uuid: "a", name: "Latte" })
     const miss = mkExpense({ uuid: "b", name: "Bread" })
-    const result = applyFilter([hit, miss], { ...defaultFilter(), q: "latt" })
-    expect(result.map((e) => e.uuid)).toEqual(["a"])
+    const filtered = applyFilter([hit, miss], {
+      ...createDefaultExpenseFilter(),
+      searchQuery: "latt",
+    })
+    expect(filtered.map((e) => e.uuid)).toEqual(["a"])
   })
 
   it("categoryUuids filters by any matching category", () => {
     const cat = { uuid: "c1", name: "Food", symbol: null, position: 0 }
     const hit = mkExpense({ uuid: "a", categories: [cat] })
     const miss = mkExpense({ uuid: "b", categories: [] })
-    const result = applyFilter([hit, miss], {
-      ...defaultFilter(),
+    const filtered = applyFilter([hit, miss], {
+      ...createDefaultExpenseFilter(),
       categoryUuids: ["c1"],
     })
-    expect(result.map((e) => e.uuid)).toEqual(["a"])
+    expect(filtered.map((e) => e.uuid)).toEqual(["a"])
   })
 
   it("filters by each vibe axis independently", () => {
     const solo = mkExpense({ uuid: "a", vibe_social: "SOLO" })
     const withSomeone = mkExpense({ uuid: "b", vibe_social: "WITH_SOMEONE" })
     const none = mkExpense({ uuid: "c", vibe_social: null })
-    const result = applyFilter([solo, withSomeone, none], {
-      ...defaultFilter(),
+    const filtered = applyFilter([solo, withSomeone, none], {
+      ...createDefaultExpenseFilter(),
       scope: "all",
       vibeSocial: "SOLO",
     })
-    expect(result.map((e) => e.uuid)).toEqual(["a"])
+    expect(filtered.map((e) => e.uuid)).toEqual(["a"])
   })
 
   it("combines multiple vibe axes with AND semantics", () => {
@@ -245,55 +258,58 @@ describe("applyFilter", () => {
       vibe_planning: "SPONTANEOUS",
       vibe_necessity: "NEEDED",
     })
-    const result = applyFilter([hit, partial], {
-      ...defaultFilter(),
+    const filtered = applyFilter([hit, partial], {
+      ...createDefaultExpenseFilter(),
       scope: "all",
       vibeSocial: "SOLO",
       vibePlanning: "ROUTINE",
       vibeNecessity: "NEEDED",
     })
-    expect(result.map((e) => e.uuid)).toEqual(["a"])
+    expect(filtered.map((e) => e.uuid)).toEqual(["a"])
   })
 
   it("recurringMode 'all' includes both recurring and non-recurring", () => {
     const normal = mkExpense({ uuid: "a", recurring_expense_uuid: null })
     const recurring = mkExpense({ uuid: "b", recurring_expense_uuid: "r1" })
-    const result = applyFilter([normal, recurring], { ...defaultFilter(), scope: "all" })
-    expect(result.map((e) => e.uuid).toSorted()).toEqual(["a", "b"])
+    const filtered = applyFilter([normal, recurring], {
+      ...createDefaultExpenseFilter(),
+      scope: "all",
+    })
+    expect(filtered.map((e) => e.uuid).toSorted()).toEqual(["a", "b"])
   })
 
   it("recurringMode 'exclude' drops recurring-generated expenses", () => {
     const normal = mkExpense({ uuid: "a", recurring_expense_uuid: null })
     const recurring = mkExpense({ uuid: "b", recurring_expense_uuid: "r1" })
-    const result = applyFilter([normal, recurring], {
-      ...defaultFilter(),
+    const filtered = applyFilter([normal, recurring], {
+      ...createDefaultExpenseFilter(),
       scope: "all",
       recurringMode: "exclude",
     })
-    expect(result.map((e) => e.uuid)).toEqual(["a"])
+    expect(filtered.map((e) => e.uuid)).toEqual(["a"])
   })
 
   it("recurringMode 'only' keeps only recurring-generated expenses", () => {
     const normal = mkExpense({ uuid: "a", recurring_expense_uuid: null })
     const recurring = mkExpense({ uuid: "b", recurring_expense_uuid: "r1" })
-    const result = applyFilter([normal, recurring], {
-      ...defaultFilter(),
+    const filtered = applyFilter([normal, recurring], {
+      ...createDefaultExpenseFilter(),
       scope: "all",
       recurringMode: "only",
     })
-    expect(result.map((e) => e.uuid)).toEqual(["b"])
+    expect(filtered.map((e) => e.uuid)).toEqual(["b"])
   })
 
-  it("min and max bound the amount inclusively", () => {
+  it("amountMin and amountMax bound the amount inclusively", () => {
     const e1 = mkExpense({ uuid: "a", amount: 50 })
     const e2 = mkExpense({ uuid: "b", amount: 200 })
     const e3 = mkExpense({ uuid: "c", amount: 1000 })
-    const result = applyFilter([e1, e2, e3], {
-      ...defaultFilter(),
+    const filtered = applyFilter([e1, e2, e3], {
+      ...createDefaultExpenseFilter(),
       scope: "all",
-      min: 100,
-      max: 500,
+      amountMin: 100,
+      amountMax: 500,
     })
-    expect(result.map((e) => e.uuid)).toEqual(["b"])
+    expect(filtered.map((e) => e.uuid)).toEqual(["b"])
   })
 })

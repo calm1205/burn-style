@@ -1,155 +1,122 @@
-# Spec: backend レイヤードアーキテクチャ移行
+# Spec: recurring expense 層の命名リファクタ
+
+## 前提
+
+- 対象は `recurring_expense_repository` と `recurring_expense_service` の識別子リネームのみ
+- 挙動・API レスポンス・DB スキーマは変更しない
+- 既存 repository はモジュール関数方式（クラスなし）がプロジェクト慣例
+- `active` は soft-delete 除外（`deleted_at IS NULL`）を指す
+- 有効期間（`start_date` / `end_date` 内）は `active` とは別概念
+- `expense_repository.get_all_expenses(..., include_deleted=)` と語彙を揃える
+- `category_repository` / `expense_repository` の `delete_all_for_user` も同 Issue で `delete_all_by_user_uuid` に揃える
 
 ## 目的
 
-- `backend/src/` の現行dir構成 (`api/schema/middleware/repository/service/model`)を
-  `presentation/infrastructure/service/domain`の4層構成へ再編する
-- 目的はディレクトリ構造の整理のみ。ビジネスロジック・API仕様・DBスキーマは一切変更しない
-- 対象者: 本リポジトリを保守する開発者(将来的な可読性・責務把握のため)
+- `_for_cron` / `_for_user` サフィックスが呼び出し文脈を関数名に漏らし、`for~` 増殖の温床になっている問題を解消する
+- `get_all_active` が soft-delete 除外なのか有効期間内なのか判別不能な問題を解消する
+- 対象者: 本リポジトリを保守する開発者
+- 成功: 名前だけで責務とフィルタ条件が読み取れ、既存テストが全緑のまま
 
-## 前提 (今回のスコープ)
+## リネーム対応表
 
-- **ディレクトリ移動 + import修正のみ**。層の責務違反
-  (`categories.py`がrepositoryを直接呼ぶ、`auth.py`にWebAuthn検証ロジックが直書き等)は
-  今回是正しない。既存の呼び出し関係はそのまま新パスへ移動する
-- `model/` は `domain/` へ**そのまま置き換え** (ファイル名・中身は変更なし、ディレクトリ名のみ変更)
-- `config.py` / `logger.py` / `main.py` は `src/` 直下に**現状維持** (どの層にも属さない横断的関心事として扱う)
-- `service/` はディレクトリ名・配置ともに変更なし。内部importのみ新パスに追従
-- `tests/` は `src/` の新構成に対称に追従させる (`tests/api/` → `tests/presentation/api/`、
-  `tests/repository/` → `tests/infrastructure/`)
-- 挙動・レスポンス・DBマイグレーション内容(alembic autogenerate diff)に変化がないことを最終確認する
+| 現状 | 提案 | 備考 |
+|------|------|------|
+| `get_all_active(db, user_uuid)` | `get_all_recurring_expenses(db, user_uuid, *, include_deleted=False)` | `expense_repository` と同パターン |
+| `get_all_active_for_cron(db)` | cron 専用モジュールへ移動（下記） | 文脈をモジュール名で表現 |
+| `get_all_including_deleted(db, user_uuid)` | 上記 `include_deleted=True` に統合 | export 呼び出し元 1 箇所 |
+| `delete_all_for_user(db, user_uuid)` | `delete_all_by_user_uuid(db, user_uuid)` | import 用の物理削除 |
+| `record_all_due_for_cron(db)` | cron 専用モジュールへ移動（下記） | 文脈をモジュール名で表現 |
 
-## 新ディレクトリ構成
+### cron 専用モジュール（クラス分離の代替案）
+
+プロジェクト慣例に合わせ、クラスではなくモジュール分離とする。
 
 ```
-backend/src/
-├── __init__.py
-├── main.py                    # 現状維持 (composition root)
-├── config.py                  # 現状維持
-├── logger.py                  # 現状維持
-├── domain/                    # ← model/ を置き換え
-│   ├── __init__.py
-│   ├── category.py
-│   ├── expense.py
-│   ├── expense_category_association.py
-│   ├── recurring_expense.py
-│   ├── user.py
-│   ├── utils.py
-│   ├── webauthn_challenge.py
-│   └── webauthn_credential.py
-├── infrastructure/             # ← repository/ を置き換え
-│   ├── __init__.py
-│   ├── database.py
-│   ├── category_repository.py
-│   ├── expense_repository.py
-│   ├── recurring_expense_repository.py
-│   ├── user_repository.py
-│   ├── webauthn_challenge_repository.py
-│   └── webauthn_repository.py
-├── service/                    # 現状維持 (import pathのみ追従)
-│   ├── __init__.py
-│   ├── expense_service.py
-│   ├── jwt_service.py
-│   ├── recurring_expense_service.py
-│   └── user_service.py
-└── presentation/               # ← api/ + schema/ + middleware/ + api/deps.py を集約
-    ├── __init__.py
-    ├── deps.py
-    ├── api/
-    │   ├── __init__.py
-    │   ├── auth.py
-    │   ├── categories.py
-    │   ├── expenses.py
-    │   ├── health.py
-    │   ├── recurring_expenses.py
-    │   └── users.py
-    ├── schema/
-    │   ├── __init__.py
-    │   ├── auth.py
-    │   ├── category.py
-    │   ├── expense.py
-    │   ├── recurring_expense.py
-    │   ├── types.py
-    │   └── user.py
-    └── middleware/
-        ├── __init__.py
-        ├── request_logging.py
-        └── token_refresh.py
+backend/src/infrastructure/cron_recurring_expense_repository.py
+  get_all_recurring_expenses(db, *, include_deleted=False)  # user_uuid なし = 全ユーザー
 
-backend/tests/
-├── conftest.py                 # 現状維持
-├── presentation/
-│   └── api/
-│       ├── test_categories.py
-│       ├── test_expenses.py
-│       ├── test_health.py
-│       ├── test_recurring_expenses.py
-│       └── test_users.py
-└── infrastructure/
-    └── test_webauthn_challenge_repository.py
-
-backend/alembic/env.py          # import先を新パスに更新 (Base / model のロード元)
+backend/src/service/cron_recurring_expense_service.py
+  record_due_recurring_occurrences(db) -> tuple[int, int]
 ```
+
+- `CronRecurringExpenseRepository` クラス案は慣例不一致のため不採用
+- cron 文脈は `cron_*` モジュール名で表現し、メソッド名から `_for_cron` を排除
 
 ## コードスタイル
 
-import書き換えの例 (振る舞い変更なし、パスのみ):
+`expense_repository` に揃えた一覧取得:
 
 ```python
-# Before
-from src.model.user import User
-from src.repository.database import get_db
-from src.repository.user_repository import get_user_by_uuid
-from src.api.deps import get_current_user
-
-# After
-from src.domain.user import User
-from src.infrastructure.database import get_db
-from src.infrastructure.user_repository import get_user_by_uuid
-from src.presentation.deps import get_current_user
+def get_all_recurring_expenses(
+    db: Session,
+    user_uuid: str,
+    *,
+    include_deleted: bool = False,
+) -> list[RecurringExpense]:
+    """ユーザーの定期支払一覧を取得 (デフォルトは未削除のみ)。"""
+    query = (
+        db.query(RecurringExpense)
+        .options(joinedload(RecurringExpense.category))
+        .filter(RecurringExpense.user_uuid == user_uuid)
+    )
+    if not include_deleted:
+        query = query.filter(RecurringExpense.deleted_at.is_(None))
+    return query.all()
 ```
 
-- ファイル移動は `git mv` を使い履歴を保持する
-- 1コミットで一気に移動+import修正まで完了させる(中間状態でlint/testが壊れる期間を作らない)
-- 各ファイル内の相対的なコード(関数定義・ロジック)は一切変更しない。変更差分はimport文とファイルパスのみ
+cron 専用 repository（全ユーザー横断）:
+
+```python
+# cron_recurring_expense_repository.py
+def get_all_recurring_expenses(
+    db: Session,
+    *,
+    include_deleted: bool = False,
+) -> list[RecurringExpense]:
+    """全ユーザーの定期支払一覧を取得 (デフォルトは未削除のみ)。"""
+    ...
+```
+
+命名規約:
+
+- 一覧取得: `get_all_{entity_plural}` + `include_deleted` キーワード引数
+- ユーザー条件削除: `delete_all_by_user_uuid`（`for_user` 不使用）
+- cron 処理: `cron_*` モジュール + 動詞句メソッド（`_for_cron` 不使用）
+- docstring で soft-delete / 物理削除 / export 用途を明示
 
 ## テスト戦略
 
-- 既存テストの**内容は変更しない**。ディレクトリ移動とimport path修正のみ
-- `tests/` は `src/` の新構成 (`presentation/`, `infrastructure/`) に対称なディレクトリへ追従
-- 移動完了後、`make test-backend` (pytest -v) が全件成功することを必須条件とする
-- `make lint` (mypy strict + ruff) がゼロエラーであることを必須条件とする
-- `grep -rn "src\.model\|src\.repository\|src\.api\.\|src\.schema\|src\.middleware"` で
-  旧パス参照が残っていないことを確認する
+- 既存 `tests/presentation/api/test_recurring_expenses.py` の内容・期待値は変更しない
+- import path のみ新モジュール名に追従
+- repository 層の直接テストは現状なし。API テストで間接検証
+- 完了条件: `make lint` ゼロエラー、`make test-backend` 全件成功
 
 ## 境界
 
 - **常に行う**:
-  - ファイル移動は `git mv` で履歴を保持
-  - 移動後に `make lint` / `make test-backend` を実行し全緑を確認
-  - 旧パスへの参照が残っていないことをgrepで確認
+  - リネームのみ（関数本体のロジック・戻り値・副作用は不変）
+  - `make lint` / `make test-backend` 実行
+  - 旧関数名への参照が残っていないことを grep で確認
 - **事前確認**:
-  - 想定外の循環import等、機械的なパス置換だけでは解決できない問題が出た場合は対応方針を相談
+  - cron モジュール分離方針（本スペック案）のユーザー承認
+  - `get_all_including_deleted` を `include_deleted=True` に統合する方針の承認
 - **絶対にしない**:
-  - ビジネスロジックの変更 (関数の中身・分岐・戻り値を変えない)
-  - APIレスポンス形式・エンドポイントpath・DBスキーマの変更
-  - 層の責務違反の是正 (categories.pyのrepository直接呼び出し等は今回のスコープ外)
-  - `config.py` / `logger.py` / `main.py` の移動
-  - alembicのマイグレーションファイル新規生成 (autogenerate diffが出ないことを確認するのみ)
+  - API エンドポイント path / レスポンス形式の変更
+  - DB スキーマ・マイグレーションの変更
+  - 有効期間フィルタ（`start_date` / `end_date`）の追加
 
 ## 成功基準
 
-- [ ] `backend/src/` が `presentation/infrastructure/service/domain` + 直下の
-      `main.py/config.py/logger.py` の構成になっている
-- [ ] `backend/tests/` が `src/` の新構成に対称なディレクトリ構成になっている
-- [ ] 旧パス (`src.model` / `src.repository` / `src.api` / `src.schema` / `src.middleware`) への
-      参照がリポジトリ内(backend配下)に一切残っていない (grep 0件)
-- [ ] `make lint` がゼロエラーで通過
-- [ ] `make test-backend` (pytest -v) が全件成功
-- [ ] `cd backend && uv run alembic check` もしくは autogenerate 実行で
-      スキーマ差分が検出されない (モデル変更が無いことの証明)
-- [ ] API挙動 (レスポンス形式・ステータスコード) がリファクタ前後で無変更
+- [ ] `get_all_active` / `get_all_active_for_cron` / `get_all_including_deleted` が存在しない
+- [ ] `get_all_recurring_expenses` が user 用 repository に存在し、`include_deleted` で soft-delete 除外を明示
+- [ ] cron 用 `get_all_recurring_expenses` が `cron_recurring_expense_repository` に存在
+- [ ] `delete_all_for_user` が `delete_all_by_user_uuid` にリネーム済み
+- [ ] `record_all_due_for_cron` が `cron_recurring_expense_service.record_due_recurring_occurrences` に移行済み
+- [ ] `_for_cron` / `_for_user` サフィックスが repository / service 層に残っていない
+- [ ] `category_repository` / `expense_repository` の `delete_all_by_user_uuid` リネーム済み
+- [ ] `make lint` ゼロエラー
+- [ ] `make test-backend` 全件成功
 
 ## 未解決の問い
 
-- なし (スコープ・model/config/loggerの扱いはユーザー確認済み)
+- なし（cron はモジュール分離、`include_deleted` 統合、横展開は同 Issue で確定）

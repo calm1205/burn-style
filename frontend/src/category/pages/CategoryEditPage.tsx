@@ -7,25 +7,27 @@ import { useCategoryEditForm } from "../hooks/useCategoryEditForm"
 
 export const CategoryEditPage = () => {
   const { uuid } = useParams<{ uuid: string }>()
-  const f = useCategoryEditForm(uuid)
+  const categoryForm = useCategoryEditForm(uuid)
 
   return (
     <div className="mx-auto flex h-full max-w-2xl flex-col overflow-hidden">
-      <CategoryEditHeader form={f} />
+      <CategoryEditHeader form={categoryForm} />
 
-      {f.error && (
-        <p className="shrink-0 px-5 pb-2 text-sm text-red-600 dark:text-red-400">{f.error}</p>
+      {categoryForm.error && (
+        <p className="shrink-0 px-5 pb-2 text-sm text-red-600 dark:text-red-400">
+          {categoryForm.error}
+        </p>
       )}
 
-      <CategoryEditFields form={f} />
+      <CategoryEditFields form={categoryForm} />
 
-      {f.confirmingDelete && !f.isNew && (
+      {categoryForm.confirmingDelete && !categoryForm.isNew && (
         <CategoryDeleteModal
-          name={f.trimmed}
-          used={f.usage}
-          loading={f.loading}
-          onDelete={f.remove}
-          onClose={() => f.setConfirmingDelete(false)}
+          name={categoryForm.trimmed}
+          used={categoryForm.usage}
+          loading={categoryForm.loading}
+          onDelete={categoryForm.deleteCategory}
+          onClose={() => categoryForm.setConfirmingDelete(false)}
         />
       )}
     </div>

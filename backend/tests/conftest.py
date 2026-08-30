@@ -17,6 +17,11 @@ test_engine = create_engine("sqlite://", connect_args={"check_same_thread": Fals
 TestSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
 
 
+@pytest.fixture(autouse=True)
+def jwt_secret_key(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("JWT_SECRET_KEY", "test-secret-key-for-unit-tests-only!!")
+
+
 @pytest.fixture
 def client() -> TestClient:
     return TestClient(app)

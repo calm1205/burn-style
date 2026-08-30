@@ -14,7 +14,7 @@ export const FREQUENCY_OPTIONS: FrequencyOption[] = [
   { key: "yearly", label: "Yearly", unit: "MONTH", count: 12 },
 ]
 
-export const matchFrequency = (unit: IntervalUnit, count: number): string =>
+export const frequencyKeyFromInterval = (unit: IntervalUnit, count: number): string =>
   FREQUENCY_OPTIONS.find((f) => f.unit === unit && f.count === count)?.key ?? "monthly"
 
 /** JST 今日の YYYY-MM-DD を返す。OS タイムゾーン非依存。 */
@@ -69,5 +69,5 @@ export const nextOccurrence = (
   return next
 }
 
-export const groupOf = (unit: IntervalUnit, count: number): FrequencyOption | null =>
+export const findFrequencyOption = (unit: IntervalUnit, count: number): FrequencyOption | null =>
   FREQUENCY_OPTIONS.find((g) => g.unit === unit && g.count === count) ?? null

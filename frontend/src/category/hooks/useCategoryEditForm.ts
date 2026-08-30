@@ -17,29 +17,32 @@ export const useCategoryEditForm = (uuid: string | undefined) => {
   const [usage, setUsage] = useState(0)
   const [confirmingDelete, setConfirmingDelete] = useState(false)
 
-  const fetchExisting = useCallback(async () => {
+  const fetchCategoryEditInitialState = useCallback(async () => {
     if (!uuid) return
     try {
-      const [cats, exps] = await Promise.all([api.getCategories(), api.getExpenses()])
-      const c = cats.find((x) => x.uuid === uuid)
-      if (c) {
-        setName(c.name)
-        setGlyph(c.symbol ?? DEFAULT_GLYPH)
+      const [loadedCategories, loadedExpenses] = await Promise.all([
+        api.getCategories(),
+        api.getExpenses(),
+      ])
+      const category = loadedCategories.find((x) => x.uuid === uuid)
+      if (category) {
+        setName(category.name)
+        setGlyph(category.symbol ?? DEFAULT_GLYPH)
       }
-      setUsage(exps.filter((e) => e.categories.some((cat) => cat.uuid === uuid)).length)
+      setUsage(loadedExpenses.filter((e) => e.categories.some((cat) => cat.uuid === uuid)).length)
     } catch (err) {
       setError(getErrorMessage(err, "Failed to load"))
     }
   }, [uuid])
 
   useEffect(() => {
-    fetchExisting()
-  }, [fetchExisting])
+    fetchCategoryEditInitialState()
+  }, [fetchCategoryEditInitialState])
 
   const trimmed = name.trim()
   const canSave = trimmed.length > 0 && glyph.length > 0
 
-  const save = async () => {
+  const saveCategory = async () => {
     if (!canSave) return
     setError("")
     setLoading(true)
@@ -57,7 +60,7 @@ export const useCategoryEditForm = (uuid: string | undefined) => {
     }
   }
 
-  const remove = async () => {
+  const deleteCategory = async () => {
     if (!uuid) return
     setError("")
     setLoading(true)
@@ -83,7 +86,7 @@ export const useCategoryEditForm = (uuid: string | undefined) => {
     usage,
     confirmingDelete,
     setConfirmingDelete,
-    save,
-    remove,
+    saveCategory,
+    deleteCategory,
   }
 }

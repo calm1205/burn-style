@@ -8,22 +8,22 @@ interface CategoryListSectionProps {
   page: ReturnType<typeof useCategoriesPage>
 }
 
-export const CategoryListSection = ({ page: p }: CategoryListSectionProps) => {
+export const CategoryListSection = ({ page }: CategoryListSectionProps) => {
   const navigate = useNavigate()
 
   return (
     <div className="flex-1 overflow-y-auto px-4 pb-6">
-      {p.categories.length === 0 ? (
+      {page.categories.length === 0 ? (
         <p className="py-8 text-center text-sm text-gray-400 dark:text-gray-500">
           No categories yet
         </p>
       ) : (
         <CategoryList
-          categories={p.categories}
-          usage={p.usage}
+          categories={page.categories}
+          usage={page.usage}
           onEdit={(uuid) => navigate(`/category/${uuid}`)}
-          onMerge={p.setMergingFrom}
-          onMove={p.moveCategory}
+          onMerge={page.setMergingFrom}
+          onMove={page.moveCategory}
         />
       )}
 

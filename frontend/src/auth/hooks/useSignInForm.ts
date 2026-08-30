@@ -33,14 +33,14 @@ export const useSignInForm = () => {
     localStorage.removeItem(STORAGE_KEYS.LAST_USERNAME)
   }
 
-  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
+  const signIn = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError("")
     setLoading(true)
 
     try {
-      const result = await api.signIn(username)
-      localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, result.access_token)
+      const signInResponse = await api.signIn(username)
+      localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, signInResponse.access_token)
       localStorage.setItem(STORAGE_KEYS.LAST_USERNAME, username)
       navigate("/expense/new")
     } catch (err) {
@@ -50,5 +50,5 @@ export const useSignInForm = () => {
     }
   }
 
-  return { username, setUsername, error, loading, clearUsername, handleSubmit }
+  return { username, setUsername, error, loading, clearUsername, signIn }
 }

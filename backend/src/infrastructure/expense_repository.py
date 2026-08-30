@@ -98,6 +98,6 @@ def soft_delete_expense(db: Session, expense: Expense) -> None:
     db.commit()
 
 
-def delete_all_for_user(db: Session, user_uuid: str) -> None:
+def delete_all_by_user_uuid(db: Session, user_uuid: str) -> None:
     """ユーザーの全Expenseを物理削除 (import前リセット用)。FK CASCADEでassociationも消える。"""
     db.query(Expense).filter(Expense.user_uuid == user_uuid).delete(synchronize_session=False)

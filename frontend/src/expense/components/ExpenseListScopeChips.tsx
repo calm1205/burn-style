@@ -8,12 +8,12 @@ interface ExpenseListScopeChipsProps {
 export const ExpenseListScopeChips = ({ scope, onChange }: ExpenseListScopeChipsProps) => (
   <div className="flex shrink-0 gap-1.5 pt-2">
     {SCOPE_OPTIONS.map((s) => {
-      const on = scope === s.k
+      const on = scope === s.scope
       return (
         <button
-          key={s.k}
+          key={s.scope}
           type="button"
-          onClick={() => onChange(s.k)}
+          onClick={() => onChange(s.scope)}
           className={`rounded-full px-3 py-1 text-xs font-semibold ${
             on
               ? "bg-primary text-white"

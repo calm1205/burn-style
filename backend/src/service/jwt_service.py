@@ -19,5 +19,5 @@ def create_access_token(user_uuid: str) -> str:
 
 def decode_access_token(token: str) -> dict[str, object]:
     """JWTアクセストークンを検証してデコード。"""
-    result: dict[str, object] = jwt.decode(token, get_jwt_secret_key(), algorithms=[ALGORITHM])
-    return result
+    token_payload: dict[str, object] = jwt.decode(token, get_jwt_secret_key(), algorithms=[ALGORITHM])
+    return token_payload

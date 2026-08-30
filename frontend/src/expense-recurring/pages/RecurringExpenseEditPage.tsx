@@ -9,11 +9,11 @@ import { useRecurringExpenseForm } from "../hooks/useRecurringExpenseForm"
 export const RecurringExpenseEditPage = () => {
   const navigate = useNavigate()
   const { uuid } = useParams<{ uuid: string }>()
-  const f = useRecurringExpenseForm(uuid)
+  const recurringForm = useRecurringExpenseForm(uuid)
 
   return (
     <form
-      onSubmit={f.handleSubmit}
+      onSubmit={recurringForm.saveRecurringExpense}
       className="mx-auto flex h-full max-w-2xl flex-col overflow-hidden"
     >
       <div className="flex shrink-0 items-center px-5 pt-2">
@@ -27,22 +27,24 @@ export const RecurringExpenseEditPage = () => {
         </button>
       </div>
 
-      {f.error && (
-        <p className="mx-5 shrink-0 pb-1 text-sm text-red-600 dark:text-red-400">{f.error}</p>
+      {recurringForm.error && (
+        <p className="mx-5 shrink-0 pb-1 text-sm text-red-600 dark:text-red-400">
+          {recurringForm.error}
+        </p>
       )}
 
       <div className="flex-1 overflow-y-auto">
-        <RecurringExpenseFields form={f} />
+        <RecurringExpenseFields form={recurringForm} />
       </div>
 
-      <RecurringExpenseFormFooter form={f} />
+      <RecurringExpenseFormFooter form={recurringForm} />
 
       <ConfirmDialog
-        message={`Stop "${f.name}"? Past records remain unchanged.`}
-        onConfirm={f.handleDelete}
+        message={`Stop "${recurringForm.name}"? Past records remain unchanged.`}
+        onConfirm={recurringForm.deleteRecurringExpense}
         confirmText="Stop"
-        loading={f.loading}
-        dialogRef={f.dialogRef}
+        loading={recurringForm.loading}
+        dialogRef={recurringForm.dialogRef}
       />
     </form>
   )

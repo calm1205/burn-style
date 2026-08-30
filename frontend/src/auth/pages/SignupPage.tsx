@@ -4,17 +4,21 @@ import { AuthUsernameInput } from "../components/AuthUsernameInput"
 import { useSignupForm } from "../hooks/useSignupForm"
 
 export const SignupPage = () => {
-  const f = useSignupForm()
+  const signupForm = useSignupForm()
 
   return (
     <AuthPageLayout
       title="Sign Up"
-      onSubmit={f.handleSubmit}
-      error={f.error}
+      onSubmit={signupForm.signUp}
+      error={signupForm.error}
       footer={{ text: "Already have an account? ", linkTo: "/signin", linkLabel: "Sign In" }}
     >
-      <AuthUsernameInput value={f.username} onChange={f.setUsername} loading={f.loading} />
-      <AuthSubmitButton loading={f.loading} loadingLabel="Signing up..." label="Sign Up" />
+      <AuthUsernameInput
+        value={signupForm.username}
+        onChange={signupForm.setUsername}
+        loading={signupForm.loading}
+      />
+      <AuthSubmitButton loading={signupForm.loading} loadingLabel="Signing up..." label="Sign Up" />
     </AuthPageLayout>
   )
 }

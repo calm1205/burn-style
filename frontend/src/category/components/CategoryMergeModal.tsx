@@ -30,20 +30,20 @@ export const CategoryMergeModal = ({
         <div className="text-base font-bold">Merge &quot;{source.name}&quot; into…</div>
         <div className="mt-1.5 text-xs text-gray-500 dark:text-gray-400">{subtitle}</div>
         <div className="-mx-2 mt-3 flex-1 overflow-y-auto">
-          {candidates.map((tc) => (
+          {candidates.map((targetCategory) => (
             <button
-              key={tc.uuid}
+              key={targetCategory.uuid}
               type="button"
               disabled={loading}
-              onClick={() => onMerge(tc.uuid)}
+              onClick={() => onMerge(targetCategory.uuid)}
               className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left hover:bg-gray-50 disabled:opacity-50 dark:hover:bg-gray-700"
             >
               <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-sm dark:bg-gray-700">
-                {categoryGlyph(tc)}
+                {categoryGlyph(targetCategory)}
               </span>
-              <span className="flex-1 text-sm font-semibold">{tc.name}</span>
+              <span className="flex-1 text-sm font-semibold">{targetCategory.name}</span>
               <span className="text-[11px] text-gray-400 dark:text-gray-500">
-                {usage[tc.uuid] ?? 0}
+                {usage[targetCategory.uuid] ?? 0}
               </span>
             </button>
           ))}

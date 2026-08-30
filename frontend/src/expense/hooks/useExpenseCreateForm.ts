@@ -3,23 +3,9 @@ import { useNavigate } from "react-router"
 
 import { api } from "../../common/libs/api"
 import { getErrorMessage } from "../../common/libs/client"
-import type {
-  CategoryResponse,
-  VibeNecessity,
-  VibePlanning,
-  VibeSocial,
-} from "../../common/libs/types"
+import type { CategoryResponse } from "../../common/libs/types"
 import { toLocalDatetime } from "../libs/datetime"
-
-interface FormState {
-  name: string
-  amount: string
-  expensedAt: string
-  categoryUuid: string | null
-  vibeSocial: VibeSocial | null
-  vibePlanning: VibePlanning | null
-  vibeNecessity: VibeNecessity | null
-}
+import type { ExpenseFormDraft } from "../libs/expenseFormDraft"
 
 /** 新規 expense 作成フォームの state とハンドラ。 */
 export const useExpenseCreateForm = () => {
@@ -28,7 +14,7 @@ export const useExpenseCreateForm = () => {
   const [categories, setCategories] = useState<CategoryResponse[]>([])
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-  const [form, setForm] = useState<FormState>(() => ({
+  const [form, setForm] = useState<ExpenseFormDraft>(() => ({
     name: "",
     amount: "",
     expensedAt: toLocalDatetime(new Date().toISOString()),
@@ -38,11 +24,14 @@ export const useExpenseCreateForm = () => {
     vibeNecessity: "NEEDED",
   }))
 
-  const update = <K extends keyof FormState>(key: K, value: FormState[K]) => {
+  const updateDraftField = <K extends keyof ExpenseFormDraft>(
+    key: K,
+    value: ExpenseFormDraft[K],
+  ) => {
     setForm((prev) => ({ ...prev, [key]: value }))
   }
 
-  const fetchData = useCallback(async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       setCategories(await api.getCategories())
     } catch (err) {
@@ -51,11 +40,11 @@ export const useExpenseCreateForm = () => {
   }, [])
 
   useEffect(() => {
-    fetchData()
+    fetchCategories()
     amountRef.current?.focus()
-  }, [fetchData])
+  }, [fetchCategories])
 
-  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
+  const createExpense = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError("")
     setLoading(true)
@@ -77,5 +66,5 @@ export const useExpenseCreateForm = () => {
     }
   }
 
-  return { amountRef, categories, error, loading, form, update, handleSubmit }
+  return { amountRef, categories, error, loading, form, updateDraftField, createExpense }
 }

@@ -5,10 +5,10 @@ interface FilterSheetRecurringSectionProps {
   onChange: (mode: RecurringMode) => void
 }
 
-const OPTIONS: { k: RecurringMode; label: string }[] = [
-  { k: "all", label: "All" },
-  { k: "exclude", label: "Exclude" },
-  { k: "only", label: "Only" },
+const OPTIONS: { mode: RecurringMode; label: string }[] = [
+  { mode: "all", label: "All" },
+  { mode: "exclude", label: "Exclude" },
+  { mode: "only", label: "Only" },
 ]
 
 export const FilterSheetRecurringSection = ({
@@ -28,12 +28,12 @@ export const FilterSheetRecurringSection = ({
     </div>
     <div className="flex flex-wrap gap-2">
       {OPTIONS.map((o) => {
-        const on = mode === o.k
+        const on = mode === o.mode
         return (
           <button
-            key={o.k}
+            key={o.mode}
             type="button"
-            onClick={() => onChange(o.k)}
+            onClick={() => onChange(o.mode)}
             className={`rounded-full border px-3 py-1.5 text-xs font-semibold ${
               on
                 ? "border-primary bg-primary text-white"

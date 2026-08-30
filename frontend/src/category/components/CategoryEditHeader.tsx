@@ -6,7 +6,7 @@ interface CategoryEditHeaderProps {
   form: ReturnType<typeof useCategoryEditForm>
 }
 
-export const CategoryEditHeader = ({ form: f }: CategoryEditHeaderProps) => {
+export const CategoryEditHeader = ({ form }: CategoryEditHeaderProps) => {
   const navigate = useNavigate()
 
   return (
@@ -18,11 +18,11 @@ export const CategoryEditHeader = ({ form: f }: CategoryEditHeaderProps) => {
       >
         Cancel
       </button>
-      <h1 className="text-base font-semibold">{f.isNew ? "New category" : "Edit category"}</h1>
+      <h1 className="text-base font-semibold">{form.isNew ? "New category" : "Edit category"}</h1>
       <button
         type="button"
-        onClick={f.save}
-        disabled={!f.canSave || f.loading}
+        onClick={form.saveCategory}
+        disabled={!form.canSave || form.loading}
         className="text-sm font-bold text-primary disabled:text-gray-300 dark:disabled:text-gray-600"
       >
         Save
