@@ -42,12 +42,12 @@ auth_router = APIRouter(prefix="/auth", tags=["auth"])
 logger = get_logger("auth")
 
 
-def _log_auth_failure(msg: str, *, reason: str, name: str, error: str | None = None) -> None:
+def _log_auth_failure(message: str, *, reason: str, name: str, error: str | None = None) -> None:
     """auth経路の4xx失敗を構造化ログに残す。生credential等のPIIは載せない。"""
     extra: dict[str, str] = {"event": "auth_failure", "reason": reason, "name": name}
     if error is not None:
         extra["error"] = error
-    logger.warning(msg, extra=extra)
+    logger.warning(message, extra=extra)
 
 
 @auth_router.post("/register/options")

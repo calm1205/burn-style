@@ -24,7 +24,10 @@ export const useExpenseCreateForm = () => {
     vibeNecessity: "NEEDED",
   }))
 
-  const update = <K extends keyof ExpenseFormDraft>(key: K, value: ExpenseFormDraft[K]) => {
+  const updateDraftField = <K extends keyof ExpenseFormDraft>(
+    key: K,
+    value: ExpenseFormDraft[K],
+  ) => {
     setForm((prev) => ({ ...prev, [key]: value }))
   }
 
@@ -41,7 +44,7 @@ export const useExpenseCreateForm = () => {
     amountRef.current?.focus()
   }, [fetchCategories])
 
-  const submitExpense = async (e: SubmitEvent<HTMLFormElement>) => {
+  const createExpense = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError("")
     setLoading(true)
@@ -63,5 +66,5 @@ export const useExpenseCreateForm = () => {
     }
   }
 
-  return { amountRef, categories, error, loading, form, update, submitExpense }
+  return { amountRef, categories, error, loading, form, updateDraftField, createExpense }
 }

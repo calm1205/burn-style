@@ -4,22 +4,22 @@ import { AuthUsernameInput } from "../components/AuthUsernameInput"
 import { useSignInForm } from "../hooks/useSignInForm"
 
 export const SignInPage = () => {
-  const f = useSignInForm()
+  const signInForm = useSignInForm()
 
   return (
     <AuthPageLayout
       title="Sign In"
-      onSubmit={f.handleSubmit}
-      error={f.error}
+      onSubmit={signInForm.signIn}
+      error={signInForm.error}
       footer={{ text: "Don't have an account? ", linkTo: "/signup", linkLabel: "Sign Up" }}
     >
       <AuthUsernameInput
-        value={f.username}
-        onChange={f.setUsername}
-        loading={f.loading}
-        onClear={f.clearUsername}
+        value={signInForm.username}
+        onChange={signInForm.setUsername}
+        loading={signInForm.loading}
+        onClear={signInForm.clearUsername}
       />
-      <AuthSubmitButton loading={f.loading} loadingLabel="Signing in..." label="Sign In" />
+      <AuthSubmitButton loading={signInForm.loading} loadingLabel="Signing in..." label="Sign In" />
     </AuthPageLayout>
   )
 }

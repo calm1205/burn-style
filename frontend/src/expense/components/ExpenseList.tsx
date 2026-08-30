@@ -2,7 +2,7 @@ import { useState } from "react"
 
 import type { ExpenseResponse } from "../../common/libs/types"
 import { useFilteredExpenses } from "../hooks/useFilteredExpenses"
-import { defaultFilter, type ExpenseFilter, filterCount } from "../libs/expenseFilter"
+import { createDefaultExpenseFilter, type ExpenseFilter, filterCount } from "../libs/expenseFilter"
 import { ExpenseFilterChips } from "./ExpenseFilterChips"
 import { ExpenseFilterSheet } from "./ExpenseFilterSheet"
 import { ExpenseFlatList } from "./ExpenseFlatList"
@@ -16,10 +16,10 @@ interface ExpenseListProps {
 }
 
 export const ExpenseList = ({ expenses, initialFilter }: ExpenseListProps) => {
-  const [filter, setFilter] = useState<ExpenseFilter>(initialFilter ?? defaultFilter())
+  const [filter, setFilter] = useState<ExpenseFilter>(initialFilter ?? createDefaultExpenseFilter())
   const [sheetOpen, setSheetOpen] = useState(false)
   const { usedCategories, filtered, total } = useFilteredExpenses(expenses, filter)
-  const fcount = filterCount(filter)
+  const activeFilterCount = filterCount(filter)
 
   return (
     <>
@@ -32,7 +32,10 @@ export const ExpenseList = ({ expenses, initialFilter }: ExpenseListProps) => {
           scope={filter.scope}
           onChange={(scope) => setFilter({ ...filter, scope, month: null })}
         />
-        <ExpenseListFilterButton filterCount={fcount} onClick={() => setSheetOpen(true)} />
+        <ExpenseListFilterButton
+          filterCount={activeFilterCount}
+          onClick={() => setSheetOpen(true)}
+        />
       </div>
 
       {filter.scope === "month" && (
@@ -46,7 +49,7 @@ export const ExpenseList = ({ expenses, initialFilter }: ExpenseListProps) => {
         filter={filter}
         categories={usedCategories}
         onOpen={() => setSheetOpen(true)}
-        onClear={() => setFilter(defaultFilter())}
+        onClear={() => setFilter(createDefaultExpenseFilter())}
       />
 
       <ExpenseFlatList

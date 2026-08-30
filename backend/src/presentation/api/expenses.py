@@ -6,13 +6,8 @@ from fastapi import APIRouter, Depends, Query, Response, status
 from sqlalchemy.orm import Session
 
 from src.domain.user import User
+from src.infrastructure import expense_repository
 from src.infrastructure.database import get_db
-from src.infrastructure.expense_repository import (
-    create_expense,
-    get_all_expenses,
-    get_expense_by_uuid,
-    soft_delete_expense,
-)
 from src.presentation.deps import get_current_user, get_or_404
 from src.presentation.schema.expense import ExpenseCreate, ExpenseResponse, ExpenseUpdate
 from src.service import expense_service
@@ -28,7 +23,7 @@ def list_expenses(
     year: Annotated[int | None, Query()] = None,
     month: Annotated[int | None, Query()] = None,
 ) -> list[ExpenseResponse]:
-    expenses = get_all_expenses(db, str(user.uuid), year=year, month=month)
+    expenses = expense_repository.get_all_expenses(db, str(user.uuid), year=year, month=month)
     return [ExpenseResponse.model_validate(e) for e in expenses]
 
 
@@ -38,17 +33,19 @@ def get_expense(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> ExpenseResponse:
-    expense = get_or_404(get_expense_by_uuid(db, uuid, str(user.uuid)), "Expense not found")
+    expense = get_or_404(
+        expense_repository.get_expense_by_uuid(db, uuid, str(user.uuid)), "Expense not found",
+    )
     return ExpenseResponse.model_validate(expense)
 
 
 @expense_router.post("", status_code=status.HTTP_201_CREATED)
-def post_expense(
+def create_expense(
     body: ExpenseCreate,
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> ExpenseResponse:
-    expense = create_expense(
+    expense = expense_repository.create_expense(
         db, str(user.uuid), body.name, body.amount, body.expensed_at,
         category_uuids=[body.category_uuid] if body.category_uuid else None,
         vibe_social=body.vibe_social,
@@ -59,13 +56,15 @@ def post_expense(
 
 
 @expense_router.patch("/{uuid}")
-def patch_expense(
+def update_expense(
     uuid: str,
     body: ExpenseUpdate,
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> ExpenseResponse:
-    expense = get_or_404(get_expense_by_uuid(db, uuid, str(user.uuid)), "Expense not found")
+    expense = get_or_404(
+        expense_repository.get_expense_by_uuid(db, uuid, str(user.uuid)), "Expense not found",
+    )
 
     raw_patch = body.model_dump(exclude_unset=True)
     category_uuids: list[str] | None = None
@@ -87,7 +86,9 @@ def delete_expense(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> Response:
-    expense = get_or_404(get_expense_by_uuid(db, uuid, str(user.uuid)), "Expense not found")
+    expense = get_or_404(
+        expense_repository.get_expense_by_uuid(db, uuid, str(user.uuid)), "Expense not found",
+    )
 
-    soft_delete_expense(db, expense)
+    expense_repository.soft_delete_expense(db, expense)
     return Response(status_code=status.HTTP_204_NO_CONTENT)

@@ -18,20 +18,23 @@ export const useExpenseEditForm = (uuid: string | undefined) => {
   const [form, setForm] = useState<ExpenseFormDraft>(emptyExpenseFormDraft)
   const { dialogRef, open: openDeleteDialog } = useConfirmDialog()
 
-  const fetchExpenseWithCategories = useCallback(async () => {
+  const fetchExpenseEditForm = useCallback(async () => {
     if (!uuid) return
     try {
-      const [exp, cats] = await Promise.all([api.getExpense(uuid), api.getCategories()])
-      setExpense(exp)
-      setCategories(cats)
+      const [loadedExpense, loadedCategories] = await Promise.all([
+        api.getExpense(uuid),
+        api.getCategories(),
+      ])
+      setExpense(loadedExpense)
+      setCategories(loadedCategories)
       setForm({
-        name: exp.name,
-        amount: exp.amount.toLocaleString(),
-        expensedAt: toLocalDatetime(exp.expensed_at),
-        categoryUuid: exp.categories[0]?.uuid ?? null,
-        vibeSocial: exp.vibe_social,
-        vibePlanning: exp.vibe_planning,
-        vibeNecessity: exp.vibe_necessity,
+        name: loadedExpense.name,
+        amount: loadedExpense.amount.toLocaleString(),
+        expensedAt: toLocalDatetime(loadedExpense.expensed_at),
+        categoryUuid: loadedExpense.categories[0]?.uuid ?? null,
+        vibeSocial: loadedExpense.vibe_social,
+        vibePlanning: loadedExpense.vibe_planning,
+        vibeNecessity: loadedExpense.vibe_necessity,
       })
     } catch (err) {
       setError(getErrorMessage(err, "Failed to load"))
@@ -39,10 +42,13 @@ export const useExpenseEditForm = (uuid: string | undefined) => {
   }, [uuid])
 
   useEffect(() => {
-    fetchExpenseWithCategories()
-  }, [fetchExpenseWithCategories])
+    fetchExpenseEditForm()
+  }, [fetchExpenseEditForm])
 
-  const update = <K extends keyof ExpenseFormDraft>(key: K, value: ExpenseFormDraft[K]) => {
+  const updateDraftField = <K extends keyof ExpenseFormDraft>(
+    key: K,
+    value: ExpenseFormDraft[K],
+  ) => {
     setForm((prev) => ({ ...prev, [key]: value }))
   }
 
@@ -89,7 +95,7 @@ export const useExpenseEditForm = (uuid: string | undefined) => {
     error,
     loading,
     form,
-    update,
+    updateDraftField,
     dialogRef,
     openDeleteDialog,
     updateExpense,

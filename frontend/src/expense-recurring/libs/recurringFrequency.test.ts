@@ -1,34 +1,36 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import {
+  findFrequencyOption,
   FREQUENCY_OPTIONS,
-  groupOf,
-  matchFrequency,
+  frequencyKeyFor,
   monthlyEquivalent,
   todayJst,
 } from "./recurringFrequency"
 
-describe("matchFrequency", () => {
+describe("frequencyKeyFor", () => {
   it("matches WEEK/1 to weekly", () => {
-    expect(matchFrequency("WEEK", 1)).toBe("weekly")
+    expect(frequencyKeyFor("WEEK", 1)).toBe("weekly")
   })
 
   it("matches WEEK/2 to biweekly", () => {
-    expect(matchFrequency("WEEK", 2)).toBe("biweekly")
+    expect(frequencyKeyFor("WEEK", 2)).toBe("biweekly")
   })
 
   it("falls back to monthly for unknown combinations", () => {
-    expect(matchFrequency("WEEK", 99)).toBe("monthly")
+    expect(frequencyKeyFor("WEEK", 99)).toBe("monthly")
   })
 })
 
-describe("groupOf", () => {
+describe("findFrequencyOption", () => {
   it("returns matching FrequencyOption", () => {
-    expect(groupOf("MONTH", 12)).toEqual(FREQUENCY_OPTIONS.find((f) => f.key === "yearly"))
+    expect(findFrequencyOption("MONTH", 12)).toEqual(
+      FREQUENCY_OPTIONS.find((f) => f.key === "yearly"),
+    )
   })
 
   it("returns null for unknown combination", () => {
-    expect(groupOf("MONTH", 99)).toBeNull()
+    expect(findFrequencyOption("MONTH", 99)).toBeNull()
   })
 })
 

@@ -35,8 +35,8 @@ def list_recurring(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> list[RecurringExpenseResponse]:
-    items = recurring_expense_repository.get_all_active(db, str(user.uuid))
-    return [RecurringExpenseResponse.model_validate(r) for r in items]
+    recurring_expenses = recurring_expense_repository.get_all_active(db, str(user.uuid))
+    return [RecurringExpenseResponse.model_validate(recurring_expense) for recurring_expense in recurring_expenses]
 
 
 @recurring_expense_router.get("/due")
@@ -45,19 +45,21 @@ def list_due(
     db: Annotated[Session, Depends(get_db)],
 ) -> list[RecurringExpenseDueResponse]:
     today = recurring_expense_service.jst_today()
-    items = recurring_expense_repository.get_all_active(db, str(user.uuid))
+    recurring_expenses = recurring_expense_repository.get_all_active(db, str(user.uuid))
     due_recurring_expenses: list[RecurringExpenseDueResponse] = []
-    for r in items:
-        linked_expense_count = recurring_expense_repository.count_linked_expenses(db, str(r.uuid))
-        dates = recurring_expense_service.missed_dates(r, linked_expense_count, today)
+    for recurring_expense in recurring_expenses:
+        linked_expense_count = recurring_expense_repository.count_linked_expenses(
+            db, str(recurring_expense.uuid),
+        )
+        dates = recurring_expense_service.missed_dates(recurring_expense, linked_expense_count, today)
         if not dates:
             continue
         due_recurring_expenses.append(
             RecurringExpenseDueResponse(
-                uuid=str(r.uuid),
-                name=str(r.name),
-                amount=int(r.amount),
-                category=r.category,
+                uuid=str(recurring_expense.uuid),
+                name=str(recurring_expense.name),
+                amount=int(recurring_expense.amount),
+                category=recurring_expense.category,
                 missed_count=len(dates),
                 missed_dates=dates,
             ),

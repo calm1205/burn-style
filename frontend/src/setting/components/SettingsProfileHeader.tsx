@@ -1,21 +1,14 @@
 import { CheckIcon, Pencil1Icon, ResetIcon } from "../../common/icons"
-import type { useSettingsActions } from "../hooks/useSettingsActions"
+import type { useSettingsProfile } from "../hooks/useSettingsProfile"
 
 interface SettingsProfileHeaderProps {
   name: string | undefined
-  actions: ReturnType<typeof useSettingsActions>
+  profile: ReturnType<typeof useSettingsProfile>
+  loading: boolean
 }
 
-export const SettingsProfileHeader = ({ name, actions }: SettingsProfileHeaderProps) => {
-  const {
-    editing,
-    name: draftName,
-    loading,
-    setName,
-    startEdit,
-    handleUpdate,
-    setEditing,
-  } = actions
+export const SettingsProfileHeader = ({ name, profile, loading }: SettingsProfileHeaderProps) => {
+  const { editing, name: draftName, setName, startEdit, updateProfile, setEditing } = profile
 
   return (
     <div className="flex items-center gap-3.5 px-2 pt-2">
@@ -31,7 +24,7 @@ export const SettingsProfileHeader = ({ name, actions }: SettingsProfileHeaderPr
             />
             <button
               type="button"
-              onClick={handleUpdate}
+              onClick={updateProfile}
               disabled={loading}
               className="text-primary hover:text-primary-hover disabled:opacity-50"
             >

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 
 import { PrimaryButton } from "../../common/components/PrimaryButton"
 import type { CategoryResponse } from "../../common/libs/types"
-import { defaultFilter, type ExpenseFilter } from "../libs/expenseFilter"
+import { createDefaultExpenseFilter, type ExpenseFilter } from "../libs/expenseFilter"
 import { FilterSheetAmountSection } from "./FilterSheetAmountSection"
 import { FilterSheetCategorySection } from "./FilterSheetCategorySection"
 import { FilterSheetDateSection } from "./FilterSheetDateSection"
@@ -51,7 +51,7 @@ export const ExpenseFilterSheet = ({
     onClose()
   }
 
-  const reset = () => setDraft(defaultFilter())
+  const reset = () => setDraft(createDefaultExpenseFilter())
 
   return (
     <dialog

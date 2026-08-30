@@ -38,7 +38,7 @@ def missed_dates(
     recurring: RecurringExpense, recorded_count: int, today: date,
 ) -> list[date]:
     """期日到来で未記録の発生日リストを返す (today・end_dateで打ち切り)。"""
-    result: list[date] = []
+    missed: list[date] = []
     n = recorded_count
     while True:
         d = occurrence_date(
@@ -51,9 +51,9 @@ def missed_dates(
             break
         if recurring.end_date is not None and d > recurring.end_date:
             break
-        result.append(d)
+        missed.append(d)
         n += 1
-    return result
+    return missed
 
 
 def record_occurrences(
@@ -101,14 +101,16 @@ def record_occurrences(
 def record_all_due_for_cron(db: Session) -> tuple[int, int]:
     """全ユーザーの未削除定期支払を処理。返り値は (recorded_count, processed_recurring_count)。"""
     today = jst_today()
-    recurrings = recurring_expense_repository.get_all_active_for_cron(db)
+    recurring_expenses = recurring_expense_repository.get_all_active_for_cron(db)
     total_recorded = 0
     processed = 0
-    for r in recurrings:
-        linked_expense_count = recurring_expense_repository.count_linked_expenses(db, str(r.uuid))
-        dates = missed_dates(r, linked_expense_count, today)
+    for recurring_expense in recurring_expenses:
+        linked_expense_count = recurring_expense_repository.count_linked_expenses(
+            db, str(recurring_expense.uuid),
+        )
+        dates = missed_dates(recurring_expense, linked_expense_count, today)
         if not dates:
             continue
-        total_recorded += record_occurrences(db, r, count=len(dates))
+        total_recorded += record_occurrences(db, recurring_expense, count=len(dates))
         processed += 1
     return total_recorded, processed

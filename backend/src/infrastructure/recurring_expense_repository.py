@@ -69,7 +69,7 @@ def get_recurring_expense_by_uuid(db: Session, uuid: str, user_uuid: str) -> Rec
 
 def count_linked_expenses(db: Session, recurring_uuid: str) -> int:
     """定期支払に紐づくExpense件数を取得 (soft-delete除外)。"""
-    result = (
+    linked_count = (
         db.query(func.count(Expense.uuid))
         .filter(
             Expense.recurring_expense_uuid == recurring_uuid,
@@ -77,7 +77,7 @@ def count_linked_expenses(db: Session, recurring_uuid: str) -> int:
         )
         .scalar()
     )
-    return int(result or 0)
+    return int(linked_count or 0)
 
 
 def create_recurring_expense(
