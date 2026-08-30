@@ -27,7 +27,7 @@ if TYPE_CHECKING:
     from src.presentation.schema.user import UserImportRequest
 
 
-def export_user_data(
+def export_user_snapshot(
     db: Session, user: User,
 ) -> tuple[list[Category], list[Expense], list[RecurringExpense]]:
     """ユーザーの全データをexport用に取得。"""
@@ -38,7 +38,7 @@ def export_user_data(
     return categories, expenses, recurrings
 
 
-def import_user_data(
+def import_user_snapshot(
     db: Session, user: User, body: UserImportRequest,
 ) -> tuple[int, int, int]:
     """既存データを全削除し、bodyの内容で再インポート。

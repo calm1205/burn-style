@@ -46,7 +46,7 @@ def export_me(
     db: Annotated[Session, Depends(get_db)],
 ) -> UserExportResponse:
     """現在のユーザーの全データをエクスポート。"""
-    categories, expenses, recurrings = user_service.export_user_data(db, current_user)
+    categories, expenses, recurrings = user_service.export_user_snapshot(db, current_user)
     return UserExportResponse(
         name=str(current_user.name),
         categories=[CategoryResponse.model_validate(c) for c in categories],
@@ -62,7 +62,7 @@ def import_me(
     db: Annotated[Session, Depends(get_db)],
 ) -> UserImportResponse:
     """既存データを全削除し、エクスポート済みJSONを再インポート。"""
-    cat_count, exp_count, rec_count = user_service.import_user_data(db, current_user, body)
+    cat_count, exp_count, rec_count = user_service.import_user_snapshot(db, current_user, body)
     return UserImportResponse(
         categories_count=cat_count,
         expenses_count=exp_count,
