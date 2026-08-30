@@ -6,7 +6,7 @@ import { getErrorMessage } from "../../common/libs/client"
 import { STORAGE_KEYS } from "../../common/libs/constants"
 import type { UserResponse } from "../../common/libs/types"
 
-interface Args {
+interface UseSettingsProfileArgs {
   user: UserResponse | null
   refreshUser: () => Promise<void>
   setError: (message: string) => void
@@ -14,7 +14,12 @@ interface Args {
 }
 
 /** Settings 画面のプロフィール編集とアカウント削除。 */
-export const useSettingsProfile = ({ user, refreshUser, setError, setLoading }: Args) => {
+export const useSettingsProfile = ({
+  user,
+  refreshUser,
+  setError,
+  setLoading,
+}: UseSettingsProfileArgs) => {
   const [editing, setEditing] = useState(false)
   const [name, setName] = useState("")
   const { dialogRef, open: openDeleteDialog } = useConfirmDialog()
