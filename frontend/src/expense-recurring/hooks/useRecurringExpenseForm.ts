@@ -27,7 +27,7 @@ export const useRecurringExpenseForm = (uuid: string | undefined) => {
   const [startDate, setStartDate] = useState(todayJst)
   const [categoryUuid, setCategoryUuid] = useState("")
 
-  const fetchRecurringExpenseForm = useCallback(async () => {
+  const fetchRecurringExpenseInitialState = useCallback(async () => {
     try {
       const loadedCategories = await api.getCategories()
       setCategories(loadedCategories)
@@ -49,8 +49,8 @@ export const useRecurringExpenseForm = (uuid: string | undefined) => {
   }, [uuid])
 
   useEffect(() => {
-    fetchRecurringExpenseForm()
-  }, [fetchRecurringExpenseForm])
+    fetchRecurringExpenseInitialState()
+  }, [fetchRecurringExpenseInitialState])
 
   const saveRecurringExpense = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
