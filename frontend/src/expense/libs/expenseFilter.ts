@@ -9,11 +9,11 @@ export type FilterScope = "week" | "month" | "all"
 export type RecurringMode = "all" | "exclude" | "only"
 
 export interface ExpenseFilter {
-  q: string
+  searchQuery: string
   scope: FilterScope
   categoryUuids: string[]
-  min: number
-  max: number
+  amountMin: number
+  amountMax: number
   /** 期間の開始日 (YYYY-MM-DD, 当日含む)。dateStart/dateEnd いずれか設定時は scope を無視。 */
   dateStart: string | null
   /** 期間の終了日 (YYYY-MM-DD, 当日含む)。 */
@@ -34,11 +34,11 @@ export const SCOPE_OPTIONS: { k: FilterScope; label: string; short: string }[] =
 ]
 
 export const defaultFilter = (): ExpenseFilter => ({
-  q: "",
+  searchQuery: "",
   scope: "month",
   categoryUuids: [],
-  min: 0,
-  max: 0,
+  amountMin: 0,
+  amountMax: 0,
   dateStart: null,
   dateEnd: null,
   month: null,
@@ -50,10 +50,10 @@ export const defaultFilter = (): ExpenseFilter => ({
 
 export const filterCount = (f: ExpenseFilter): number => {
   let n = 0
-  if (f.q) n++
+  if (f.searchQuery) n++
   if (f.scope !== "month") n++
   if (f.categoryUuids.length > 0) n++
-  if (f.min > 0 || f.max > 0) n++
+  if (f.amountMin > 0 || f.amountMax > 0) n++
   if (f.dateStart || f.dateEnd) n++
   if (f.vibeSocial) n++
   if (f.vibePlanning) n++
@@ -138,13 +138,13 @@ export const applyFilter = (expenses: ExpenseResponse[], f: ExpenseFilter): Expe
       if (d.getFullYear() !== target.year || d.getMonth() !== target.month) return false
     }
 
-    if (f.q && !e.name.toLowerCase().includes(f.q.toLowerCase())) return false
+    if (f.searchQuery && !e.name.toLowerCase().includes(f.searchQuery.toLowerCase())) return false
     if (f.categoryUuids.length > 0) {
       const hit = e.categories.some((c) => f.categoryUuids.includes(c.uuid))
       if (!hit) return false
     }
-    if (f.min > 0 && e.amount < f.min) return false
-    if (f.max > 0 && e.amount > f.max) return false
+    if (f.amountMin > 0 && e.amount < f.amountMin) return false
+    if (f.amountMax > 0 && e.amount > f.amountMax) return false
     if (f.vibeSocial && e.vibe_social !== f.vibeSocial) return false
     if (f.vibePlanning && e.vibe_planning !== f.vibePlanning) return false
     if (f.vibeNecessity && e.vibe_necessity !== f.vibeNecessity) return false
