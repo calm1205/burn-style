@@ -2,7 +2,7 @@ interface IconProps {
   className?: string
 }
 
-const createIcon = (d: string) => {
+const createIcon = (pathData: string) => {
   return ({ className }: IconProps) => (
     <svg
       width="15"
@@ -12,7 +12,7 @@ const createIcon = (d: string) => {
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
-      <path fillRule="evenodd" clipRule="evenodd" d={d} fill="currentColor" />
+      <path fillRule="evenodd" clipRule="evenodd" d={pathData} fill="currentColor" />
     </svg>
   )
 }

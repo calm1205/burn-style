@@ -24,7 +24,7 @@ export const useExpenseCreateForm = () => {
     vibeNecessity: "NEEDED",
   }))
 
-  const update = <K extends keyof ExpenseFormDraft>(key: K, value: ExpenseFormDraft[K]) => {
+  const patchForm = <K extends keyof ExpenseFormDraft>(key: K, value: ExpenseFormDraft[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }))
   }
 
@@ -63,5 +63,5 @@ export const useExpenseCreateForm = () => {
     }
   }
 
-  return { amountRef, categories, error, loading, form, update, submitExpense }
+  return { amountRef, categories, error, loading, form, patchForm, submitExpense }
 }

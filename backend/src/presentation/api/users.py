@@ -46,12 +46,12 @@ def export_me(
     db: Annotated[Session, Depends(get_db)],
 ) -> UserExportResponse:
     """現在のユーザーの全データをエクスポート。"""
-    categories, expenses, recurrings = user_service.export_user_snapshot(db, current_user)
+    categories, expenses, recurring_expenses = user_service.export_user_snapshot(db, current_user)
     return UserExportResponse(
         name=str(current_user.name),
         categories=[CategoryResponse.model_validate(c) for c in categories],
         expenses=[ExpenseResponse.model_validate(e) for e in expenses],
-        recurring_expenses=[ExportRecurringExpenseResponse.model_validate(r) for r in recurrings],
+        recurring_expenses=[ExportRecurringExpenseResponse.model_validate(r) for r in recurring_expenses],
     )
 
 
@@ -62,14 +62,16 @@ def import_me(
     db: Annotated[Session, Depends(get_db)],
 ) -> UserImportResponse:
     """既存データを全削除し、エクスポート済みJSONを再インポート。"""
-    cat_count, exp_count, rec_count = user_service.import_user_snapshot(db, current_user, body)
+    categories_count, expenses_count, recurring_expenses_count = user_service.import_user_snapshot(
+        db, current_user, body,
+    )
     return UserImportResponse(
-        categories_count=cat_count,
-        expenses_count=exp_count,
-        recurring_expenses_count=rec_count,
+        categories_count=categories_count,
+        expenses_count=expenses_count,
+        recurring_expenses_count=recurring_expenses_count,
         message=(
-            f"Imported {cat_count} categories, {exp_count} expenses, "
-            f"and {rec_count} recurring expenses"
+            f"Imported {categories_count} categories, {expenses_count} expenses, "
+            f"and {recurring_expenses_count} recurring expenses"
         ),
     )
 

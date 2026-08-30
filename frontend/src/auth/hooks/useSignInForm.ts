@@ -39,8 +39,8 @@ export const useSignInForm = () => {
     setLoading(true)
 
     try {
-      const result = await api.signIn(username)
-      localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, result.access_token)
+      const signInResponse = await api.signIn(username)
+      localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, signInResponse.access_token)
       localStorage.setItem(STORAGE_KEYS.LAST_USERNAME, username)
       navigate("/expense/new")
     } catch (err) {

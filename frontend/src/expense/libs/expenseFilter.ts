@@ -48,17 +48,17 @@ export const defaultFilter = (): ExpenseFilter => ({
   recurringMode: "all",
 })
 
-export const filterCount = (f: ExpenseFilter): number => {
+export const filterCount = (filter: ExpenseFilter): number => {
   let n = 0
-  if (f.searchQuery) n++
-  if (f.scope !== "month") n++
-  if (f.categoryUuids.length > 0) n++
-  if (f.amountMin > 0 || f.amountMax > 0) n++
-  if (f.dateStart || f.dateEnd) n++
-  if (f.vibeSocial) n++
-  if (f.vibePlanning) n++
-  if (f.vibeNecessity) n++
-  if (f.recurringMode !== "all") n++
+  if (filter.searchQuery) n++
+  if (filter.scope !== "month") n++
+  if (filter.categoryUuids.length > 0) n++
+  if (filter.amountMin > 0 || filter.amountMax > 0) n++
+  if (filter.dateStart || filter.dateEnd) n++
+  if (filter.vibeSocial) n++
+  if (filter.vibePlanning) n++
+  if (filter.vibeNecessity) n++
+  if (filter.recurringMode !== "all") n++
   return n
 }
 
@@ -110,13 +110,16 @@ export const shiftMonthKey = (key: string, delta: number): string => {
   return formatMonthKey(d.getFullYear(), d.getMonth())
 }
 
-export const applyFilter = (expenses: ExpenseResponse[], f: ExpenseFilter): ExpenseResponse[] => {
+export const applyFilter = (
+  expenses: ExpenseResponse[],
+  filter: ExpenseFilter,
+): ExpenseResponse[] => {
   const now = new Date()
   const weekStart = new Date(now)
   weekStart.setDate(weekStart.getDate() - 6)
   weekStart.setHours(0, 0, 0, 0)
-  const rangeStart = f.dateStart ? parseDateKey(f.dateStart) : null
-  const rangeEnd = f.dateEnd ? parseDateKey(f.dateEnd) : null
+  const rangeStart = filter.dateStart ? parseDateKey(filter.dateStart) : null
+  const rangeEnd = filter.dateEnd ? parseDateKey(filter.dateEnd) : null
   // 終了日を含めるため翌日 0:00 を上限 (排他) とする。
   const rangeEndExclusive = rangeEnd ? new Date(rangeEnd) : null
   if (rangeEndExclusive) rangeEndExclusive.setDate(rangeEndExclusive.getDate() + 1)
@@ -127,29 +130,30 @@ export const applyFilter = (expenses: ExpenseResponse[], f: ExpenseFilter): Expe
     if (rangeStart || rangeEndExclusive) {
       if (rangeStart && d < rangeStart) return false
       if (rangeEndExclusive && d >= rangeEndExclusive) return false
-    } else if (f.scope === "week") {
+    } else if (filter.scope === "week") {
       if (d < weekStart) return false
       if (d > now && !sameLocalDay(d, now)) return false
-    } else if (f.scope === "month") {
-      const target = f.month
-        ? parseMonthKey(f.month)
+    } else if (filter.scope === "month") {
+      const target = filter.month
+        ? parseMonthKey(filter.month)
         : { year: now.getFullYear(), month: now.getMonth() }
       if (!target) return false
       if (d.getFullYear() !== target.year || d.getMonth() !== target.month) return false
     }
 
-    if (f.searchQuery && !e.name.toLowerCase().includes(f.searchQuery.toLowerCase())) return false
-    if (f.categoryUuids.length > 0) {
-      const hit = e.categories.some((c) => f.categoryUuids.includes(c.uuid))
+    if (filter.searchQuery && !e.name.toLowerCase().includes(filter.searchQuery.toLowerCase()))
+      return false
+    if (filter.categoryUuids.length > 0) {
+      const hit = e.categories.some((c) => filter.categoryUuids.includes(c.uuid))
       if (!hit) return false
     }
-    if (f.amountMin > 0 && e.amount < f.amountMin) return false
-    if (f.amountMax > 0 && e.amount > f.amountMax) return false
-    if (f.vibeSocial && e.vibe_social !== f.vibeSocial) return false
-    if (f.vibePlanning && e.vibe_planning !== f.vibePlanning) return false
-    if (f.vibeNecessity && e.vibe_necessity !== f.vibeNecessity) return false
-    if (f.recurringMode === "exclude" && e.recurring_expense_uuid !== null) return false
-    if (f.recurringMode === "only" && e.recurring_expense_uuid === null) return false
+    if (filter.amountMin > 0 && e.amount < filter.amountMin) return false
+    if (filter.amountMax > 0 && e.amount > filter.amountMax) return false
+    if (filter.vibeSocial && e.vibe_social !== filter.vibeSocial) return false
+    if (filter.vibePlanning && e.vibe_planning !== filter.vibePlanning) return false
+    if (filter.vibeNecessity && e.vibe_necessity !== filter.vibeNecessity) return false
+    if (filter.recurringMode === "exclude" && e.recurring_expense_uuid !== null) return false
+    if (filter.recurringMode === "only" && e.recurring_expense_uuid === null) return false
     return true
   })
 }

@@ -54,8 +54,8 @@ export const useSettingsBackup = ({ userName, setError, setSuccess, setLoading }
     setLoading(true)
     importDialogRef.current?.close()
     try {
-      const result = await api.importMe(importDataRef.current)
-      setSuccess(result.message)
+      const importResult = await api.importMe(importDataRef.current)
+      setSuccess(importResult.message)
     } catch (err) {
       setError(getErrorMessage(err, "Import failed"))
     } finally {
