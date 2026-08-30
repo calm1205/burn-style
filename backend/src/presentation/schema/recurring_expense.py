@@ -55,7 +55,7 @@ class RecurringExpenseDueResponse(BaseModel):
     missed_dates: list[date]
 
 
-class RecordRequest(BaseModel):
+class RecordRecurringOccurrencesRequest(BaseModel):
     count: int = Field(default=1, gt=0, description="Number of occurrences to record")
     expensed_at: date | None = None
 
