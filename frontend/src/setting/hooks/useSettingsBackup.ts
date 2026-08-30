@@ -4,7 +4,7 @@ import { useConfirmDialog } from "../../common/components/ConfirmDialog"
 import { api } from "../../common/libs/api"
 import { getErrorMessage } from "../../common/libs/client"
 
-interface Args {
+interface UseSettingsBackupArgs {
   userName: string | undefined
   setError: (message: string) => void
   setSuccess: (message: string) => void
@@ -12,7 +12,12 @@ interface Args {
 }
 
 /** Settings 画面の export / import 操作。 */
-export const useSettingsBackup = ({ userName, setError, setSuccess, setLoading }: Args) => {
+export const useSettingsBackup = ({
+  userName,
+  setError,
+  setSuccess,
+  setLoading,
+}: UseSettingsBackupArgs) => {
   const { dialogRef: importDialogRef, open: openImportDialog } = useConfirmDialog()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const pendingImportSnapshotRef = useRef<unknown>(null)

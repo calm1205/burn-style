@@ -40,7 +40,7 @@ def list_recurring(
 
 
 @recurring_expense_router.get("/due")
-def list_due(
+def list_due_recurring_expenses(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> list[RecurringExpenseDueResponse]:
