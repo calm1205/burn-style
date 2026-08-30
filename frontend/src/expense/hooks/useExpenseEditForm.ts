@@ -71,7 +71,7 @@ export const useExpenseEditForm = (uuid: string | undefined) => {
     setForm((prev) => ({ ...prev, [key]: value }))
   }
 
-  const handleUpdate = async (e: SubmitEvent<HTMLFormElement>) => {
+  const updateExpense = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!uuid) return
     setError("")
@@ -94,7 +94,7 @@ export const useExpenseEditForm = (uuid: string | undefined) => {
     }
   }
 
-  const handleDelete = async () => {
+  const deleteExpense = async () => {
     if (!uuid) return
     setLoading(true)
     try {
@@ -117,7 +117,7 @@ export const useExpenseEditForm = (uuid: string | undefined) => {
     update,
     dialogRef,
     openDeleteDialog,
-    handleUpdate,
-    handleDelete,
+    updateExpense,
+    deleteExpense,
   }
 }

@@ -21,7 +21,7 @@ export const CategoryEditHeader = ({ form: f }: CategoryEditHeaderProps) => {
       <h1 className="text-base font-semibold">{f.isNew ? "New category" : "Edit category"}</h1>
       <button
         type="button"
-        onClick={f.save}
+        onClick={f.saveCategory}
         disabled={!f.canSave || f.loading}
         className="text-sm font-bold text-primary disabled:text-gray-300 dark:disabled:text-gray-600"
       >

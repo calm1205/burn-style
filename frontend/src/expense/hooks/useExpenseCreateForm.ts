@@ -55,7 +55,7 @@ export const useExpenseCreateForm = () => {
     amountRef.current?.focus()
   }, [fetchCategories])
 
-  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
+  const submitExpense = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError("")
     setLoading(true)
@@ -77,5 +77,5 @@ export const useExpenseCreateForm = () => {
     }
   }
 
-  return { amountRef, categories, error, loading, form, update, handleSubmit }
+  return { amountRef, categories, error, loading, form, update, submitExpense }
 }

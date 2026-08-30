@@ -39,7 +39,7 @@ export const useCategoryEditForm = (uuid: string | undefined) => {
   const trimmed = name.trim()
   const canSave = trimmed.length > 0 && glyph.length > 0
 
-  const save = async () => {
+  const saveCategory = async () => {
     if (!canSave) return
     setError("")
     setLoading(true)
@@ -57,7 +57,7 @@ export const useCategoryEditForm = (uuid: string | undefined) => {
     }
   }
 
-  const handleDelete = async () => {
+  const deleteCategory = async () => {
     if (!uuid) return
     setError("")
     setLoading(true)
@@ -83,7 +83,7 @@ export const useCategoryEditForm = (uuid: string | undefined) => {
     usage,
     confirmingDelete,
     setConfirmingDelete,
-    save,
-    handleDelete,
+    saveCategory,
+    deleteCategory,
   }
 }

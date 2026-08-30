@@ -50,7 +50,7 @@ export const useRecurringExpenseForm = (uuid: string | undefined) => {
     fetchRecurringExpenseWithCategories()
   }, [fetchRecurringExpenseWithCategories])
 
-  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
+  const saveRecurringExpense = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError("")
     const freq = FREQUENCY_OPTIONS.find((f) => f.key === frequencyKey)
@@ -81,7 +81,7 @@ export const useRecurringExpenseForm = (uuid: string | undefined) => {
     }
   }
 
-  const handleDelete = async () => {
+  const deleteRecurringExpense = async () => {
     if (!uuid) return
     setError("")
     setLoading(true)
@@ -113,7 +113,7 @@ export const useRecurringExpenseForm = (uuid: string | undefined) => {
     setStartDate,
     categoryUuid,
     setCategoryUuid,
-    handleSubmit,
-    handleDelete,
+    saveRecurringExpense,
+    deleteRecurringExpense,
   }
 }
