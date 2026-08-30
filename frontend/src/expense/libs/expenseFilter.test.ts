@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import type { ExpenseResponse } from "../../common/libs/types"
+import { NULL_VIBE } from "../../common/libs/types"
 import { applyFilter, createDefaultExpenseFilter, filterCount, parseDateKey } from "./expenseFilter"
 
 const mkExpense = (overrides: Partial<ExpenseResponse> = {}): ExpenseResponse => ({
@@ -11,10 +12,8 @@ const mkExpense = (overrides: Partial<ExpenseResponse> = {}): ExpenseResponse =>
   created_at: new Date(2026, 5, 10, 12, 0).toISOString(),
   updated_at: new Date(2026, 5, 10, 12, 0).toISOString(),
   deleted_at: null,
-  categories: [],
-  vibe_social: null,
-  vibe_planning: null,
-  vibe_necessity: null,
+  category: null,
+  vibe: NULL_VIBE,
   recurring_expense_uuid: null,
   ...overrides,
 })
@@ -222,10 +221,10 @@ describe("applyFilter", () => {
     expect(filtered.map((e) => e.uuid)).toEqual(["a"])
   })
 
-  it("categoryUuids filters by any matching category", () => {
-    const cat = { uuid: "c1", name: "Food", symbol: null, position: 0 }
-    const hit = mkExpense({ uuid: "a", categories: [cat] })
-    const miss = mkExpense({ uuid: "b", categories: [] })
+  it("categoryUuids filters by matching category", () => {
+    const cat = { uuid: "c1", name: "Food" }
+    const hit = mkExpense({ uuid: "a", category: cat })
+    const miss = mkExpense({ uuid: "b", category: null })
     const filtered = applyFilter([hit, miss], {
       ...createDefaultExpenseFilter(),
       categoryUuids: ["c1"],
@@ -234,9 +233,15 @@ describe("applyFilter", () => {
   })
 
   it("filters by each vibe axis independently", () => {
-    const solo = mkExpense({ uuid: "a", vibe_social: "SOLO" })
-    const withSomeone = mkExpense({ uuid: "b", vibe_social: "WITH_SOMEONE" })
-    const none = mkExpense({ uuid: "c", vibe_social: null })
+    const solo = mkExpense({
+      uuid: "a",
+      vibe: { social: "SOLO", planning: "ROUTINE", necessity: "NEEDED" },
+    })
+    const withSomeone = mkExpense({
+      uuid: "b",
+      vibe: { social: "WITH_SOMEONE", planning: "ROUTINE", necessity: "NEEDED" },
+    })
+    const none = mkExpense({ uuid: "c", vibe: NULL_VIBE })
     const filtered = applyFilter([solo, withSomeone, none], {
       ...createDefaultExpenseFilter(),
       scope: "all",
@@ -248,15 +253,11 @@ describe("applyFilter", () => {
   it("combines multiple vibe axes with AND semantics", () => {
     const hit = mkExpense({
       uuid: "a",
-      vibe_social: "SOLO",
-      vibe_planning: "ROUTINE",
-      vibe_necessity: "NEEDED",
+      vibe: { social: "SOLO", planning: "ROUTINE", necessity: "NEEDED" },
     })
     const partial = mkExpense({
       uuid: "b",
-      vibe_social: "SOLO",
-      vibe_planning: "SPONTANEOUS",
-      vibe_necessity: "NEEDED",
+      vibe: { social: "SOLO", planning: "SPONTANEOUS", necessity: "NEEDED" },
     })
     const filtered = applyFilter([hit, partial], {
       ...createDefaultExpenseFilter(),

@@ -4,16 +4,17 @@ import type { CategoryResponse, ExpenseResponse } from "../../common/libs/types"
 import { applyFilter, type ExpenseFilter } from "../libs/expenseFilter"
 
 /** filter 適用 → 新しい順ソート + 合計を一括算出。 */
-export const useFilteredExpenses = (expenses: ExpenseResponse[], filter: ExpenseFilter) => {
+export const useFilteredExpenses = (
+  expenses: ExpenseResponse[],
+  filter: ExpenseFilter,
+  allCategories: CategoryResponse[] = [],
+) => {
   const usedCategories = useMemo<CategoryResponse[]>(() => {
-    const map = new Map<string, CategoryResponse>()
-    for (const e of expenses) {
-      for (const c of e.categories) {
-        if (!map.has(c.uuid)) map.set(c.uuid, c)
-      }
-    }
-    return [...map.values()].toSorted((a, b) => a.position - b.position)
-  }, [expenses])
+    const usedUuids = new Set(expenses.flatMap((e) => (e.category ? [e.category.uuid] : [])))
+    return allCategories
+      .filter((c) => usedUuids.has(c.uuid))
+      .toSorted((a, b) => a.position - b.position)
+  }, [expenses, allCategories])
 
   const filtered = useMemo(
     () =>

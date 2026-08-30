@@ -1,122 +1,364 @@
-# Spec: recurring expense 層の命名リファクタ
+# Spec: Expense VIBE 構造化
 
 ## 前提
 
-- 対象は `recurring_expense_repository` と `recurring_expense_service` の識別子リネームのみ
-- 挙動・API レスポンス・DB スキーマは変更しない
-- 既存 repository はモジュール関数方式（クラスなし）がプロジェクト慣例
-- `active` は soft-delete 除外（`deleted_at IS NULL`）を指す
-- 有効期間（`start_date` / `end_date` 内）は `active` とは別概念
-- `expense_repository.get_all_expenses(..., include_deleted=)` と語彙を揃える
-- `category_repository` / `expense_repository` の `delete_all_for_user` も同 Issue で `delete_all_by_user_uuid` に揃える
+- 対象は VIBE 3軸（social / planning / necessity）の表現変更と、それに伴う API・frontend・export/import・定期支出連携
+- VIBE は支出の独立属性3つではなく、1つの複合概念として扱う
+- DB 物理構造は既存3カラム（`vibe_social` / `vibe_planning` / `vibe_necessity`）を維持し、API 層でネストオブジェクトへマッピングする（マイグレーション最小化）
+- 定期支出（`RecurringExpense`）にも VIBE を持たせ、自動生成 Expense へ伝播する
+- 既存 SPEC（recurring expense 命名リファクタ）は完了済み。本スペックが現行の唯一の真実の源
+- ユーザーは burn-style の記帳者（本人）。export JSON を分析・バックアップ用途で利用
+- 現行 frontend の新規記帳デフォルト（SOLO / ROUTINE / NEEDED）は維持
 
 ## 目的
 
-- `_for_cron` / `_for_user` サフィックスが呼び出し文脈を関数名に漏らし、`for~` 増殖の温床になっている問題を解消する
-- `get_all_active` が soft-delete 除外なのか有効期間内なのか判別不能な問題を解消する
-- 対象者: 本リポジトリを保守する開発者
-- 成功: 名前だけで責務とフィルタ条件が読み取れ、既存テストが全緑のまま
+### 背景
 
-## リネーム対応表
+- 現状 `vibe_social` / `vibe_planning` / `vibe_necessity` が Expense トップレベルにフラット配置され、一体性が型・スキーマ上で表現されない
+- 軸ごとの部分 null（DB 上92件）が「未入力」と区別しにくく、export 上もノイズになる
+- 定期支出の自動生成（58件）が VIBE 未設定のまま Expense を作る実装漏れがある
 
-| 現状 | 提案 | 備考 |
-|------|------|------|
-| `get_all_active(db, user_uuid)` | `get_all_recurring_expenses(db, user_uuid, *, include_deleted=False)` | `expense_repository` と同パターン |
-| `get_all_active_for_cron(db)` | cron 専用モジュールへ移動（下記） | 文脈をモジュール名で表現 |
-| `get_all_including_deleted(db, user_uuid)` | 上記 `include_deleted=True` に統合 | export 呼び出し元 1 箇所 |
-| `delete_all_for_user(db, user_uuid)` | `delete_all_by_user_uuid(db, user_uuid)` | import 用の物理削除 |
-| `record_all_due_for_cron(db)` | cron 専用モジュールへ移動（下記） | 文脈をモジュール名で表現 |
+### 何を作るか
 
-### cron 専用モジュール（クラス分離の代替案）
+1. API レスポンス・リクエスト・export/import を `vibe: Vibe | null` 形式へ統一
+2. ドメイン／スキーマ層に `Vibe` 値オブジェクト（Pydantic / TypeScript）を導入
+3. `RecurringExpense` に VIBE を追加し、`record_occurrences` で Expense へコピー
+4. export/import を新形式 `vibe` オブジェクトのみとする（旧形式互換なし）
 
-プロジェクト慣例に合わせ、クラスではなくモジュール分離とする。
+### ユーザーストーリー
 
+- 記帳者として、支出の VIBE を1つのまとまりとして認識・編集したい
+- 記帳者として、定期支出から生成された記録にも VIBE が付いていることを期待する
+- 記帳者として、export JSON がアプリ上の VIBE 表示と一致することを期待する
+
+### 成功とは
+
+- API・export・UI が同一の `vibe` 構造を共有し、意味的に一貫している
+- 2026-08-29 以降の手動記帳と同様、新規記帳・定期生成で VIBE が欠落しない
+- 未設定 VIBE は API/export 上 `vibe: null` として一貫表示（既存 DB 行の書き換えは行わない）
+
+## 目標スキーマ
+
+### API / export（新形式）
+
+```json
+{
+  "uuid": "...",
+  "name": "ランチ",
+  "amount": 427,
+  "vibe": {
+    "social": "SOLO",
+    "planning": "ROUTINE",
+    "necessity": "NEEDED"
+  }
+}
 ```
-backend/src/infrastructure/cron_recurring_expense_repository.py
-  get_all_recurring_expenses(db, *, include_deleted=False)  # user_uuid なし = 全ユーザー
 
-backend/src/service/cron_recurring_expense_service.py
-  record_due_recurring_occurrences(db) -> tuple[int, int]
+VIBE 未設定時:
+
+```json
+{
+  "vibe": null
+}
 ```
 
-- `CronRecurringExpenseRepository` クラス案は慣例不一致のため不採用
-- cron 文脈は `cron_*` モジュール名で表現し、メソッド名から `_for_cron` を排除
+### 型定義（frontend）
+
+```typescript
+export type VibeSocial = "SOLO" | "WITH_SOMEONE"
+export type VibePlanning = "ROUTINE" | "SPONTANEOUS"
+export type VibeNecessity = "NEEDED" | "WANTED"
+
+export interface Vibe {
+  social: VibeSocial
+  planning: VibePlanning
+  necessity: VibeNecessity
+}
+
+export interface ExpenseResponse {
+  // ...
+  vibe: Vibe | null
+}
+```
+
+### 型定義（backend schema）
+
+```python
+class Vibe(BaseModel):
+    social: VibeSocial
+    planning: VibePlanning
+    necessity: VibeNecessity
+
+class ExpenseResponse(BaseModel):
+    # ...
+    vibe: Vibe | None
+
+    @classmethod
+    def from_expense(cls, expense: Expense) -> ExpenseResponse:
+        vibe = expense_to_vibe(expense)  # 3軸いずれか null → None
+        ...
+```
+
+### DB（変更なし — マッピングのみ）
+
+| DB カラム | Vibe フィールド |
+|-----------|-----------------|
+| `vibe_social` | `social` |
+| `vibe_planning` | `planning` |
+| `vibe_necessity` | `necessity` |
+
+### VIBE 完全性ルール（推奨）
+
+| 操作 | ルール |
+|------|--------|
+| POST /expenses | `vibe` 省略または `null` → DB 3軸 null。`vibe` オブジェクト → 3軸すべて必須 |
+| PATCH /expenses | `vibe: null` → 3軸クリア。`vibe: {...}` → 3軸すべて必須。部分更新不可 |
+| GET / export | 3軸すべて非 null のみ `vibe` オブジェクト。それ以外は `vibe: null` |
+| 定期支出 | 作成時に `vibe` 必須（デフォルト SOLO/ROUTINE/NEEDED） |
+
+部分 null（DB 既存92件）は **レスポンス上 `vibe: null` として扱う**。DB 値はそのまま残し、ユーザーが編集保存した時点で完全オブジェクトへ正規化。
 
 ## コードスタイル
 
-`expense_repository` に揃えた一覧取得:
+### backend: マッピング関数を1箇所に集約
 
 ```python
-def get_all_recurring_expenses(
-    db: Session,
-    user_uuid: str,
-    *,
-    include_deleted: bool = False,
-) -> list[RecurringExpense]:
-    """ユーザーの定期支払一覧を取得 (デフォルトは未削除のみ)。"""
-    query = (
-        db.query(RecurringExpense)
-        .options(joinedload(RecurringExpense.category))
-        .filter(RecurringExpense.user_uuid == user_uuid)
+# src/domain/vibe.py（新規）
+@dataclass(frozen=True)
+class Vibe:
+    social: VibeSocial
+    planning: VibePlanning
+    necessity: VibeNecessity
+
+def expense_to_vibe(expense: Expense) -> Vibe | None:
+    if expense.vibe_social is None or expense.vibe_planning is None or expense.vibe_necessity is None:
+        return None
+    return Vibe(
+        social=expense.vibe_social,
+        planning=expense.vibe_planning,
+        necessity=expense.vibe_necessity,
     )
-    if not include_deleted:
-        query = query.filter(RecurringExpense.deleted_at.is_(None))
-    return query.all()
+
+def apply_vibe_to_expense(expense: Expense, vibe: Vibe | None) -> None:
+    if vibe is None:
+        expense.vibe_social = None
+        expense.vibe_planning = None
+        expense.vibe_necessity = None
+        return
+    expense.vibe_social = vibe.social
+    expense.vibe_planning = vibe.planning
+    expense.vibe_necessity = vibe.necessity
 ```
 
-cron 専用 repository（全ユーザー横断）:
+### backend: Pydantic スキーマ
 
 ```python
-# cron_recurring_expense_repository.py
-def get_all_recurring_expenses(
-    db: Session,
-    *,
-    include_deleted: bool = False,
-) -> list[RecurringExpense]:
-    """全ユーザーの定期支払一覧を取得 (デフォルトは未削除のみ)。"""
-    ...
+class ExpenseCreate(BaseModel):
+    name: str
+    amount: int
+    expensed_at: JstInputDatetime
+    category_uuid: str | None = None
+    vibe: Vibe | None = None
 ```
 
-命名規約:
+旧キー `vibe_social` 等は **公開 API・import ともに削除**。新形式 `vibe` のみ受け付ける。
 
-- 一覧取得: `get_all_{entity_plural}` + `include_deleted` キーワード引数
-- ユーザー条件削除: `delete_all_by_user_uuid`（`for_user` 不使用）
-- cron 処理: `cron_*` モジュール + 動詞句メソッド（`_for_cron` 不使用）
-- docstring で soft-delete / 物理削除 / export 用途を明示
+### frontend: form draft
+
+```typescript
+export interface ExpenseFormDraft {
+  name: string
+  amount: string
+  expensedAt: string
+  categoryUuid: string | null
+  vibe: Vibe  // 新規記帳は常に完全オブジェクト（デフォルト値付き）
+}
+```
+
+フィルタは内部 state を `vibeSocial` 等のまま維持してよい。API 境界のみ `Vibe` 型に統一。
+
+### 命名規約
+
+- API JSON キー: `snake_case`（`vibe.social` は camelCase にならない — nested も snake_case）
+- TypeScript 内部: `Vibe` interface + `vibe` プロパティ
+- DB カラム: 既存 `vibe_*` を維持（リネームしない）
+- マッピング関数: `expense_to_vibe` / `apply_vibe_to_expense`
 
 ## テスト戦略
 
-- 既存 `tests/presentation/api/test_recurring_expenses.py` の内容・期待値は変更しない
-- import path のみ新モジュール名に追従
-- repository 層の直接テストは現状なし。API テストで間接検証
-- 完了条件: `make lint` ゼロエラー、`make test-backend` 全件成功
+### backend
+
+| 対象 | テスト | ファイル |
+|------|--------|----------|
+| Vibe マッピング | 3軸完備 → オブジェクト、部分 null → None | `tests/domain/test_vibe.py`（新規） |
+| Expense CRUD API | create/update/get が `vibe` ネスト形式 | `tests/presentation/api/test_expenses.py` |
+| export/import | 新形式 export/import のみ | `tests/presentation/api/test_users_export_import.py`（新規または既存拡張） |
+| 定期支出 | 作成時 vibe 保存、record 時 Expense へ伝播 | `tests/presentation/api/test_recurring_expenses.py` |
+
+### frontend
+
+| 対象 | テスト | ファイル |
+|------|--------|----------|
+| フィルタ | `expense.vibe?.social` 参照へ更新 | `expenseFilter.test.ts` |
+| API 型 | コンパイルエラーで検出（型変更に追随） | — |
+
+### 完了時コマンド
+
+- `make lint` ゼロエラー
+- `make test-backend` 全件成功
+- `make test-frontend` 全件成功
 
 ## 境界
 
-- **常に行う**:
-  - リネームのみ（関数本体のロジック・戻り値・副作用は不変）
-  - `make lint` / `make test-backend` 実行
-  - 旧関数名への参照が残っていないことを grep で確認
-- **事前確認**:
-  - cron モジュール分離方針（本スペック案）のユーザー承認
-  - `get_all_including_deleted` を `include_deleted=True` に統合する方針の承認
-- **絶対にしない**:
-  - API エンドポイント path / レスポンス形式の変更
-  - DB スキーマ・マイグレーションの変更
-  - 有効期間フィルタ（`start_date` / `end_date`）の追加
+### 常に行う
+
+- API 公開面では `vibe` ネスト形式のみ（フラット3キーをレスポンスに出さない）
+- マッピング関数を repository / schema から直書きしない — `domain/vibe.py` 経由
+- コミット前に lint + test 実行
+- oxfmt / ruff / mypy 準拠
+
+### 事前確認
+
+- `recurring_expenses` テーブルへの3カラム追加（Alembic マイグレーション）
+
+### 絶対にしない
+
+- DB 3カラムを JSON カラム1本に統合（スコープ外）
+- 旧 API キー（`vibe_social` 等）を GET レスポンスに残す（二重表現）
+- 部分 null の `vibe: { social: "SOLO", planning: null, ... }` を新 API で許容
+- 秘匿情報のコミット
 
 ## 成功基準
 
-- [ ] `get_all_active` / `get_all_active_for_cron` / `get_all_including_deleted` が存在しない
-- [ ] `get_all_recurring_expenses` が user 用 repository に存在し、`include_deleted` で soft-delete 除外を明示
-- [ ] cron 用 `get_all_recurring_expenses` が `cron_recurring_expense_repository` に存在
-- [ ] `delete_all_for_user` が `delete_all_by_user_uuid` にリネーム済み
-- [ ] `record_all_due_for_cron` が `cron_recurring_expense_service.record_due_recurring_occurrences` に移行済み
-- [ ] `_for_cron` / `_for_user` サフィックスが repository / service 層に残っていない
-- [ ] `category_repository` / `expense_repository` の `delete_all_by_user_uuid` リネーム済み
+- [ ] `GET /expenses` / `GET /expenses/{uuid}` のレスポンスに `vibe` オブジェクトがあり、`vibe_social` 等のフラットキーが存在しない
+- [ ] `POST /PATCH /expenses` が `vibe` ネスト形式のみ受け付ける
+- [ ] export JSON が `"vibe": { "social": ..., "planning": ..., "necessity": ... }` 形式
+- [ ] import が新形式を正しく復元する
+- [ ] DB 上3軸のいずれかが null の Expense は API 上 `vibe: null` を返す（既存行の DB 更新は行わない）
+- [ ] `RecurringExpense` CRUD が `vibe` を持つ
+- [ ] `record_occurrences` が生成 Expense に recurring の vibe をコピーする
+- [ ] frontend 新規記帳・編集・フィルタが `vibe` 型で動作する
 - [ ] `make lint` ゼロエラー
-- [ ] `make test-backend` 全件成功
+- [ ] `make test-backend` / `make test-frontend` 全件成功
 
-## 未解決の問い
+## 確定事項
 
-- なし（cron はモジュール分離、`include_deleted` 統合、横展開は同 Issue で確定）
+| # | 論点 | 決定 |
+|---|------|------|
+| 1 | 部分 null の既存92件 | DB 行はそのまま。API/export は `vibe: null`（**DBバックフィルしない**） |
+| 2 | 定期生成済み58件 | 過去 Expense はそのまま `vibe: null`。今後の `record_occurrences` のみ伝播 |
+| 3 | export/import 互換 | 旧形式（`vibe_social` 等）の読み取りフォールバック**不要** |
+| 4 | RecurringExpense | 作成時 `vibe` 必須。デフォルト SOLO / ROUTINE / NEEDED |
+
+### DBバックフィルとは（参考）
+
+Alembic data migration で既存行の null カラムを一括でデフォルト値（例: SOLO/ROUTINE/NEEDED）に**書き換える**こと。本スペックでは採用しない。未設定は DB も API も null のままとし、レスポンス変換時に3軸いずれか欠けていれば `vibe: null` とするのみ。
+
+---
+
+## Plan（実装計画）
+
+### コンポーネントと依存関係
+
+```
+domain/vibe.py          ← 新規。マッピングの単一真実源
+    ↑
+presentation/schema/    ← ExpenseResponse, ExpenseCreate, ImportExpense, RecurringExpense*
+    ↑
+service/                ← expense_service, recurring_expense_service, user_service
+    ↑
+infrastructure/         ← expense_repository, recurring_expense_repository（DB書き込み）
+    ↑
+frontend/types + hooks + filter
+```
+
+### 実装順序
+
+| Phase | 内容 | 依存 |
+|-------|------|------|
+| 1 | `domain/vibe.py` + 単体テスト | なし |
+| 2 | Expense API schema 変更 + API テスト更新 | Phase 1 |
+| 3 | export/import schema 新形式化 + テスト | Phase 2 |
+| 4 | `RecurringExpense` DB マイグレーション + schema + API | Phase 1 |
+| 5 | `record_occurrences` vibe 伝播 + テスト | Phase 4 |
+| 6 | frontend 型・hooks・filter・form 更新 + テスト | Phase 2, 5 |
+| 7 | 手動確認（記帳・編集・export・定期生成） | Phase 6 |
+
+### リスクと緩和
+
+| リスク | 緩和 |
+|--------|------|
+| frontend / backend 型不一致 | Phase 2 完了後に frontend 型を一括更新。OpenAPI 生成があれば活用 |
+| 旧 export JSON が import 不可 | 破壊的変更として許容。ユーザーは新形式 export から再バックアップ |
+| 部分 null データの表示 | 仕様上 `vibe: null`。ユーザー編集保存時に完全オブジェクトへ正規化 |
+| マイグレーション失敗 | recurring への nullable 3カラム追加のみ。既存行は null 許容 |
+
+### 並行可能 / 逐次
+
+- **並行可**: Phase 2（Expense API）と Phase 4（Recurring DB + schema）は Phase 1 後に並行
+- **逐次必須**: Phase 5 は Phase 4 完了後。Phase 6 は Phase 2 + 5 完了後
+
+### 検証チェックポイント
+
+1. Phase 2 後: `curl` / API テストで Expense CRUD が `vibe` 形式
+2. Phase 3 後: 新形式 export → import で vibe が復元されること
+3. Phase 5 後: 定期 record で Expense.vibe が設定されること（過去分は null のまま）
+4. Phase 7 後: ブラウザで記帳→一覧→export の一連確認
+
+---
+
+## Tasks（タスク分解）
+
+### Phase 1: ドメインマッピング
+
+- [ ] Task: `domain/vibe.py` に `Vibe` dataclass とマッピング関数を追加
+  - Acceptance: 3軸完備 → `Vibe`、いずれか null → `None`。逆方向 `apply_vibe_to_expense` も動作
+  - Verify: `pytest tests/domain/test_vibe.py`
+  - Files: `backend/src/domain/vibe.py`, `backend/tests/domain/test_vibe.py`
+
+### Phase 2: Expense API
+
+- [ ] Task: Pydantic schema を `vibe: Vibe | None` へ変更
+  - Acceptance: `ExpenseResponse` / `ExpenseCreate` / `ExpenseUpdate` がネスト形式。`from_expense` または model_validator でマッピング
+  - Verify: `pytest tests/presentation/api/test_expenses.py`
+  - Files: `backend/src/presentation/schema/expense.py`, `backend/src/presentation/api/expenses.py`, `backend/src/service/expense_service.py`, `backend/src/infrastructure/expense_repository.py`, `backend/tests/presentation/api/test_expenses.py`
+
+### Phase 3: export/import
+
+- [ ] Task: export/import schema を新形式 `vibe` に統一
+  - Acceptance: export/import とも `vibe` ネスト形式のみ。旧フラットキー非対応
+  - Verify: API テストで新形式 export → import ラウンドトリップ
+  - Files: `backend/src/presentation/schema/user.py`, `backend/src/service/user_service.py`, `backend/tests/presentation/api/test_users*.py`
+
+### Phase 4: RecurringExpense vibe 追加
+
+- [ ] Task: Alembic マイグレーション + RecurringExpense schema/API
+  - Acceptance: recurring CRUD が `vibe` を持つ。DB に3カラム追加
+  - Verify: `pytest tests/presentation/api/test_recurring_expenses.py`
+  - Files: `backend/alembic/versions/*_add_recurring_vibe.py`, `backend/src/domain/recurring_expense.py`, `backend/src/presentation/schema/recurring_expense.py`, `backend/src/presentation/api/recurring_expenses.py`, `backend/src/infrastructure/recurring_expense_repository.py`
+
+### Phase 5: 定期生成への伝播
+
+- [ ] Task: `record_occurrences` で vibe コピー
+  - Acceptance: 自動生成 Expense の3軸が recurring の vibe と一致
+  - Verify: recurring API テスト
+  - Files: `backend/src/service/recurring_expense_service.py`, `backend/tests/presentation/api/test_recurring_expenses.py`
+
+### Phase 6: frontend
+
+- [ ] Task: TypeScript 型・API client・form hooks 更新
+  - Acceptance: 新規記帳・編集が `vibe` オブジェクトで POST/PATCH。コンパイルエラーなし
+  - Verify: `make test-frontend`
+  - Files: `frontend/src/common/libs/types.ts`, `frontend/src/expense/hooks/useExpenseCreateForm.ts`, `frontend/src/expense/hooks/useExpenseEditForm.ts`, `frontend/src/expense/libs/expenseFormDraft.ts`
+
+- [ ] Task: フィルタ・テスト更新
+  - Acceptance: `expense.vibe?.social` 等でフィルタ動作。既存テスト全緑
+  - Verify: `make test-frontend`
+  - Files: `frontend/src/expense/libs/expenseFilter.ts`, `frontend/src/expense/libs/expenseFilter.test.ts`, `frontend/src/expense/components/*Vibe*.tsx`
+
+### Phase 7: 手動確認
+
+- [ ] Task: E2E 手動確認
+  - Acceptance: 記帳→詳細→export→import の vibe 一貫性。定期 record で vibe 付与
+  - Verify: ブラウザ操作 + export JSON 目視
+  - Files: —

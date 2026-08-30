@@ -44,6 +44,29 @@ export type VibeSocial = "SOLO" | "WITH_SOMEONE"
 export type VibePlanning = "ROUTINE" | "SPONTANEOUS"
 export type VibeNecessity = "NEEDED" | "WANTED"
 
+export interface Vibe {
+  social: VibeSocial | null
+  planning: VibePlanning | null
+  necessity: VibeNecessity | null
+}
+
+export const DEFAULT_VIBE: Vibe = {
+  social: "SOLO",
+  planning: "ROUTINE",
+  necessity: "NEEDED",
+}
+
+export const NULL_VIBE: Vibe = {
+  social: null,
+  planning: null,
+  necessity: null,
+}
+
+export interface ExpenseCategorySummary {
+  uuid: string
+  name: string
+}
+
 export interface ExpenseResponse {
   uuid: string
   name: string
@@ -52,10 +75,8 @@ export interface ExpenseResponse {
   created_at: string
   updated_at: string
   deleted_at: string | null
-  categories: CategoryResponse[]
-  vibe_social: VibeSocial | null
-  vibe_planning: VibePlanning | null
-  vibe_necessity: VibeNecessity | null
+  category: ExpenseCategorySummary | null
+  vibe: Vibe
   recurring_expense_uuid: string | null
 }
 
@@ -64,9 +85,7 @@ export interface ExpenseCreate {
   amount: number
   expensed_at: string
   category_uuid?: string | null
-  vibe_social?: VibeSocial | null
-  vibe_planning?: VibePlanning | null
-  vibe_necessity?: VibeNecessity | null
+  vibe?: Vibe | null
 }
 
 export interface ExpenseUpdate {
@@ -74,9 +93,7 @@ export interface ExpenseUpdate {
   amount?: number
   expensed_at?: string
   category_uuid?: string | null
-  vibe_social?: VibeSocial | null
-  vibe_planning?: VibePlanning | null
-  vibe_necessity?: VibeNecessity | null
+  vibe?: Vibe | null
 }
 
 export interface UserResponse {

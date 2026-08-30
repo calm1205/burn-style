@@ -144,14 +144,13 @@ export const applyFilter = (
     if (filter.searchQuery && !e.name.toLowerCase().includes(filter.searchQuery.toLowerCase()))
       return false
     if (filter.categoryUuids.length > 0) {
-      const hit = e.categories.some((c) => filter.categoryUuids.includes(c.uuid))
-      if (!hit) return false
+      if (!e.category || !filter.categoryUuids.includes(e.category.uuid)) return false
     }
     if (filter.amountMin > 0 && e.amount < filter.amountMin) return false
     if (filter.amountMax > 0 && e.amount > filter.amountMax) return false
-    if (filter.vibeSocial && e.vibe_social !== filter.vibeSocial) return false
-    if (filter.vibePlanning && e.vibe_planning !== filter.vibePlanning) return false
-    if (filter.vibeNecessity && e.vibe_necessity !== filter.vibeNecessity) return false
+    if (filter.vibeSocial && e.vibe.social !== filter.vibeSocial) return false
+    if (filter.vibePlanning && e.vibe.planning !== filter.vibePlanning) return false
+    if (filter.vibeNecessity && e.vibe.necessity !== filter.vibeNecessity) return false
     if (filter.recurringMode === "exclude" && e.recurring_expense_uuid !== null) return false
     if (filter.recurringMode === "only" && e.recurring_expense_uuid === null) return false
     return true

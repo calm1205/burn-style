@@ -3,7 +3,7 @@ import { useNavigate } from "react-router"
 
 import { api } from "../../common/libs/api"
 import { getErrorMessage } from "../../common/libs/client"
-import type { CategoryResponse } from "../../common/libs/types"
+import { DEFAULT_VIBE, type CategoryResponse } from "../../common/libs/types"
 import { toLocalDatetime } from "../libs/datetime"
 import type { ExpenseFormDraft } from "../libs/expenseFormDraft"
 
@@ -19,9 +19,7 @@ export const useExpenseCreateForm = () => {
     amount: "",
     expensedAt: toLocalDatetime(new Date().toISOString()),
     categoryUuid: null,
-    vibeSocial: "SOLO",
-    vibePlanning: "ROUTINE",
-    vibeNecessity: "NEEDED",
+    vibe: DEFAULT_VIBE,
   }))
 
   const updateDraftField = <K extends keyof ExpenseFormDraft>(
@@ -54,9 +52,7 @@ export const useExpenseCreateForm = () => {
         amount: Number(form.amount.replace(/,/g, "")),
         expensed_at: new Date(form.expensedAt).toISOString(),
         category_uuid: form.categoryUuid,
-        vibe_social: form.vibeSocial,
-        vibe_planning: form.vibePlanning,
-        vibe_necessity: form.vibeNecessity,
+        vibe: form.vibe,
       })
       navigate("/")
     } catch (err) {

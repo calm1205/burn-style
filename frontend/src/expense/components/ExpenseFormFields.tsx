@@ -34,12 +34,12 @@ export const ExpenseFormFields = ({
         onSelect={(v) => onChange("categoryUuid", v)}
       />
       <ExpenseVibeSection
-        social={values.vibeSocial}
-        planning={values.vibePlanning}
-        necessity={values.vibeNecessity}
-        onSocialChange={(v) => onChange("vibeSocial", v)}
-        onPlanningChange={(v) => onChange("vibePlanning", v)}
-        onNecessityChange={(v) => onChange("vibeNecessity", v)}
+        social={values.vibe.social}
+        planning={values.vibe.planning}
+        necessity={values.vibe.necessity}
+        onSocialChange={(social) => onChange("vibe", { ...values.vibe, social })}
+        onPlanningChange={(planning) => onChange("vibe", { ...values.vibe, planning })}
+        onNecessityChange={(necessity) => onChange("vibe", { ...values.vibe, necessity })}
       />
     </div>
   )

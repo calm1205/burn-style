@@ -12,6 +12,15 @@ class CategoryResponse(BaseModel):
     position: int
 
 
+class ExpenseCategorySummary(BaseModel):
+    """Expense response category reference: uuid and name only."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    uuid: str
+    name: str
+
+
 class CategoryCreate(BaseModel):
     name: str
     symbol: str | None = Field(default=None, max_length=64)

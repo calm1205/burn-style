@@ -5,7 +5,8 @@ import datetime as dt
 from sqlalchemy.orm import Session, selectinload
 
 from src.domain.category import Category
-from src.domain.expense import Expense, VibeNecessity, VibePlanning, VibeSocial
+from src.domain.expense import Expense
+from src.domain.vibe import VibeFields, write_vibe_fields
 
 JST = dt.timezone(dt.timedelta(hours=9))
 DECEMBER = 12
@@ -55,9 +56,7 @@ def create_expense(  # noqa: PLR0913
     expensed_at: dt.datetime,
     *,
     category_uuids: list[str] | None = None,
-    vibe_social: VibeSocial | None = None,
-    vibe_planning: VibePlanning | None = None,
-    vibe_necessity: VibeNecessity | None = None,
+    vibe: VibeFields | None = None,
 ) -> Expense:
     """支出を新規作成。"""
     expense = Expense(
@@ -65,10 +64,8 @@ def create_expense(  # noqa: PLR0913
         name=name,
         amount=amount,
         expensed_at=expensed_at,
-        vibe_social=vibe_social,
-        vibe_planning=vibe_planning,
-        vibe_necessity=vibe_necessity,
     )
+    write_vibe_fields(expense, vibe)
 
     if category_uuids:
         categories = db.query(Category).filter(

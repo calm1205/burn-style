@@ -96,5 +96,3 @@ def record_occurrences(
 
     db.commit()
     return created
-
-

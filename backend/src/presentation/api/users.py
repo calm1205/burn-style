@@ -50,7 +50,7 @@ def export_me(
     return UserExportResponse(
         name=str(current_user.name),
         categories=[CategoryResponse.model_validate(c) for c in categories],
-        expenses=[ExpenseResponse.model_validate(e) for e in expenses],
+        expenses=[ExpenseResponse.from_expense(expense) for expense in expenses],
         recurring_expenses=[ExportRecurringExpenseResponse.model_validate(r) for r in recurring_expenses],
     )
 

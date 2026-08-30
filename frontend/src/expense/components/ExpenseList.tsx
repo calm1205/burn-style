@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-import type { ExpenseResponse } from "../../common/libs/types"
+import type { CategoryResponse, ExpenseResponse } from "../../common/libs/types"
 import { useFilteredExpenses } from "../hooks/useFilteredExpenses"
 import { createDefaultExpenseFilter, type ExpenseFilter, filterCount } from "../libs/expenseFilter"
 import { ExpenseFilterChips } from "./ExpenseFilterChips"
@@ -12,13 +12,14 @@ import { ExpenseListScopeChips } from "./ExpenseListScopeChips"
 
 interface ExpenseListProps {
   expenses: ExpenseResponse[]
+  categories?: CategoryResponse[]
   initialFilter?: ExpenseFilter
 }
 
-export const ExpenseList = ({ expenses, initialFilter }: ExpenseListProps) => {
+export const ExpenseList = ({ expenses, categories = [], initialFilter }: ExpenseListProps) => {
   const [filter, setFilter] = useState<ExpenseFilter>(initialFilter ?? createDefaultExpenseFilter())
   const [sheetOpen, setSheetOpen] = useState(false)
-  const { usedCategories, filtered, total } = useFilteredExpenses(expenses, filter)
+  const { usedCategories, filtered, total } = useFilteredExpenses(expenses, filter, categories)
   const activeFilterCount = filterCount(filter)
 
   return (
@@ -54,6 +55,7 @@ export const ExpenseList = ({ expenses, initialFilter }: ExpenseListProps) => {
 
       <ExpenseFlatList
         expenses={filtered}
+        categories={categories}
         emptyLabel={expenses.length === 0 ? "No expenses yet" : "No matches for this filter"}
       />
 

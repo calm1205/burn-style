@@ -4,11 +4,11 @@ from datetime import date
 
 from pydantic import BaseModel, ConfigDict
 
-from src.domain.expense import VibeNecessity, VibePlanning, VibeSocial
 from src.domain.recurring_expense import IntervalUnit
 from src.presentation.schema.category import CategoryResponse
 from src.presentation.schema.expense import ExpenseResponse
 from src.presentation.schema.types import JstDatetime, JstInputDatetime
+from src.presentation.schema.vibe import Vibe
 
 
 class ExportRecurringExpenseResponse(BaseModel):
@@ -55,6 +55,11 @@ class ImportRecurringExpense(BaseModel):
     deleted_at: JstInputDatetime | None = None
 
 
+class ImportExpenseCategory(BaseModel):
+    uuid: str
+    name: str
+
+
 class ImportExpense(BaseModel):
     name: str
     amount: int
@@ -62,10 +67,8 @@ class ImportExpense(BaseModel):
     created_at: JstInputDatetime
     updated_at: JstInputDatetime
     deleted_at: JstInputDatetime | None = None
-    categories: list[ImportCategory]
-    vibe_social: VibeSocial | None = None
-    vibe_planning: VibePlanning | None = None
-    vibe_necessity: VibeNecessity | None = None
+    category: ImportExpenseCategory | None = None
+    vibe: Vibe | None = None
     recurring_expense_uuid: str | None = None
 
 
