@@ -20,7 +20,7 @@ from src.presentation.schema.recurring_expense import (
     RecurringExpenseResponse,
     RecurringExpenseUpdate,
 )
-from src.service import recurring_expense_service
+from src.service import cron_recurring_expense_service, recurring_expense_service
 
 recurring_expense_router = APIRouter(prefix="/recurring-expenses", tags=["recurring-expenses"])
 
@@ -35,7 +35,7 @@ def list_recurring(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> list[RecurringExpenseResponse]:
-    recurring_expenses = recurring_expense_repository.get_all_active(db, str(user.uuid))
+    recurring_expenses = recurring_expense_repository.get_all_recurring_expenses(db, str(user.uuid))
     return [RecurringExpenseResponse.model_validate(recurring_expense) for recurring_expense in recurring_expenses]
 
 
@@ -45,7 +45,7 @@ def list_due(
     db: Annotated[Session, Depends(get_db)],
 ) -> list[RecurringExpenseDueResponse]:
     today = recurring_expense_service.jst_today()
-    recurring_expenses = recurring_expense_repository.get_all_active(db, str(user.uuid))
+    recurring_expenses = recurring_expense_repository.get_all_recurring_expenses(db, str(user.uuid))
     due_items: list[RecurringExpenseDueResponse] = []
     for recurring_expense in recurring_expenses:
         linked_expense_count = recurring_expense_repository.count_linked_expenses(
@@ -186,7 +186,7 @@ def cron_record_due(
     db: Annotated[Session, Depends(get_db)],
     _: Annotated[None, Depends(_verify_cron_secret)],
 ) -> CronRecordResponse:
-    recorded, processed = recurring_expense_service.record_all_due_for_cron(db)
+    recorded, processed = cron_recurring_expense_service.record_due_recurring_occurrences(db)
     return CronRecordResponse(
         recorded_count=recorded, processed_recurring_count=processed,
     )

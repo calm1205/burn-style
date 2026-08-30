@@ -8,13 +8,13 @@ from src.domain.expense_category_association import ExpenseCategoryAssociation
 from src.domain.recurring_expense import RecurringExpense
 from src.infrastructure import recurring_expense_repository
 from src.infrastructure.category_repository import (
-    delete_all_for_user as delete_all_categories_for_user,
+    delete_all_by_user_uuid as delete_all_categories_by_user_uuid,
 )
 from src.infrastructure.category_repository import (
     get_all_categories,
 )
 from src.infrastructure.expense_repository import (
-    delete_all_for_user as delete_all_expenses_for_user,
+    delete_all_by_user_uuid as delete_all_expenses_by_user_uuid,
 )
 from src.infrastructure.expense_repository import (
     get_all_expenses,
@@ -34,7 +34,9 @@ def export_user_snapshot(
     user_uuid = str(user.uuid)
     categories = get_all_categories(db, user_uuid)
     expenses = get_all_expenses(db, user_uuid, include_deleted=True)
-    recurring_expenses = recurring_expense_repository.get_all_including_deleted(db, user_uuid)
+    recurring_expenses = recurring_expense_repository.get_all_recurring_expenses(
+        db, user_uuid, include_deleted=True,
+    )
     return categories, expenses, recurring_expenses
 
 
@@ -48,9 +50,9 @@ def import_user_snapshot(
     user_uuid = str(user.uuid)
 
     # 既存データを一掃 (FK CASCADEでassociationも消える)
-    delete_all_expenses_for_user(db, user_uuid)
-    recurring_expense_repository.delete_all_for_user(db, user_uuid)
-    delete_all_categories_for_user(db, user_uuid)
+    delete_all_expenses_by_user_uuid(db, user_uuid)
+    recurring_expense_repository.delete_all_by_user_uuid(db, user_uuid)
+    delete_all_categories_by_user_uuid(db, user_uuid)
 
     # カテゴリを再構築 (旧UUID -> 新UUIDマップ)
     category_uuid_map: dict[str, str] = {}
