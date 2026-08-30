@@ -31,7 +31,7 @@ def _verify_user_category(db: Session, category_uuid: str, user_uuid: str) -> No
 
 
 @recurring_expense_router.get("")
-def list_recurring(
+def list_recurring_expenses(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> list[RecurringExpenseResponse]:
@@ -68,7 +68,7 @@ def list_due_recurring_expenses(
 
 
 @recurring_expense_router.post("", status_code=status.HTTP_201_CREATED)
-def create_recurring(
+def create_recurring_expense(
     body: RecurringExpenseCreate,
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
@@ -98,7 +98,7 @@ def create_recurring(
 
 
 @recurring_expense_router.get("/{uuid}")
-def get_recurring(
+def get_recurring_expense(
     uuid: str,
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
@@ -111,7 +111,7 @@ def get_recurring(
 
 
 @recurring_expense_router.patch("/{uuid}")
-def update_recurring(
+def update_recurring_expense(
     uuid: str,
     body: RecurringExpenseUpdate,
     user: Annotated[User, Depends(get_current_user)],
@@ -141,7 +141,7 @@ def update_recurring(
 
 
 @recurring_expense_router.delete("/{uuid}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_recurring(
+def delete_recurring_expense(
     uuid: str,
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
