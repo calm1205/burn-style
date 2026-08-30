@@ -52,7 +52,7 @@ export const useCategoriesPage = () => {
     }
   }
 
-  const handleMerge = async (targetUuid: string) => {
+  const mergeCategory = async (targetUuid: string) => {
     if (!mergingFrom) return
     setError("")
     setLoading(true)
@@ -80,6 +80,6 @@ export const useCategoriesPage = () => {
     mergingFrom,
     setMergingFrom,
     moveCategory,
-    handleMerge,
+    mergeCategory,
   }
 }

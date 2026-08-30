@@ -9,7 +9,7 @@ export const SignInPage = () => {
   return (
     <AuthPageLayout
       title="Sign In"
-      onSubmit={signInForm.handleSubmit}
+      onSubmit={signInForm.signIn}
       error={signInForm.error}
       footer={{ text: "Don't have an account? ", linkTo: "/signup", linkLabel: "Sign Up" }}
     >
