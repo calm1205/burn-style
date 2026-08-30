@@ -4,34 +4,9 @@ import { useNavigate } from "react-router"
 import { useConfirmDialog } from "../../common/components/ConfirmDialog"
 import { api } from "../../common/libs/api"
 import { getErrorMessage } from "../../common/libs/client"
-import type {
-  CategoryResponse,
-  ExpenseResponse,
-  VibeNecessity,
-  VibePlanning,
-  VibeSocial,
-} from "../../common/libs/types"
+import type { CategoryResponse, ExpenseResponse } from "../../common/libs/types"
 import { toLocalDatetime } from "../libs/datetime"
-
-interface FormState {
-  name: string
-  amount: string
-  expensedAt: string
-  categoryUuid: string | null
-  vibeSocial: VibeSocial | null
-  vibePlanning: VibePlanning | null
-  vibeNecessity: VibeNecessity | null
-}
-
-const initialForm: FormState = {
-  name: "",
-  amount: "",
-  expensedAt: "",
-  categoryUuid: null,
-  vibeSocial: null,
-  vibePlanning: null,
-  vibeNecessity: null,
-}
+import { emptyExpenseFormDraft, type ExpenseFormDraft } from "../libs/expenseFormDraft"
 
 /** 既存 expense の編集フォーム state とハンドラ。 */
 export const useExpenseEditForm = (uuid: string | undefined) => {
@@ -40,7 +15,7 @@ export const useExpenseEditForm = (uuid: string | undefined) => {
   const [categories, setCategories] = useState<CategoryResponse[]>([])
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-  const [form, setForm] = useState<FormState>(initialForm)
+  const [form, setForm] = useState<ExpenseFormDraft>(emptyExpenseFormDraft)
   const { dialogRef, open: openDeleteDialog } = useConfirmDialog()
 
   const fetchExpenseWithCategories = useCallback(async () => {
@@ -67,7 +42,7 @@ export const useExpenseEditForm = (uuid: string | undefined) => {
     fetchExpenseWithCategories()
   }, [fetchExpenseWithCategories])
 
-  const update = <K extends keyof FormState>(key: K, value: FormState[K]) => {
+  const update = <K extends keyof ExpenseFormDraft>(key: K, value: ExpenseFormDraft[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }))
   }
 
