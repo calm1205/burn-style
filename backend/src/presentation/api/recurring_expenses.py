@@ -182,7 +182,7 @@ def _verify_cron_secret(authorization: Annotated[str | None, Header()] = None) -
 
 
 @cron_router.api_route("/record-due", methods=["GET", "POST"])
-def cron_record_due(
+def cron_record_due_recurring_occurrences(
     db: Annotated[Session, Depends(get_db)],
     _: Annotated[None, Depends(_verify_cron_secret)],
 ) -> CronRecordResponse:
