@@ -17,7 +17,7 @@ export const ExpenseDetailPage = () => {
 
   return (
     <form
-      onSubmit={f.handleUpdate}
+      onSubmit={f.updateExpense}
       className="mx-auto flex h-full max-w-2xl flex-col overflow-hidden"
     >
       <div className="flex shrink-0 justify-end px-5 pt-2">
@@ -44,7 +44,7 @@ export const ExpenseDetailPage = () => {
 
       <ConfirmDialog
         message="Delete this expense?"
-        onConfirm={f.handleDelete}
+        onConfirm={f.deleteExpense}
         loading={f.loading}
         dialogRef={f.dialogRef}
       />

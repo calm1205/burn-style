@@ -13,7 +13,7 @@ export const RecurringExpenseEditPage = () => {
 
   return (
     <form
-      onSubmit={f.handleSubmit}
+      onSubmit={f.saveRecurringExpense}
       className="mx-auto flex h-full max-w-2xl flex-col overflow-hidden"
     >
       <div className="flex shrink-0 items-center px-5 pt-2">
@@ -39,7 +39,7 @@ export const RecurringExpenseEditPage = () => {
 
       <ConfirmDialog
         message={`Stop "${f.name}"? Past records remain unchanged.`}
-        onConfirm={f.handleDelete}
+        onConfirm={f.deleteRecurringExpense}
         confirmText="Stop"
         loading={f.loading}
         dialogRef={f.dialogRef}
