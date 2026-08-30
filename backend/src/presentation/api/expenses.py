@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated
+from typing import Annotated, cast
 
 from fastapi import APIRouter, Depends, Query, Response, status
 from sqlalchemy.orm import Session
@@ -16,6 +16,7 @@ from src.infrastructure.expense_repository import (
 from src.presentation.deps import get_current_user, get_or_404
 from src.presentation.schema.expense import ExpenseCreate, ExpenseResponse, ExpenseUpdate
 from src.service import expense_service
+from src.service.expense_service import ExpensePatch
 
 expense_router = APIRouter(prefix="/expenses", tags=["expenses"])
 
@@ -66,14 +67,16 @@ def patch_expense(
 ) -> ExpenseResponse:
     expense = get_or_404(get_expense_by_uuid(db, uuid, str(user.uuid)), "Expense not found")
 
-    update_data = body.model_dump(exclude_unset=True)
+    raw_patch = body.model_dump(exclude_unset=True)
     category_uuids: list[str] | None = None
     if "category_uuid" in body.model_fields_set:
-        cat_uuid = update_data.pop("category_uuid")
+        cat_uuid = raw_patch.pop("category_uuid")
         category_uuids = [cat_uuid] if cat_uuid else []
 
+    expense_patch = cast(ExpensePatch, raw_patch)
+
     expense = expense_service.update_expense(
-        db, expense, str(user.uuid), update_data, category_uuids,
+        db, expense, str(user.uuid), expense_patch, category_uuids,
     )
     return ExpenseResponse.model_validate(expense)
 
