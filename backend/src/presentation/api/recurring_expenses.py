@@ -35,8 +35,8 @@ def list_recurring(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ) -> list[RecurringExpenseResponse]:
-    items = recurring_expense_repository.get_all_active(db, str(user.uuid))
-    return [RecurringExpenseResponse.model_validate(r) for r in items]
+    recurring_expenses = recurring_expense_repository.get_all_active(db, str(user.uuid))
+    return [RecurringExpenseResponse.model_validate(recurring_expense) for recurring_expense in recurring_expenses]
 
 
 @recurring_expense_router.get("/due")
@@ -45,9 +45,9 @@ def list_due(
     db: Annotated[Session, Depends(get_db)],
 ) -> list[RecurringExpenseDueResponse]:
     today = recurring_expense_service.jst_today()
-    items = recurring_expense_repository.get_all_active(db, str(user.uuid))
+    recurring_expenses = recurring_expense_repository.get_all_active(db, str(user.uuid))
     due_items: list[RecurringExpenseDueResponse] = []
-    for recurring_expense in items:
+    for recurring_expense in recurring_expenses:
         linked_expense_count = recurring_expense_repository.count_linked_expenses(
             db, str(recurring_expense.uuid),
         )
@@ -84,7 +84,7 @@ def create_recurring(
     recurring = recurring_expense_repository.create_recurring_expense(
         db,
         user_uuid=str(user.uuid),
-        recurring_expense_fields={
+        fields={
             "name": body.name,
             "amount": body.amount,
             "category_uuid": body.category_uuid,

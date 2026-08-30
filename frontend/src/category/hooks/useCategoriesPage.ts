@@ -14,9 +14,12 @@ export const useCategoriesPage = () => {
 
   const fetchCategoriesPage = useCallback(async () => {
     try {
-      const [cats, exps] = await Promise.all([api.getCategories(), api.getExpenses()])
-      setCategories(cats)
-      setExpenses(exps)
+      const [loadedCategories, loadedExpenses] = await Promise.all([
+        api.getCategories(),
+        api.getExpenses(),
+      ])
+      setCategories(loadedCategories)
+      setExpenses(loadedExpenses)
     } catch (err) {
       setError(getErrorMessage(err, "Failed to fetch data"))
     }

@@ -20,13 +20,16 @@ export const useCategoryEditForm = (uuid: string | undefined) => {
   const fetchCategoryEditForm = useCallback(async () => {
     if (!uuid) return
     try {
-      const [cats, exps] = await Promise.all([api.getCategories(), api.getExpenses()])
-      const c = cats.find((x) => x.uuid === uuid)
-      if (c) {
-        setName(c.name)
-        setGlyph(c.symbol ?? DEFAULT_GLYPH)
+      const [loadedCategories, loadedExpenses] = await Promise.all([
+        api.getCategories(),
+        api.getExpenses(),
+      ])
+      const category = loadedCategories.find((x) => x.uuid === uuid)
+      if (category) {
+        setName(category.name)
+        setGlyph(category.symbol ?? DEFAULT_GLYPH)
       }
-      setUsage(exps.filter((e) => e.categories.some((cat) => cat.uuid === uuid)).length)
+      setUsage(loadedExpenses.filter((e) => e.categories.some((cat) => cat.uuid === uuid)).length)
     } catch (err) {
       setError(getErrorMessage(err, "Failed to load"))
     }

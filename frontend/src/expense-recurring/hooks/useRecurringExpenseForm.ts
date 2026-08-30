@@ -29,17 +29,19 @@ export const useRecurringExpenseForm = (uuid: string | undefined) => {
 
   const fetchRecurringExpenseForm = useCallback(async () => {
     try {
-      const cats = await api.getCategories()
-      setCategories(cats)
+      const loadedCategories = await api.getCategories()
+      setCategories(loadedCategories)
       if (uuid) {
-        const r = await api.getRecurringExpense(uuid)
-        setName(r.name)
-        setAmount(r.amount.toLocaleString())
-        setFrequencyKey(frequencyKeyFor(r.interval_unit, r.interval_count))
-        setStartDate(r.start_date)
-        setCategoryUuid(r.category.uuid)
-      } else if (cats.length > 0) {
-        setCategoryUuid(cats[0].uuid)
+        const recurringExpense = await api.getRecurringExpense(uuid)
+        setName(recurringExpense.name)
+        setAmount(recurringExpense.amount.toLocaleString())
+        setFrequencyKey(
+          frequencyKeyFor(recurringExpense.interval_unit, recurringExpense.interval_count),
+        )
+        setStartDate(recurringExpense.start_date)
+        setCategoryUuid(recurringExpense.category.uuid)
+      } else if (loadedCategories.length > 0) {
+        setCategoryUuid(loadedCategories[0].uuid)
       }
     } catch (err) {
       setError(getErrorMessage(err, "Failed to fetch data"))

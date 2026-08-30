@@ -33,7 +33,7 @@ export const SCOPE_OPTIONS: { scope: FilterScope; label: string; short: string }
   { scope: "all", label: "All time", short: "All" },
 ]
 
-export const defaultFilter = (): ExpenseFilter => ({
+export const createDefaultExpenseFilter = (): ExpenseFilter => ({
   searchQuery: "",
   scope: "month",
   categoryUuids: [],
