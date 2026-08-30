@@ -42,7 +42,7 @@ export const useExpenseCreateForm = () => {
     setForm((prev) => ({ ...prev, [key]: value }))
   }
 
-  const fetchData = useCallback(async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       setCategories(await api.getCategories())
     } catch (err) {
@@ -51,9 +51,9 @@ export const useExpenseCreateForm = () => {
   }, [])
 
   useEffect(() => {
-    fetchData()
+    fetchCategories()
     amountRef.current?.focus()
-  }, [fetchData])
+  }, [fetchCategories])
 
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()

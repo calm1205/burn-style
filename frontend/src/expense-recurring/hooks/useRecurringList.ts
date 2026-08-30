@@ -10,7 +10,7 @@ export const useRecurringList = () => {
   const [items, setItems] = useState<RecurringExpenseResponse[]>([])
   const [error, setError] = useState("")
 
-  const fetchData = useCallback(async () => {
+  const fetchRecurringExpenses = useCallback(async () => {
     try {
       setItems(await api.getRecurringExpenses())
     } catch (err) {
@@ -19,8 +19,8 @@ export const useRecurringList = () => {
   }, [])
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    fetchRecurringExpenses()
+  }, [fetchRecurringExpenses])
 
   const totalMonthly = useMemo(
     () =>
