@@ -27,10 +27,10 @@ export interface ExpenseFilter {
   recurringMode: RecurringMode
 }
 
-export const SCOPE_OPTIONS: { k: FilterScope; label: string; short: string }[] = [
-  { k: "week", label: "This week", short: "Week" },
-  { k: "month", label: "This month", short: "Month" },
-  { k: "all", label: "All time", short: "All" },
+export const SCOPE_OPTIONS: { scope: FilterScope; label: string; short: string }[] = [
+  { scope: "week", label: "This week", short: "Week" },
+  { scope: "month", label: "This month", short: "Month" },
+  { scope: "all", label: "All time", short: "All" },
 ]
 
 export const defaultFilter = (): ExpenseFilter => ({
