@@ -18,7 +18,7 @@ export const useExpenseEditForm = (uuid: string | undefined) => {
   const [form, setForm] = useState<ExpenseFormDraft>(emptyExpenseFormDraft)
   const { dialogRef, open: openDeleteDialog } = useConfirmDialog()
 
-  const fetchExpenseEditForm = useCallback(async () => {
+  const fetchExpenseEditInitialState = useCallback(async () => {
     if (!uuid) return
     try {
       const [loadedExpense, loadedCategories] = await Promise.all([
@@ -42,8 +42,8 @@ export const useExpenseEditForm = (uuid: string | undefined) => {
   }, [uuid])
 
   useEffect(() => {
-    fetchExpenseEditForm()
-  }, [fetchExpenseEditForm])
+    fetchExpenseEditInitialState()
+  }, [fetchExpenseEditInitialState])
 
   const updateDraftField = <K extends keyof ExpenseFormDraft>(
     key: K,

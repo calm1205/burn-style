@@ -3,22 +3,22 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import {
   findFrequencyOption,
   FREQUENCY_OPTIONS,
-  frequencyKeyFor,
+  frequencyKeyFromInterval,
   monthlyEquivalent,
   todayJst,
 } from "./recurringFrequency"
 
-describe("frequencyKeyFor", () => {
+describe("frequencyKeyFromInterval", () => {
   it("matches WEEK/1 to weekly", () => {
-    expect(frequencyKeyFor("WEEK", 1)).toBe("weekly")
+    expect(frequencyKeyFromInterval("WEEK", 1)).toBe("weekly")
   })
 
   it("matches WEEK/2 to biweekly", () => {
-    expect(frequencyKeyFor("WEEK", 2)).toBe("biweekly")
+    expect(frequencyKeyFromInterval("WEEK", 2)).toBe("biweekly")
   })
 
   it("falls back to monthly for unknown combinations", () => {
-    expect(frequencyKeyFor("WEEK", 99)).toBe("monthly")
+    expect(frequencyKeyFromInterval("WEEK", 99)).toBe("monthly")
   })
 })
 

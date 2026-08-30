@@ -17,7 +17,7 @@ export const useCategoryEditForm = (uuid: string | undefined) => {
   const [usage, setUsage] = useState(0)
   const [confirmingDelete, setConfirmingDelete] = useState(false)
 
-  const fetchCategoryEditForm = useCallback(async () => {
+  const fetchCategoryEditInitialState = useCallback(async () => {
     if (!uuid) return
     try {
       const [loadedCategories, loadedExpenses] = await Promise.all([
@@ -36,8 +36,8 @@ export const useCategoryEditForm = (uuid: string | undefined) => {
   }, [uuid])
 
   useEffect(() => {
-    fetchCategoryEditForm()
-  }, [fetchCategoryEditForm])
+    fetchCategoryEditInitialState()
+  }, [fetchCategoryEditInitialState])
 
   const trimmed = name.trim()
   const canSave = trimmed.length > 0 && glyph.length > 0
