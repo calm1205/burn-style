@@ -10,7 +10,7 @@ export const useSignupForm = () => {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
-  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
+  const signUp = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError("")
     setLoading(true)
@@ -25,5 +25,5 @@ export const useSignupForm = () => {
     }
   }
 
-  return { username, setUsername, error, loading, handleSubmit }
+  return { username, setUsername, error, loading, signUp }
 }

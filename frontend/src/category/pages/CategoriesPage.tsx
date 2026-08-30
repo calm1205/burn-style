@@ -24,7 +24,7 @@ export const CategoriesPage = () => {
           candidates={categoryPage.categories.filter((c) => c.uuid !== categoryPage.mergingFrom)}
           usage={categoryPage.usage}
           loading={categoryPage.loading}
-          onMerge={categoryPage.handleMerge}
+          onMerge={categoryPage.mergeCategory}
           onClose={() => categoryPage.setMergingFrom(null)}
         />
       )}

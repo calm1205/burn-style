@@ -42,7 +42,10 @@ export const useExpenseEditForm = (uuid: string | undefined) => {
     fetchExpenseEditForm()
   }, [fetchExpenseEditForm])
 
-  const patchForm = <K extends keyof ExpenseFormDraft>(key: K, value: ExpenseFormDraft[K]) => {
+  const updateDraftField = <K extends keyof ExpenseFormDraft>(
+    key: K,
+    value: ExpenseFormDraft[K],
+  ) => {
     setForm((prev) => ({ ...prev, [key]: value }))
   }
 
@@ -89,7 +92,7 @@ export const useExpenseEditForm = (uuid: string | undefined) => {
     error,
     loading,
     form,
-    patchForm,
+    updateDraftField,
     dialogRef,
     openDeleteDialog,
     updateExpense,

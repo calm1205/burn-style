@@ -14,7 +14,7 @@ export const ExpensesPage = () => {
       <div className="flex shrink-0 justify-end px-5 pt-2">
         <ExpenseDateTimeInput
           value={expenseForm.form.expensedAt}
-          onChange={(v) => expenseForm.patchForm("expensedAt", v)}
+          onChange={(v) => expenseForm.updateDraftField("expensedAt", v)}
         />
       </div>
 
@@ -27,7 +27,7 @@ export const ExpensesPage = () => {
       <div className="flex-1 overflow-y-auto">
         <ExpenseFormFields
           values={expenseForm.form}
-          onChange={expenseForm.patchForm}
+          onChange={expenseForm.updateDraftField}
           categories={expenseForm.categories}
           amountRef={expenseForm.amountRef}
         />

@@ -33,7 +33,7 @@ export const useSignInForm = () => {
     localStorage.removeItem(STORAGE_KEYS.LAST_USERNAME)
   }
 
-  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
+  const signIn = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError("")
     setLoading(true)
@@ -50,5 +50,5 @@ export const useSignInForm = () => {
     }
   }
 
-  return { username, setUsername, error, loading, clearUsername, handleSubmit }
+  return { username, setUsername, error, loading, clearUsername, signIn }
 }
