@@ -19,7 +19,7 @@ export const ExpenseList = ({ expenses, initialFilter }: ExpenseListProps) => {
   const [filter, setFilter] = useState<ExpenseFilter>(initialFilter ?? defaultFilter())
   const [sheetOpen, setSheetOpen] = useState(false)
   const { usedCategories, filtered, total } = useFilteredExpenses(expenses, filter)
-  const fcount = filterCount(filter)
+  const activeFilterCount = filterCount(filter)
 
   return (
     <>
@@ -32,7 +32,10 @@ export const ExpenseList = ({ expenses, initialFilter }: ExpenseListProps) => {
           scope={filter.scope}
           onChange={(scope) => setFilter({ ...filter, scope, month: null })}
         />
-        <ExpenseListFilterButton filterCount={fcount} onClick={() => setSheetOpen(true)} />
+        <ExpenseListFilterButton
+          filterCount={activeFilterCount}
+          onClick={() => setSheetOpen(true)}
+        />
       </div>
 
       {filter.scope === "month" && (

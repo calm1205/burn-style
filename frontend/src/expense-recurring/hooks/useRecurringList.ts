@@ -7,12 +7,12 @@ import { monthlyEquivalent } from "../libs/recurringFrequency"
 
 /** 定期支払一覧のデータ取得と月次合計を提供。 */
 export const useRecurringList = () => {
-  const [items, setItems] = useState<RecurringExpenseResponse[]>([])
+  const [recurringExpenses, setRecurringExpenses] = useState<RecurringExpenseResponse[]>([])
   const [error, setError] = useState("")
 
   const fetchRecurringExpenses = useCallback(async () => {
     try {
-      setItems(await api.getRecurringExpenses())
+      setRecurringExpenses(await api.getRecurringExpenses())
     } catch (err) {
       setError(getErrorMessage(err, "Failed to fetch data"))
     }
@@ -24,12 +24,12 @@ export const useRecurringList = () => {
 
   const totalMonthly = useMemo(
     () =>
-      items.reduce(
+      recurringExpenses.reduce(
         (sum, r) => sum + monthlyEquivalent(r.amount, r.interval_unit, r.interval_count),
         0,
       ),
-    [items],
+    [recurringExpenses],
   )
 
-  return { items, error, totalMonthly }
+  return { recurringExpenses, error, totalMonthly }
 }

@@ -46,23 +46,25 @@ def list_due(
 ) -> list[RecurringExpenseDueResponse]:
     today = recurring_expense_service.jst_today()
     items = recurring_expense_repository.get_all_active(db, str(user.uuid))
-    result: list[RecurringExpenseDueResponse] = []
-    for r in items:
-        linked_expense_count = recurring_expense_repository.count_linked_expenses(db, str(r.uuid))
-        dates = recurring_expense_service.missed_dates(r, linked_expense_count, today)
+    due_items: list[RecurringExpenseDueResponse] = []
+    for recurring_expense in items:
+        linked_expense_count = recurring_expense_repository.count_linked_expenses(
+            db, str(recurring_expense.uuid),
+        )
+        dates = recurring_expense_service.missed_dates(recurring_expense, linked_expense_count, today)
         if not dates:
             continue
-        result.append(
+        due_items.append(
             RecurringExpenseDueResponse(
-                uuid=str(r.uuid),
-                name=str(r.name),
-                amount=int(r.amount),
-                category=r.category,
+                uuid=str(recurring_expense.uuid),
+                name=str(recurring_expense.name),
+                amount=int(recurring_expense.amount),
+                category=recurring_expense.category,
                 missed_count=len(dates),
                 missed_dates=dates,
             ),
         )
-    return result
+    return due_items
 
 
 @recurring_expense_router.post("", status_code=status.HTTP_201_CREATED)
