@@ -32,9 +32,8 @@ export const useCategoriesPage = () => {
   const usage = useMemo(() => {
     const map: Record<string, number> = {}
     for (const e of expenses) {
-      for (const c of e.categories) {
-        map[c.uuid] = (map[c.uuid] ?? 0) + 1
-      }
+      const uuid = e.category?.uuid
+      if (uuid) map[uuid] = (map[uuid] ?? 0) + 1
     }
     return map
   }, [expenses])

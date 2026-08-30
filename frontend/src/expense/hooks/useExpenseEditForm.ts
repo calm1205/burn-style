@@ -31,10 +31,8 @@ export const useExpenseEditForm = (uuid: string | undefined) => {
         name: loadedExpense.name,
         amount: loadedExpense.amount.toLocaleString(),
         expensedAt: toLocalDatetime(loadedExpense.expensed_at),
-        categoryUuid: loadedExpense.categories[0]?.uuid ?? null,
-        vibeSocial: loadedExpense.vibe_social,
-        vibePlanning: loadedExpense.vibe_planning,
-        vibeNecessity: loadedExpense.vibe_necessity,
+        categoryUuid: loadedExpense.category?.uuid ?? null,
+        vibe: loadedExpense.vibe,
       })
     } catch (err) {
       setError(getErrorMessage(err, "Failed to load"))
@@ -63,9 +61,7 @@ export const useExpenseEditForm = (uuid: string | undefined) => {
         amount: Number(form.amount.replace(/,/g, "")),
         expensed_at: new Date(form.expensedAt).toISOString(),
         category_uuid: form.categoryUuid,
-        vibe_social: form.vibeSocial,
-        vibe_planning: form.vibePlanning,
-        vibe_necessity: form.vibeNecessity,
+        vibe: form.vibe,
       })
       navigate(-1)
     } catch (err) {

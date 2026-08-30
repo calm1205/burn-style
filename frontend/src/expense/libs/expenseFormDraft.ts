@@ -1,4 +1,4 @@
-import type { VibeNecessity, VibePlanning, VibeSocial } from "../../common/libs/types"
+import { DEFAULT_VIBE, type Vibe } from "../../common/libs/types"
 
 /** Expense 作成・編集フォームの入力中 state。 */
 export interface ExpenseFormDraft {
@@ -6,9 +6,7 @@ export interface ExpenseFormDraft {
   amount: string
   expensedAt: string
   categoryUuid: string | null
-  vibeSocial: VibeSocial | null
-  vibePlanning: VibePlanning | null
-  vibeNecessity: VibeNecessity | null
+  vibe: Vibe
 }
 
 export const emptyExpenseFormDraft: ExpenseFormDraft = {
@@ -16,7 +14,11 @@ export const emptyExpenseFormDraft: ExpenseFormDraft = {
   amount: "",
   expensedAt: "",
   categoryUuid: null,
-  vibeSocial: null,
-  vibePlanning: null,
-  vibeNecessity: null,
+  vibe: DEFAULT_VIBE,
 }
+
+export const vibeFromDraft = (vibe: Vibe) => ({
+  social: vibe.social,
+  planning: vibe.planning,
+  necessity: vibe.necessity,
+})

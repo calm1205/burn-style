@@ -29,7 +29,7 @@ export const useCategoryEditForm = (uuid: string | undefined) => {
         setName(category.name)
         setGlyph(category.symbol ?? DEFAULT_GLYPH)
       }
-      setUsage(loadedExpenses.filter((e) => e.categories.some((cat) => cat.uuid === uuid)).length)
+      setUsage(loadedExpenses.filter((e) => e.category?.uuid === uuid).length)
     } catch (err) {
       setError(getErrorMessage(err, "Failed to load"))
     }

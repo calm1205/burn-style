@@ -12,6 +12,7 @@ from src.domain.category import Category
 from src.domain.expense import Expense
 from src.domain.recurring_expense import IntervalUnit, RecurringExpense
 from src.domain.user import User
+from src.domain.vibe import VibeFields, read_vibe_fields
 from src.infrastructure.database import get_db
 from src.main import app
 from src.service import recurring_expense_service
@@ -269,6 +270,15 @@ class TestRecord:
         assert expense is not None
         assert expense.expensed_at.date() == date(2026, 1, 1)
         assert expense.amount == 80000
+        assert read_vibe_fields(expense) == VibeFields(social=None, planning=None, necessity=None)
+
+        detail = auth_client.get(f"/expenses/{expense.uuid}")
+        assert detail.status_code == 200
+        assert detail.json()["vibe"] == {
+            "social": None,
+            "planning": None,
+            "necessity": None,
+        }
 
     def test_creates_multiple_with_count(
         self, auth_client: TestClient, category: Category, db: Session, test_user: User,

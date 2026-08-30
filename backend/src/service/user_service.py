@@ -6,6 +6,7 @@ from src.domain.category import Category
 from src.domain.expense import Expense
 from src.domain.expense_category_association import ExpenseCategoryAssociation
 from src.domain.recurring_expense import RecurringExpense
+from src.domain.vibe import write_vibe_fields
 from src.infrastructure import recurring_expense_repository
 from src.infrastructure.category_repository import (
     delete_all_by_user_uuid as delete_all_categories_by_user_uuid,
@@ -19,6 +20,7 @@ from src.infrastructure.expense_repository import (
 from src.infrastructure.expense_repository import (
     get_all_expenses,
 )
+from src.presentation.schema.vibe import vibe_from_schema
 
 if TYPE_CHECKING:
     from sqlalchemy.orm import Session
@@ -49,12 +51,10 @@ def import_user_snapshot(
     """
     user_uuid = str(user.uuid)
 
-    # 既存データを一掃 (FK CASCADEでassociationも消える)
     delete_all_expenses_by_user_uuid(db, user_uuid)
     recurring_expense_repository.delete_all_by_user_uuid(db, user_uuid)
     delete_all_categories_by_user_uuid(db, user_uuid)
 
-    # カテゴリを再構築 (旧UUID -> 新UUIDマップ)
     category_uuid_map: dict[str, str] = {}
     for category in body.categories:
         new_category = Category(
@@ -67,7 +67,6 @@ def import_user_snapshot(
         db.flush()
         category_uuid_map[category.uuid] = str(new_category.uuid)
 
-    # 定期支払を再構築 (旧UUID -> 新UUIDマップ)
     recurring_uuid_map: dict[str, str] = {}
     for recurring_expense in body.recurring_expenses:
         new_cat_uuid = category_uuid_map.get(recurring_expense.category_uuid)
@@ -90,7 +89,6 @@ def import_user_snapshot(
         db.flush()
         recurring_uuid_map[recurring_expense.uuid] = str(new_recurring.uuid)
 
-    # Expense + association 再構築
     for expense in body.expenses:
         new_recurring_uuid = (
             recurring_uuid_map.get(expense.recurring_expense_uuid)
@@ -105,15 +103,13 @@ def import_user_snapshot(
             created_at=expense.created_at,
             updated_at=expense.updated_at,
             deleted_at=expense.deleted_at,
-            vibe_social=expense.vibe_social,
-            vibe_planning=expense.vibe_planning,
-            vibe_necessity=expense.vibe_necessity,
             recurring_expense_uuid=new_recurring_uuid,
         )
+        write_vibe_fields(new_expense, vibe_from_schema(expense.vibe) if not new_recurring_uuid else None)
         db.add(new_expense)
         db.flush()
-        for category in expense.categories:
-            new_uuid = category_uuid_map.get(category.uuid)
+        if expense.category:
+            new_uuid = category_uuid_map.get(expense.category.uuid)
             if new_uuid:
                 db.add(
                     ExpenseCategoryAssociation(

@@ -123,6 +123,7 @@ def update_recurring_expense(
     )
 
     recurring_expense_patch = cast(RecurringExpensePatch, body.model_dump(exclude_unset=True))
+
     if "category_uuid" in recurring_expense_patch:
         _verify_user_category(db, recurring_expense_patch["category_uuid"], str(user.uuid))
 
