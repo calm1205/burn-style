@@ -14,7 +14,7 @@ export const ExpenseMonthlyPage = () => {
   const [expenses, setExpenses] = useState<ExpenseResponse[]>([])
   const [error, setError] = useState("")
 
-  const fetchData = useCallback(async () => {
+  const fetchExpenses = useCallback(async () => {
     try {
       setExpenses(await api.getExpenses())
     } catch (err) {
@@ -23,8 +23,8 @@ export const ExpenseMonthlyPage = () => {
   }, [])
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    fetchExpenses()
+  }, [fetchExpenses])
 
   const initialFilter = useMemo<ExpenseFilter>(() => {
     const dateParam = searchParams.get("date")
