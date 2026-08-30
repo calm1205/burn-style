@@ -22,11 +22,11 @@ const mkExpense = (overrides: Partial<ExpenseResponse> = {}): ExpenseResponse =>
 describe("defaultFilter", () => {
   it("defaults to month scope and empty values", () => {
     expect(defaultFilter()).toEqual({
-      q: "",
+      searchQuery: "",
       scope: "month",
       categoryUuids: [],
-      min: 0,
-      max: 0,
+      amountMin: 0,
+      amountMax: 0,
       dateStart: null,
       dateEnd: null,
       month: null,
@@ -43,14 +43,14 @@ describe("filterCount", () => {
     expect(filterCount(defaultFilter())).toBe(0)
   })
 
-  it("counts q, scope!=month, categories, amount range, and date range", () => {
+  it("counts searchQuery, scope!=month, categories, amount range, and date range", () => {
     expect(
       filterCount({
-        q: "x",
+        searchQuery: "x",
         scope: "week",
         categoryUuids: ["c1"],
-        min: 100,
-        max: 200,
+        amountMin: 100,
+        amountMax: 200,
         dateStart: "2026-06-16",
         dateEnd: "2026-06-20",
         month: null,
@@ -75,9 +75,9 @@ describe("filterCount", () => {
     expect(filterCount({ ...defaultFilter(), recurringMode: "only" })).toBe(1)
   })
 
-  it("does not double-count when only min or only max is set", () => {
-    expect(filterCount({ ...defaultFilter(), min: 100 })).toBe(1)
-    expect(filterCount({ ...defaultFilter(), max: 100 })).toBe(1)
+  it("does not double-count when only amountMin or only amountMax is set", () => {
+    expect(filterCount({ ...defaultFilter(), amountMin: 100 })).toBe(1)
+    expect(filterCount({ ...defaultFilter(), amountMax: 100 })).toBe(1)
   })
 
   it("counts each vibe axis independently", () => {
@@ -202,10 +202,10 @@ describe("applyFilter", () => {
     expect(result.map((e) => e.uuid)).toEqual(["a"])
   })
 
-  it("q matches name case-insensitively", () => {
+  it("searchQuery matches name case-insensitively", () => {
     const hit = mkExpense({ uuid: "a", name: "Latte" })
     const miss = mkExpense({ uuid: "b", name: "Bread" })
-    const result = applyFilter([hit, miss], { ...defaultFilter(), q: "latt" })
+    const result = applyFilter([hit, miss], { ...defaultFilter(), searchQuery: "latt" })
     expect(result.map((e) => e.uuid)).toEqual(["a"])
   })
 
@@ -284,15 +284,15 @@ describe("applyFilter", () => {
     expect(result.map((e) => e.uuid)).toEqual(["b"])
   })
 
-  it("min and max bound the amount inclusively", () => {
+  it("amountMin and amountMax bound the amount inclusively", () => {
     const e1 = mkExpense({ uuid: "a", amount: 50 })
     const e2 = mkExpense({ uuid: "b", amount: 200 })
     const e3 = mkExpense({ uuid: "c", amount: 1000 })
     const result = applyFilter([e1, e2, e3], {
       ...defaultFilter(),
       scope: "all",
-      min: 100,
-      max: 500,
+      amountMin: 100,
+      amountMax: 500,
     })
     expect(result.map((e) => e.uuid)).toEqual(["b"])
   })

@@ -29,18 +29,18 @@ export const ExpenseFilterChips = ({
   onClear,
 }: ExpenseFilterChipsProps) => {
   const labels: string[] = []
-  if (filter.q) labels.push(`"${filter.q}"`)
+  if (filter.searchQuery) labels.push(`"${filter.searchQuery}"`)
   const dateChip = formatDateRangeChip(filter.dateStart, filter.dateEnd)
   if (dateChip) labels.push(dateChip)
   for (const uuid of filter.categoryUuids) {
     const c = categories.find((x) => x.uuid === uuid)
     if (c) labels.push(c.name)
   }
-  if (filter.min > 0 || filter.max > 0) {
+  if (filter.amountMin > 0 || filter.amountMax > 0) {
     labels.push(
-      filter.max
-        ? `¥${filter.min.toLocaleString()}–${filter.max.toLocaleString()}`
-        : `¥${filter.min.toLocaleString()}+`,
+      filter.amountMax
+        ? `¥${filter.amountMin.toLocaleString()}–${filter.amountMax.toLocaleString()}`
+        : `¥${filter.amountMin.toLocaleString()}+`,
     )
   }
   if (filter.recurringMode === "exclude") labels.push("No recurring")

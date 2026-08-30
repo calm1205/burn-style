@@ -64,8 +64,8 @@ export const ExpenseFilterSheet = ({
 
         <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-5 py-5 pb-24">
           <FilterSheetSearchSection
-            value={draft.q}
-            onChange={(v) => setDraft({ ...draft, q: v })}
+            value={draft.searchQuery}
+            onChange={(v) => setDraft({ ...draft, searchQuery: v })}
           />
           <FilterSheetDateSection
             start={draft.dateStart}
@@ -84,11 +84,11 @@ export const ExpenseFilterSheet = ({
             onClear={() => setDraft({ ...draft, categoryUuids: [] })}
           />
           <FilterSheetAmountSection
-            min={draft.min}
-            max={draft.max}
-            onMinChange={(v) => setDraft({ ...draft, min: v })}
-            onMaxChange={(v) => setDraft({ ...draft, max: v })}
-            onPreset={(min, max) => setDraft({ ...draft, min, max })}
+            amountMin={draft.amountMin}
+            amountMax={draft.amountMax}
+            onAmountMinChange={(v) => setDraft({ ...draft, amountMin: v })}
+            onAmountMaxChange={(v) => setDraft({ ...draft, amountMax: v })}
+            onPreset={(amountMin, amountMax) => setDraft({ ...draft, amountMin, amountMax })}
           />
           <FilterSheetVibeSection
             social={draft.vibeSocial}

@@ -1,9 +1,9 @@
 interface FilterSheetAmountSectionProps {
-  min: number
-  max: number
-  onMinChange: (v: number) => void
-  onMaxChange: (v: number) => void
-  onPreset: (min: number, max: number) => void
+  amountMin: number
+  amountMax: number
+  onAmountMinChange: (v: number) => void
+  onAmountMaxChange: (v: number) => void
+  onPreset: (amountMin: number, amountMax: number) => void
 }
 
 const PRESETS: ReadonlyArray<readonly [number, number]> = [
@@ -14,10 +14,10 @@ const PRESETS: ReadonlyArray<readonly [number, number]> = [
 ]
 
 export const FilterSheetAmountSection = ({
-  min,
-  max,
-  onMinChange,
-  onMaxChange,
+  amountMin,
+  amountMax,
+  onAmountMinChange,
+  onAmountMaxChange,
   onPreset,
 }: FilterSheetAmountSectionProps) => (
   <section>
@@ -25,7 +25,7 @@ export const FilterSheetAmountSection = ({
       <h3 className="text-[11px] font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
         Amount
       </h3>
-      {(min > 0 || max > 0) && (
+      {(amountMin > 0 || amountMax > 0) && (
         <button type="button" onClick={() => onPreset(0, 0)} className="text-[11px] text-gray-400">
           clear
         </button>
@@ -38,8 +38,8 @@ export const FilterSheetAmountSection = ({
           type="number"
           inputMode="numeric"
           placeholder="min"
-          value={min || ""}
-          onChange={(e) => onMinChange(Number(e.target.value) || 0)}
+          value={amountMin || ""}
+          onChange={(e) => onAmountMinChange(Number(e.target.value) || 0)}
           className="w-full bg-transparent outline-none dark:text-gray-100"
         />
       </div>
@@ -50,8 +50,8 @@ export const FilterSheetAmountSection = ({
           type="number"
           inputMode="numeric"
           placeholder="max"
-          value={max || ""}
-          onChange={(e) => onMaxChange(Number(e.target.value) || 0)}
+          value={amountMax || ""}
+          onChange={(e) => onAmountMaxChange(Number(e.target.value) || 0)}
           className="w-full bg-transparent outline-none dark:text-gray-100"
         />
       </div>
