@@ -57,7 +57,7 @@ export const useCategoryEditForm = (uuid: string | undefined) => {
     }
   }
 
-  const remove = async () => {
+  const handleDelete = async () => {
     if (!uuid) return
     setError("")
     setLoading(true)
@@ -84,6 +84,6 @@ export const useCategoryEditForm = (uuid: string | undefined) => {
     confirmingDelete,
     setConfirmingDelete,
     save,
-    remove,
+    handleDelete,
   }
 }

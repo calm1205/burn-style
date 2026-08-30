@@ -24,7 +24,7 @@ export const CategoryEditPage = () => {
           name={f.trimmed}
           used={f.usage}
           loading={f.loading}
-          onDelete={f.remove}
+          onDelete={f.handleDelete}
           onClose={() => f.setConfirmingDelete(false)}
         />
       )}
