@@ -1,25 +1,28 @@
 import { ConfirmDialog } from "../../common/components/ConfirmDialog"
-import type { useSettingsActions } from "../hooks/useSettingsActions"
+import type { useSettingsBackup } from "../hooks/useSettingsBackup"
+import type { useSettingsProfile } from "../hooks/useSettingsProfile"
 
 interface SettingsDialogsProps {
-  actions: ReturnType<typeof useSettingsActions>
+  profile: ReturnType<typeof useSettingsProfile>
+  backup: ReturnType<typeof useSettingsBackup>
+  loading: boolean
 }
 
-export const SettingsDialogs = ({ actions }: SettingsDialogsProps) => {
+export const SettingsDialogs = ({ profile, backup, loading }: SettingsDialogsProps) => {
   return (
     <>
       <ConfirmDialog
         message="All your expense data will be permanently deleted. Are you sure?"
-        onConfirm={actions.handleDelete}
-        loading={actions.loading}
-        dialogRef={actions.dialogRef}
+        onConfirm={profile.deleteAccount}
+        loading={loading}
+        dialogRef={profile.dialogRef}
       />
       <ConfirmDialog
         message="All existing categories and expenses will be deleted and replaced with the imported data. Continue?"
-        onConfirm={actions.handleImport}
+        onConfirm={backup.importBackup}
         confirmText="Import"
-        loading={actions.loading}
-        dialogRef={actions.importDialogRef}
+        loading={loading}
+        dialogRef={backup.importDialogRef}
       />
     </>
   )
