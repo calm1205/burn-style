@@ -15,7 +15,7 @@ interface Args {
 export const useSettingsBackup = ({ userName, setError, setSuccess, setLoading }: Args) => {
   const { dialogRef: importDialogRef, open: openImportDialog } = useConfirmDialog()
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const importDataRef = useRef<unknown>(null)
+  const pendingImportSnapshotRef = useRef<unknown>(null)
 
   const exportBackup = async () => {
     try {
@@ -39,7 +39,7 @@ export const useSettingsBackup = ({ userName, setError, setSuccess, setLoading }
     const reader = new FileReader()
     reader.addEventListener("load", (event) => {
       try {
-        importDataRef.current = JSON.parse(event.target?.result as string)
+        pendingImportSnapshotRef.current = JSON.parse(event.target?.result as string)
         openImportDialog()
       } catch {
         setError("Invalid JSON file")
@@ -54,12 +54,12 @@ export const useSettingsBackup = ({ userName, setError, setSuccess, setLoading }
     setLoading(true)
     importDialogRef.current?.close()
     try {
-      const importResult = await api.importMe(importDataRef.current)
+      const importResult = await api.importMe(pendingImportSnapshotRef.current)
       setSuccess(importResult.message)
     } catch (err) {
       setError(getErrorMessage(err, "Import failed"))
     } finally {
-      importDataRef.current = null
+      pendingImportSnapshotRef.current = null
       setLoading(false)
     }
   }
