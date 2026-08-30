@@ -83,10 +83,10 @@ def count_linked_expenses(db: Session, recurring_uuid: str) -> int:
 def create_recurring_expense(
     db: Session,
     user_uuid: str,
-    fields: RecurringExpenseCreateFields,
+    create_fields: RecurringExpenseCreateFields,
 ) -> RecurringExpense:
     """新規作成。category eager loadした状態で返す。"""
-    recurring = RecurringExpense(user_uuid=user_uuid, **fields)
+    recurring = RecurringExpense(user_uuid=user_uuid, **create_fields)
     db.add(recurring)
     db.commit()
     db.refresh(recurring)
