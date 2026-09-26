@@ -12,7 +12,8 @@ import {
 } from "./expenseFilter"
 
 const DATE_KEY = /^\d{4}-\d{2}-\d{2}$/
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+/** backend の uuid7().hex（32 文字・ハイフンなし）。 */
+const CATEGORY_UUID = /^[0-9a-f]{32}$/i
 
 const VIBE_SOCIAL = new Set<VibeSocial>(["SOLO", "WITH_SOMEONE"])
 const VIBE_PLANNING = new Set<VibePlanning>(["ROUTINE", "SPONTANEOUS"])
@@ -94,7 +95,7 @@ export const parseExpenseFilterFromSearchParams = (params: URLSearchParams): Exp
     ? categoriesRaw
         .split(",")
         .map((s) => s.trim())
-        .filter((id) => UUID.test(id))
+        .filter((id) => CATEGORY_UUID.test(id))
     : []
 
   const vibeRaw = params.get("vibeSocial")

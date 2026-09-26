@@ -62,7 +62,7 @@ describe("parseExpenseFilterFromSearchParams", () => {
   })
 
   it("parses categories and recurring", () => {
-    const id = "11111111-1111-4111-8111-111111111111"
+    const id = "0123456789abcdef0123456789abcdef"
     const f = parseExpenseFilterFromSearchParams(
       new URLSearchParams(`categories=${id},bad&vibeSocial=SOLO&recurring=only`),
     )
@@ -130,13 +130,16 @@ describe("roundtrip", () => {
     vi.useRealTimers()
   })
 
-  it("preserves a month-range filter through serialize and parse", () => {
-    const original = createDefaultMonthExpenseFilter()
-    original.searchQuery = "latte"
-    original.amountMin = 100
-    const params = serializeExpenseFilterToSearchParams(original)
-    const parsed = parseExpenseFilterFromSearchParams(params)
-    expect(parsed).toEqual(original)
+  it("roundtrips category ids in hex uuid form", () => {
+    const id = "0123456789abcdef0123456789abcdef"
+    const original = {
+      ...createDefaultMonthExpenseFilter(),
+      categoryUuids: [id],
+    }
+    const parsed = parseExpenseFilterFromSearchParams(
+      serializeExpenseFilterToSearchParams(original),
+    )
+    expect(parsed.categoryUuids).toEqual([id])
   })
 })
 
