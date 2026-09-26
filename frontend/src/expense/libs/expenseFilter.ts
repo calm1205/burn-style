@@ -94,6 +94,32 @@ export const presetDateRange = (
   return { start: formatDateKey(start), end: formatDateKey(end) }
 }
 
+/** Date range プリセットの選択状態。日付指定時は範囲一致、未指定時は scope。 */
+export const resolveActivePeriodPreset = (
+  filter: Pick<ExpenseFilter, "scope" | "dateStart" | "dateEnd">,
+): FilterScope | null => {
+  if (filter.dateStart || filter.dateEnd) {
+    for (const { scope } of SCOPE_OPTIONS) {
+      if (scope === "all") continue
+      const range = presetDateRange(scope)
+      if (range.start === filter.dateStart && range.end === filter.dateEnd) return scope
+    }
+    return null
+  }
+  return filter.scope
+}
+
+export const applyPeriodPreset = (filter: ExpenseFilter, scope: FilterScope): ExpenseFilter => {
+  const range = presetDateRange(scope)
+  return {
+    ...filter,
+    dateStart: range.start,
+    dateEnd: range.end,
+    scope,
+    month: scope === "month" ? filter.month : null,
+  }
+}
+
 export const parseMonthKey = (key: string): { year: number; month: number } | null => {
   const parts = key.split("-").map(Number)
   if (parts.length !== 2 || parts.some(Number.isNaN)) return null
