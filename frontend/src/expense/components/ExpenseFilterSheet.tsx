@@ -94,7 +94,7 @@ export const ExpenseFilterSheet = ({
             amountMax={draft.amountMax}
             onAmountMinChange={(v) => setDraft({ ...draft, amountMin: v })}
             onAmountMaxChange={(v) => setDraft({ ...draft, amountMax: v })}
-            onPreset={(amountMin, amountMax) => setDraft({ ...draft, amountMin, amountMax })}
+            onClear={() => setDraft({ ...draft, amountMin: 0, amountMax: 0 })}
           />
           <FilterSheetVibeSection
             social={draft.vibeSocial}
