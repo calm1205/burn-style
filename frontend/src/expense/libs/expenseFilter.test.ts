@@ -2,7 +2,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import type { ExpenseResponse } from "../../common/libs/types"
 import { NULL_VIBE } from "../../common/libs/types"
-import { applyFilter, createDefaultExpenseFilter, filterCount, parseDateKey } from "./expenseFilter"
+import {
+  applyFilter,
+  applyPeriodPreset,
+  createDefaultExpenseFilter,
+  filterCount,
+  parseDateKey,
+  presetDateRange,
+  resolveActivePeriodPreset,
+} from "./expenseFilter"
 
 const mkExpense = (overrides: Partial<ExpenseResponse> = {}): ExpenseResponse => ({
   uuid: "u1",
@@ -95,6 +103,100 @@ describe("filterCount", () => {
   })
 })
 
+describe("presetDateRange", () => {
+  beforeEach(() => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date(2026, 5, 16, 12, 0))
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  it("all returns null start and today as end", () => {
+    expect(presetDateRange("all")).toEqual({ start: null, end: "2026-06-16" })
+  })
+
+  it("week spans the last 7 local days through today", () => {
+    expect(presetDateRange("week")).toEqual({ start: "2026-06-10", end: "2026-06-16" })
+  })
+
+  it("month spans the current calendar month", () => {
+    expect(presetDateRange("month")).toEqual({ start: "2026-06-01", end: "2026-06-30" })
+  })
+})
+
+describe("resolveActivePeriodPreset", () => {
+  beforeEach(() => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date(2026, 5, 16, 12, 0))
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  it("uses scope when no custom dates are set", () => {
+    expect(resolveActivePeriodPreset({ scope: "all", dateStart: null, dateEnd: null })).toBe("all")
+    expect(resolveActivePeriodPreset({ scope: "week", dateStart: null, dateEnd: null })).toBe(
+      "week",
+    )
+  })
+
+  it("matches preset ranges to week or month", () => {
+    const week = presetDateRange("week")
+    expect(
+      resolveActivePeriodPreset({
+        scope: "month",
+        dateStart: week.start,
+        dateEnd: week.end,
+      }),
+    ).toBe("week")
+  })
+
+  it("returns null for non-preset custom ranges", () => {
+    expect(
+      resolveActivePeriodPreset({
+        scope: "month",
+        dateStart: "2026-06-01",
+        dateEnd: "2026-06-15",
+      }),
+    ).toBeNull()
+  })
+})
+
+describe("applyPeriodPreset", () => {
+  beforeEach(() => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date(2026, 5, 16, 12, 0))
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  it("sets dates, scope, and clears month when not month scope", () => {
+    const base = { ...createDefaultExpenseFilter(), month: "2026-05" }
+    expect(applyPeriodPreset(base, "all")).toMatchObject({
+      scope: "all",
+      dateStart: null,
+      dateEnd: "2026-06-16",
+      month: null,
+    })
+    expect(applyPeriodPreset(base, "week")).toMatchObject({
+      scope: "week",
+      dateStart: "2026-06-10",
+      dateEnd: "2026-06-16",
+      month: null,
+    })
+  })
+
+  it("preserves month key when preset is month", () => {
+    const base = { ...createDefaultExpenseFilter(), month: "2026-05" }
+    expect(applyPeriodPreset(base, "month").month).toBe("2026-05")
+  })
+})
+
 describe("parseDateKey", () => {
   it("parses YYYY-MM-DD into a local Date", () => {
     const d = parseDateKey("2026-06-16")
@@ -118,6 +220,18 @@ describe("applyFilter", () => {
 
   afterEach(() => {
     vi.useRealTimers()
+  })
+
+  it("all time period (to=today, no from) does not filter by date", () => {
+    const old = mkExpense({ uuid: "a", expensed_at: new Date(2020, 0, 1).toISOString() })
+    const future = mkExpense({ uuid: "b", expensed_at: new Date(2030, 0, 1).toISOString() })
+    const filtered = applyFilter([old, future], {
+      ...createDefaultExpenseFilter(),
+      scope: "all",
+      dateStart: null,
+      dateEnd: "2026-06-16",
+    })
+    expect(filtered.map((e) => e.uuid).toSorted()).toEqual(["a", "b"])
   })
 
   it("month scope includes only current month", () => {

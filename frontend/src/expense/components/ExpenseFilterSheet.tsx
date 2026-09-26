@@ -2,7 +2,11 @@ import { useEffect, useRef, useState } from "react"
 
 import { PrimaryButton } from "../../common/components/PrimaryButton"
 import type { CategoryResponse } from "../../common/libs/types"
-import { createDefaultExpenseFilter, type ExpenseFilter } from "../libs/expenseFilter"
+import {
+  applyPeriodPreset,
+  createDefaultExpenseFilter,
+  type ExpenseFilter,
+} from "../libs/expenseFilter"
 import { FilterSheetAmountSection } from "./FilterSheetAmountSection"
 import { FilterSheetCategorySection } from "./FilterSheetCategorySection"
 import { FilterSheetDateSection } from "./FilterSheetDateSection"
@@ -68,8 +72,10 @@ export const ExpenseFilterSheet = ({
             onChange={(v) => setDraft({ ...draft, searchQuery: v })}
           />
           <FilterSheetDateSection
+            scope={draft.scope}
             start={draft.dateStart}
             end={draft.dateEnd}
+            onPeriodPreset={(scope) => setDraft((d) => applyPeriodPreset(d, scope))}
             onStartChange={(v) => setDraft((d) => ({ ...d, dateStart: v }))}
             onEndChange={(v) => setDraft((d) => ({ ...d, dateEnd: v }))}
           />
@@ -88,7 +94,7 @@ export const ExpenseFilterSheet = ({
             amountMax={draft.amountMax}
             onAmountMinChange={(v) => setDraft({ ...draft, amountMin: v })}
             onAmountMaxChange={(v) => setDraft({ ...draft, amountMax: v })}
-            onPreset={(amountMin, amountMax) => setDraft({ ...draft, amountMin, amountMax })}
+            onClear={() => setDraft({ ...draft, amountMin: 0, amountMax: 0 })}
           />
           <FilterSheetVibeSection
             social={draft.vibeSocial}

@@ -76,11 +76,22 @@ export const parseDateKey = (key: string): Date | null => {
 export const formatDateKey = (d: Date): string =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`
 
-/** Period プリセットボタン用に scope を具体的な日付範囲へ変換 (all は範囲なし)。 */
+/** 全期間: from なし・to が本日（URL と All プリセットの共通表現）。 */
+export const isAllTimePeriodFilter = (
+  filter: Pick<ExpenseFilter, "dateStart" | "dateEnd">,
+): boolean => {
+  if (filter.dateStart) return false
+  if (!filter.dateEnd) return false
+  return filter.dateEnd === formatDateKey(new Date())
+}
+
+/** Period プリセットボタン用に scope を具体的な日付範囲へ変換。 */
 export const presetDateRange = (
   scope: FilterScope,
 ): { start: string | null; end: string | null } => {
-  if (scope === "all") return { start: null, end: null }
+  if (scope === "all") {
+    return { start: null, end: formatDateKey(new Date()) }
+  }
 
   const now = new Date()
   if (scope === "week") {
@@ -92,6 +103,42 @@ export const presetDateRange = (
   const start = new Date(now.getFullYear(), now.getMonth(), 1)
   const end = new Date(now.getFullYear(), now.getMonth() + 1, 0)
   return { start: formatDateKey(start), end: formatDateKey(end) }
+}
+
+/** Date range プリセットの選択状態。日付指定時は範囲一致、未指定時は scope。 */
+export const resolveActivePeriodPreset = (
+  filter: Pick<ExpenseFilter, "scope" | "dateStart" | "dateEnd">,
+): FilterScope | null => {
+  if (filter.dateStart || filter.dateEnd) {
+    if (isAllTimePeriodFilter(filter)) return "all"
+    for (const { scope } of SCOPE_OPTIONS) {
+      if (scope === "all") continue
+      const range = presetDateRange(scope)
+      if (range.start === filter.dateStart && range.end === filter.dateEnd) return scope
+    }
+    return null
+  }
+  return filter.scope
+}
+
+export const applyPeriodPreset = (filter: ExpenseFilter, scope: FilterScope): ExpenseFilter => {
+  if (scope === "all") {
+    return {
+      ...filter,
+      dateStart: null,
+      dateEnd: formatDateKey(new Date()),
+      scope: "all",
+      month: null,
+    }
+  }
+  const range = scope === "month" ? calendarMonthDateRange(filter.month) : presetDateRange(scope)
+  return {
+    ...filter,
+    dateStart: range.start,
+    dateEnd: range.end,
+    scope,
+    month: scope === "month" ? filter.month : null,
+  }
 }
 
 export const parseMonthKey = (key: string): { year: number; month: number } | null => {
@@ -108,6 +155,17 @@ export const shiftMonthKey = (key: string, delta: number): string => {
   if (!parsed) return key
   const d = new Date(parsed.year, parsed.month + delta, 1)
   return formatMonthKey(d.getFullYear(), d.getMonth())
+}
+
+/** 指定月 (null なら当月) の暦 1 日〜末日。 */
+export const calendarMonthDateRange = (monthKey: string | null): { start: string; end: string } => {
+  const now = new Date()
+  const parsed = monthKey ? parseMonthKey(monthKey) : null
+  const year = parsed?.year ?? now.getFullYear()
+  const month = parsed?.month ?? now.getMonth()
+  const start = new Date(year, month, 1)
+  const end = new Date(year, month + 1, 0)
+  return { start: formatDateKey(start), end: formatDateKey(end) }
 }
 
 export const applyFilter = (
@@ -127,7 +185,9 @@ export const applyFilter = (
   return expenses.filter((e) => {
     const d = new Date(e.expensed_at)
 
-    if (rangeStart || rangeEndExclusive) {
+    if (isAllTimePeriodFilter(filter)) {
+      // 日付による絞り込みなし
+    } else if (rangeStart || rangeEndExclusive) {
       if (rangeStart && d < rangeStart) return false
       if (rangeEndExclusive && d >= rangeEndExclusive) return false
     } else if (filter.scope === "week") {
