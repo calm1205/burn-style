@@ -113,8 +113,8 @@ describe("presetDateRange", () => {
     vi.useRealTimers()
   })
 
-  it("all returns null bounds", () => {
-    expect(presetDateRange("all")).toEqual({ start: null, end: null })
+  it("all returns null start and today as end", () => {
+    expect(presetDateRange("all")).toEqual({ start: null, end: "2026-06-16" })
   })
 
   it("week spans the last 7 local days through today", () => {
@@ -180,7 +180,7 @@ describe("applyPeriodPreset", () => {
     expect(applyPeriodPreset(base, "all")).toMatchObject({
       scope: "all",
       dateStart: null,
-      dateEnd: null,
+      dateEnd: "2026-06-16",
       month: null,
     })
     expect(applyPeriodPreset(base, "week")).toMatchObject({
@@ -220,6 +220,18 @@ describe("applyFilter", () => {
 
   afterEach(() => {
     vi.useRealTimers()
+  })
+
+  it("all time period (to=today, no from) does not filter by date", () => {
+    const old = mkExpense({ uuid: "a", expensed_at: new Date(2020, 0, 1).toISOString() })
+    const future = mkExpense({ uuid: "b", expensed_at: new Date(2030, 0, 1).toISOString() })
+    const filtered = applyFilter([old, future], {
+      ...createDefaultExpenseFilter(),
+      scope: "all",
+      dateStart: null,
+      dateEnd: "2026-06-16",
+    })
+    expect(filtered.map((e) => e.uuid).toSorted()).toEqual(["a", "b"])
   })
 
   it("month scope includes only current month", () => {

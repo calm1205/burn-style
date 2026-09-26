@@ -2,7 +2,13 @@ import { useState } from "react"
 
 import type { CategoryResponse, ExpenseResponse } from "../../common/libs/types"
 import { useFilteredExpenses } from "../hooks/useFilteredExpenses"
-import { createDefaultExpenseFilter, type ExpenseFilter, filterCount } from "../libs/expenseFilter"
+import {
+  applyPeriodPreset,
+  calendarMonthDateRange,
+  type ExpenseFilter,
+  filterCount,
+} from "../libs/expenseFilter"
+import { createDefaultMonthExpenseFilter } from "../libs/expenseFilterQuery"
 import { ExpenseFilterChips } from "./ExpenseFilterChips"
 import { ExpenseFilterSheet } from "./ExpenseFilterSheet"
 import { ExpenseFlatList } from "./ExpenseFlatList"
@@ -13,14 +19,30 @@ import { ExpenseListScopeChips } from "./ExpenseListScopeChips"
 interface ExpenseListProps {
   expenses: ExpenseResponse[]
   categories?: CategoryResponse[]
-  initialFilter?: ExpenseFilter
+  filter: ExpenseFilter
+  onFilterChange: (filter: ExpenseFilter) => void
 }
 
-export const ExpenseList = ({ expenses, categories = [], initialFilter }: ExpenseListProps) => {
-  const [filter, setFilter] = useState<ExpenseFilter>(initialFilter ?? createDefaultExpenseFilter())
+export const ExpenseList = ({
+  expenses,
+  categories = [],
+  filter,
+  onFilterChange,
+}: ExpenseListProps) => {
   const [sheetOpen, setSheetOpen] = useState(false)
   const { usedCategories, filtered, total } = useFilteredExpenses(expenses, filter, categories)
   const activeFilterCount = filterCount(filter)
+
+  const onMonthChange = (month: string | null) => {
+    const range = calendarMonthDateRange(month)
+    onFilterChange({
+      ...filter,
+      scope: "month",
+      month,
+      dateStart: range.start,
+      dateEnd: range.end,
+    })
+  }
 
   return (
     <>
@@ -31,7 +53,7 @@ export const ExpenseList = ({ expenses, categories = [], initialFilter }: Expens
       <div className="flex shrink-0 items-center justify-between gap-2">
         <ExpenseListScopeChips
           scope={filter.scope}
-          onChange={(scope) => setFilter({ ...filter, scope, month: null })}
+          onChange={(scope) => onFilterChange(applyPeriodPreset(filter, scope))}
         />
         <ExpenseListFilterButton
           filterCount={activeFilterCount}
@@ -40,17 +62,14 @@ export const ExpenseList = ({ expenses, categories = [], initialFilter }: Expens
       </div>
 
       {filter.scope === "month" && (
-        <ExpenseListMonthNav
-          month={filter.month}
-          onChange={(month) => setFilter({ ...filter, month })}
-        />
+        <ExpenseListMonthNav month={filter.month} onChange={onMonthChange} />
       )}
 
       <ExpenseFilterChips
         filter={filter}
         categories={usedCategories}
         onOpen={() => setSheetOpen(true)}
-        onClear={() => setFilter(createDefaultExpenseFilter())}
+        onClear={() => onFilterChange(createDefaultMonthExpenseFilter())}
       />
 
       <ExpenseFlatList
@@ -63,7 +82,7 @@ export const ExpenseList = ({ expenses, categories = [], initialFilter }: Expens
         open={sheetOpen}
         onClose={() => setSheetOpen(false)}
         filter={filter}
-        onApply={setFilter}
+        onApply={onFilterChange}
         categories={usedCategories}
       />
     </>
